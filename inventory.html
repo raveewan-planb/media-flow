@@ -76,12 +76,12 @@ table th{position:sticky;top:0;z-index:1}
 /* Sidebar collapse label */
 .sidebar-label{transition:opacity 0.15s;white-space:nowrap;overflow:hidden}
 /* === Group stat cards — flat compact === */
-.gs-card{position:relative;border-radius:10px;border:1px solid #E2E8F0;background:#fff;padding:10px 12px;cursor:pointer;transition:all .18s ease;overflow:hidden}
+.gs-card{position:relative;border-radius:10px;border:1px solid #E2E8F0;background:#fff;padding:14px 12px;cursor:pointer;transition:all .18s ease;overflow:hidden;display:flex;align-items:center;justify-content:center;min-height:52px}
 .gs-card:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(11,20,48,0.06);border-color:var(--gs-color,#CBD5E1)}
 .gs-card.active{background:var(--gs-color,#2D56D2);border-color:var(--gs-color,#2D56D2)}
 .gs-card .gs-icon{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:7px;flex-shrink:0;transition:all .18s}
 .gs-card.active .gs-icon{background:rgba(255,255,255,0.22) !important;color:#fff !important}
-.gs-card .gs-label{font-size:9.5px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:rgba(30,41,59,0.6);margin-top:6px;line-height:1.2}
+.gs-card .gs-label{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:rgba(30,41,59,0.75);line-height:1.2;text-align:center}
 .gs-card.active .gs-label{color:rgba(255,255,255,0.85)}
 .gs-card .gs-num{font-size:19px;font-weight:700;line-height:1.1;margin-top:1px;font-variant-numeric:tabular-nums;letter-spacing:-0.02em;color:#0B1430}
 .gs-card.active .gs-num,.gs-card.active .gs-num span{color:#fff !important}
@@ -95,20 +95,38 @@ table th{position:sticky;top:0;z-index:1}
 .gs-card.active .gs-active-tick{display:inline-flex}
 .gs-card.active .gs-pct{display:none}
 /* === Table polish === */
+#inv-table{min-width:1500px;table-layout:fixed}
 #inv-table-body tr{transition:background-color .12s}
 #inv-table-body tr:hover{background:#F4F8FE}
 #inv-table-body tr:nth-child(even){background:#FAFCFE}
 #inv-table-body tr:nth-child(even):hover{background:#F4F8FE}
-#inv-thead th{padding:8px 8px;font-size:10.5px;letter-spacing:.04em;background:#F8FAFC;color:rgba(30,41,59,0.55);font-weight:600;border-bottom:1px solid #E2E8F0;vertical-align:middle;white-space:normal;line-height:1.25}
-#inv-thead th:first-child{padding-left:12px}
-#inv-thead th:last-child{padding-right:12px}
-#inv-table-body td{padding:8px 8px;border-bottom:1px solid #F1F5F9;vertical-align:middle}
-#inv-table-body td:first-child{padding-left:12px}
-#inv-table-body td:last-child{padding-right:12px}
+#inv-thead th{padding:12px 10px;font-size:10.5px;letter-spacing:.04em;background:#F8FAFC;color:rgba(30,41,59,0.6);font-weight:600;border-bottom:1px solid #E2E8F0;vertical-align:middle;white-space:nowrap;line-height:1.2;text-transform:uppercase;height:42px}
+#inv-thead th:first-child{padding-left:14px}
+#inv-thead th:last-child{padding-right:14px}
+#inv-table-body td{padding:9px 10px;border-bottom:1px solid #F1F5F9;vertical-align:middle;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#inv-table-body td:first-child{padding-left:14px}
+#inv-table-body td:last-child{padding-right:14px}
 #inv-table-body tr:last-child td{border-bottom:0}
+/* Column widths — sized for content, headers stay on one line */
+#inv-thead th.col-action{width:96px}
+#inv-table-body td:first-child{overflow:visible}
+#inv-thead th.col-code{width:100px}
+#inv-thead th.col-equip{width:96px}
+#inv-thead th.col-desc{width:190px}
+#inv-thead th.col-location{width:180px}
+#inv-thead th.col-group{width:118px}
+#inv-thead th.col-type{width:130px}
+#inv-thead th.col-branding{width:130px}
+#inv-thead th.col-package{width:110px}
+#inv-thead th.col-mstatus{width:118px}
+#inv-thead th.col-bstatus{width:96px}
+#inv-thead th.col-province{width:120px}
+#inv-thead th.col-owner{width:126px}
+/* Wrapping cells (Description / Location) — truncate with ellipsis */
+#inv-table-body td.cell-ellipsis > *{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block}
 /* Sortable headers — clean, no layout shift */
 th.sortable{cursor:pointer;user-select:none;transition:color .15s,background-color .15s;position:relative}
-th.sortable:hover{color:rgba(30,41,59,0.85);background:#F1F5F9}
+th.sortable:hover{color:rgba(30,41,59,0.9);background:#EEF3FB}
 th.sortable .sort-ind{display:inline-flex;width:10px;height:10px;align-items:center;justify-content:center;margin-left:4px;vertical-align:-1px;opacity:0;color:rgba(30,41,59,0.5);transition:opacity .15s}
 th.sortable:hover .sort-ind{opacity:.7}
 th.sortable.sort-active{color:#2D56D2;background:rgba(45,86,210,0.06)}
@@ -297,7 +315,7 @@ th.sortable.sort-active .sort-ind{opacity:1;color:#2D56D2}
   </aside>
 
   <!-- MAIN CONTENT -->
-  <main class="flex-1 lg:ml-64 min-h-screen">
+  <main class="flex-1 lg:ml-64 min-h-screen min-w-0">
     <!-- Top Bar — White Glass -->
     <header class="topbar-white h-16 shrink-0 sticky top-0 z-20 flex items-center gap-4 px-4 sm:px-6">
       <!-- Collapse / Mobile toggle -->
@@ -351,8 +369,6 @@ th.sortable.sort-active .sort-ind{opacity:1;color:#2D56D2}
 </a>
 </div>
 </div>
-<!-- Media Group Stats — count per Media Group -->
-<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3" id="group-stats"></div>
 <!-- Search Panel — compact -->
 <div class="bg-white border border-[#E2E8F0] rounded-xl shadow-sm p-2.5">
   <!-- Basic Search: 4 fields + 3 buttons on one row -->
@@ -404,8 +420,8 @@ th.sortable.sort-active .sort-ind{opacity:1;color:#2D56D2}
       <input id="sf-old-code" oninput="filterInventory()" placeholder="Old Code" class="h-8 px-3 bg-[#F8FAFC] border border-[#E2E8F0] rounded-md text-[12.5px] focus:outline-none focus:border-[#4790FF] focus:bg-white placeholder:opacity-40 transition"/>
       <input id="sf-epicor" oninput="filterInventory()" placeholder="Equipment ID" class="h-8 px-3 bg-[#F8FAFC] border border-[#E2E8F0] rounded-md text-[12.5px] focus:outline-none focus:border-[#4790FF] focus:bg-white placeholder:opacity-40 transition"/>
       <input id="sf-location" oninput="filterInventory()" placeholder="Location" class="h-8 px-3 bg-[#F8FAFC] border border-[#E2E8F0] rounded-md text-[12.5px] focus:outline-none focus:border-[#4790FF] focus:bg-white placeholder:opacity-40 transition"/>
-      <div class="filter-ms" id="sf-product-status" data-label="Product Status" style="min-width:0">
-        <button type="button" class="filter-ms-btn" onclick="filterMsToggle('sf-product-status')"><span class="filter-ms-label">Product Status</span></button>
+      <div class="filter-ms" id="sf-media-status" data-label="Media Status" style="min-width:0">
+        <button type="button" class="filter-ms-btn" onclick="filterMsToggle('sf-media-status')"><span class="filter-ms-label">Media Status</span></button>
         <div class="filter-ms-panel hidden"></div>
       </div>
       <div class="filter-ms" id="sf-booking-status" data-label="Booking Status" style="min-width:0">
@@ -417,23 +433,24 @@ th.sortable.sort-active .sort-ind{opacity:1;color:#2D56D2}
 </div>
 
 <!-- Table -->
-<div class="bg-white border border-[#E2E8F0] rounded-xl shadow-sm overflow-hidden">
-<div class="overflow-x-auto">
-<table class="w-full text-[13px]" style="table-layout:auto">
+<div class="bg-white border border-[#E2E8F0] rounded-xl shadow-sm overflow-hidden max-w-full">
+<div class="overflow-x-auto w-full">
+<table id="inv-table" class="w-full text-[13px]">
 <thead class="bg-[#F8FAFC]/80 border-b border-[#E2E8F0]">
-<tr class="text-left text-[11px] uppercase tracking-wide" style="color:rgba(30,41,59,0.6)" id="inv-thead">
-<th class="font-medium text-center" style="width:90px">Action</th>
-<th class="px-4 py-3 font-medium sortable" data-sort="code">Media Code <span class="sort-ind"></span></th>
-<th class="px-4 py-3 font-medium sortable" data-sort="epicorCode">Equipment ID <span class="sort-ind"></span></th>
-<th class="px-4 py-3 font-medium sortable" data-sort="name">Description <span class="sort-ind"></span></th>
-<th class="px-4 py-3 font-medium sortable" data-sort="group">Media Group <span class="sort-ind"></span></th>
-<th class="px-4 py-3 font-medium sortable" data-sort="branding">Media Branding <span class="sort-ind"></span></th>
-<th class="px-4 py-3 font-medium sortable" data-sort="type">Media Type <span class="sort-ind"></span></th>
-<th class="px-4 py-3 font-medium text-right sortable" data-sort="rate">Current Rate Card <span class="sort-ind"></span></th>
-<th class="px-4 py-3 font-medium sortable" data-sort="productStatus">Product Status <span class="sort-ind"></span></th>
-<th class="px-4 py-3 font-medium sortable" data-sort="bookingStatus">Booking Status <span class="sort-ind"></span></th>
-<th class="px-4 py-3 font-medium sortable" data-sort="province">Province <span class="sort-ind"></span></th>
-<th class="px-4 py-3 font-medium sortable" data-sort="productOwner">Product Owner <span class="sort-ind"></span></th>
+<tr class="text-left" id="inv-thead">
+<th class="col-action text-center">Action</th>
+<th class="col-code sortable" data-sort="code">Media Code<span class="sort-ind"></span></th>
+<th class="col-equip sortable" data-sort="epicorCode">Equipment ID<span class="sort-ind"></span></th>
+<th class="col-desc sortable" data-sort="name">Description<span class="sort-ind"></span></th>
+<th class="col-location sortable" data-sort="locationText">Location<span class="sort-ind"></span></th>
+<th class="col-group sortable" data-sort="group">Media Group<span class="sort-ind"></span></th>
+<th class="col-type sortable" data-sort="type">Media Type<span class="sort-ind"></span></th>
+<th class="col-branding sortable" data-sort="branding">Media Branding<span class="sort-ind"></span></th>
+<th class="col-package sortable" data-sort="package">Package<span class="sort-ind"></span></th>
+<th class="col-mstatus sortable" data-sort="mediaStatus">Media Status<span class="sort-ind"></span></th>
+<th class="col-bstatus sortable" data-sort="bookingStatus">Booking<span class="sort-ind"></span></th>
+<th class="col-province sortable" data-sort="province">Province<span class="sort-ind"></span></th>
+<th class="col-owner sortable" data-sort="productOwner">Product Owner<span class="sort-ind"></span></th>
 </tr>
 </thead>
 <tbody id="inv-table-body">
@@ -566,7 +583,7 @@ const PROVINCE_TO_REGION = {
   'ชลบุรี':'ภาคตะวันออก', 'สงขลา':'ภาคใต้', 'สุราษฎร์ธานี':'ภาคใต้', 'กระบี่':'ภาคใต้',
 };
 const OWNERS_POOL = ['PlanB','MACO','VGI','MIDAS','BMN','OHM','Splash','BFKT','Hello Bangkok'];
-const PRODUCT_STATUS_BY_STATUS = { live:'มีลูกค้า / Occupied', maint:'ระงับการขาย / Suspension of sale', vac:'ว่าง / Available' };
+const MEDIA_STATUS_BY_STATUS = { live:'Active', maint:'Under Process', vac:'Inactive' };
 const BOOKING_STATUS_BY_STATUS = { live:'จอง', maint:'งดจอง', vac:'ว่าง' };
 const TAKEDOWN_STATUS_BY_STATUS = { live:'รอก่อน', maint:'รื้อได้เลย', vac:'รื้อได้เลย' };
 
@@ -580,7 +597,7 @@ LOCATIONS.forEach(function(l, i){
   l.oldCode       = 'OLD-' + (1001 + i);
   l.epicorCode    = 'EPI-' + (501 + i);
   l.locationText  = l.name;
-  l.productStatus = PRODUCT_STATUS_BY_STATUS[l.status] || '—';
+  l.mediaStatus   = MEDIA_STATUS_BY_STATUS[l.status] || '—';
   l.bookingStatus = BOOKING_STATUS_BY_STATUS[l.status] || '—';
   l.takedownStatus= TAKEDOWN_STATUS_BY_STATUS[l.status] || '—';
 });
@@ -816,7 +833,7 @@ function getFiltered() {
   var oldCode  = sfVal('sf-old-code').toLowerCase();
   var epicor   = sfVal('sf-epicor').toLowerCase();
   var locTxt   = sfVal('sf-location').toLowerCase();
-  var prodSt   = filterMsVal('sf-product-status');
+  var medSt    = filterMsVal('sf-media-status');
   var bookSt   = filterMsVal('sf-booking-status');
 
   var rows = LOCATIONS.filter(function(l) {
@@ -831,7 +848,7 @@ function getFiltered() {
     if (oldCode      && !l.oldCode.toLowerCase().includes(oldCode))    return false;
     if (epicor       && !l.epicorCode.toLowerCase().includes(epicor))  return false;
     if (locTxt       && !l.locationText.toLowerCase().includes(locTxt))return false;
-    if (prodSt.length   && prodSt.indexOf(l.productStatus) === -1)     return false;
+    if (medSt.length    && medSt.indexOf(l.mediaStatus) === -1)        return false;
     if (bookSt.length   && bookSt.indexOf(l.bookingStatus) === -1)     return false;
     return true;
   });
@@ -936,7 +953,7 @@ function clearSearch(){
     .forEach(function(id){ var el = document.getElementById(id); if (el) el.value = ''; });
   // Clear multi-selects
   ['sf-group','sf-type','sf-branding','sf-package','sf-province','sf-region','sf-owner',
-   'sf-product-status','sf-booking-status']
+   'sf-media-status','sf-booking-status']
     .forEach(function(id){ filterMsClear(id); });
   _page = 1;
   filterInventory();
@@ -958,20 +975,11 @@ function renderGroupStats(){
   var currentGroup = filterMsVal('sf-group');
 
   function card(label, count, color, isAll){
-    var pct = total > 0 ? Math.round((count / total) * 100) : 0;
     var active = isAll ? currentGroup.length === 0 : (currentGroup.length === 1 && currentGroup[0] === label);
     var inlineStyle = '--gs-color:' + color + ';';
-    var icnHTML = GROUP_ICONS[label] || GROUP_ICONS['All Media'];
     var clickFn = isAll ? "clearGroupFilter()" : "filterByGroup('" + label + "')";
     return '<div class="gs-card ' + (active ? 'active' : '') + '" style="' + inlineStyle + '" onclick="' + clickFn + '" tabindex="0" role="button" aria-label="Filter by ' + label + '">' +
-      '<div class="flex items-center justify-between">' +
-        '<div class="gs-icon" style="background:' + color + '1A;color:' + color + '"><span class="w-[14px] h-[14px] block">' + icnHTML + '</span></div>' +
-        '<span class="gs-pct">' + pct + '%</span>' +
-        '<div class="gs-active-tick"><svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg></div>' +
-      '</div>' +
       '<div class="gs-label">' + label + '</div>' +
-      '<div class="gs-num">' + count + '</div>' +
-      '<div class="gs-bar"><div class="gs-bar-fill" style="width:' + pct + '%"></div></div>' +
     '</div>';
   }
 
@@ -1006,7 +1014,7 @@ function populateSearchDropdowns(){
   filterMsFill('sf-province',       uniqSorted(LOCATIONS.map(function(l){ return l.province; })));
   filterMsFill('sf-region',         uniqSorted(LOCATIONS.map(function(l){ return l.region; })));
   filterMsFill('sf-owner',          uniqSorted(LOCATIONS.map(function(l){ return l.productOwner; })));
-  filterMsFill('sf-product-status', uniqSorted(LOCATIONS.map(function(l){ return l.productStatus; })));
+  filterMsFill('sf-media-status',   uniqSorted(LOCATIONS.map(function(l){ return l.mediaStatus; })));
   filterMsFill('sf-booking-status', uniqSorted(LOCATIONS.map(function(l){ return l.bookingStatus; })));
 }
 
@@ -1014,15 +1022,14 @@ function groupChip(g){
   var c = GROUP_COLOR[g] || '#64748B';
   return '<span class="inline-flex items-center gap-1.5 text-[11px] font-medium" style="color:' + c + '"><span class="w-1.5 h-1.5 rounded-full" style="background:' + c + '"></span>' + g + '</span>';
 }
-function productStatusColor(s){
-  if (s.indexOf('Available') >= 0) return '#059669';
-  if (s.indexOf('Occupied') >= 0) return '#2D56D2';
-  if (s.indexOf('ระงับ') >= 0) return '#D97706';
-  if (s.indexOf('ยกเลิก') >= 0) return '#DC2626';
+function mediaStatusColor(s){
+  if (s === 'Active') return '#059669';
+  if (s === 'Under Process') return '#D97706';
+  if (s === 'Inactive') return '#DC2626';
   return '#64748B';
 }
-function productStatusChip(s){
-  var c = productStatusColor(s);
+function mediaStatusChip(s){
+  var c = mediaStatusColor(s);
   return '<span class="inline-flex items-center gap-1 text-[11px] font-medium px-1.5 py-0.5 rounded" style="background:' + c + '14;color:' + c + '">' + s + '</span>';
 }
 function bookingStatusColor(s){
@@ -1056,7 +1063,7 @@ function invEdit(code){ window.location.href = 'inventory-edit.html'; }
 function renderList(allRows) {
   var tbody = document.getElementById('inv-table-body');
   if (!allRows.length) {
-    tbody.innerHTML = '<tr><td colspan="12" class="px-4 py-12 text-center text-[13px]" style="color:rgba(30,41,59,0.5)">No matching assets found</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="13" class="px-4 py-12 text-center text-[13px]" style="color:rgba(30,41,59,0.5)">No matching assets found</td></tr>';
     return;
   }
   // Page slice
@@ -1067,15 +1074,16 @@ function renderList(allRows) {
       '<td class="text-center">' + actionButtons(r.code) + '</td>' +
       '<td><span class="text-[11.5px] font-mono font-semibold" style="color:#0B1430">' + r.code + '</span></td>' +
       '<td><span class="text-[11px] font-mono" style="color:rgba(30,41,59,0.55)">' + r.epicorCode + '</span></td>' +
-      '<td><div class="text-[12.5px] font-medium text-[#0B1430] truncate max-w-[180px]" title="' + r.name + '">' + r.name + '</div></td>' +
+      '<td class="cell-ellipsis"><span class="text-[12.5px] font-medium text-[#0B1430]" title="' + r.name + '">' + r.name + '</span></td>' +
+      '<td class="cell-ellipsis"><span class="text-[11.5px]" style="color:rgba(30,41,59,0.75)" title="' + r.locationText + '">' + r.locationText + '</span></td>' +
       '<td>' + groupChip(r.group) + '</td>' +
-      '<td><span class="text-[11.5px]" style="color:rgba(30,41,59,0.75)">' + r.branding + '</span></td>' +
       '<td>' + typeBadgeMini(r.type) + '</td>' +
-      '<td class="text-right"><span class="text-[12.5px] font-semibold tnum text-[#0B1430]">' + fmtRate(r.rate) + '</span></td>' +
-      '<td>' + productStatusChip(r.productStatus) + '</td>' +
+      '<td class="cell-ellipsis"><span class="text-[11.5px]" style="color:rgba(30,41,59,0.75)" title="' + r.branding + '">' + r.branding + '</span></td>' +
+      '<td class="cell-ellipsis"><span class="text-[11.5px]" style="color:rgba(30,41,59,0.75)" title="' + r.package + '">' + r.package + '</span></td>' +
+      '<td>' + mediaStatusChip(r.mediaStatus) + '</td>' +
       '<td>' + bookingStatusChip(r.bookingStatus) + '</td>' +
       '<td><span class="text-[11.5px]" style="color:rgba(30,41,59,0.75)">' + r.province + '</span></td>' +
-      '<td><span class="text-[12px] font-medium" style="color:rgba(30,41,59,0.85)">' + r.productOwner + '</span></td>' +
+      '<td class="cell-ellipsis"><span class="text-[12px] font-medium" style="color:rgba(30,41,59,0.85)" title="' + r.productOwner + '">' + r.productOwner + '</span></td>' +
       '</tr>';
   }).join('');
 }
