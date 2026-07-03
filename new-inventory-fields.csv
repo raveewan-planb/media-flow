@@ -1,0 +1,149 @@
+﻿Field Header,แสดงตาม Media Group,Field Type,Field Required,Value,Field Description
+General Info (ข้อมูลทั่วไป),,,,,
+Media Code,แสดงทุก Media Group,Free Text,Yes,,รหัสป้ายสำหรับการขาย
+Owner Group,แสดงทุก Media Group,Drop Down List,Yes,"PlanB Group, Sale Right","ประเภทการถือครองทรัพย์สิน มีแค่2ประเภทคือ PlanB Group, Sale Right"
+Owner Original,แสดงทุก Media Group,Drop Down List,Yes,Master Data Product Owner,บริษัทเจ้าของ Asset อาจจะมีสัญญาโดยตรงกับแพลนบีหรือไม่มีก็ได้ ถ้าเค้าเป็นเจ้าของจริงๆ เช่น บริษัทลูกของ ไทยสมายบัส ที่ต้องใช้ในการขออนุญาตแบบ
+Product Owner,แสดงทุก Media Group,Drop Down List,Yes,Master Data Product Owner,รายชื่อบริษัทในกลุ่มแพลนบีที่รับผิดชอบ รายรับ-รายจ่ายในAssetนี้
+Past owner,แสดงทุก Media Group,Free Text,No,,บริษัทเจ้าของเดิมของทรัพย์สินนี้ (หากมี)
+Old Code,แสดงทุก Media Group,Free Text,No,,มีใน CRM ปัจจุบัน
+Product Site,แสดงทุก Media Group,Free Text,No,,มีใน CRM ปัจจุบัน
+PB Code,แสดงทุก Media Group,Free Text,No,,มีใน CRM ปัจจุบัน
+Equipment ID,แสดงทุก Media Group,Free Text,No,,รหัสทรัพย์สินใน Epicor
+Description (TH),แสดงทุก Media Group,Free Text,Yes,,จุดรับสายตาป้าย/สื่อ (ภาษาไทย)
+Description (EN),แสดงทุก Media Group,Free Text,No,,จุดรับสายตาป้าย/สื่อ (ภาษาอังกฤษ)
+Rental Expired Date,แสดงทุก Media Group,Free Text,No,,มีใน CRM ปัจจุบัน
+Remark (หมายเหตุทั่วไป),แสดงทุก Media Group,Free Text,No,,มีใน CRM ปัจจุบัน
+Condition (สภาพป้าย),แสดงทุก Media Group,Free Text,No,,มีใน CRM ปัจจุบัน
+Problem / Comment,แสดงทุก Media Group,Free Text,No,,มีใน CRM ปัจจุบัน
+Location and Map (ที่ตั้ง & แผนที่),,,,,
+Location (TH),แสดงทุก Media Group,Free Text,Yes,,จุดติดตั้งป้าย/สื่อ (ภาษาไทย)
+Location (EN),แสดงทุก Media Group,Free Text,No,,จุดติดตั้งป้าย/สื่อ (ภาษาอังกฤษ)
+Road Code,แสดงทุก Media Group,Free Text,No,,รหัสถนน อิงจากการตั้งรหัสป้ายสื่อ Billboard
+Road (TH),แสดงทุก Media Group,Free Text,Yes,,ชื่อถนนของจุดติดตั้งป้าย/สื่อ (ภาษาไทย)
+Road (EN),แสดงทุก Media Group,Free Text,No,,ชื่อถนนของจุดติดตั้งป้าย/สื่อ (ภาษาอังกฤษ)
+Province,แสดงทุก Media Group,Drop Down List,Yes,Master Data Province,จังหวัด (ภาษาไทย)
+Region,แสดงทุก Media Group,Drop Down List,Yes,Master Data Province,ภาค (ภาษาไทย)
+District,แสดงทุก Media Group,Drop Down List,Yes,Master Data District,แขวงของจุดติดตั้งป้าย/สื่อ
+Sub-district,แสดงทุก Media Group,Drop Down List,No,Master Data Sub-district,เขตของจุดติดตั้งป้าย/สื่อ
+Area,แสดงทุก Media Group,Drop Down List,No,"Central, West, East, Northeast, South, North, Bangkok, Greater Bangkok, International, Domestic",สถานที่จุดติดตั้งของสื่อ แบ่งกลุ่มตามลักษณะพื้นที่ของแต่ละประเภทสื่อ
+Major Zone,แสดงทุก Media Group,Drop Down List,No,"Airport Zone - Airport Entrance, Bangkok - CBD, Bangkok - Expressway, Gateway Bangkok - Eastgate, Gateway Bangkok - Northgate, Gateway Bangkok - Southgate, Gateway Bangkok - Westgate, Small Billboard NTW - Daily Traffic In Town, Up Country - Daily Traffic In Town, Up Country - Highway, Arrival Hall, Outdoor, Passenger Hall, Departure Hall",การแยกพื้นที่สื่อรายโซน (โซน 1)
+Minor Zone,แสดงทุก Media Group,Drop Down List,No,"Aiport Entrance	float, Airport Entrance-Chiang Mai, Airport Entrance-Chiang Rai, Airport Entrance-Phuket, Airport Entrance-Sumui, Airport Entrance-Surat Thani, Expressway,	Expressway Burapha Withi, Expressway Chalerm Maha Nakhon - Bangna, Expressway Chalerm Maha Nakhon - DinDaeng, Expressway Chalerm Maha Nakhon - Dao Khanong",การแยกพื้นที่สื่อรายโซน (โซน 2)
+Latitude,แสดงทุก Media Group,Number,Yes,,Latitude
+Longitude,แสดงทุก Media Group,Number,Yes,,Longitude
+Google Street View,แสดงทุก Media Group,Free Text,No,,ใส่ข้อมูลเป็น Embed Code เพื่อให้แสดงผลเป็น Google Street View
+Media and Status (สื่อ & สถานะ),,,,,
+Media Group,แสดงทุก Media Group,Drop Down List,Yes,Master Data Media,ประเภทสื่อแบ่งตามการขายของบริษัท
+Branding,แสดงทุก Media Group,Drop Down List,Yes,Master Data Media,Subset ของ Media Type
+Media Type,แสดงทุก Media Group,Drop Down List,Yes,Master Data Media,Subset ของ Media Group
+Product Group,แสดงทุก Media Group,Free Text,No,,เพิ่มเติม จาก SF
+Product Group name,แสดงทุก Media Group,Free Text,No,,เพิ่มเติม จาก SF
+Package,แสดงทุก Media Group,Drop Down List,No,Master Data Package,"กรณีสื่อที่มี Package การแสดงผลราคาให้ผูกกับ Package
+กรณีสื่อไม่มี Package การแสดงผลราคาให้ผูกกับ Code"
+Media Status,แสดงทุก Media Group,Drop Down List,Yes,"Active, Under Process, Inactive",สถานะการมีอยู่ของป้าย/สื่อ (Active-Inactive-Under Process)
+History Format,แสดงทุก Media Group,Free Text,No,,ประวัติการเคยเปลี่ยนรูปแบบการขายป้าย/สื่อ
+No. of panel,แสดงทุก Media Group,Number,Yes,,จำนวนหน้าป้ายที่เปิดการขาย ต่อ 1 รหัสโครง
+Eyeballs/month,แสดงทุก Media Group,Number,No,,ปริมาณการมองเห็นป้าย/สื่อโฆษณาต่อเดือน
+Sale Condition,แสดงทุก Media Group,Free Text,No,,เงื่อนไขการขาย
+Unit,แสดงทุก Media Group,Number,No,,มีใน CRM ปัจจุบัน
+Spot,แสดงทุก Media Group,Number,No,,มีใน CRM ปัจจุบัน
+Parking garage,เฉพาะ Media Group Transit,Free Text,Yes only bus,,อู่จอดรถเมล์
+Bus model,เฉพาะ Media Group Transit,Drop Down List,Yes only bus,"Benz, BLK, Daewoo67, Hino44, Hino44B, Hino44C, Hino44E, Hino45, Isuzu55A, Isuzu55B, Isuzu56, TSB01, TSB02",รุ่นรถเมล์
+Bus No.,เฉพาะ Media Group Transit,Free Text,Yes only bus,,เลขข้างตัวถังรถ
+Bus Line Update,เฉพาะ Media Group Transit,Drop Down List,Yes only bus,"bus102, bus107, bus11, bus114, bus129, bus137, bus138, bus141, bus142, bus145, bus15, Bus1-50, bus168, Bus18, Bus1-8, bus198, bus2, bus20, bus204, bus205, bus206, bus21, Bus2-14, Bus21E, Bus22, bus23, bus2-36, ",สายรถเมล์ที่รถทะเบียนคันนี้ถูกนำไปช่วยวิ่งสายอื่นกรณีที่จำนวนรถไม่พอขาย
+Bus Line Fixed,เฉพาะ Media Group Transit,Drop Down List,Yes only bus,"bus102, bus107, bus11, bus114, bus129, bus137, bus138, bus141, bus142, bus145, bus15, Bus1-50, bus168, Bus18, Bus1-8, bus198, bus2, bus20, bus204, bus205, bus206, bus21, Bus2-14, Bus21E, Bus22, bus23, bus2-36, ",สายรถเมล์ที่รถทะเบียนคันนี้ขึ้นทะเบียนวิ่ง
+Near Location,เฉพาะ Media Group Transit,Radio,No,"Department Store, School / University, Hospital, Public transportation connection point",จุดที่รถเมล์สายนี้ขับผ่าน
+Near Location Detail,เฉพาะ Media Group Transit,Free Text,No,,ข้อมูลเพิ่มเติมของสถานที่ที่รถเมล์ขับผ่าน
+Route Distance,เฉพาะ Media Group Transit,Value,Yes only bus,,ระยะทางจากต้นสาย-ปลายสาย/เที่ยว
+Location Base,เฉพาะ Media Group Retail,Drop Down List,Yes Only 7-11,"Residential Area, Gas Station, Commercial Area, Office Building",ประเภทกลุ่มสถานที่ตั้งของสื่อ 7-11
+Profile,เฉพาะ Media Group Retail,Drop Down List,Yes Only 7-11,"1. ที่พักอาศัย/ตลาด, 2. สถานศึกษา, 3. สำนักงาน, 4. ปั๊มน้ำมัน, 5. โรงงาน, 6. โรงพยาบาล, 7. สถานที่ท่องเที่ยว, 8. สถานบันเทิง, 9. จุดต่อรถ",ประเภทกลุ่มสถานที่ตั้งของสื่อ 7-11 (กำหนดโดย CP)
+Sub-Profile,เฉพาะ Media Group Retail,Drop Down List,Yes Only 7-11,"1.1 H-M บ้านเดี่ยว, 1.1 บ้านเดี่ยว, ทาวน์โฮม, 1.2 High คอนโดฯ, อพาร์ทเมนต์, แฟลต, 1.2 L-บ้านเดี่ยว, 1.3 H-M ทาวน์โฮม , ทาวน์เฮ้าส์ , อาคารพาณิชย์, 1.3 Standard คอนโดฯ, อพาร์ทเมนต์, แฟลต, 1.4 L-ทาวน์โฮม , ทาวน์เฮ้าส์ , อาคารพาณิชย์, 1.4 ตลาด, 1.5 H-M คอนโดมิเนียม, 1.6 L-คอนโดมิเนียม , อพาร์ทเมนต์ , แฟลต, 1.7 ตลาด, 2.1 โรงเรียน, 2.2 อุดมศึกษา, 3.1 ส่วนราชการ/ Office อาคารพาณิชย์, 3.2 Office Tower, 4.1 ปั๊มน้ำมันทางผ่าน, 4.2 ปั๊มน้ำมันชุมชน, 4.3 ปั๊มน้ำมันทางผ่าน+ชุมชน, 5 โรงงาน, 6 โรงพยาบาล, 7.1 สถานที่ท่องเที่ยวทางทะเล, 7.2 สถานที่ท่องเที่ยวอื่นๆ, 8 สถานบันเทิง, 9.1 สถานีขนส่ง, 9.3 จุดต่อรถ และอื่นๆ",ประเภทกลุ่มสถานที่ตั้งของสื่อ 7-11 (กำหนดโดย CP)
+Screen Type,เฉพาะ Media Group Retail,Drop Down List,no,"Over Vault, Open Type, Top Shelf, Kiosk, Pole, Clamp, Street Furniture, LED Screen, Baggage Claim, Immigration, Mobile Charger, LED Charger, LED Station, LED Baggage Claim",ประเภทจอโฆษณา
+No. of Screen,เฉพาะ Media Group Retail,Number,no,,จำนวนจอโฆษณารายประเภทจอ
+Traffic Light Name,เฉพาะ Media Group Digital,Drop Down List,No,แยกนิด้า,ชื่อสี่แยกที่จอติดตั้งอยู่
+Maximum visibility distance (meters),เฉพาะ Media Group Digital,Number,No,,ระยะการมองเห็นที่ดีที่สุด(เมตร)
+Minimum readable distance for screen ads (meters),เฉพาะ Media Group Digital,Number,No,,ระยะเริ่มมองเห็นโฆษณาในจอภาพรู้เรื่อง(เมตร)
+Dwell Time (sec.),เฉพาะ Media Group Digital,Number,No,,ระยะเวลา ที่มีการมองเห็นภาพโฆษณาขณะขับรถ(Dwell Time)
+Customization Tier,เฉพาะ Media Group Digital,Drop Down List,No,"B1, B2, B3, B4, B5, B6",Cutomization Tier (พื้นที่ขนาดของจอที่มีการแบ่ง Sq.m.)
+Pixel Pitch,เฉพาะ Media Group Digital,Free Text,No,,ความละเอียดของจอภาพ/ตร.นิ้ว
+Resolution File (W)Px,เฉพาะ Media Group Digital,Number,No,,ความละเอียดไฟล์ภาพ
+Resolution File (H)Px,เฉพาะ Media Group Digital,Number,No,,ความละเอียดไฟล์ภาพ
+Format,เฉพาะ Media Group Digital,Drop Down List,Yes,"พิเศษ, 16-9, 4-3,43, 179, 11, AT16-9, AT4-3,",เพิ่มเติม เพื่อทำ Media Approval
+Format Name,เฉพาะ Media Group Digital,Drop Down List,Yes,"11,16-9,179,43,4-3,ANYA,AT16-9,AT4-3,BN,BNEX,BNOA,BNOB,BNOP,BNOPB,BNOS,BTS,CHL,CLF",เพิ่มเติม เพื่อทำ Media Approval
+Format ratio = Resolution (px.),เฉพาะ Media Group Digital,Drop Down List,Yes,"1000x880, 1008x384, 1008x576, 1008x720, 1020x480, 1020x540, 1020x660, 1024x256, 1024x576, 1024x768",อัตราส่วนของภาพโฆษณา
+Duration,เฉพาะ Media Group Digital,Number,Yes,,เพิ่มเติม เพื่อทำ Media Approval
+Venue Type,เฉพาะ Media Group Digital,Drop Down List,No,"LED ป้อมตำรวจ, LED Vertical, LED Screens, จอภายในห้าง (INMALL), จอภายในสถานี (MRT)",ประเภทของการติดตั้งจอภาพ เช่น ป้ายข้างถนน ทางด่วน บนอาคาร ภายในห้าง
+Height from ground to screen/sign bottom edge,เฉพาะ Media Group Digital,Number,No,,ความสูงจากพื้นถึงขอบจอด้านล่าง
+Number of ad faces/signs,เฉพาะ Media Group Classic,Number,Yes,,จำนวนสูงสุดที่ภาพโฆษณาจะสามารถมีได้ต่อ 1 ป้าย
+Cost of Production,เฉพาะ Media Group Classic,Number,Yes,,ต้นทุนค่าผลิตของแต่ละป้าย
+Cost of Install,เฉพาะ Media Group Classic,Number,Yes,,ต้นทุนค่าติดตั้งของแต่ละป้าย
+IATA Code,เฉพาะ Media Group Airport,Drop Down List,Yes only airport,"CEI, CNX, DMK, HKT, BKK, HDY, KBV, KKC, CJM, TST, KOP, NST",รหัสตัวย่อสนามบิน
+Airport,เฉพาะ Media Group Airport,Drop Down List,Yes only airport,"ท่าอากาศยานนานาชาติแม่ฟ้าหลวง-เชียงราย, ท่าอากาศยานนานาชาติเชียงใหม่, ท่าอากาศยานนานาชาติดอนเมือง, ท่าอากาศยานนานาชาติภูเก็ต, ท่าอากาศยานสุวรรณภูมิ, ท่าอากาศยานนานาชาติหาดใหญ่, ท่าอากาศยานนานาชาติกระบี่, ท่าอากาศยานนานาชาติขอนแก่น, ท่าอากาศยานชุมพร, ท่าอากาศยานตรัง, ท่าอากาศยานนครพนม, ท่าอากาศยานนานาชาตินครศรีธรรมราช",ชื่อสนามบิน
+Int'l / Dom.,เฉพาะ Media Group Airport,Radio,Yes only airport,"Domestic, International, Outdoor, Passenger Hall",แบ่งสนามบินเป็น International / Domesstic
+Passenger Movement,เฉพาะ Media Group Airport,Number,Yes only airport,,จำนวนผู้โดยสาร
+Airtime (min/hr),เฉพาะ Media Group Airport,Number,No,,ระยะเวลาขึ้นโฆษณาที่ลูกค้าจะเห็นใน 1 ชั่วโมง
+Schedule (กำหนดการ),,,,,
+Year of sign construction,แสดงทุก Media Group,Calendar,Yes,,ปีที่ก่อสร้างป้าย
+Media Start Date,แสดงทุก Media Group,Calendar,Yes,,วันที่สื่อพร้อมขึ้นโฆษณา
+Media Retire,แสดงทุก Media Group,Calendar,No,,มีใน CRM ปัจจุบัน
+Media Write Off,แสดงทุก Media Group,Radio,Yes,"Yes, No",
+Media Write Off Date,แสดงเมื่อ เลือก  Media Write Off ,Calendar,Yes,,วันที่สื่อสิ้นสุดการโฆษณา
+Reason Write Off Media,แสดงเมื่อ เลือก  Media Write Off,Drop Down List,Yes,"Landlord Not Renew, Cancel Contract, Change Format, Non-Perform, Government Complain",สาเหตุการยกเลิกการขาย
+Demolished Date,แสดงทุก Media Group,Calendar,Yes เมื่อ Media Write Off Date,วันที่รื้อโครงสร้างป้ายโฆษณา,วันที่รื้อโครงสร้างป้ายโฆษณา
+Capex,แสดงทุก Media Group,Free Text,Yes,,"ค่าใช้จ่ายงานก่อสร้างงานปรับปรุงต่างๆ, ค่าธรรมเนียมและค่าใช้จ่ายขอติดตั้งมิเตอร์-ระบบไฟฟ้า ที่เป็นค่าใช้จ่ายครั้งเดียว รวมถึงงาน Logo"
+Opex,แสดงทุก Media Group,Free Text,Yes,,ค่าไฟ ค่าภาษี ค่าประกันภัย ค่า MAINTENANCE ที่เกี่ยวข้องกับป้ายนั้น (ค่าใช้จ่ายรายเดือน)
+Maintenance Start,แสดงทุก Media Group,Calendar,No,,มีใน CRM ปัจจุบัน
+Maintenance End,แสดงทุก Media Group,Calendar,No,,มีใน CRM ปัจจุบัน
+Presale Date,แสดงทุก Media Group,Calendar,No,,มีใน CRM ปัจจุบัน
+Description Presale Date,แสดงทุก Media Group,Calendar,No,,มีใน CRM ปัจจุบัน
+Rate Card (ราคาขาย),,,,,
+Rate Card 2025,แสดงทุก Media Group,Number,Yes,,ราคาขายปีปัจจุบัน
+Old Ratecard 2025,แสดงทุก Media Group,Number,No,,ราคาขายเดิมก่อนปรับ (หากมี)
+Date Change,แสดงทุก Media Group,Calendar,Yes,,วันที่เปลี่ยนแปลงราคาขาย
+Rate Card 2024,แสดงทุก Media Group,Number,Yes,,ราคาขายย้อนหลัง
+Old Ratecard 2024,แสดงทุก Media Group,Number,No,,ราคาขายเดิมก่อนปรับ (หากมี)
+Date Change,แสดงทุก Media Group,Calendar,Yes,,วันที่เปลี่ยนแปลงราคาขาย
+Rate Card 2023,แสดงทุก Media Group,Number,Yes,,ราคาขายย้อนหลัง
+Rate Card 2022,แสดงทุก Media Group,Number,Yes,,ราคาขายย้อนหลัง
+Structure and Electric (โครงสร้างป้าย & ระบบไฟฟ้า),,,,,
+Production Cost,แสดงทุก Media Group,Number,,,มีใน CRM ปัจจุบัน
+Product Cost (UOM),แสดงทุก Media Group,Drop Down List,,,มีใน CRM ปัจจุบัน
+Electric (ดวง),แสดงทุก Media Group,Number,,,มีใน CRM ปัจจุบัน
+Electric Condition,แสดงทุก Media Group,Drop Down List,,"ทันที, ภายใน 7 วัน, ภายใน 10 วัน, ภายใน 45 วัน",มีใน CRM ปัจจุบัน
+Cost Condition,แสดงทุก Media Group,Free Text,,,มีใน CRM ปัจจุบัน
+Tax Cost (บาท/ป้าย),แสดงทุก Media Group,Number,,,มีใน CRM ปัจจุบัน
+Electrict Type,แสดงทุก Media Group,Drop Down List,,"LED, Metal Halide, Light Box, Lighting, Digital, None, Other",มีใน CRM ปัจจุบัน
+Asset Acquire,แสดงทุก Media Group,Drop Down List,Yes,"สร้างใหม่, ซื้อโครง, เช่าโครง, สัมปทาน",ประเภทการได้มาของทรัพย์สิน
+Code (Structure),แสดงทุก Media Group,Free Text,Yes,,รหัสโครงป้าย จะสอดคล้องกับรหัสป้าย เพื่อเป็นข้อมูลตรวจสอบความเป็นโครงเดียวกัน
+Operation Code,แสดงทุก Media Group,Free Text,Yes,,รหัสป้ายสำหรับ Backoffice ใช้บอกว่าเดิมเคยใช้รหัสป้ายอะไรมา ซึ่งอาจจะเหมือนหรือไม่เหมือนกับ Code ก็ได้
+Face,แสดงทุก Media Group,Drop Down List,Yes,"A, B, C, S, Left (ซ้าย), Right (ขวา), Upper (บน), Below (ล่าง)",ประเภทหน้าป้ายรับสายตา เช่น ซ้าย-ขวา-บน-ล่าง
+Direction 1,แสดงทุก Media Group,Number,No,,องศาการรับสายตาของป้าย/สื่อ
+Direction 2,แสดงทุก Media Group,Number,No,,องศาการรับสายตาของป้าย/สื่อ
+Grade / Tier,แสดงทุก Media Group,Drop Down List,No,"A, B, C",การจัดเกรดป้าย/สื่อ เพื่อใช้วิเคราะห์โอกาสในการขาย
+Material Type,แสดงทุก Media Group,Drop Down List,Yes,"Frontlit Sticker /สติกเกอร์ทึบแสง, Backlit Sticker /สติกเกอร์โปร่งแสง, Paper Art Cards/กระดาษอาร์ตการ์ด, Frontlit Vinyl/ไวนิลทึบแสง, Backlit Vinyl /ไวนิลโปร่งแสง, Frontlit Vinyl/ไวนิลโปร่งแสง 1000x1000 หน้า 5 ม., Backlit Film / แบล็คลิสฟิล์ม, Transparent Sticker/สติ๊กเกอร์ใส รองขาว, Seethrough & Frontlit Sticker (ดำ)/สติ๊กเกอร์ซีทรูและสีดำเรียบ, อื่นๆ",วัสดุที่ใช้ในการผลิต ไวนิลโปร่งแสง Sticker Wrap
+Signage Type,แสดงทุก Media Group,Drop Down List,Yes,"Light Box, Vinyl, Sticker Wrap, Backlit film, Sticker Wrap / Backlit Film, Sticker Wrap+Light Box, Vinyl+Light Box, LED Digital",ประเภทป้าย เช่น Light Box Sticker Wrap
+View size Height (1),แสดงทุก Media Group,Number,Yes,,ขนาดความสูงสำหรับเสนอขาย ป้าย/จอ ที่ 1
+View size Width (1),แสดงทุก Media Group,Number,Yes,,ขนาดความกว้างสำหรับเสนอขาย ป้าย/จอ ที่ 1
+View size SQM./panel (1),แสดงทุก Media Group,Number,Yes,,ขนาดจากการคำนวณ สูง*กว้าง สำหรับเสนอขาย ป้าย/จอ ที่ 1
+Material Height (1),แสดงทุก Media Group,Number,Yes,,ขนาดความสูงสำหรับงานผลิต ป้าย/จอ ที่ 1
+Material Width (1),แสดงทุก Media Group,Number,Yes,,ขนาดความกว้างสำหรับงานผลิต ป้าย/จอ ที่ 1
+Material SQM./panel (/),แสดงทุก Media Group,Number,Yes,,ขนาดจากการคำนวณ สูง*กว้าง สำหรับงานผลิต ป้าย/จอ ที่ 1
+View size Height (2),แสดงทุก Media Group,Number,No,,ขนาดความสูงสำหรับเสนอขาย ป้าย/จอ ที่ 2
+View size Width (2),แสดงทุก Media Group,Number,No,,ขนาดความกว้างสำหรับเสนอขาย ป้าย/จอ ที่ 2
+View size SQM./panel (2),แสดงทุก Media Group,Number,No,,ขนาดจากการคำนวณ สูง*กว้าง สำหรับเสนอขาย ป้าย/จอ ที่ 2
+Material Height (2),แสดงทุก Media Group,Number,No,,ขนาดความสูงสำหรับงานผลิต ป้าย/จอ ที่ 2
+Material Width (2),แสดงทุก Media Group,Number,No,,ขนาดความกว้างสำหรับงานผลิต ป้าย/จอ ที่ 2
+Material SQM./panel (2),แสดงทุก Media Group,Number,No,,ขนาดจากการคำนวณ สูง*กว้าง สำหรับงานผลิต ป้าย/จอ ที่ 2
+View size Height (3),แสดงทุก Media Group,Number,No,,ขนาดความสูงสำหรับเสนอขาย ป้าย/จอ ที่ 3
+View size Width (3),แสดงทุก Media Group,Number,No,,ขนาดความกว้างสำหรับเสนอขาย ป้าย/จอ ที่ 3
+View size SQM./panel (3),แสดงทุก Media Group,Number,No,,ขนาดจากการคำนวณ สูง*กว้าง สำหรับเสนอขาย ป้าย/จอ ที่ 3
+Material Height (3),แสดงทุก Media Group,Number,No,,ขนาดความสูงสำหรับงานผลิต ป้าย/จอ ที่ 3
+Material Width (3),แสดงทุก Media Group,Number,No,,ขนาดความกว้างสำหรับงานผลิต ป้าย/จอ ที่ 3
+Material SQM./panel (3),แสดงทุก Media Group,Number,No,,ขนาดจากการคำนวณ สูง*กว้าง สำหรับงานผลิต ป้าย/จอ ที่ 3
+Height Unit,แสดงทุก Media Group,Drop Down List,No,"M, CM, PX",หน่วยวัดขนาดความสูง
+Width Unit,แสดงทุก Media Group,Drop Down List,No,"M, CM, PX",หน่วยวัดขนาดความกว้าง
+Position,แสดงทุก Media Group,Drop Down List,Yes,"ป้ายบนดิน, ป้ายผนังอาคาร, ป้ายดาดฟ้าอาคาร, TopShelf จอติดตั้งหน้า-หลัง (A+B) เหนือชั้นวางสินค้าระหว่างทางเดิน, Open Type เหนือตู้แช่แบบเปิด, Over Vault เหนือตู้แช่เครื่องดื่ม,",ตำแหน่งป้าย/สื่อ แบ่งกลุ่มตามลักษณะของแต่ละประเภทสื่อ
+Structure Type,แสดงทุก Media Group,Drop Down List,Yes,"โครงผนังอาคาร, โครง Truss บนพื้นดิน, โครง Truss บนอาคาร, โครงเสากลมเดี่ยว, โครงเสากลม 2 เสา, โครงเสากลม 3 เสา, โครงเสากลม 4 เสา, โครง Truss เสาเดี่ยว, โครง Truss เสาคู่, โครง Truss 3 เสา, โครง Truss 4 เสา, กรอบป้าย, กล่องไฟ, Sticker Wrap, ไม่มีโครงสร้าง",โครงสร้างป้าย/สื่อ แบ่งกลุ่มตามลักษณะของแต่ละประเภทสื่อ
+Background,แสดงทุก Media Group,Radio,Yes,มี/ไม่มีแผ่นรองหลัง,มี/ไม่มีแผ่นรองหลัง
+License,แสดงทุก Media Group,Radio,Yes,มี/ไม่มีใบอนุญาตก่อสร้างป้ายโฆษณา,มี/ไม่มีใบอนุญาตก่อสร้างป้ายโฆษณา
+Media data change history,แสดงทุก Media Group,Free Text,No,,"ประวัติการเปลี่ยนแปลงข้อมูลสื่อ เช่น ขนาด, ไฟ"
+Remark back office,แสดงทุก Media Group,Free Text,No,,หมายเหตุเพิ่มเติมเพื่อเป็นข้อมูลประกอบ

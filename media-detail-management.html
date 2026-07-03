@@ -1,0 +1,1596 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Media Detail — Plan-B CRM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config={theme:{extend:{fontFamily:{kanit:['Kanit','sans-serif']},colors:{pb:{900:'#213268',700:'#2D56D2',500:'#4790FF',300:'#5FCBF9',50:'#EBF5FF',100:'#D6ECFF'},ink:{900:'#0B1430',800:'#162040',700:'#1E293B'},surface:{0:'#FFFFFF',50:'#F8FAFC',100:'#F1F5F9',200:'#E2E8F0',300:'#CBD5E1'}}}}}
+</script>
+<style>
+*{font-family:'Kanit',sans-serif;-webkit-font-smoothing:antialiased}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#CBD5E8;border-radius:10px;border:2px solid #F7F9FC}
+::-webkit-scrollbar-thumb:hover{background:#93A4C4}
+.sidebar-scroll::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.06);border:2px solid transparent}
+.sidebar-scroll::-webkit-scrollbar-track{background:transparent}
+/* Sidebar nav items — White theme */
+.sidebar-nav{color:rgba(30,41,59,0.6);transition:all 0.15s;position:relative;font-size:13px}
+.sidebar-nav:hover{color:#0B1430;background:rgba(71,144,255,0.06)}
+.sidebar-nav.active{color:#2D56D2;font-weight:500;background:linear-gradient(90deg,rgba(71,144,255,0.10),rgba(71,144,255,0))}
+.sidebar-nav.active::before{content:'';position:absolute;left:0;top:8px;bottom:8px;width:3px;border-radius:2px;background:#2D56D2}
+/* Sidebar group headers */
+.sidebar-nav-parent{color:rgba(30,41,59,0.4);transition:all 0.15s;font-size:10.5px;text-transform:uppercase;letter-spacing:0.05em;font-weight:600}
+.sidebar-nav-parent:hover{color:rgba(30,41,59,0.7)}
+.sidebar-nav-parent.active{color:rgba(30,41,59,0.7)}
+/* Sidebar sub-items */
+.sidebar-sub{color:rgba(30,41,59,0.55);transition:all 0.15s;position:relative}
+.sidebar-sub:hover{color:#0B1430;background:rgba(71,144,255,0.06)}
+.sidebar-sub.active{color:#2D56D2;font-weight:500;background:linear-gradient(90deg,rgba(71,144,255,0.10),rgba(71,144,255,0))}
+.sidebar-sub.active::before{content:'';position:absolute;left:0;top:6px;bottom:6px;width:3px;border-radius:2px;background:#2D56D2;box-shadow:0 0 8px rgba(45,86,210,0.4)}
+.sidebar-nav.active::before{box-shadow:0 0 8px rgba(45,86,210,0.4)}
+.sidebar-group-icon{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:8px;background:transparent;transition:all .15s;flex-shrink:0;color:rgba(30,41,59,0.55)}
+.sgi-ma{color:#7C3AED}.sgi-rpt{color:#0EA5E9}.sgi-stg{color:#EF4444}
+.nav-parent{border-radius:8px;transition:all .15s}
+.nav-parent:hover{background:#F1F5F9}
+.nav-parent.active:has(.sgi-ma){background:rgba(124,58,237,0.10);color:#7C3AED}
+.nav-parent.active:has(.sgi-ma) .sidebar-group-icon{background:rgba(124,58,237,0.20)}
+.nav-parent.active:has(.sgi-rpt){background:rgba(14,165,233,0.10);color:#0EA5E9}
+.nav-parent.active:has(.sgi-rpt) .sidebar-group-icon{background:rgba(14,165,233,0.20)}
+.nav-parent.active:has(.sgi-stg){background:rgba(239,68,68,0.10);color:#EF4444}
+.nav-parent.active:has(.sgi-stg) .sidebar-group-icon{background:rgba(239,68,68,0.20)}
+#sidebar{background:linear-gradient(180deg,#fff 0%,#fff 60%,#F8FAFC 100%) !important}
+#sidebar-brand{background:linear-gradient(135deg,rgba(45,86,210,0.04),rgba(95,203,249,0.04))}
+/* nav-item for page content compatibility */
+.nav-item{transition:all 0.2s;border-radius:8px}
+.nav-item:hover,.nav-item.active{background:rgba(71,144,255,0.12);color:#4790FF}
+.nav-parent.active{color:#2D56D2;font-weight:500}
+/* Cards & general UI */
+.card-hover{transition:all 0.2s}
+.card-hover:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(33,50,104,0.12)}
+.badge-pulse{animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.7}}
+.status-dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+input:focus,select:focus,textarea:focus{outline:none;border-color:#4790FF;box-shadow:0 0 0 3px rgba(71,144,255,0.15)}
+.tab-btn{transition:all 0.2s}
+.tab-btn.active{color:#2D56D2;border-bottom:2px solid #2D56D2}
+table th{position:sticky;top:0;z-index:1}
+.progress-bar{transition:width 0.6s ease}
+/* Topbar — White glass */
+.topbar-white{background:rgba(255,255,255,0.9);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid #E2E8F0}
+/* Dashboard extras */
+.tnum{font-variant-numeric:tabular-nums}
+.shine{background:linear-gradient(135deg,#2D56D2,#5FCBF9)}
+.shine-soft{background:linear-gradient(135deg,rgba(71,144,255,0.08),rgba(95,203,249,0.08))}
+.ai-border{box-shadow:0 0 0 1px rgba(45,86,210,0.25),0 2px 8px rgba(45,86,210,0.08)}
+.pulse-dot{animation:pulseDot 2s ease-in-out infinite}
+@keyframes pulseDot{0%,100%{transform:scale(1);opacity:.4}50%{transform:scale(1.5);opacity:0}}
+.map-bg{background:linear-gradient(135deg,#F8FAFC 0%,#EBF5FF 100%)}
+.shadow-pop{box-shadow:0 8px 30px rgba(11,20,48,0.12)}
+.shadow-card{box-shadow:0 1px 3px rgba(11,20,48,0.06),0 1px 2px rgba(11,20,48,0.04)}
+/* Sidebar collapse label */
+.sidebar-label{transition:opacity 0.15s;white-space:nowrap;overflow:hidden}
+/* Standard upload drag-over highlight */
+.upload-drag-over{background:#EBF5FF !important;border-color:#4790FF !important}
+</style>
+<script src="shared/sidebar.js"></script>
+</head>
+<body class="font-kanit" style="background:#F7F9FC;color:#0B1430">
+
+<div class="min-h-screen flex">
+  <!-- SIDEBAR — Clean White -->
+  <!-- Mobile overlay -->
+  <div id="sidebar-overlay" class="hidden fixed inset-0 bg-black/40 z-20 lg:hidden" onclick="toggleMobile()"></div>
+  <aside id="sidebar" class="w-64 flex flex-col fixed h-full z-30 transition-all duration-200 -translate-x-full lg:translate-x-0 bg-white border-r border-[#E2E8F0]">
+    <!-- Brand -->
+    <div class="px-4 h-16 flex items-center gap-2.5 border-b border-[#E2E8F0]" id="sidebar-brand">
+      <div class="sidebar-label flex items-center gap-2 min-w-0">
+        <img src="logo.jpg" alt="Plan-B Media" class="h-8 w-auto rounded shrink-0" />
+        <span class="text-[11px] font-semibold tracking-wide uppercase border-l border-[#E2E8F0] pl-2 truncate" style="color:rgba(30,41,59,0.55)">Media Flow System</span>
+      </div>
+    </div>
+    <!-- Nav -->
+    <nav class="flex-1 py-3 px-2 overflow-y-auto text-sm sidebar-scroll space-y-0.5">
+
+      <!-- Dashboard -->
+      <a href="dashboard.html" class=" sidebar-nav w-full flex items-center gap-3 h-10 rounded-md px-3 cursor-pointer" data-page="dashboard">
+        <svg class="w-[18px] h-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25a2.25 2.25 0 01-2.25-2.25v-2.25z" /></svg>
+        <span class="flex-1 text-left truncate sidebar-label">Dashboard</span>
+      </a>
+
+      <!-- Inventory -->
+      <a href="inventory.html" class=" sidebar-nav w-full flex items-center gap-3 h-10 rounded-md px-3 cursor-pointer">
+        <svg class="w-[18px] h-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" /></svg>
+        <span class="flex-1 text-left truncate sidebar-label">Inventory</span>
+      </a>
+
+      <!-- Sale -->
+      <a href="sale.html" class=" sidebar-nav w-full flex items-center gap-3 h-10 rounded-md px-3 cursor-pointer">
+        <svg class="w-[18px] h-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z" /></svg>
+        <span class="flex-1 text-left truncate sidebar-label">Sale</span>
+      </a>
+
+      <!-- Media Approval (Expandable) -->
+      <div class="pt-3">
+        <button onclick="toggleMenu('ma')" class="nav-parent active sidebar-nav-parent w-full flex items-center gap-3 h-8 px-3 cursor-pointer text-left">
+          <span class="sidebar-group-icon sgi-ma"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></span><span class="flex-1 text-left">Media Approval</span>
+          <svg id="ma-chevron" class="w-3 h-3 transition-transform duration-200 rotate-90" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" /></svg>
+        </button>
+        <div id="ma-sub" class="space-y-0.5">
+          <a href="ma-dashboard.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Dashboard</span>
+          </a>
+          <a href="job-list.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Media Ticket</span>
+            <span class="text-[10px] bg-pb-500 text-white rounded-full px-1.5 min-w-[18px] text-center">12</span>
+          </a>
+          <a href="assign-job.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Assign Ticket</span>
+            <span class="text-[10px] bg-amber-500 text-white rounded-full px-1.5 min-w-[18px] text-center">5</span>
+          </a>
+          <a href="receive-job.html" class="active sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Verify & Production</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Production -->
+      <a href="production.html" class=" sidebar-nav w-full flex items-center gap-3 h-10 rounded-md px-3 cursor-pointer">
+        <svg class="w-[18px] h-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17l-5.1-5.1a2.25 2.25 0 010-3.182l.71-.71a2.25 2.25 0 013.18 0l2.8 2.8 2.8-2.8a2.25 2.25 0 013.18 0l.71.71a2.25 2.25 0 010 3.182l-5.1 5.1a2.25 2.25 0 01-3.18 0z" /></svg>
+        <span class="flex-1 text-left truncate sidebar-label">Production</span>
+      </a>
+
+      <!-- Claim -->
+      <a href="claim.html" class=" sidebar-nav w-full flex items-center gap-3 h-10 rounded-md px-3 cursor-pointer">
+        <svg class="w-[18px] h-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z" /></svg>
+        <span class="flex-1 text-left truncate sidebar-label">Claim</span>
+      </a>
+
+      <!-- Report (Expandable) -->
+      <div class="pt-3">
+        <button onclick="toggleMenu('rpt')" class="nav-parent sidebar-nav-parent w-full flex items-center gap-3 h-8 px-3 cursor-pointer text-left">
+          <span class="sidebar-group-icon sgi-rpt"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg></span><span class="flex-1 text-left">Report</span>
+          <svg id="rpt-chevron" class="w-3 h-3 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" /></svg>
+        </button>
+        <div id="rpt-sub" class="space-y-0.5 hidden">
+          <a href="kpi-dashboard.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">KPI Dashboard</span>
+          </a>
+          <a href="export-airtime.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Export Airtime</span>
+          </a>
+          <a href="report-monthly.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Monthly Report</span>
+          </a>
+          <a href="report-audit.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Audit Log</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Setting (Expandable) -->
+      <div class="pt-3">
+        <button onclick="toggleMenu('stg')" class="nav-parent sidebar-nav-parent w-full flex items-center gap-3 h-8 px-3 cursor-pointer text-left">
+          <span class="sidebar-group-icon sgi-stg"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75"/></svg></span><span class="flex-1 text-left">Setting</span>
+          <svg id="stg-chevron" class="w-3 h-3 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" /></svg>
+        </button>
+        <div id="stg-sub" class="space-y-0.5 hidden">
+          <a href="settings-user.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">User Management</span>
+          </a>
+          <a href="settings-usergroup.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">User Group Management</span>
+          </a>
+          <a href="settings-email.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Email Setup</span>
+          </a>
+          <a href="settings-master.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Master Data</span>
+          </a>
+        </div>
+      </div>
+
+    </nav>
+
+    <!-- User Footer -->
+    <div class="p-3 border-t border-[#E2E8F0]">
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-full flex items-center justify-center text-white font-semibold text-[13px] shrink-0" style="background:#4790FF">RK</div>
+        <div class="flex-1 min-w-0 sidebar-label">
+          <div class="text-[13px] font-medium text-[#0B1430] truncate">Raveewan Kaewmanee</div>
+          <div class="text-[11px] truncate" style="color:rgba(30,41,59,0.5)">Admin · Plan-B</div>
+        </div>
+        <a href="login.html" class="transition sidebar-label hover:opacity-80" style="color:rgba(30,41,59,0.4)" title="ออกจากระบบ">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" /></svg>
+        </a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="flex-1 lg:ml-64 min-h-screen">
+    <!-- Top Bar — White Glass -->
+    <header class="topbar-white h-16 shrink-0 sticky top-0 z-20 flex items-center gap-4 px-4 sm:px-6">
+      <!-- Collapse / Mobile toggle -->
+      <button onclick="collapseSidebar()" class="w-9 h-9 rounded-md hover:bg-surface-100 flex items-center justify-center text-ink-700">
+        <svg class="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" /></svg>
+      </button>
+
+      <!-- Breadcrumbs -->
+      <div class="flex items-center gap-1.5 text-[13px]" style="color:rgba(30,41,59,0.6)">
+        <span>Home</span>
+        <svg class="w-3 h-3 opacity-30" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
+        <a href="media-management.html" class="hover:underline">Media Management</a>
+        <svg class="w-3 h-3 opacity-30" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
+        <span class="font-medium" style="color:#0B1430">Media Detail</span>
+      </div>
+
+      <div class="flex-1"></div>
+
+      <!-- Notification -->
+      <button class="w-9 h-9 rounded-md hover:bg-surface-100 flex items-center justify-center relative" style="color:#1E293B">
+        <svg class="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" /></svg>
+        <span class="absolute top-2 right-2 w-2 h-2 bg-rose-500 rounded-full"></span>
+      </button>
+
+      <!-- Ask AI -->
+      <button id="ai-toggle" onclick="toggleAI()" class="h-9 px-3 rounded-lg border flex items-center gap-2 text-[13px] font-medium transition-colors bg-white border-surface-300 text-ink-900 hover:bg-surface-50">
+        <svg class="w-[15px] h-[15px]" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"/></svg>
+        <span>Ask AI</span>
+      </button>
+    </header>
+
+    <!-- Page Content -->
+    <div class="p-3 sm:p-6">
+    <div class="space-y-5 max-w-[1600px] mx-auto">
+<!-- Header -->
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+<div>
+<div class="flex items-center gap-2 mb-1">
+<a class="text-[12px] font-medium hover:underline" href="media-management.html" style="color:rgba(30,41,59,0.5)">Media Management</a>
+<svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" style="color:rgba(30,41,59,0.3)" viewbox="0 0 24 24"><path d="M8.25 4.5l7.5 7.5-7.5 7.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span class="text-[12px] font-medium text-[#2D56D2]">JOB-1040-M</span>
+</div>
+<h1 class="text-[22px] font-semibold text-[#0B1430]">Chang Classic 620ml</h1>
+<p class="text-[13px] mt-0.5" style="color:rgba(30,41,59,0.55)">Chang Beer (Thai Beverage Pcl.) · PB-2026-0892</p>
+</div>
+<div class="flex items-center gap-2">
+<span id="job-status-badge" class="text-[11px] px-2.5 py-1 rounded-full font-medium border bg-blue-50 text-blue-700 border-blue-200 inline-flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>On Process</span>
+<button class="h-9 px-3.5 bg-amber-50 text-amber-700 rounded-lg border border-amber-300 text-sm font-medium hover:bg-amber-100 inline-flex items-center gap-1.5" onclick="openFeedbackPanel()">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z"/></svg>
+<span>Landlord Feedback</span>
+<span id="feedback-btn-count" class="inline-flex items-center justify-center min-w-[18px] h-[16px] px-1 rounded-full bg-amber-600 text-white text-[10px] font-bold leading-none">3</span>
+</button>
+<button class="h-9 px-3.5 bg-white text-[#0B1430] rounded-lg border border-[#CBD5E1] text-sm font-medium hover:bg-[#F8FAFC] inline-flex items-center gap-1.5" onclick="toggleHistory()">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24"><path d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span>History</span>
+</button>
+</div>
+</div>
+<!-- Approve / Feedback action bar (visible on all statuses) -->
+<div id="review-action-bar" class="relative overflow-hidden rounded-2xl border border-[#D6ECFF] shadow-md" style="background:linear-gradient(135deg,#EBF5FF 0%,#F8FBFF 50%,#FFFFFF 100%)">
+  <!-- decorative accent stripe -->
+  <div class="absolute top-0 left-0 bottom-0 w-1.5" style="background:linear-gradient(180deg,#2D56D2,#4790FF)"></div>
+  <!-- decorative blob -->
+  <div class="absolute -top-10 -right-10 w-40 h-40 rounded-full opacity-20" style="background:radial-gradient(circle,#4790FF 0%,transparent 70%)"></div>
+  <div class="relative p-4 sm:p-5 flex items-center gap-4 flex-wrap">
+    <!-- Left: title + subtitle -->
+    <div class="flex-1 min-w-[200px] flex items-center gap-3">
+      <span class="w-11 h-11 rounded-xl inline-flex items-center justify-center shadow-sm shrink-0" style="background:linear-gradient(135deg,#2D56D2,#4790FF);color:#fff">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      </span>
+      <div class="leading-tight">
+        <div class="text-[10px] uppercase tracking-[0.12em] font-bold mb-0.5" style="color:#2D56D2">Review Action</div>
+        <div class="text-[14.5px] font-semibold text-[#0B1430]">เลือกการดำเนินการสำหรับ Job นี้</div>
+        <div class="text-[11.5px] mt-0.5" style="color:rgba(30,41,59,0.55)">Approve เพื่อยืนยันการอนุมัติ หรือ Feedback เพื่อให้แก้ไข</div>
+      </div>
+    </div>
+    <!-- Right: action buttons -->
+    <div id="review-action-buttons" class="flex items-center gap-2 shrink-0">
+      <button onclick="openActionModal('feedback')" class="group h-10 px-4 bg-white text-amber-700 rounded-lg border-2 border-amber-300 text-[13px] font-bold hover:bg-amber-50 hover:border-amber-400 inline-flex items-center gap-1.5 shadow-sm transition-all">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.184-4.183a1.14 1.14 0 01.778-.332 48.294 48.294 0 005.83-.498c1.585-.233 2.708-1.626 2.708-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z"/></svg>
+        <span>Feedback</span>
+      </button>
+      <button onclick="openActionModal('approve')" class="h-10 px-5 text-white rounded-lg text-[13px] font-bold inline-flex items-center gap-1.5 shadow-md hover:shadow-lg transition-all" style="background:linear-gradient(135deg,#059669,#10B981)">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2.2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+        <span>Approve</span>
+      </button>
+    </div>
+    <!-- Approved state (hidden by default) -->
+    <div id="review-approved-state" class="hidden items-stretch gap-3 shrink-0">
+      <div class="flex items-center gap-3 pl-3 pr-4 py-2.5 rounded-xl border-2 border-emerald-300 shadow-sm" style="background:linear-gradient(135deg,#ECFDF5 0%,#F0FDF4 100%)">
+        <span class="w-10 h-10 rounded-full inline-flex items-center justify-center bg-emerald-600 text-white shadow-md shrink-0">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+        </span>
+        <div class="leading-tight min-w-0">
+          <div class="flex items-center gap-2 mb-0.5">
+            <span class="text-[11px] font-bold uppercase tracking-[0.1em] text-emerald-800">Approved</span>
+            <span class="text-[9.5px] px-1.5 py-0.5 rounded-full bg-emerald-600 text-white font-semibold uppercase tracking-wider">เจ้าของพื้นที่</span>
+          </div>
+          <div class="text-[13px] font-semibold text-emerald-900 truncate" id="review-approved-by">—</div>
+          <div class="text-[10.5px] font-mono text-emerald-700/75 mt-0.5 flex items-center gap-1">
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <span id="review-approved-time">—</span>
+          </div>
+        </div>
+      </div>
+      <button onclick="unapproveAction()" title="ยกเลิกการ Approve" class="w-9 rounded-xl border-2 border-rose-200 bg-white hover:bg-rose-50 text-rose-500 hover:text-rose-700 inline-flex items-center justify-center transition-colors shrink-0">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 13.5l3 3m0 0l3-3m-3 3v-6m1.06-4.19l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+<!-- Status banner (filled by JS) -->
+<div id="status-banner"></div>
+<!-- Main Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+<div class="lg:col-span-2 space-y-5">
+<!-- Info Card -->
+<div class="bg-white border border-[#E2E8F0] rounded-xl shadow-sm p-6">
+<h3 class="text-[15px] font-semibold text-[#0B1430] mb-4">Job Information</h3>
+<div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+<div><div class="text-[10px] uppercase font-medium mb-0.5" style="color:rgba(30,41,59,0.45)">Ticket No</div><div class="text-[13px] font-semibold font-mono">TK-0031</div></div>
+<div><div class="text-[10px] uppercase font-medium mb-0.5" style="color:rgba(30,41,59,0.45)">Job No</div><div class="text-[13px] font-semibold font-mono">JOB-1040-M</div></div>
+<div><div class="text-[10px] uppercase font-medium mb-0.5" style="color:rgba(30,41,59,0.45)">Versions</div><div class="text-[13px] font-semibold">2</div></div>
+<div class="sm:col-span-3">
+  <div class="text-[10px] uppercase font-medium mb-0.5" style="color:rgba(30,41,59,0.45)">Media</div>
+  <div class="text-[13px] flex flex-wrap items-center gap-1.5">
+    <span class="inline-flex items-center gap-1 font-semibold" style="color:#7C3AED"><span class="w-1.5 h-1.5 rounded-full" style="background:#7C3AED"></span>Transit</span>
+    <svg class="w-2.5 h-2.5 opacity-40" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
+    <span style="color:rgba(30,41,59,0.75)">BTS</span>
+    <svg class="w-2.5 h-2.5 opacity-40" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
+    <span class="font-medium text-[#0B1430]">BTS Skytrain</span>
+    <span class="ml-1 text-[11px] px-2 py-0.5 rounded bg-pb-50 text-[#2D56D2] border border-[#D6ECFF] font-semibold">Metro LED</span>
+  </div>
+</div>
+<div><div class="text-[10px] uppercase font-medium mb-0.5" style="color:rgba(30,41,59,0.45)">Client</div><div class="text-[13px] font-semibold">Chang Beverage Co., Ltd.</div></div>
+<div><div class="text-[10px] uppercase font-medium mb-0.5" style="color:rgba(30,41,59,0.45)">Product</div><div class="text-[13px] font-semibold">Chang Classic 620ml</div></div>
+<div><div class="text-[10px] uppercase font-medium mb-0.5" style="color:rgba(30,41,59,0.45)">Sales Person</div><div class="text-[13px] font-semibold">Prapat Thanakit</div></div>
+<div><div class="text-[10px] uppercase font-medium mb-0.5" style="color:rgba(30,41,59,0.45)">Duration</div><div class="text-[13px] font-semibold">10 seconds</div></div>
+<div><div class="text-[10px] uppercase font-medium mb-0.5" style="color:rgba(30,41,59,0.45)">Contract Start - End</div><div class="text-[13px] font-semibold flex items-center gap-2"><span>01/05/2026</span><span style="color:rgba(30,41,59,0.4);font-weight:400">→</span><span>30/06/2026</span></div></div>
+<div><div class="text-[10px] uppercase font-medium mb-0.5" style="color:rgba(30,41,59,0.45)">Contract Period</div><div class="text-[13px] font-semibold">2 เดือน · 61 วัน</div></div>
+</div>
+</div>
+<!-- Material & Brief -->
+<div class="bg-white border border-[#E2E8F0] rounded-xl shadow-sm p-6">
+<h3 class="text-[15px] font-semibold text-[#0B1430] mb-4">Material &amp; Brief</h3>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+<div class="flex items-center gap-3 p-3 border border-[#E2E8F0] rounded-lg hover:bg-[#F8FAFC] transition-colors cursor-pointer">
+<div class="w-10 h-10 rounded-lg bg-rose-50 flex items-center justify-center shrink-0"><svg class="w-5 h-5 text-rose-500" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24"><path d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" stroke-linecap="round" stroke-linejoin="round"></path></svg></div>
+<div class="flex-1 min-w-0"><div class="text-[13px] font-medium truncate">chang_brief_v2.pdf</div><div class="text-[11px]" style="color:rgba(30,41,59,0.5)">Brief · 2.3 MB</div></div>
+<svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" style="color:rgba(30,41,59,0.3)" viewbox="0 0 24 24"><path d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</div>
+<div class="flex items-center gap-3 p-3 border border-[#E2E8F0] rounded-lg hover:bg-[#F8FAFC] transition-colors cursor-pointer">
+<div class="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center shrink-0"><svg class="w-5 h-5 text-blue-500" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24"><path d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z" stroke-linecap="round" stroke-linejoin="round"></path></svg></div>
+<div class="flex-1 min-w-0"><div class="text-[13px] font-medium truncate">material_packshot.png</div><div class="text-[11px]" style="color:rgba(30,41,59,0.5)">Material · 4.1 MB</div></div>
+<svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" style="color:rgba(30,41,59,0.3)" viewbox="0 0 24 24"><path d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</div>
+</div>
+</div>
+<!-- Feedback & Actions — content filled by JS based on status -->
+<div id="job-actions-card" class="bg-white border border-[#E2E8F0] rounded-xl shadow-sm p-6"></div>
+</div>
+<!-- Right: SLA Timer -->
+<div class="lg:col-span-1">
+<div class="bg-white border border-[#E2E8F0] rounded-xl shadow-sm p-4">
+<div class="flex items-center justify-between mb-3">
+<h3 class="text-[13px] font-semibold text-[#0B1430] inline-flex items-center gap-1.5">
+<svg class="w-3.5 h-3.5 text-[#2D56D2]" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+SLA Timer
+</h3>
+<span class="text-[10px] px-1.5 py-0.5 rounded-full font-medium bg-blue-50 text-blue-700 border border-blue-200 inline-flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>Counting</span>
+</div>
+<div class="mb-3">
+<div class="flex items-baseline gap-1.5 tnum">
+<span class="text-[22px] font-bold text-[#2D56D2] leading-none">2</span><span class="text-[11px] font-medium" style="color:rgba(30,41,59,0.55)">d</span>
+<span class="text-[22px] font-bold text-[#2D56D2] leading-none ml-1">5</span><span class="text-[11px] font-medium" style="color:rgba(30,41,59,0.55)">h</span>
+<span class="text-[22px] font-bold text-[#2D56D2] leading-none ml-1">12</span><span class="text-[11px] font-medium" style="color:rgba(30,41,59,0.55)">m</span>
+</div>
+<div class="text-[10.5px] mt-0.5" style="color:rgba(30,41,59,0.5)">Remaining before MUP 1 deadline</div>
+</div>
+<div class="mb-3">
+<div class="h-1.5 bg-[#F1F5F9] rounded-full overflow-hidden"><div class="h-full rounded-full bg-[#2D56D2]" style="width:35%"></div></div>
+<div class="flex justify-between text-[10px] mt-1" style="color:rgba(30,41,59,0.45)"><span>35% elapsed</span><span>Deadline</span></div>
+</div>
+<div class="space-y-1.5 border-t border-[#E2E8F0] pt-2.5">
+<div class="flex justify-between items-center"><span class="text-[11.5px]" style="color:rgba(30,41,59,0.6)">Feedback SLA</span><span class="inline-flex items-center gap-1"><span class="text-[10px] px-1.5 py-0.5 rounded font-medium bg-emerald-50 text-emerald-700 border border-emerald-200 tnum">45m</span><span class="text-[10px] px-1.5 py-0.5 rounded-full font-medium bg-emerald-50 text-emerald-700 border border-emerald-200 inline-flex items-center gap-1"><span class="w-1 h-1 rounded-full bg-emerald-500"></span>On Track</span></span></div>
+<div class="flex justify-between items-center"><span class="text-[11.5px]" style="color:rgba(30,41,59,0.6)">Progress SLA v1</span><span class="text-[10px] px-1.5 py-0.5 rounded-full font-medium bg-blue-50 text-blue-700 border border-blue-200">Counting</span></div>
+<div class="flex justify-between items-center"><span class="text-[11.5px]" style="color:rgba(30,41,59,0.6)">Progress SLA v2</span><span class="text-[10px] px-1.5 py-0.5 rounded-full font-medium bg-slate-50 text-slate-500 border border-slate-200">—</span></div>
+</div>
+</div>
+<!-- Mockup History — populated by JS when status != 'To Do' -->
+<div id="mockup-history-card" class="mt-4"></div>
+</div>
+</div>
+<!-- History Drawer -->
+<div class="fixed right-0 top-0 bottom-0 w-[420px] bg-white border-l border-[#E2E8F0] z-40 flex flex-col translate-x-full transition-transform duration-200" id="history-drawer" style="box-shadow:-8px 0 30px rgba(11,20,48,0.1)">
+<div class="h-14 px-5 border-b border-[#E2E8F0] flex items-center justify-between shrink-0">
+<div class="flex items-center gap-2"><svg class="w-4 h-4 text-[#2D56D2]" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24"><path d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round"></path></svg><span class="text-[15px] font-semibold text-[#0B1430]">Activity History</span></div>
+<button class="w-8 h-8 rounded-md hover:bg-[#F1F5F9] flex items-center justify-center" onclick="toggleHistory()" style="color:rgba(30,41,59,0.4)"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round"></path></svg></button>
+</div>
+<div class="flex-1 overflow-y-auto px-5 py-4">
+<div class="relative pl-6">
+<div class="absolute left-[11px] top-2 bottom-2 w-px bg-[#E2E8F0]"></div>
+<div class="relative mb-6"><div class="absolute -left-6 w-[22px] h-[22px] rounded-full bg-[#2D56D2] flex items-center justify-center z-10"><span class="text-[8px] font-bold text-white">S</span></div><div class="ml-2"><div class="text-[13px] font-semibold text-[#0B1430]">Sales created ticket</div><div class="text-[12px] mt-0.5" style="color:rgba(30,41,59,0.6)">Weera Somboon created TK-0031</div><div class="text-[11px] mt-1 font-mono" style="color:rgba(30,41,59,0.4)">02/05/2026 09:00</div></div></div>
+<div class="relative mb-6"><div class="absolute -left-6 w-[22px] h-[22px] rounded-full bg-[#f59e0b] flex items-center justify-center z-10"><span class="text-[8px] font-bold text-white">H</span></div><div class="ml-2"><div class="text-[13px] font-semibold text-[#0B1430]">Head CG assigned job</div><div class="text-[12px] mt-0.5" style="color:rgba(30,41,59,0.6)">Suree Phromma assigned JOB-1040-M to Kitti Phutthiphan</div><div class="text-[11px] mt-1 font-mono" style="color:rgba(30,41,59,0.4)">02/05/2026 10:30</div></div></div>
+<div class="relative mb-6"><div class="absolute -left-6 w-[22px] h-[22px] rounded-full bg-[#10b981] flex items-center justify-center z-10"><span class="text-[8px] font-bold text-white">G</span></div><div class="ml-2"><div class="text-[13px] font-semibold text-[#0B1430]">Graphic accepted job</div><div class="text-[12px] mt-0.5" style="color:rgba(30,41,59,0.6)">Kitti Phutthiphan started working on JOB-1040-M</div><div class="text-[11px] mt-1 font-mono" style="color:rgba(30,41,59,0.4)">02/05/2026 11:00</div></div></div>
+<div class="relative"><div class="absolute -left-6 w-[22px] h-[22px] rounded-full bg-[#3b82f6] flex items-center justify-center z-10"><span class="text-[8px] font-bold text-white">G</span></div><div class="ml-2"><div class="text-[13px] font-semibold text-[#0B1430]">Status changed to On Process</div><div class="text-[12px] mt-0.5" style="color:rgba(30,41,59,0.6)">Kitti Phutthiphan updated status — production in progress</div><div class="text-[11px] mt-1 font-mono" style="color:rgba(30,41,59,0.4)">02/05/2026 11:05</div></div></div>
+</div>
+</div>
+</div>
+<div class="hidden fixed inset-0 bg-black/30 z-30" id="history-overlay" onclick="toggleHistory()"></div>
+
+<!-- Landlord Feedback Drawer -->
+<div class="fixed right-0 top-0 bottom-0 w-[460px] bg-white border-l border-[#E2E8F0] z-40 flex flex-col translate-x-full transition-transform duration-200" id="feedback-drawer" style="box-shadow:-8px 0 30px rgba(11,20,48,0.1)">
+  <div class="h-14 px-5 border-b border-[#E2E8F0] flex items-center justify-between shrink-0">
+    <div class="flex items-center gap-2 min-w-0">
+      <div class="w-7 h-7 rounded-md flex items-center justify-center shrink-0" style="background:rgba(245,158,11,0.12);color:#b45309">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z"/></svg>
+      </div>
+      <div class="min-w-0">
+        <div class="text-[15px] font-semibold text-[#0B1430] leading-tight">Landlord Feedback</div>
+        <div id="feedback-drawer-subtitle" class="text-[11px] truncate" style="color:rgba(30,41,59,0.55)">—</div>
+      </div>
+    </div>
+    <button class="w-8 h-8 rounded-md hover:bg-[#F1F5F9] flex items-center justify-center shrink-0" onclick="toggleFeedbackPanel()" style="color:rgba(30,41,59,0.4)"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round"></path></svg></button>
+  </div>
+  <div id="feedback-drawer-body" class="flex-1 overflow-y-auto px-5 py-4 sidebar-scroll"></div>
+</div>
+<div class="hidden fixed inset-0 bg-black/30 z-30" id="feedback-overlay" onclick="toggleFeedbackPanel()"></div>
+<!-- Action Modal (Approve / Feedback) -->
+<div class="hidden fixed inset-0 bg-black/40 z-40" id="action-modal-overlay" onclick="closeActionModal()"></div>
+<div class="hidden fixed inset-0 z-50 flex items-center justify-center pointer-events-none p-6" id="action-modal">
+  <div class="bg-white rounded-2xl border border-[#E2E8F0] pointer-events-auto w-full max-w-[560px] flex flex-col max-h-[90vh] overflow-hidden" style="box-shadow:0 24px 60px rgba(11,20,48,.18)">
+    <header class="h-14 px-5 border-b border-[#E2E8F0] flex items-center gap-3 shrink-0" id="action-modal-header">
+      <div class="w-8 h-8 rounded-lg flex items-center justify-center" id="action-modal-icon">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      </div>
+      <div class="flex-1 min-w-0">
+        <div class="text-[10px] uppercase tracking-wider font-semibold" style="color:rgba(30,41,59,0.5)" id="action-modal-eyebrow">Review Action</div>
+        <div class="text-[14px] font-semibold text-[#0B1430] truncate" id="action-modal-title">JOB-1040-M · Chang Classic 620ml</div>
+      </div>
+      <button onclick="closeActionModal()" class="w-8 h-8 rounded-md hover:bg-[#F1F5F9] flex items-center justify-center" style="color:rgba(30,41,59,0.4)">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </header>
+    <div class="flex-1 overflow-y-auto p-5">
+      <!-- Feedback form -->
+      <div id="feedback-form" class="hidden space-y-3">
+        <div>
+          <label class="block text-[11px] font-semibold uppercase tracking-wider mb-1" style="color:rgba(30,41,59,0.55)">Note <span class="text-rose-500 normal-case">*</span></label>
+          <textarea id="feedback-note" rows="3" placeholder="ระบุรายละเอียดที่ต้องการให้แก้ไข..." class="w-full px-3 py-2 bg-white border border-[#CBD5E1] rounded-lg text-[13px] resize-y focus:outline-none focus:border-amber-500 focus:bg-white"></textarea>
+        </div>
+        <div>
+          <label class="block text-[11px] font-semibold uppercase tracking-wider mb-1" style="color:rgba(30,41,59,0.55)">Reference Link <span class="font-normal normal-case text-[10px]" style="color:rgba(30,41,59,0.45)">(ไม่บังคับ · 1 ลิงก์)</span></label>
+          <div class="relative">
+            <svg class="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2" style="color:rgba(30,41,59,0.4)" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244"/></svg>
+            <input id="feedback-link" type="url" placeholder="https://..." class="w-full h-9 pl-8 pr-3 bg-white border border-[#CBD5E1] rounded-lg text-[12.5px] focus:outline-none focus:border-amber-500"/>
+          </div>
+        </div>
+        <div>
+          <div class="flex items-center justify-between mb-1">
+            <label class="block text-[11px] font-semibold uppercase tracking-wider" style="color:rgba(30,41,59,0.55)">Attach Files <span class="font-normal normal-case text-[10px]" style="color:rgba(30,41,59,0.45)">(ไม่บังคับ)</span></label>
+            <span id="feedback-size" class="text-[10.5px] font-mono tnum" style="color:rgba(30,41,59,0.55)">0B / 50 MB</span>
+          </div>
+          <label class="upload-box block cursor-pointer border-2 border-dashed border-[#CBD5E1] rounded-lg p-5 text-center bg-[#F8FAFC] hover:bg-white hover:border-[#4790FF] transition-colors"
+            ondragover="event.preventDefault(); this.classList.add('upload-drag-over')"
+            ondragleave="this.classList.remove('upload-drag-over')"
+            ondrop="event.preventDefault(); this.classList.remove('upload-drag-over'); var inp=this.querySelector('input[type=file]'); inp.files=event.dataTransfer.files; inp.dispatchEvent(new Event('change'));">
+            <input id="feedback-files" type="file" multiple class="hidden" onchange="fbOnFiles(this)">
+            <svg class="w-10 h-10 mx-auto mb-2 text-[#94A3B8]" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 8.25H7.5a2.25 2.25 0 00-2.25 2.25v9a2.25 2.25 0 002.25 2.25h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25H15M9 12l3-3m0 0l3 3m-3-3v12"/></svg>
+            <div class="text-[13px] font-semibold text-[#0B1430]">ลากไฟล์มาวางที่นี่</div>
+            <div class="text-[11px] mt-1" style="color:rgba(30,41,59,0.5)">Multiple files · รวมไม่เกิน 50 MB</div>
+            <span class="inline-flex mt-3 h-8 px-3 bg-white border border-[#CBD5E1] rounded-md text-[12px] font-medium items-center hover:bg-[#F1F5F9]">Choose File</span>
+          </label>
+          <div id="feedback-files-list" class="mt-2 space-y-1.5"></div>
+        </div>
+        <div class="flex gap-2 pt-1">
+          <button onclick="submitFeedback()" class="flex-1 h-9 bg-amber-600 text-white rounded-lg text-[12.5px] font-semibold hover:bg-amber-700 inline-flex items-center justify-center gap-1.5">
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m3 11 18-8-8 18-2-8-8-2Z"/></svg>Send Feedback</button>
+          <button onclick="cancelFeedback()" class="h-9 px-3 bg-white border border-[#CBD5E1] text-[#0B1430] rounded-lg text-[12.5px] font-medium hover:bg-[#F8FAFC]">Cancel</button>
+        </div>
+      </div>
+      <!-- Approve form -->
+      <div id="approve-form" class="hidden space-y-3">
+        <div class="flex items-center gap-2 px-3 py-2 rounded-lg bg-emerald-50/70 border border-emerald-100">
+          <svg class="w-4 h-4 text-emerald-600 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <div class="text-[11.5px] text-emerald-900"><span class="font-semibold">Approve Job</span>— ยืนยันการอนุมัติจากเจ้าของพื้นที่</div>
+        </div>
+        <div>
+          <label class="block text-[11px] font-semibold uppercase tracking-wider mb-1" style="color:rgba(30,41,59,0.55)">Note <span class="font-normal normal-case text-[10px]" style="color:rgba(30,41,59,0.45)">(ไม่บังคับ)</span></label>
+          <textarea id="approve-note" rows="4" placeholder="ระบุหมายเหตุการอนุมัติ (ถ้ามี)..." class="w-full px-3 py-2 bg-white border border-[#CBD5E1] rounded-lg text-[13px] resize-y focus:outline-none focus:border-emerald-500"></textarea>
+        </div>
+        <div class="flex gap-2 pt-1">
+          <button onclick="submitApprove()" class="flex-1 h-9 bg-emerald-600 text-white rounded-lg text-[12.5px] font-semibold hover:bg-emerald-700 inline-flex items-center justify-center gap-1.5">
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>Confirm</button>
+          <button onclick="cancelApprove()" class="h-9 px-3 bg-white border border-[#CBD5E1] text-[#0B1430] rounded-lg text-[12.5px] font-medium hover:bg-[#F8FAFC]">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+function _toastAndBack(text, dotColor) {
+  var toast = document.createElement('div');
+  toast.className = 'fixed bottom-6 left-1/2 -translate-x-1/2 z-[60] bg-[#0B1430] text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3 text-[13px]';
+  toast.innerHTML = '<span class="w-2 h-2 rounded-full" style="background:' + (dotColor || '#10B981') + '"></span>' + text;
+  document.body.appendChild(toast);
+  setTimeout(function () { window.location.href = 'receive-job.html'; }, 900);
+}
+
+function submitFeedback() {
+  var el = document.getElementById('feedback-text');
+  var text = el ? el.value.trim() : '';
+  if (!text) {
+    alert('กรุณากรอกหมายเหตุก่อนSend Feedback');
+    if (el) el.focus();
+    return;
+  }
+  _toastAndBack('Feedback ส่งให้ Sales แล้ว', '#F59E0B');
+}
+
+function submitMockup() { _toastAndBack('Submit Mockup สำเร็จ', '#2D56D2'); }
+function saveDraft()    { _toastAndBack('บันทึก Draft แล้ว', '#64748B'); }
+function resubmitMockup() { _toastAndBack('Resubmit Mockup สำเร็จ', '#F97316'); }
+function renderFile() {
+  var el = document.getElementById('render-filename');
+  var name = el ? el.value.trim() : '';
+  if (!name) {
+    alert('กรุณากรอกชื่อไฟล์ก่อนกด Render File');
+    if (el) el.focus();
+    return;
+  }
+  _toastAndBack('Render File "' + name + '" สำเร็จ · Status: Done', '#10B981');
+}
+
+/* ===== Final Render — 2-party approval gate + multi-file render ===== */
+/* Approval comes from upstream processes — display-only on this page */
+var JOB_APPROVAL_MAP = {
+  'JOB-1031-F': { client: true,  owner: true,  clientDate: '18/05/2026 14:20', ownerDate: '19/05/2026 10:05', clientUser: 'Somchai Wattanakul', ownerUser: 'Pongsak Tangjit' },
+  'JOB-1029':   { client: false, owner: false, clientDate: '', ownerDate: '', clientUser: '', ownerUser: '' },
+  'JOB-1030':   { client: true,  owner: false, clientDate: '19/05/2026 21:30', ownerDate: '', clientUser: 'Prapat Thanakit', ownerUser: '' },
+  'JOB-1028':   { client: true,  owner: true,  clientDate: '12/05/2026 09:15', ownerDate: '13/05/2026 16:40', clientUser: 'Nattapong Srisai',  ownerUser: 'Wichai Boonyarat' }
+};
+function _getApprovalForJob() {
+  var jobId = getQueryParam('job') || 'JOB-1031-F';
+  return JOB_APPROVAL_MAP[jobId] || { client: true, owner: false, clientDate: '18/05/2026 14:20', ownerDate: '', clientUser: 'Somchai Wattanakul', ownerUser: '' };
+}
+var _approvalState = _getApprovalForJob();
+
+function renderApprovalBox(key, title, party, approved, dateStr, userName) {
+  /* Two states only: รออนุมัติ / อนุมัติแล้ว — full-color box, icon + status + date only */
+  var cfg = approved ? {
+    bg:'#059669', bgSoft:'rgba(255,255,255,0.18)', border:'#047857',
+    label:'อนุมัติแล้ว',
+    sideIcon:'<svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
+    foot: dateStr ? ('อนุมัติเมื่อ ' + dateStr) : ''
+  } : {
+    bg:'#D97706', bgSoft:'rgba(255,255,255,0.18)', border:'#B45309',
+    label:'รออนุมัติ',
+    sideIcon:'<svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
+    foot: 'อยู่ระหว่างการพิจารณา'
+  };
+  var userLine = (approved && userName) ? ('<div class="text-[11px] mt-0.5 font-medium truncate" style="color:#fff">โดย ' + userName + '</div>') : '';
+  return '<div id="approval-' + key + '" class="rounded-xl border overflow-hidden text-white shadow-sm" style="background:' + cfg.bg + ';border-color:' + cfg.border + '">' +
+    '<div class="px-3 pt-2 pb-0.5 text-[10.5px] font-semibold uppercase tracking-wider" style="color:rgba(255,255,255,0.85)">' + title + '</div>' +
+    '<div class="px-3 pb-3 flex items-center gap-3">' +
+      '<div class="w-11 h-11 rounded-lg flex items-center justify-center shrink-0" style="background:' + cfg.bgSoft + '">' + cfg.sideIcon + '</div>' +
+      '<div class="min-w-0 flex-1">' +
+        '<div class="text-[15px] font-bold leading-tight">' + cfg.label + '</div>' +
+        userLine +
+        '<div class="text-[11px] mt-0.5 font-mono" style="color:rgba(255,255,255,0.85)">' + cfg.foot + '</div>' +
+      '</div>' +
+    '</div>' +
+  '</div>';
+}
+
+function updateRenderGate() {
+  var btn = document.getElementById('render-btn');
+  var hint = document.getElementById('render-gate-hint');
+  if (!btn) return;
+  var ok = _approvalState.client && _approvalState.owner;
+  btn.disabled = !ok;
+  if (hint) hint.classList.toggle('hidden', ok);
+}
+
+function runRender() {
+  if (!(_approvalState.client && _approvalState.owner)) {
+    alert('ต้องได้รับอนุมัติทั้ง 2 ฝ่ายก่อนจึงจะ Render ได้');
+    return;
+  }
+  var fmt = (document.getElementById('render-format').value || '').trim();
+  var ext = document.getElementById('render-ext').value;
+  var cnt = parseInt(document.getElementById('render-count').value, 10);
+  if (!fmt) { alert('กรุณากรอก Format'); document.getElementById('render-format').focus(); return; }
+  if (!cnt || cnt < 1) { alert('กรุณากรอกจำนวน Run ที่ถูกต้อง'); return; }
+  if (cnt > 999) cnt = 999;
+  var pad = cnt >= 100 ? 3 : 2;
+  var tbody = document.getElementById('render-output-tbody');
+  var rows = '';
+  for (var i = 1; i <= cnt; i++) {
+    var seq = String(i); while (seq.length < pad) seq = '0' + seq;
+    var name = fmt + '_' + seq + '.' + ext;
+    rows +=
+      '<tr class="border-t border-[#E2E8F0] hover:bg-[#F8FAFC]">' +
+        '<td class="px-3 py-1.5 font-mono tnum text-[11.5px]" style="color:rgba(30,41,59,0.55)">' + seq + '</td>' +
+        '<td class="px-3 py-1.5 font-mono text-[12px] text-[#0B1430]">' + name + '</td>' +
+        '<td class="px-3 py-1.5"><span class="text-[10.5px] font-mono px-1.5 py-0.5 rounded bg-indigo-50 text-indigo-700 border border-indigo-200">.' + ext + '</span></td>' +
+        '<td class="px-3 py-1.5 text-right"><span class="inline-flex items-center gap-1 text-[10.5px] font-semibold text-emerald-700"><svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>Rendered</span></td>' +
+      '</tr>';
+  }
+  tbody.innerHTML = rows;
+  document.getElementById('render-output-count').textContent = '(' + cnt + ')';
+  var wrap = document.getElementById('render-output-wrap');
+  wrap.classList.remove('hidden');
+  /* Auto-open the collapse panel */
+  var body = document.getElementById('render-output-body');
+  var chev = document.getElementById('render-output-chev');
+  body.style.maxHeight = ''; body.style.opacity = '';
+  chev.classList.add('rotate-90');
+  _renderOutputOpen = true;
+  /* Reset confirm bar — show confirm, hide locked */
+  var cb = document.getElementById('render-confirm-bar');
+  var lb = document.getElementById('render-locked-bar');
+  if (cb) cb.classList.remove('hidden');
+  if (lb) lb.classList.add('hidden');
+}
+
+function confirmRender() {
+  /* Lock down the render form so user can't re-render */
+  var formWrap = document.getElementById('render-form-wrap');
+  if (formWrap) formWrap.style.display = 'none';
+  var cb = document.getElementById('render-confirm-bar');
+  if (cb) cb.classList.add('hidden');
+  var lb = document.getElementById('render-locked-bar');
+  if (lb) lb.classList.remove('hidden');
+  var d = new Date();
+  var dd = String(d.getDate()).padStart(2,'0'), mm = String(d.getMonth()+1).padStart(2,'0');
+  var stamp = dd + '/' + mm + '/' + d.getFullYear() + ' ' + d.toTimeString().slice(0,5);
+  var t = document.getElementById('render-locked-time');
+  if (t) t.textContent = stamp;
+}
+
+var _doneRenderOpen = true;
+function toggleDoneRenderOutput() {
+  var body = document.getElementById('done-render-body');
+  var chev = document.getElementById('done-render-chev');
+  if (!body) return;
+  _doneRenderOpen = !_doneRenderOpen;
+  if (_doneRenderOpen) {
+    body.style.display = '';
+    chev.classList.add('rotate-90');
+  } else {
+    body.style.display = 'none';
+    chev.classList.remove('rotate-90');
+  }
+}
+
+var _renderOutputOpen = true;
+function toggleRenderOutput() {
+  var body = document.getElementById('render-output-body');
+  var chev = document.getElementById('render-output-chev');
+  _renderOutputOpen = !_renderOutputOpen;
+  if (_renderOutputOpen) {
+    body.style.display = '';
+    chev.classList.add('rotate-90');
+  } else {
+    body.style.display = 'none';
+    chev.classList.remove('rotate-90');
+  }
+}
+
+/* ===== Mockup History (right sidebar — shown when status != 'To Do') ===== */
+var MOCKUP_HISTORY_BY_STATUS = {
+  'On Process': [
+    { ver:1, status:'In Review', date:'05/05/2026 16:20', note:'Initial mockup ส่งให้ Reviewer พิจารณา',
+      files:[{ name:'mockup_v1.png', type:'image', size:'2.6 MB', url:'https://placehold.co/600x340/3B82F6/ffffff?text=Mockup+v1' }] }
+  ],
+  'Review': [
+    { ver:2, status:'In Review', date:'09/05/2026 14:30', note:'Mockup v2 ส่งให้ Reviewer พิจารณา',
+      files:[{ name:'mockup_v2.png', type:'image', size:'3.1 MB', url:'https://placehold.co/600x340/06B6D4/ffffff?text=Mockup+v2' }] },
+    { ver:1, status:'Revised', date:'05/05/2026 16:20', note:'Initial mockup', reviewer:'แก้ logo position',
+      files:[{ name:'mockup_v1.png', type:'image', size:'2.6 MB', url:'https://placehold.co/600x340/94A3B8/ffffff?text=Mockup+v1' }] }
+  ],
+  'Final Approve': [
+    { ver:2, status:'Approved', date:'10/05/2026 14:00', note:'ลูกค้าอนุมัติแล้ว — รอเจ้าของพื้นที่อนุมัติ',
+      files:[{ name:'mockup_v2_final.png', type:'image', size:'3.8 MB', url:'https://placehold.co/600x340/14B8A6/ffffff?text=Mockup+v2+Final' }] },
+    { ver:1, status:'Revised', date:'08/05/2026 11:30', note:'Initial mockup', reviewer:'Logo position',
+      files:[{ name:'mockup_v1.png', type:'image', size:'3.2 MB', url:'https://placehold.co/600x340/94A3B8/ffffff?text=Mockup+v1' }] }
+  ],
+  'Final Render': [
+    { ver:2, status:'Approved', date:'10/05/2026 14:00', note:'Final Approved — รอ Render',
+      files:[{ name:'mockup_v2_final.png', type:'image', size:'3.8 MB', url:'https://placehold.co/600x340/10B981/ffffff?text=Mockup+v2+Final' }] },
+    { ver:1, status:'Revised', date:'08/05/2026 11:30', note:'Initial mockup', reviewer:'Logo position',
+      files:[{ name:'mockup_v1.png', type:'image', size:'3.2 MB', url:'https://placehold.co/600x340/94A3B8/ffffff?text=Mockup+v1' }] }
+  ],
+  'Revise': [
+    { ver:2, status:'Revised', date:'09/05/2026 10:15', note:'แก้ไขตาม feedback แล้ว — รอ reviewer พิจารณาอีกครั้ง', reviewer:'โลโก้ตำแหน่งมุมขวาบนยังไม่ตรง guideline กรุณาขยับขึ้น 24px และเปลี่ยน opacity เป็น 85%',
+      files:[{ name:'mockup_v2.png', type:'image', size:'3.1 MB', url:'https://placehold.co/600x340/F97316/ffffff?text=Mockup+v2' }] },
+    { ver:1, status:'Revised', date:'05/05/2026 16:20', note:'Initial mockup',
+      files:[{ name:'mockup_v1.png', type:'image', size:'2.6 MB', url:'https://placehold.co/600x340/94A3B8/ffffff?text=Mockup+v1' }] }
+  ],
+  'Done': [
+    { ver:2, status:'Approved', date:'10/05/2026 14:00', note:'Final version — Reviewer approved',
+      files:[{ name:'mockup_v2_final.png', type:'image', size:'3.8 MB', url:'https://placehold.co/600x340/10B981/ffffff?text=Mockup+v2+Final' }] },
+    { ver:1, status:'Revised', date:'08/05/2026 11:30', note:'Initial mockup', reviewer:'Logo ต้องขยับ',
+      files:[{ name:'mockup_v1.png', type:'image', size:'3.2 MB', url:'https://placehold.co/600x340/94A3B8/ffffff?text=Mockup+v1' }] }
+  ]
+};
+var MOCKUP_HIST_BADGE = {
+  'In Review': { bg:'#EFF6FF', text:'#1D4ED8', border:'#BFDBFE' },
+  'Revised':   { bg:'#FFF7ED', text:'#C2410C', border:'#FED7AA' },
+  'Approved':  { bg:'#D1FAE5', text:'#065F46', border:'#6EE7B7' }
+};
+
+function renderMockupHistorySidebar(status) {
+  var el = document.getElementById('mockup-history-card');
+  if (!el) return;
+  /* hide for To Do (no history yet) and On Process (graphic is producing — too early) */
+  if (status === 'To Do' || status === 'On Process') { el.innerHTML = ''; return; }
+  var list = MOCKUP_HISTORY_BY_STATUS[status] || [];
+  if (!list.length) { el.innerHTML = ''; return; }
+
+  var html =
+    '<div class="bg-white border border-[#E2E8F0] rounded-xl shadow-sm p-5">' +
+      '<div class="flex items-center gap-2 mb-3">' +
+        '<div class="w-7 h-7 rounded-md flex items-center justify-center" style="background:rgba(16,185,129,0.14);color:#047857">' +
+          '<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z"/></svg>' +
+        '</div>' +
+        '<h3 class="text-[14px] font-semibold text-[#0B1430]">Mockup History</h3>' +
+        '<span class="ml-auto text-[10.5px] font-mono px-1.5 py-0.5 rounded bg-[#F1F5F9]" style="color:rgba(30,41,59,0.6)">' + list.length + ' ver</span>' +
+      '</div>' +
+      '<div class="space-y-3">';
+
+  list.forEach(function (m) {
+    var bd = MOCKUP_HIST_BADGE[m.status] || MOCKUP_HIST_BADGE['In Review'];
+    html +=
+      '<div class="border rounded-lg overflow-hidden" style="border-color:' + bd.border + '">' +
+        '<div class="px-3 py-2 flex items-center justify-between" style="background:' + bd.bg + '">' +
+          '<div class="flex items-center gap-1.5">' +
+            '<span class="text-[12px] font-semibold" style="color:' + bd.text + '">v' + m.ver + '</span>' +
+            '<span class="text-[9.5px] px-1.5 py-0.5 rounded font-medium border" style="background:#fff;color:' + bd.text + ';border-color:' + bd.border + '">' + m.status + '</span>' +
+          '</div>' +
+          '<span class="text-[10px] font-mono" style="color:rgba(30,41,59,0.55)">' + m.date + '</span>' +
+        '</div>' +
+        '<div class="p-2 space-y-2">';
+    m.files.forEach(function (f) {
+      html +=
+        '<div class="rounded-md border border-[#E2E8F0] overflow-hidden">' +
+          '<a href="' + f.url + '" target="_blank" class="block">' +
+            '<img src="' + f.url + '" alt="' + f.name + '" class="w-full h-auto block" loading="lazy" />' +
+          '</a>' +
+          '<div class="px-2 py-1.5 flex items-center justify-between bg-white border-t border-[#E2E8F0]">' +
+            '<div class="min-w-0"><div class="text-[10.5px] font-semibold truncate">' + f.name + '</div><div class="text-[9.5px]" style="color:rgba(30,41,59,0.45)">' + f.size + '</div></div>' +
+            '<a href="' + f.url + '" download="' + f.name + '" target="_blank" class="text-[10px] px-1.5 py-0.5 rounded bg-[#F1F5F9] hover:bg-[#E2E8F0] font-semibold inline-flex items-center gap-0.5" style="color:#0B1430">' +
+              '<svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>DL</a>' +
+          '</div>' +
+        '</div>';
+    });
+    if (m.note) {
+      html +=
+        '<div class="px-2 py-1.5 bg-[#FFFBEB] border border-amber-100 rounded text-[10.5px]" style="color:rgba(30,41,59,0.75)">' +
+          '<span class="font-semibold" style="color:rgba(30,41,59,0.5)">Note:</span> ' + m.note +
+        '</div>';
+    }
+    if (m.reviewer) {
+      html +=
+        '<div class="px-2 py-1.5 bg-rose-50 border border-rose-100 rounded text-[10.5px] text-rose-700">' +
+          '<span class="font-semibold">Reviewer:</span> ' + m.reviewer +
+        '</div>';
+    }
+    html += '</div></div>';
+  });
+
+  html += '</div></div>';
+  el.innerHTML = html;
+}
+
+function openAcceptModal() {
+  var old = document.getElementById('accept-modal'); if (old) old.remove();
+  var modal = document.createElement('div'); modal.id = 'accept-modal'; modal.className = 'fixed inset-0 z-50 flex items-center justify-center';
+  modal.innerHTML = '<div class="absolute inset-0 bg-black/40" onclick="closeAcceptModal()"></div><div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 p-6 text-center"><div class="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-4"><svg class="w-8 h-8 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div><div class="text-[18px] font-semibold text-[#0B1430] mb-2">Accept Job?</div><div class="text-[13px] mb-1" style="color:rgba(30,41,59,0.6)">You are about to accept job</div><div class="text-[15px] font-semibold text-[#2D56D2] font-mono mb-1">JOB-1040-M</div><div class="text-[13px] mb-6" style="color:rgba(30,41,59,0.6)">Chang Classic 620ml &mdash; Metro</div><div class="text-[12px] p-3 bg-[#F8FAFC] rounded-lg mb-6" style="color:rgba(30,41,59,0.5)">Status will change from <b>To Do</b> to <b>On Process</b>.</div><div class="flex gap-3"><button onclick="closeAcceptModal()" class="flex-1 h-10 bg-white text-[#0B1430] rounded-lg border border-[#CBD5E1] text-[13px] font-medium hover:bg-[#F8FAFC]">Cancel</button><button onclick="confirmAccept()" class="flex-1 h-10 bg-emerald-600 text-white rounded-lg text-[13px] font-medium hover:bg-emerald-700">Confirm Accept</button></div></div>';
+  document.body.appendChild(modal);
+}
+function closeAcceptModal() { var m = document.getElementById('accept-modal'); if (m) m.remove(); }
+function confirmAccept() { closeAcceptModal(); window.location.href = 'receive-job.html'; }
+
+var _historyOpen = false;
+function toggleHistory() {
+  _historyOpen = !_historyOpen;
+  document.getElementById('history-drawer').classList.toggle('translate-x-full', !_historyOpen);
+  document.getElementById('history-overlay').classList.toggle('hidden', !_historyOpen);
+}
+
+/* ===== Landlord Feedback Drawer ===== */
+var LANDLORD_FEEDBACKS = [
+  { by:'Nattapong Srisai', role:'Media Operation', date:'09/05/2026 16:20', note:'Logo placement ยังไม่ตรงตามมาตรฐาน Digital MRT กรุณาย้ายไปมุมขวาบนตาม Spec ที่แนบ และปรับ Padding ให้พอดี Safe Area อีก 5% เพื่อไม่ให้โดน Crop ตอน Render', link:'https://mrt-digital.brand-portal.co.th/specs/safe-area', files:[
+    { name:'mrt_safe_area_spec_v3.png', size:'2.1 MB', type:'image' },
+    { name:'mrt_logo_placement.pdf', size:'890 KB', type:'pdf' }
+  ]},
+  { by:'Sirinya Pongchai', role:'Media Operation', date:'06/05/2026 09:45', note:'ขอให้ปรับโทนสีให้ใกล้เคียงกับ Brand Guideline ใหม่ที่อัปเดต และเพิ่ม Contrast ของ Text ให้อ่านชัดเจนขึ้นเมื่อแสดงผลบนจอ MRT', link:'https://drive.google.com/file/d/brand-guideline-v3', files:[
+    { name:'brand_guideline_v3.pdf', size:'4.6 MB', type:'pdf' },
+    { name:'mrt_screen_test_reference.png', size:'1.2 MB', type:'image' }
+  ]},
+  { by:'Wichai Boonyarat', role:'Media Operation', date:'04/05/2026 11:10', note:'Brief เริ่มต้น — เน้น Brand Awareness ของ Chang Classic 620ml ใช้ฉากหลังโทนเย็น และเพิ่ม Tagline ที่ด้านล่างกลางจอ Animation ไม่เกิน 15 วินาที', link:'', files:[
+    { name:'chang_brief_metro.pdf', size:'3.4 MB', type:'pdf' }
+  ]}
+];
+var _feedbackOpen = false;
+function toggleFeedbackPanel() {
+  _feedbackOpen = !_feedbackOpen;
+  document.getElementById('feedback-drawer').classList.toggle('translate-x-full', !_feedbackOpen);
+  document.getElementById('feedback-overlay').classList.toggle('hidden', !_feedbackOpen);
+}
+function _fbInitials(name) {
+  if (!name) return '?';
+  return name.split(' ').map(function(w){return w[0]}).join('').slice(0,2).toUpperCase();
+}
+function _fbAvColor(name) {
+  var colors = ['#2D56D2','#059669','#d97706','#dc2626','#7c3aed','#0891b2','#b45309'];
+  var h = 0; for(var i=0;i<name.length;i++) h = name.charCodeAt(i)+((h<<5)-h);
+  return colors[Math.abs(h)%colors.length];
+}
+function _fbFileIcon(type, name) {
+  var t = (type || '').toLowerCase();
+  var n = (name || '').toLowerCase();
+  if (t === 'image' || /\.(png|jpe?g|gif|webp|svg)$/.test(n)) {
+    return { bg:'bg-emerald-50', fg:'text-emerald-600', svg:'<path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z"/>' };
+  }
+  if (t === 'video' || /\.(mp4|webm|mov|m4v)$/.test(n)) {
+    return { bg:'bg-rose-50', fg:'text-rose-600', svg:'<path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z"/>' };
+  }
+  return { bg:'bg-blue-50', fg:'text-blue-600', svg:'<path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/>' };
+}
+function renderFeedbackDrawer() {
+  var fbs = LANDLORD_FEEDBACKS || [];
+  var cntEl = document.getElementById('feedback-btn-count');
+  if (cntEl) cntEl.textContent = fbs.length;
+  var subt = document.getElementById('feedback-drawer-subtitle');
+  if (subt) subt.textContent = 'JOB-1040-M · Digital MRT · ' + fbs.length + ' รายการ';
+  var body = document.getElementById('feedback-drawer-body');
+  if (!body) return;
+  if (!fbs.length) {
+    body.innerHTML = '<div class="flex flex-col items-center justify-center h-full text-center" style="color:rgba(30,41,59,0.5)"><div class="text-[13px]">ยังไม่มี Feedback</div></div>';
+    return;
+  }
+  var html = '<div class="relative pl-6">';
+  html += '<div class="absolute left-[15px] top-2 bottom-2 w-px bg-[#E2E8F0]"></div>';
+  fbs.forEach(function(fb, idx) {
+    var av = _fbAvColor(fb.by);
+    var isLast = idx === fbs.length - 1;
+    html += '<div class="relative ' + (isLast ? '' : 'mb-5') + '">';
+    html += '<div class="absolute -left-6 w-[30px] h-[30px] rounded-full flex items-center justify-center z-10 ring-4 ring-white shadow-sm" style="background:' + av + '"><span class="text-[10px] font-bold text-white">' + _fbInitials(fb.by) + '</span></div>';
+    html += '<div class="ml-3 bg-white border border-[#E2E8F0] rounded-xl p-3.5 shadow-card">';
+    html += '<div class="flex items-start justify-between gap-2 mb-2">';
+    html += '<div class="min-w-0"><div class="text-[13px] font-semibold text-[#0B1430] leading-tight">' + fb.by + '</div>';
+    if (fb.role) html += '<div class="text-[10.5px] mt-0.5 inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200 font-medium">' + fb.role + '</div>';
+    html += '</div>';
+    html += '<div class="text-[10.5px] font-mono shrink-0 text-right" style="color:rgba(30,41,59,0.5)">' + fb.date + '</div>';
+    html += '</div>';
+    if (fb.note) {
+      html += '<div class="px-3 py-2 rounded-lg bg-[#FFFBEB] border border-amber-100 text-[12.5px] leading-relaxed text-[#0B1430] mb-2">' + fb.note + '</div>';
+    }
+    if (fb.link) {
+      html += '<a href="' + fb.link + '" target="_blank" class="flex items-center gap-1.5 px-2.5 py-1.5 mb-2 rounded-md bg-[#F8FAFC] border border-[#E2E8F0] hover:bg-[#EBF5FF] hover:border-[#D6ECFF] transition-colors group">'
+        + '<svg class="w-3.5 h-3.5 shrink-0 text-[#2D56D2]" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244"/></svg>'
+        + '<span class="text-[11.5px] font-medium text-[#2D56D2] truncate flex-1 group-hover:underline">' + fb.link + '</span>'
+        + '<svg class="w-3 h-3 shrink-0" style="color:rgba(30,41,59,0.35)" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/></svg>'
+        + '</a>';
+    }
+    if (fb.files && fb.files.length) {
+      html += '<div class="space-y-1.5">';
+      html += '<div class="text-[10.5px] font-semibold uppercase tracking-wider mb-1" style="color:rgba(30,41,59,0.5)">แนบไฟล์ · ' + fb.files.length + '</div>';
+      fb.files.forEach(function(f){
+        var ic = _fbFileIcon(f.type, f.name);
+        html += '<a href="#" class="flex items-center gap-2 px-2.5 py-1.5 rounded-md border border-[#E2E8F0] bg-white hover:bg-[#F8FAFC] transition-colors">'
+          + '<div class="w-7 h-7 rounded-md flex items-center justify-center shrink-0 ' + ic.bg + ' ' + ic.fg + '"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24">' + ic.svg + '</svg></div>'
+          + '<div class="flex-1 min-w-0"><div class="text-[11.5px] font-medium truncate text-[#0B1430]">' + f.name + '</div><div class="text-[10px]" style="color:rgba(30,41,59,0.45)">' + f.size + '</div></div>'
+          + '<svg class="w-3.5 h-3.5 shrink-0" style="color:rgba(30,41,59,0.4)" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>'
+          + '</a>';
+      });
+      html += '</div>';
+    }
+    html += '</div></div>';
+  });
+  html += '</div>';
+  body.innerHTML = html;
+}
+function openFeedbackPanel() {
+  renderFeedbackDrawer();
+  if (!_feedbackOpen) toggleFeedbackPanel();
+}
+renderFeedbackDrawer();
+
+/* ===== Status-based view switching (driven by URL ?status=...) ===== */
+var STATUS_BADGE_CLASS = {
+  'To Do':         'bg-slate-50 text-slate-700 border-slate-200',
+  'On Process':    'bg-blue-50 text-blue-700 border-blue-200',
+  'Review':        'bg-cyan-50 text-cyan-700 border-cyan-200',
+  'Revise':        'bg-orange-50 text-orange-700 border-orange-200',
+  'Final Approve': 'bg-teal-50 text-teal-700 border-teal-200',
+  'Final Render':  'bg-indigo-50 text-indigo-700 border-indigo-200',
+  'Done':          'bg-emerald-50 text-emerald-700 border-emerald-200'
+};
+var STATUS_DOT_CLASS = {
+  'To Do':         'bg-slate-400',
+  'On Process':    'bg-blue-500',
+  'Review':        'bg-cyan-500',
+  'Revise':        'bg-orange-500',
+  'Final Approve': 'bg-teal-500',
+  'Final Render':  'bg-indigo-500',
+  'Done':          'bg-emerald-500'
+};
+
+function getQueryParam(name) {
+  var params = new URLSearchParams(location.search);
+  return params.get(name);
+}
+
+function renderStatusView() {
+  var status = getQueryParam('status') || 'On Process';
+  if (!STATUS_BADGE_CLASS[status]) status = 'On Process';
+
+  /* Update header badge */
+  var badge = document.getElementById('job-status-badge');
+  if (badge) {
+    badge.className = 'text-[11px] px-2.5 py-1 rounded-full font-medium border inline-flex items-center gap-1 ' + STATUS_BADGE_CLASS[status];
+    badge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full ' + STATUS_DOT_CLASS[status] + '"></span>' + status;
+  }
+
+  /* Status-specific top banner (only for Revise & Done; To Do & On Process no banner) */
+  var banner = document.getElementById('status-banner');
+  if (banner) {
+    if (status === 'Revise') {
+      banner.innerHTML =
+        '<div class="bg-orange-50 border border-orange-200 rounded-xl p-4 flex items-start gap-3">' +
+          '<div class="w-9 h-9 rounded-lg bg-orange-100 flex items-center justify-center shrink-0 text-orange-700">' +
+            '<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>' +
+          '</div>' +
+          '<div class="flex-1">' +
+            '<div class="text-[13px] font-semibold text-orange-900">Reviewer ส่งกลับให้แก้ไข</div>' +
+            '<div class="text-[12px] mt-1 text-orange-800/85">โลโก้ตำแหน่งมุมขวาบนยังไม่ตรง guideline — กรุณาปรับแล้วอัปโหลด mockup ใหม่</div>' +
+          '</div>' +
+        '</div>';
+    } else if (status === 'Done') {
+      banner.innerHTML =
+        '<div class="bg-emerald-50 border border-emerald-200 rounded-xl p-4 flex items-start gap-3">' +
+          '<div class="w-9 h-9 rounded-lg bg-emerald-100 flex items-center justify-center shrink-0 text-emerald-700">' +
+            '<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>' +
+          '</div>' +
+          '<div class="flex-1">' +
+            '<div class="text-[13px] font-semibold text-emerald-900">งานนี้เสร็จสมบูรณ์</div>' +
+            '<div class="text-[12px] mt-1 text-emerald-800/85">Reviewer อนุมัติ mockup สุดท้ายแล้ว — ดูตัวอย่าง mockup ที่ถูกอนุมัติด้านล่าง (read-only)</div>' +
+          '</div>' +
+        '</div>';
+    } else {
+      banner.innerHTML = '';
+    }
+  }
+
+  /* Action card content per status */
+  var card = document.getElementById('job-actions-card');
+  if (!card) return;
+  card.style.display = '';  /* reset (Review hides it; reset on every render) */
+  if (status === 'To Do') {
+    card.innerHTML =
+      '<h3 class="text-[15px] font-semibold text-[#0B1430] mb-3">รับงาน</h3>' +
+      '<p class="text-[12.5px] mb-4" style="color:rgba(30,41,59,0.65)">งานนี้ยังไม่ได้รับ — กด Accept เพื่อเริ่มทำงาน หรือ Feedback กลับ Sales หากมีข้อมูลไม่ครบ</p>' +
+      '<textarea class="w-full px-3 py-2 bg-white border border-[#E2E8F0] rounded-lg text-[13px] focus:outline-none focus:border-[#4790FF] resize-none mb-4" id="feedback-text" placeholder="หมายเหตุ / ข้อสงสัยถึง Sales..." rows="3"></textarea>' +
+      '<div class="flex flex-wrap gap-2">' +
+        '<button class="h-9 px-4 bg-emerald-600 text-white rounded-lg text-[13px] font-medium hover:bg-emerald-700 inline-flex items-center gap-1.5" onclick="openAcceptModal()">' +
+          '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg><span>Accept</span>' +
+        '</button>' +
+        '<button class="h-9 px-4 bg-white text-amber-700 rounded-lg border border-amber-200 text-[13px] font-medium hover:bg-amber-50 inline-flex items-center gap-1.5" onclick="submitFeedback()">' +
+          '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"/></svg><span>Feedback</span>' +
+        '</button>' +
+      '</div>';
+  } else if (status === 'On Process') {
+    /* การผลิต Mockup card removed — no action card for On Process */
+    card.innerHTML = '';
+    card.style.display = 'none';
+  } else if (status === 'Revise') {
+    card.innerHTML =
+      '<h3 class="text-[15px] font-semibold text-[#0B1430] mb-3">แก้ไขและส่งใหม่</h3>' +
+      '<div class="bg-rose-50 border border-rose-100 rounded-lg p-3 mb-4 text-[12px] text-rose-700 space-y-2">' +
+        '<div>' +
+          '<div class="font-semibold mb-0.5">Feedback จาก Reviewer:</div>' +
+          '<div>โลโก้ตำแหน่งมุมขวาบนยังไม่ตรง guideline กรุณาขยับขึ้นด้านบน 24px และเปลี่ยน opacity เป็น 85%</div>' +
+        '</div>' +
+        '<div class="pt-2 border-t border-rose-100">' +
+          '<div class="font-semibold mb-1 text-[11px] uppercase tracking-wider text-rose-800/80">Reference Link</div>' +
+          '<a href="#" class="inline-flex items-center gap-1.5 text-rose-700 hover:text-rose-900 underline decoration-rose-300 break-all">' +
+            '<svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244"/></svg>' +
+            '<span>brand.chang.co.th/guideline/logo-placement.pdf</span>' +
+          '</a>' +
+        '</div>' +
+        '<div class="pt-2 border-t border-rose-100">' +
+          '<div class="font-semibold mb-1 text-[11px] uppercase tracking-wider text-rose-800/80">Attached Files</div>' +
+          '<div class="space-y-1">' +
+            '<div class="flex items-center gap-2 px-2 py-1.5 bg-white border border-rose-100 rounded-md">' +
+              '<svg class="w-4 h-4 text-rose-500 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 8.25H7.5a2.25 2.25 0 00-2.25 2.25v9a2.25 2.25 0 002.25 2.25h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25H15m-6-3.75h3.375c.621 0 1.125.504 1.125 1.125V11.25"/></svg>' +
+              '<span class="flex-1 truncate font-mono text-[11.5px]">reviewer_annotation_v2.png</span>' +
+              '<span class="text-[10.5px] text-rose-500/70">1.2 MB</span>' +
+              '<button class="text-rose-600 hover:text-rose-800"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg></button>' +
+            '</div>' +
+            '<div class="flex items-center gap-2 px-2 py-1.5 bg-white border border-rose-100 rounded-md">' +
+              '<svg class="w-4 h-4 text-rose-500 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 8.25H7.5a2.25 2.25 0 00-2.25 2.25v9a2.25 2.25 0 002.25 2.25h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25H15m-6-3.75h3.375c.621 0 1.125.504 1.125 1.125V11.25"/></svg>' +
+              '<span class="flex-1 truncate font-mono text-[11.5px]">chang_logo_guideline_v3.pdf</span>' +
+              '<span class="text-[10.5px] text-rose-500/70">348 KB</span>' +
+              '<button class="text-rose-600 hover:text-rose-800"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg></button>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+      /* Upload box, Textarea, and Resubmit Mockup button removed */
+      '';
+  } else if (status === 'Review') {
+    /* No action card — Reviewer takes action elsewhere */
+    card.innerHTML = '';
+    card.style.display = 'none';
+  } else if (status === 'Final Approve') {
+    card.style.display = '';
+    card.innerHTML =
+      '<h3 class="text-[15px] font-semibold text-[#0B1430] mb-3">Media Allocate</h3>' +
+      '<div class="grid grid-cols-2 gap-3 mb-4">' +
+        '<div class="rounded-lg border border-indigo-100 bg-indigo-50/50 p-3">' +
+          '<div class="text-[10px] uppercase font-semibold tracking-wider mb-1" style="color:#4338CA">ออกอากาศ/ชั่วโมง</div>' +
+          '<div class="text-[20px] font-bold text-indigo-900 tnum">6 <span class="text-[11px] font-medium" style="color:rgba(67,56,202,0.65)">ครั้ง</span></div>' +
+        '</div>' +
+        '<div class="rounded-lg border border-indigo-100 bg-indigo-50/50 p-3">' +
+          '<div class="text-[10px] uppercase font-semibold tracking-wider mb-1" style="color:#4338CA">ระยะเวลาแสดง</div>' +
+          '<div class="text-[20px] font-bold text-indigo-900 tnum">15 <span class="text-[11px] font-medium" style="color:rgba(67,56,202,0.65)">วินาที</span></div>' +
+        '</div>' +
+        '<div class="rounded-lg border border-indigo-100 bg-indigo-50/50 p-3">' +
+          '<div class="text-[10px] uppercase font-semibold tracking-wider mb-1" style="color:#4338CA">ช่วงเวลาออกอากาศ</div>' +
+          '<div class="text-[13px] font-semibold text-indigo-900">06:00 – 23:00</div>' +
+        '</div>' +
+        '<div class="rounded-lg border border-indigo-100 bg-indigo-50/50 p-3">' +
+          '<div class="text-[10px] uppercase font-semibold tracking-wider mb-1" style="color:#4338CA">จำนวน Sites</div>' +
+          '<div class="text-[20px] font-bold text-indigo-900 tnum">18 <span class="text-[11px] font-medium" style="color:rgba(67,56,202,0.65)">จุด</span></div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="rounded-lg bg-amber-50 border border-amber-200 p-3 mb-4">' +
+        '<div class="text-[12px] font-semibold text-amber-900 mb-1">คำสั่งพิเศษจาก Sales</div>' +
+        '<p class="text-[12px] leading-relaxed text-amber-800/90">เน้นออกอากาศช่วง Prime Time 18:00–22:00 ทุกวัน (ความถี่ x2) หลีกเลี่ยงการออกอากาศซ้อนกับโฆษณาคู่แข่ง (Pepsi, Coke) ส่งไฟล์ render เป็น MP4 1080p H.264 bitrate ≥ 8 Mbps พร้อมตรวจสอบสี/โลโก้ให้ตรง brand guideline ก่อนส่งทุกครั้ง</p>' +
+      '</div>' +
+      /* ===== ผลการอนุมัติ 2 ฝ่าย — Final Approve: client อนุมัติแล้ว / owner รออนุมัติ ===== */
+      '<div class="text-[10.5px] uppercase font-semibold tracking-wider mb-2" style="color:rgba(30,41,59,0.55)">ผลการอนุมัติ</div>' +
+      '<div class="grid grid-cols-2 gap-3 mb-4">' +
+        renderApprovalBox('client', 'ลูกค้าอนุมัติ',         'Chang Beverage Co., Ltd.', true,  _approvalState.clientDate || '19/05/2026 21:30', _approvalState.clientUser || 'Prapat Thanakit') +
+        renderApprovalBox('owner',  'เจ้าของพื้นที่อนุมัติ',  'BTS Group Holdings',         false, '', '') +
+      '</div>' +
+      /* ===== Hint banner — รอเจ้าของพื้นที่อนุมัติก่อนจึงจะเริ่ม Render ได้ ===== */
+      '<div class="rounded-lg border border-teal-200 bg-teal-50 p-3 flex items-start gap-3">' +
+        '<svg class="w-5 h-5 text-teal-700 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>' +
+        '<div class="flex-1">' +
+          '<div class="text-[13px] font-semibold text-teal-900">รอเจ้าของพื้นที่อนุมัติ</div>' +
+          '<div class="text-[12px] mt-1 text-teal-800/85">ลูกค้าอนุมัติแล้ว — เมื่อเจ้าของพื้นที่อนุมัติเสร็จ สถานะจะเปลี่ยนเป็น <span class="font-semibold">Final Render</span></div>' +
+        '</div>' +
+      '</div>';
+  } else if (status === 'Final Render') {
+    card.style.display = '';
+    card.innerHTML =
+      '<h3 class="text-[15px] font-semibold text-[#0B1430] mb-3">Media Allocate</h3>' +
+      '<div class="grid grid-cols-2 gap-3 mb-4">' +
+        '<div class="rounded-lg border border-indigo-100 bg-indigo-50/50 p-3">' +
+          '<div class="text-[10px] uppercase font-semibold tracking-wider mb-1" style="color:#4338CA">ออกอากาศ/ชั่วโมง</div>' +
+          '<div class="text-[20px] font-bold text-indigo-900 tnum">6 <span class="text-[11px] font-medium" style="color:rgba(67,56,202,0.65)">ครั้ง</span></div>' +
+        '</div>' +
+        '<div class="rounded-lg border border-indigo-100 bg-indigo-50/50 p-3">' +
+          '<div class="text-[10px] uppercase font-semibold tracking-wider mb-1" style="color:#4338CA">ระยะเวลาแสดง</div>' +
+          '<div class="text-[20px] font-bold text-indigo-900 tnum">15 <span class="text-[11px] font-medium" style="color:rgba(67,56,202,0.65)">วินาที</span></div>' +
+        '</div>' +
+        '<div class="rounded-lg border border-indigo-100 bg-indigo-50/50 p-3">' +
+          '<div class="text-[10px] uppercase font-semibold tracking-wider mb-1" style="color:#4338CA">ช่วงเวลาออกอากาศ</div>' +
+          '<div class="text-[13px] font-semibold text-indigo-900">06:00 – 23:00</div>' +
+        '</div>' +
+        '<div class="rounded-lg border border-indigo-100 bg-indigo-50/50 p-3">' +
+          '<div class="text-[10px] uppercase font-semibold tracking-wider mb-1" style="color:#4338CA">จำนวน Sites</div>' +
+          '<div class="text-[20px] font-bold text-indigo-900 tnum">18 <span class="text-[11px] font-medium" style="color:rgba(67,56,202,0.65)">จุด</span></div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="rounded-lg bg-amber-50 border border-amber-200 p-3 mb-4">' +
+        '<div class="text-[12px] font-semibold text-amber-900 mb-1">คำสั่งพิเศษจาก Sales</div>' +
+        '<p class="text-[12px] leading-relaxed text-amber-800/90">เน้นออกอากาศช่วง Prime Time 18:00–22:00 ทุกวัน (ความถี่ x2) หลีกเลี่ยงการออกอากาศซ้อนกับโฆษณาคู่แข่ง (Pepsi, Coke) ส่งไฟล์ render เป็น MP4 1080p H.264 bitrate ≥ 8 Mbps พร้อมตรวจสอบสี/โลโก้ให้ตรง brand guideline ก่อนส่งทุกครั้ง</p>' +
+      '</div>' +
+      /* ===== ผลการอนุมัติ 2 ฝ่าย ===== */
+      '<div class="text-[10.5px] uppercase font-semibold tracking-wider mb-2" style="color:rgba(30,41,59,0.55)">ผลการอนุมัติ</div>' +
+      '<div class="grid grid-cols-2 gap-3 mb-4" id="render-approval-row">' +
+        renderApprovalBox('client', 'ลูกค้าอนุมัติ',         'Chang Beverage Co., Ltd.', _approvalState.client, _approvalState.clientDate, _approvalState.clientUser) +
+        renderApprovalBox('owner',  'เจ้าของพื้นที่อนุมัติ',  'BTS Group Holdings',         _approvalState.owner,  _approvalState.ownerDate,  _approvalState.ownerUser) +
+      '</div>' +
+      /* ===== Render form (ข้อมูล Render) removed ===== */
+      /* ===== Output table (collapsible) — populated by runRender() ===== */
+      '<div id="render-output-wrap" class="mt-4 hidden">' +
+        '<button type="button" onclick="toggleRenderOutput()" class="w-full px-3 py-2.5 bg-emerald-50 border border-emerald-200 rounded-lg flex items-center gap-2 hover:bg-emerald-100 transition-colors">' +
+          '<svg id="render-output-chev" class="w-4 h-4 text-emerald-700 transition-transform rotate-90" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>' +
+          '<svg class="w-4 h-4 text-emerald-700" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12.76c0 1.6 1.123 2.994 2.707 3.227 1.068.157 2.148.279 3.238.364.466.037.893.281 1.153.671L12 21l2.652-3.978c.26-.39.687-.634 1.153-.67 1.09-.086 2.17-.208 3.238-.365 1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z"/></svg>' +
+          '<span class="flex-1 text-left text-[12.5px] font-semibold text-emerald-900">ไฟล์ที่ Render <span id="render-output-count" class="font-mono opacity-70">(0)</span></span>' +
+          '<span class="text-[10.5px] text-emerald-700">คลิกเพื่อเปิด/ปิด</span>' +
+        '</button>' +
+        '<div id="render-output-body" class="mt-2 overflow-hidden">' +
+          '<table class="w-full text-[12px] border border-[#E2E8F0] rounded-lg overflow-hidden">' +
+            '<thead class="bg-[#F8FAFC]"><tr>' +
+              '<th class="text-left px-3 py-2 font-semibold text-[10.5px] uppercase tracking-wider w-12" style="color:rgba(30,41,59,0.55)">#</th>' +
+              '<th class="text-left px-3 py-2 font-semibold text-[10.5px] uppercase tracking-wider" style="color:rgba(30,41,59,0.55)">ชื่อไฟล์</th>' +
+              '<th class="text-left px-3 py-2 font-semibold text-[10.5px] uppercase tracking-wider w-20" style="color:rgba(30,41,59,0.55)">ประเภท</th>' +
+              '<th class="text-right px-3 py-2 font-semibold text-[10.5px] uppercase tracking-wider w-24" style="color:rgba(30,41,59,0.55)">สถานะ</th>' +
+            '</tr></thead>' +
+            '<tbody id="render-output-tbody"></tbody>' +
+          '</table>' +
+        '</div>' +
+        /* Confirm bar — shown after Render File, hidden after confirm */
+        '<div id="render-confirm-bar" class="mt-3 p-3 rounded-lg border border-amber-200 bg-amber-50 flex items-center gap-3">' +
+          '<svg class="w-4 h-4 text-amber-600 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>' +
+          '<div class="flex-1 text-[11.5px] text-amber-900">ตรวจสอบผลลัพธ์ด้านบนแล้วกดยืนยันเพื่อปิดงาน — หากยืนยันแล้วจะไม่สามารถ Re-renderได้</div>' +
+          '<button onclick="confirmRender()" class="h-8 px-3 bg-emerald-600 text-white rounded-md text-[11.5px] font-semibold hover:bg-emerald-700 inline-flex items-center gap-1.5 shadow-sm">' +
+            '<svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2.2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>Confirm' +
+          '</button>' +
+        '</div>' +
+        /* Locked notice — shown after confirm */
+        '<div id="render-locked-bar" class="hidden mt-3 p-3 rounded-lg border border-emerald-200 bg-emerald-50 flex items-center gap-2">' +
+          '<svg class="w-4 h-4 text-emerald-700 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/></svg>' +
+          '<div class="flex-1 text-[11.5px] font-semibold text-emerald-800">ยืนยัน Render แล้ว · <span id="render-locked-time" class="font-mono font-normal text-emerald-700/80"></span></div>' +
+        '</div>' +
+      '</div>';
+    /* Initial gate check */
+    setTimeout(updateRenderGate, 0);
+  } else if (status === 'Done') {
+    card.innerHTML =
+      '<div class="flex items-center justify-between mb-3">' +
+        '<h3 class="text-[15px] font-semibold text-[#0B1430]">Final Render</h3>' +
+        '<span class="text-[10.5px] px-2 py-0.5 rounded-full font-medium border bg-emerald-50 text-emerald-700 border-emerald-200 inline-flex items-center gap-1">' +
+          '<svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>Rendered' +
+        '</span>' +
+      '</div>' +
+      '<div class="rounded-lg border border-emerald-200 overflow-hidden mb-4">' +
+        '<div class="px-4 py-2.5 bg-emerald-50 border-b border-emerald-200 flex items-center justify-between">' +
+          '<span class="text-[13px] font-semibold text-emerald-800">Mockup v2 (Final Approved)</span>' +
+          '<span class="text-[11px] font-mono" style="color:rgba(30,41,59,0.55)">10/05/2026 14:00</span>' +
+        '</div>' +
+        '<div class="p-3">' +
+          '<a href="https://placehold.co/800x450/10B981/ffffff?text=Final+Approved+Mockup" target="_blank" class="block rounded-md overflow-hidden border border-[#E2E8F0]">' +
+            '<img src="https://placehold.co/800x450/10B981/ffffff?text=Final+Approved+Mockup" alt="Approved mockup" class="w-full h-auto block" />' +
+          '</a>' +
+          '<div class="flex items-center justify-between mt-3 px-1">' +
+            '<div class="text-[11.5px]" style="color:rgba(30,41,59,0.65)"><span class="font-semibold">approved_mockup_v2.png</span> · 3.8 MB</div>' +
+            '<a href="https://placehold.co/800x450/10B981/ffffff?text=Final+Approved+Mockup" download="approved_mockup_v2.png" class="h-8 px-3 rounded-md bg-white border border-[#CBD5E1] text-[11.5px] font-semibold inline-flex items-center gap-1 hover:bg-[#F8FAFC]">' +
+              '<svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>Download</a>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="text-[10.5px] uppercase font-semibold tracking-wider mb-2" style="color:rgba(30,41,59,0.55)">ข้อมูลจาก Sales ตอน Approve</div>' +
+      '<div class="grid grid-cols-2 gap-3 mb-4">' +
+        '<div class="rounded-lg border border-indigo-100 bg-indigo-50/50 p-3">' +
+          '<div class="text-[10px] uppercase font-semibold tracking-wider mb-1" style="color:#4338CA">ออกอากาศ/ชั่วโมง</div>' +
+          '<div class="text-[20px] font-bold text-indigo-900 tnum">6 <span class="text-[11px] font-medium" style="color:rgba(67,56,202,0.65)">ครั้ง</span></div>' +
+        '</div>' +
+        '<div class="rounded-lg border border-indigo-100 bg-indigo-50/50 p-3">' +
+          '<div class="text-[10px] uppercase font-semibold tracking-wider mb-1" style="color:#4338CA">ระยะเวลาแสดง</div>' +
+          '<div class="text-[20px] font-bold text-indigo-900 tnum">15 <span class="text-[11px] font-medium" style="color:rgba(67,56,202,0.65)">วินาที</span></div>' +
+        '</div>' +
+        '<div class="rounded-lg border border-indigo-100 bg-indigo-50/50 p-3">' +
+          '<div class="text-[10px] uppercase font-semibold tracking-wider mb-1" style="color:#4338CA">ช่วงเวลาออกอากาศ</div>' +
+          '<div class="text-[13px] font-semibold text-indigo-900">06:00 – 23:00</div>' +
+        '</div>' +
+        '<div class="rounded-lg border border-indigo-100 bg-indigo-50/50 p-3">' +
+          '<div class="text-[10px] uppercase font-semibold tracking-wider mb-1" style="color:#4338CA">จำนวน Sites</div>' +
+          '<div class="text-[20px] font-bold text-indigo-900 tnum">18 <span class="text-[11px] font-medium" style="color:rgba(67,56,202,0.65)">จุด</span></div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="rounded-lg bg-amber-50 border border-amber-200 p-3 mb-4">' +
+        '<div class="text-[12px] font-semibold text-amber-900 mb-1">คำสั่งพิเศษจาก Sales</div>' +
+        '<p class="text-[12px] leading-relaxed text-amber-800/90">เน้นออกอากาศช่วง Prime Time 18:00–22:00 ทุกวัน (ความถี่ x2) หลีกเลี่ยงการออกอากาศซ้อนกับโฆษณาคู่แข่ง (Pepsi, Coke) ส่งไฟล์ render เป็น MP4 1080p H.264 bitrate ≥ 8 Mbps พร้อมตรวจสอบสี/โลโก้ให้ตรง brand guideline ก่อนส่งทุกครั้ง</p>' +
+      '</div>' +
+      /* ===== ผลการอนุมัติ 2 ฝ่าย — Done = ทั้งคู่อนุมัติแล้ว ===== */
+      '<div class="text-[10.5px] uppercase font-semibold tracking-wider mb-2" style="color:rgba(30,41,59,0.55)">ผลการอนุมัติ</div>' +
+      '<div class="grid grid-cols-2 gap-3 mb-4">' +
+        renderApprovalBox('client-done', 'ลูกค้าอนุมัติ',         'Chang Beverage Co., Ltd.', true, '18/05/2026 14:20', 'Somchai Wattanakul') +
+        renderApprovalBox('owner-done',  'เจ้าของพื้นที่อนุมัติ',  'BTS Group Holdings',         true, '19/05/2026 10:05', 'Pongsak Tangjit') +
+      '</div>' +
+      /* ===== ไฟล์ที่ Render ทั้งหมด — collapsible ===== */
+      '<div class="rounded-lg border border-emerald-200 overflow-hidden">' +
+        '<button type="button" onclick="toggleDoneRenderOutput()" class="w-full px-3 py-2.5 bg-emerald-50 border-b border-emerald-200 flex items-center gap-2 hover:bg-emerald-100 transition-colors">' +
+          '<svg id="done-render-chev" class="w-4 h-4 text-emerald-700 transition-transform rotate-90" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>' +
+          '<svg class="w-4 h-4 text-emerald-700" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12.76c0 1.6 1.123 2.994 2.707 3.227 1.068.157 2.148.279 3.238.364.466.037.893.281 1.153.671L12 21l2.652-3.978c.26-.39.687-.634 1.153-.67 1.09-.086 2.17-.208 3.238-.365 1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z"/></svg>' +
+          '<span class="flex-1 text-left text-[12.5px] font-semibold text-emerald-900">ไฟล์ที่ Render <span class="font-mono opacity-70">(3)</span></span>' +
+          '<span class="text-[10px] text-emerald-700 font-semibold">Rendered 10/05/2026 16:42</span>' +
+        '</button>' +
+        '<div id="done-render-body">' +
+        '<table class="w-full text-[12px]">' +
+          '<thead class="bg-[#F8FAFC]"><tr>' +
+            '<th class="text-left px-3 py-2 font-semibold text-[10.5px] uppercase tracking-wider w-12" style="color:rgba(30,41,59,0.55)">#</th>' +
+            '<th class="text-left px-3 py-2 font-semibold text-[10.5px] uppercase tracking-wider" style="color:rgba(30,41,59,0.55)">ชื่อไฟล์</th>' +
+            '<th class="text-left px-3 py-2 font-semibold text-[10.5px] uppercase tracking-wider w-20" style="color:rgba(30,41,59,0.55)">ประเภท</th>' +
+            '<th class="text-right px-3 py-2 font-semibold text-[10.5px] uppercase tracking-wider w-24" style="color:rgba(30,41,59,0.55)">สถานะ</th>' +
+          '</tr></thead>' +
+          '<tbody>' +
+            ['chang_metro_final_01.mp4','chang_metro_final_02.mp4','chang_metro_final_03.mp4'].map(function(name, i){
+              var seq = String(i+1).padStart(2,'0');
+              return '<tr class="border-t border-[#E2E8F0] hover:bg-[#F8FAFC]">' +
+                '<td class="px-3 py-1.5 font-mono tnum text-[11.5px]" style="color:rgba(30,41,59,0.55)">' + seq + '</td>' +
+                '<td class="px-3 py-1.5 font-mono text-[12px] text-[#0B1430]">' + name + '</td>' +
+                '<td class="px-3 py-1.5"><span class="text-[10.5px] font-mono px-1.5 py-0.5 rounded bg-indigo-50 text-indigo-700 border border-indigo-200">.mp4</span></td>' +
+                '<td class="px-3 py-1.5 text-right"><span class="inline-flex items-center gap-1 text-[10.5px] font-semibold text-emerald-700"><svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>Rendered</span></td>' +
+              '</tr>';
+            }).join('') +
+          '</tbody>' +
+        '</table>' +
+        '</div>' +
+      '</div>' +
+      '<div class="text-[11px] mt-3 text-center" style="color:rgba(30,41,59,0.5)">งานนี้ปิดแล้ว — ไม่สามารถแก้ไขได้</div>';
+  }
+
+  /* Render Mockup History card in right sidebar (only when status != To Do) */
+  renderMockupHistorySidebar(status);
+}
+
+renderStatusView();
+
+/* ===== Review Action bar: hide on Done; show Approved state if landlord already approved ===== */
+(function syncReviewActionBar(){
+  var status = getQueryParam('status') || 'On Process';
+  var bar = document.getElementById('review-action-bar');
+  if (status === 'Done') {
+    if (bar) bar.classList.add('hidden');
+    return;
+  }
+  if (!_approvalState || !_approvalState.owner) return;
+  var btnGroup = document.getElementById('review-action-buttons');
+  var apState  = document.getElementById('review-approved-state');
+  var apTime   = document.getElementById('review-approved-time');
+  var apBy     = document.getElementById('review-approved-by');
+  if (apTime && _approvalState.ownerDate) apTime.textContent = _approvalState.ownerDate;
+  if (apBy && _approvalState.ownerUser) apBy.textContent = _approvalState.ownerUser;
+  if (btnGroup) btnGroup.classList.add('hidden');
+  if (apState)  { apState.classList.remove('hidden'); apState.classList.add('flex'); }
+})();
+
+/* ===== Action Modal (Approve / Feedback) ===== */
+function openActionModal(mode) {
+  var titleEl   = document.getElementById('action-modal-title');
+  var eyebrowEl = document.getElementById('action-modal-eyebrow');
+  var iconEl    = document.getElementById('action-modal-icon');
+  var headerEl  = document.getElementById('action-modal-header');
+  if (titleEl) titleEl.textContent = 'JOB-1040-M  ·  Chang Classic 620ml';
+  if (mode === 'approve') {
+    if (eyebrowEl) eyebrowEl.textContent = 'Approve Mockup';
+    if (iconEl) { iconEl.style.background = 'rgba(16,185,129,0.18)'; iconEl.style.color = '#047857'; }
+    if (headerEl) headerEl.style.background = 'linear-gradient(135deg,#ECFDF5,#fff)';
+  } else {
+    if (eyebrowEl) eyebrowEl.textContent = 'Send Feedback';
+    if (iconEl) { iconEl.style.background = 'rgba(245,158,11,0.18)'; iconEl.style.color = '#B45309'; }
+    if (headerEl) headerEl.style.background = 'linear-gradient(135deg,#FFFBEB,#fff)';
+  }
+  var fbForm = document.getElementById('feedback-form');
+  var apForm = document.getElementById('approve-form');
+  if (fbForm) fbForm.classList.add('hidden');
+  if (apForm) apForm.classList.add('hidden');
+  ['feedback-note','feedback-link','approve-note'].forEach(function(id){
+    var el = document.getElementById(id); if (el) el.value = '';
+  });
+  _fbFiles = [];
+  fbRenderFiles();
+  document.getElementById('action-modal-overlay').classList.remove('hidden');
+  document.getElementById('action-modal').classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+  if (mode === 'approve') {
+    apForm.classList.remove('hidden');
+    setTimeout(function(){ var el = document.getElementById('approve-note'); if (el) el.focus(); }, 80);
+  } else {
+    fbForm.classList.remove('hidden');
+    setTimeout(function(){ document.getElementById('feedback-note').focus(); }, 80);
+  }
+}
+
+function closeActionModal() {
+  document.getElementById('action-modal-overlay').classList.add('hidden');
+  document.getElementById('action-modal').classList.add('hidden');
+  document.body.style.overflow = '';
+  var fbForm = document.getElementById('feedback-form');
+  var apForm = document.getElementById('approve-form');
+  if (fbForm) fbForm.classList.add('hidden');
+  if (apForm) apForm.classList.add('hidden');
+}
+
+function cancelApprove() {
+  document.getElementById('approve-form').classList.add('hidden');
+  var noteEl = document.getElementById('approve-note'); if (noteEl) noteEl.value = '';
+  closeActionModal();
+}
+
+function submitApprove() {
+  var noteEl = document.getElementById('approve-note'); if (noteEl) noteEl.value = '';
+  /* Flip job status badge → Done */
+  var badge = document.getElementById('job-status-badge');
+  if (badge) {
+    badge.className = 'text-[11px] px-2.5 py-1 rounded-full font-medium border bg-teal-50 text-teal-700 border-teal-200 inline-flex items-center gap-1';
+    badge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-teal-500"></span>Done';
+  }
+  /* Swap review-action bar to Approved state */
+  var btnGroup = document.getElementById('review-action-buttons');
+  var apState  = document.getElementById('review-approved-state');
+  var apTime   = document.getElementById('review-approved-time');
+  if (apTime) {
+    var d = new Date();
+    var dd = String(d.getDate()).padStart(2,'0');
+    var mm = String(d.getMonth()+1).padStart(2,'0');
+    var hh = String(d.getHours()).padStart(2,'0');
+    var mi = String(d.getMinutes()).padStart(2,'0');
+    apTime.textContent = dd + '/' + mm + '/' + d.getFullYear() + ' ' + hh + ':' + mi;
+  }
+  if (btnGroup) btnGroup.classList.add('hidden');
+  if (apState)  { apState.classList.remove('hidden'); apState.classList.add('flex'); }
+  showReviewToast('Approved · JOB-1040-M', '#047857');
+  closeActionModal();
+}
+
+function unapproveAction() {
+  if (!confirm('ยกเลิกการ Approve ของ JOB-1040-M ?')) return;
+  /* Restore status badge → On Process */
+  var badge = document.getElementById('job-status-badge');
+  if (badge) {
+    badge.className = 'text-[11px] px-2.5 py-1 rounded-full font-medium border bg-blue-50 text-blue-700 border-blue-200 inline-flex items-center gap-1';
+    badge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>On Process';
+  }
+  /* Swap bar back to buttons */
+  var btnGroup = document.getElementById('review-action-buttons');
+  var apState  = document.getElementById('review-approved-state');
+  if (apState)  { apState.classList.add('hidden'); apState.classList.remove('flex'); }
+  if (btnGroup) btnGroup.classList.remove('hidden');
+  showReviewToast('ยกเลิก Approve · JOB-1040-M', '#B45309');
+}
+
+function cancelFeedback() {
+  document.getElementById('feedback-form').classList.add('hidden');
+  var n = document.getElementById('feedback-note'); if (n) n.value = '';
+  var l = document.getElementById('feedback-link'); if (l) l.value = '';
+  _fbFiles = [];
+  fbRenderFiles();
+  closeActionModal();
+}
+
+function submitFeedback() {
+  var note = (document.getElementById('feedback-note').value || '').trim();
+  var link = (document.getElementById('feedback-link').value || '').trim();
+  if (!note) { alert('กรุณากรอก Note ก่อนSend Feedback'); document.getElementById('feedback-note').focus(); return; }
+  if (link && !/^https?:\/\//i.test(link)) { alert('ลิงก์ไม่ถูกต้อง — กรุณาเริ่มต้นด้วย http:// หรือ https://'); document.getElementById('feedback-link').focus(); return; }
+  if (_fbTotal() > FB_MAX_BYTES) { alert('ขนาดไฟล์รวมเกิน 50 MB — กรุณาลบไฟล์บางส่วนออก'); return; }
+  /* Flip job status badge → Revise */
+  var badge = document.getElementById('job-status-badge');
+  if (badge) {
+    badge.className = 'text-[11px] px-2.5 py-1 rounded-full font-medium border bg-amber-50 text-amber-700 border-amber-200 inline-flex items-center gap-1';
+    badge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>Revise';
+  }
+  _fbFiles = [];
+  showReviewToast('Feedback ส่งแล้ว · JOB-1040-M', '#C2410C');
+  closeActionModal();
+}
+
+/* ===== Feedback file upload (multi-file, 50 MB combined) ===== */
+var FB_MAX_BYTES = 50 * 1024 * 1024;
+var _fbFiles = [];
+function _fbBytes(n) {
+  if (n < 1024) return n + ' B';
+  if (n < 1024*1024) return (n/1024).toFixed(1) + ' KB';
+  return (n/1024/1024).toFixed(2) + ' MB';
+}
+function _fbTotal() { return _fbFiles.reduce(function(s,f){return s+f.size;}, 0); }
+function fbOnFiles(input) {
+  if (!input || !input.files || !input.files.length) return;
+  var existing = _fbTotal();
+  for (var i = 0; i < input.files.length; i++) {
+    var f = input.files[i];
+    if (existing + f.size > FB_MAX_BYTES) { alert('ไฟล์ "' + f.name + '" ทำให้ขนาดรวมเกิน 50 MB — ข้ามไฟล์นี้'); continue; }
+    existing += f.size;
+    _fbFiles.push(f);
+  }
+  input.value = '';
+  fbRenderFiles();
+}
+function fbRemoveFile(idx) { _fbFiles.splice(idx, 1); fbRenderFiles(); }
+function fbRenderFiles() {
+  var listEl = document.getElementById('feedback-files-list');
+  var sizeEl = document.getElementById('feedback-size');
+  var total = _fbTotal();
+  var over  = total > FB_MAX_BYTES;
+  var pct   = (total / FB_MAX_BYTES) * 100;
+  if (sizeEl) {
+    sizeEl.textContent = _fbBytes(total) + ' / 50 MB';
+    sizeEl.style.color = over ? '#dc2626' : (pct > 80 ? '#d97706' : 'rgba(30,41,59,0.55)');
+  }
+  if (!listEl) return;
+  if (!_fbFiles.length) { listEl.innerHTML = ''; return; }
+  var h = '';
+  _fbFiles.forEach(function(f, i){
+    h += '<div class="flex items-center gap-2 px-2 py-1.5 bg-white border border-[#E2E8F0] rounded-md">' +
+      '<svg class="w-3.5 h-3.5 shrink-0" style="color:rgba(30,41,59,0.5)" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg>' +
+      '<span class="text-[11.5px] font-mono flex-1 truncate" title="' + f.name + '">' + f.name + '</span>' +
+      '<span class="text-[10px] tnum" style="color:rgba(30,41,59,0.55)">' + _fbBytes(f.size) + '</span>' +
+      '<button type="button" onclick="fbRemoveFile(' + i + ')" class="w-5 h-5 rounded hover:bg-rose-50 flex items-center justify-center" style="color:rgba(30,41,59,0.4)">' +
+        '<svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>' +
+      '</button>' +
+    '</div>';
+  });
+  listEl.innerHTML = h;
+}
+
+function showReviewToast(text, color) {
+  var toast = document.createElement('div');
+  toast.className = 'fixed bottom-6 left-1/2 -translate-x-1/2 z-[60] bg-[#0B1430] text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3 text-[13px]';
+  toast.innerHTML = '<span class="w-2 h-2 rounded-full" style="background:' + (color||'#10B981') + '"></span>' + text;
+  document.body.appendChild(toast);
+  setTimeout(function () { toast.style.opacity = '0'; toast.style.transition = 'opacity 0.3s'; setTimeout(function () { toast.remove(); }, 300); }, 2200);
+}
+</script>
+    </div>
+
+  </main>
+</div>
+
+<!-- AI Panel -->
+<div id="ai-panel" class="fixed right-0 top-0 bottom-0 w-[420px] bg-white border-l border-surface-200 z-40 flex flex-col translate-x-full transition-transform duration-200" style="box-shadow:-8px 0 30px rgba(11,20,48,0.08)">
+  <div class="h-16 px-5 border-b border-surface-200 flex items-center gap-3">
+    <div class="w-8 h-8 rounded-lg flex items-center justify-center text-white" style="background:linear-gradient(135deg,#2D56D2,#5FCBF9)">
+      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"/></svg>
+    </div>
+    <div class="flex-1">
+      <div class="text-[14px] font-semibold">Plan-B Copilot</div>
+      <div class="text-[11px] flex items-center gap-1" style="color:rgba(30,41,59,0.6)"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>Connected to live CRM data</div>
+    </div>
+    <button onclick="toggleAI()" class="w-8 h-8 rounded-md hover:bg-surface-100 flex items-center justify-center">
+      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+    </button>
+  </div>
+
+  <!-- Messages -->
+  <div id="ai-messages" class="flex-1 overflow-y-auto px-5 py-4 space-y-3">
+    <div><div class="text-[10px] font-medium uppercase tracking-wide mb-1" style="color:rgba(30,41,59,0.5)">Copilot</div><div class="inline-block max-w-[90%] text-[13px] leading-relaxed rounded-xl px-3.5 py-2.5 bg-surface-50 border border-surface-200">Hi — I can summarize occupancy, flag anomalies, draft proposals, or forecast revenue. What are we digging into?</div></div>
+  </div>
+
+  <!-- Suggestions -->
+  <div id="ai-suggestions" class="px-5 pb-2 space-y-2">
+    <div class="text-[10px] uppercase tracking-wide font-semibold" style="color:rgba(30,41,59,0.5)">Try asking</div>
+    <button onclick="aiSend(this.textContent)" class="w-full text-left text-[12px] px-3 py-2 border border-surface-200 rounded-lg hover:border-pb-500 hover:bg-blue-50/30 transition-colors">Forecast May occupancy for BTS inventory</button>
+    <button onclick="aiSend(this.textContent)" class="w-full text-left text-[12px] px-3 py-2 border border-surface-200 rounded-lg hover:border-pb-500 hover:bg-blue-50/30 transition-colors">Summarize this week's claims by severity</button>
+    <button onclick="aiSend(this.textContent)" class="w-full text-left text-[12px] px-3 py-2 border border-surface-200 rounded-lg hover:border-pb-500 hover:bg-blue-50/30 transition-colors">Who are my top 3 clients and where are they underspending?</button>
+    <button onclick="aiSend(this.textContent)" class="w-full text-left text-[12px] px-3 py-2 border border-surface-200 rounded-lg hover:border-pb-500 hover:bg-blue-50/30 transition-colors">Draft a proposal: AIS wants 30-day coverage in Bangkok + Chiang Mai</button>
+  </div>
+
+  <!-- Input -->
+  <div class="p-4 border-t border-surface-200">
+    <div class="rounded-xl bg-white border border-surface-200 focus-within:border-pb-500 transition" style="box-shadow:0 0 0 1px rgba(45,86,210,0.1)">
+      <div class="flex items-end gap-2 p-2">
+        <input id="ai-input" type="text" placeholder="Ask about occupancy, pipeline, claims…" class="flex-1 text-[13px] bg-transparent outline-none px-2 py-1.5 placeholder:opacity-40" onkeydown="if(event.key==='Enter'){event.preventDefault();aiSend()}" />
+        <button onclick="aiSend()" class="w-8 h-8 rounded-md bg-ink-900 hover:bg-ink-700 flex items-center justify-center text-white shrink-0">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 18-8-8 18-2-8-8-2Z"/></svg>
+        </button>
+      </div>
+    </div>
+    <p class="text-[10px] text-center mt-2" style="color:rgba(30,41,59,0.4)">Plan-B Copilot — may hallucinate, verify critical actions</p>
+  </div>
+</div>
+
+<script>
+/* === Expand/collapse sub-menus === */
+function toggleMenu(id){
+  const sub=document.getElementById(id+'-sub');
+  const chevron=document.getElementById(id+'-chevron');
+  if(sub.classList.contains('hidden')){
+    sub.classList.remove('hidden');
+    chevron.classList.add('rotate-90');
+  }else{
+    sub.classList.add('hidden');
+    chevron.classList.remove('rotate-90');
+  }
+}
+
+/* === Mobile sidebar overlay === */
+function toggleMobile(){
+  const sidebar=document.getElementById('sidebar');
+  const overlay=document.getElementById('sidebar-overlay');
+  sidebar.classList.toggle('-translate-x-full');
+  overlay.classList.toggle('hidden');
+}
+
+/* === Desktop collapse sidebar === */
+let _sidebarCollapsed = false;
+function collapseSidebar(){
+  // On mobile, toggle mobile drawer instead
+  if(window.innerWidth < 1024){
+    toggleMobile();
+    return;
+  }
+  _sidebarCollapsed = !_sidebarCollapsed;
+  const sb = document.getElementById('sidebar');
+  const main = document.querySelector('main');
+  const labels = sb.querySelectorAll('.sidebar-label');
+  const groups = sb.querySelectorAll('.sidebar-nav-parent');
+  const subs = sb.querySelectorAll('[id$="-sub"]');
+  const brand = document.getElementById('sidebar-brand');
+
+  if(_sidebarCollapsed){
+    sb.classList.remove('w-64');
+    sb.classList.add('w-[68px]');
+    main.classList.remove('lg:ml-64');
+    main.classList.add('lg:ml-[68px]');
+    labels.forEach(el=>el.classList.add('hidden'));
+    groups.forEach(el=>el.classList.add('hidden'));
+    subs.forEach(el=>el.classList.add('hidden'));
+    if(brand) brand.classList.replace('px-4','px-0');
+    if(brand) brand.classList.add('justify-center');
+  } else {
+    sb.classList.remove('w-[68px]');
+    sb.classList.add('w-64');
+    main.classList.remove('lg:ml-[68px]');
+    main.classList.add('lg:ml-64');
+    labels.forEach(el=>el.classList.remove('hidden'));
+    groups.forEach(el=>el.classList.remove('hidden'));
+    // Re-show sub-menus that were explicitly open (have active items)
+    subs.forEach(el=>{
+      if(el.querySelector('.active')) el.classList.remove('hidden');
+    });
+    if(brand) brand.classList.replace('px-0','px-4');
+    if(brand) brand.classList.remove('justify-center');
+  }
+}
+
+/* === AI Panel === */
+let _aiOpen = false;
+function toggleAI(){
+  _aiOpen = !_aiOpen;
+  const panel = document.getElementById('ai-panel');
+  const btn = document.getElementById('ai-toggle');
+  if(_aiOpen){
+    panel.classList.remove('translate-x-full');
+    btn.classList.remove('bg-white','border-surface-300','text-ink-900','hover:bg-surface-50');
+    btn.classList.add('bg-ink-900','text-white','border-ink-900');
+  } else {
+    panel.classList.add('translate-x-full');
+    btn.classList.remove('bg-ink-900','text-white','border-ink-900');
+    btn.classList.add('bg-white','border-surface-300','text-ink-900','hover:bg-surface-50');
+  }
+}
+
+/* AI demo chat */
+const _aiReplies = [
+  "Based on current data, BTS corridor occupancy is trending at 84% — above the 78% network average. If the pattern holds, May could hit 89% with AIS and TrueMove briefs both targeting Silom.",
+  "This week we have 3 open claims: #1284 (high — LED flicker, 2h remaining SLA), #1282 (critical — content not playing, urgent), and #1283 (med — vinyl peel, within SLA). The critical item needs immediate attention.",
+  "Your top 3 clients YTD: AIS Thailand (฿24.8M, 18 campaigns), TrueMove H (฿18.5M, 14 campaigns), and Toyota Motor (฿15.2M, 9 campaigns). Toyota is underspending on digital LED — they only use 2 of your 5 available LED sites.",
+  "Draft proposal ready: AIS 30-day coverage across 8 Bangkok sites (including Silom LED, Rama IX, Asoke) + 2 Chiang Mai sites. Estimated package: ฿4.2M. Occupancy conflicts on TH-SIL-09 for May 5-12 — recommend offering X-CAYA-FY-1 as substitute.",
+];
+let _aiReplyIdx = 0;
+
+function aiSend(text){
+  const input = document.getElementById('ai-input');
+  const msg = text || input.value.trim();
+  if(!msg) return;
+  input.value = '';
+  document.getElementById('ai-suggestions').style.display='none';
+
+  const box = document.getElementById('ai-messages');
+  // User bubble
+  box.innerHTML += '<div class="text-right"><div class="inline-block max-w-[90%] text-[13px] leading-relaxed rounded-xl px-3.5 py-2.5 bg-ink-900 text-white">'+msg.replace(/</g,'&lt;')+'</div></div>';
+  box.scrollTop = box.scrollHeight;
+
+  // Thinking dots
+  const thinkId = 'ai-think-'+Date.now();
+  box.innerHTML += '<div id="'+thinkId+'" class="flex items-center gap-2 text-[12px]" style="color:rgba(30,41,59,0.6)"><div class="flex gap-1"><span class="w-1.5 h-1.5 bg-pb-500 rounded-full pulse-dot"></span><span class="w-1.5 h-1.5 bg-pb-500 rounded-full pulse-dot" style="animation-delay:.2s"></span><span class="w-1.5 h-1.5 bg-pb-500 rounded-full pulse-dot" style="animation-delay:.4s"></span></div>analyzing CRM data…</div>';
+  box.scrollTop = box.scrollHeight;
+
+  setTimeout(()=>{
+    const el = document.getElementById(thinkId);
+    if(el) el.remove();
+    const reply = _aiReplies[_aiReplyIdx % _aiReplies.length];
+    _aiReplyIdx++;
+    box.innerHTML += '<div><div class="text-[10px] font-medium uppercase tracking-wide mb-1" style="color:rgba(30,41,59,0.5)">Copilot</div><div class="inline-block max-w-[90%] text-[13px] leading-relaxed rounded-xl px-3.5 py-2.5 bg-surface-50 border border-surface-200">'+reply+'</div></div>';
+    box.scrollTop = box.scrollHeight;
+  }, 1500);
+}
+</script>
+</body>
+</html>

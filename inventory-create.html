@@ -1,0 +1,2597 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>New Media — Plan-B CRM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script>
+tailwind.config={theme:{extend:{fontFamily:{kanit:['Kanit','sans-serif'],mono:['JetBrains Mono','monospace']},colors:{pb:{900:'#213268',700:'#2D56D2',500:'#4790FF',300:'#5FCBF9',50:'#EBF5FF',100:'#D6ECFF'},ink:{900:'#0B1430',800:'#162040',700:'#1E293B'},surface:{0:'#FFFFFF',50:'#F8FAFC',100:'#F1F5F9',200:'#E2E8F0',300:'#CBD5E1'}}}}}
+</script>
+<style>
+*{font-family:'Kanit',sans-serif;-webkit-font-smoothing:antialiased}
+.font-mono,code,.font-mono *{font-family:'JetBrains Mono',monospace}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#CBD5E8;border-radius:10px;border:2px solid #F7F9FC}
+::-webkit-scrollbar-thumb:hover{background:#93A4C4}
+.sidebar-scroll::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.06);border:2px solid transparent}
+.sidebar-scroll::-webkit-scrollbar-track{background:transparent}
+.sidebar-nav{color:rgba(30,41,59,0.6);transition:all 0.15s;position:relative;font-size:13px}
+.sidebar-nav:hover{color:#0B1430;background:rgba(71,144,255,0.06)}
+.sidebar-nav.active{color:#2D56D2;font-weight:500;background:linear-gradient(90deg,rgba(71,144,255,0.10),rgba(71,144,255,0))}
+.sidebar-nav.active::before{content:'';position:absolute;left:0;top:8px;bottom:8px;width:3px;border-radius:2px;background:#2D56D2;box-shadow:0 0 8px rgba(45,86,210,0.4)}
+.sidebar-nav-parent{color:rgba(30,41,59,0.4);transition:all 0.15s;font-size:10.5px;text-transform:uppercase;letter-spacing:0.05em;font-weight:600}
+.sidebar-nav-parent:hover{color:rgba(30,41,59,0.7)}
+.sidebar-nav-parent.active{color:rgba(30,41,59,0.7)}
+.sidebar-sub{color:rgba(30,41,59,0.55);transition:all 0.15s;position:relative}
+.sidebar-sub:hover{color:#0B1430;background:rgba(71,144,255,0.06)}
+.sidebar-sub.active{color:#2D56D2;font-weight:500;background:linear-gradient(90deg,rgba(71,144,255,0.10),rgba(71,144,255,0))}
+.sidebar-sub.active::before{content:'';position:absolute;left:0;top:6px;bottom:6px;width:3px;border-radius:2px;background:#2D56D2;box-shadow:0 0 8px rgba(45,86,210,0.4)}
+.sidebar-group-icon{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:8px;background:transparent;transition:all .15s;flex-shrink:0;color:rgba(30,41,59,0.55)}
+.sgi-ma{color:#7C3AED}.sgi-rpt{color:#0EA5E9}.sgi-stg{color:#EF4444}
+.nav-parent{border-radius:8px;transition:all .15s}
+.nav-parent:hover{background:#F1F5F9}
+#sidebar{background:linear-gradient(180deg,#fff 0%,#fff 60%,#F8FAFC 100%) !important}
+#sidebar-brand{background:linear-gradient(135deg,rgba(45,86,210,0.04),rgba(95,203,249,0.04))}
+input:focus,select:focus,textarea:focus{outline:none;border-color:#4790FF;box-shadow:0 0 0 3px rgba(71,144,255,0.15)}
+.topbar-white{background:rgba(255,255,255,0.9);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid #E2E8F0}
+.sidebar-label{transition:opacity 0.15s;white-space:nowrap;overflow:hidden}
+.tnum{font-variant-numeric:tabular-nums}
+.shadow-card{box-shadow:0 1px 3px rgba(11,20,48,0.06),0 1px 2px rgba(11,20,48,0.04)}
+/* Form field styles */
+.fld-label{display:block;font-size:12px;font-weight:500;color:rgba(11,20,48,0.78);margin-bottom:6px;letter-spacing:.01em}
+.fld-label .req{color:#E11D48;margin-left:2px;font-weight:600}
+/* Label row: label on the left, inline helper/checkbox on the right — keeps field height uniform */
+.fld-label-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:6px;min-height:18px}
+.fld-label-row .fld-label{margin-bottom:0}
+.fld-inline-check{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:500;color:rgba(30,41,59,0.65);cursor:pointer;user-select:none;padding:3px 8px;border-radius:6px;border:1px solid #E2E8F0;background:#FCFDFE;transition:all .15s;line-height:1}
+.fld-inline-check:hover{background:#fff;border-color:#CBD5E8;color:#1E293B}
+.fld-inline-check input[type=checkbox]{appearance:none;width:13px;height:13px;border:1.5px solid #CBD5E1;border-radius:3px;margin:0;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:.15s;flex-shrink:0;background:#fff;position:relative}
+.fld-inline-check input[type=checkbox]:hover{border-color:#4790FF}
+.fld-inline-check input[type=checkbox]:checked{background:#2D56D2;border-color:#2D56D2}
+.fld-inline-check input[type=checkbox]:checked::after{content:'';position:absolute;left:3px;top:0px;width:4px;height:8px;border:solid #fff;border-width:0 1.8px 1.8px 0;transform:rotate(45deg)}
+.fld-inline-check:has(input:checked){background:rgba(45,86,210,0.06);border-color:rgba(45,86,210,0.35);color:#2D56D2}
+.fld-input,.fld-select,.fld-textarea{width:100%;height:38px;padding:0 12px;background:#FCFDFE;border:1px solid #E2E8F0;border-radius:8px;font-size:13px;color:#0B1430;transition:all .15s;font-family:'Kanit',sans-serif}
+.fld-textarea{height:auto;min-height:84px;padding:9px 12px;resize:vertical;line-height:1.45}
+.fld-input::placeholder,.fld-textarea::placeholder{color:rgba(30,41,59,0.35)}
+.fld-input:hover,.fld-select:hover,.fld-textarea:hover{background:#fff;border-color:#CBD5E8}
+.fld-input:focus,.fld-select:focus,.fld-textarea:focus{background:#fff;border-color:#4790FF;box-shadow:0 0 0 3px rgba(71,144,255,0.18)}
+.fld-select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19.5 8.25l-7.5 7.5-7.5-7.5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:32px;cursor:pointer}
+.fld-readonly{background:#F8FAFC;color:rgba(30,41,59,0.6)}
+.fld-readonly:hover{border-color:#E2E8F0;background:#F8FAFC}
+.fld-with-icon{position:relative}
+.fld-with-icon .fld-input{padding-left:36px}
+.fld-with-icon .icn{position:absolute;left:11px;top:50%;transform:translateY(-50%);width:14px;height:14px;color:rgba(30,41,59,0.4);pointer-events:none}
+.fld-with-suffix{position:relative}
+.fld-with-suffix .fld-input{padding-right:48px}
+.fld-with-suffix .suffix{position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:11px;color:rgba(30,41,59,0.5);font-weight:500;pointer-events:none}
+/* Radio group */
+.radio-grp{display:inline-flex;flex-wrap:wrap;gap:8px}
+.radio-pill{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 14px;background:#FCFDFE;border:1px solid #E2E8F0;border-radius:8px;font-size:12.5px;color:#1E293B;cursor:pointer;transition:all .15s;user-select:none}
+.radio-pill:hover{background:#fff;border-color:#CBD5E8}
+.radio-pill input{appearance:none;width:14px;height:14px;border-radius:50%;border:1.5px solid #CBD5E1;margin:0;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:.15s;flex-shrink:0}
+.radio-pill input:checked{border-color:#2D56D2;background:#2D56D2;box-shadow:inset 0 0 0 3px #fff}
+.radio-pill:has(input:checked){background:rgba(71,144,255,0.10);border-color:#4790FF;color:#213268;font-weight:500}
+/* Tabs — color-coded per section */
+.tab-pill{
+  --tab-c:#2D56D2;
+  --tab-c-bg:rgba(45,86,210,0.12);
+  --tab-c-bg-soft:rgba(45,86,210,0.05);
+  height:36px;padding:0 14px;display:inline-flex;align-items:center;gap:7px;
+  font-size:12.5px;font-weight:500;color:rgba(30,41,59,0.65);
+  background:#fff;border:1px solid #E2E8F0;border-radius:10px;
+  cursor:pointer;transition:all .15s;white-space:nowrap
+}
+.tab-pill:hover{color:var(--tab-c);background:var(--tab-c-bg-soft);border-color:var(--tab-c)}
+.tab-pill.active{color:var(--tab-c);background:var(--tab-c-bg);border-color:var(--tab-c);font-weight:600;box-shadow:0 2px 8px var(--tab-c-bg)}
+.tab-pill .num{font-size:10.5px;font-weight:700;background:var(--tab-c-bg);color:var(--tab-c);padding:1px 7px;border-radius:99px;min-width:18px;text-align:center;transition:all .15s}
+.tab-pill.active .num{background:var(--tab-c);color:#fff}
+.scroll-anchor{scroll-margin-top:130px}
+/* Section header — color-coded per section */
+.section-card{
+  --sec-c:#2D56D2;
+  --sec-c-bg:rgba(45,86,210,0.10);
+  --sec-c-bg-soft:rgba(45,86,210,0.04);
+  background:#fff;border:1px solid #E2E8F0;border-radius:14px;overflow:hidden;
+  transition:box-shadow .25s ease,border-color .25s ease;position:relative
+}
+.section-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--sec-c);opacity:.85;z-index:1}
+.section-card:hover{border-color:var(--sec-c);box-shadow:0 1px 3px rgba(11,20,48,0.06),0 10px 28px var(--sec-c-bg)}
+.section-head{padding:18px 24px;border-bottom:1px solid var(--sec-c-bg);display:flex;align-items:center;gap:12px;background:linear-gradient(180deg,var(--sec-c-bg-soft) 0%,#FFFFFF 100%)}
+.section-icon{width:38px;height:38px;border-radius:10px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;background:var(--sec-c-bg);color:var(--sec-c);box-shadow:0 2px 8px var(--sec-c-bg-soft)}
+.section-title{font-size:15px;font-weight:600;color:#0B1430;line-height:1.2}
+.section-sub{font-size:11.5px;color:rgba(30,41,59,0.55);margin-top:1px}
+.section-step{font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--sec-c);background:var(--sec-c-bg);padding:3px 10px;border-radius:99px}
+.section-body{padding:24px}
+/* Keep grid rows aligned to top so cells without helper text don't stretch to match taller neighbours */
+.section-body > .grid > *,.section-body .grid.grid-cols-1 > *{align-self:start}
+/* Reserve consistent space for helper text so field baselines line up across the row */
+.section-body .helper{min-height:16px}
+/* Field group subtitle */
+.group-subtitle{font-size:11.5px;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:rgba(30,41,59,0.65);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.group-subtitle::before{content:'';width:3px;height:14px;background:var(--sec-c,#4790FF);border-radius:99px;opacity:.7}
+.group-subtitle .badge{margin-left:auto;background:rgba(124,58,237,0.10);color:#7C3AED;padding:2px 8px;border-radius:99px;font-size:10.5px;font-weight:600;letter-spacing:.02em;text-transform:none}
+/* Conditional block */
+.cond-block{border:1px dashed var(--sec-c,#CBD5E1);border-radius:12px;padding:18px 20px;background:linear-gradient(135deg,var(--sec-c-bg-soft,#F8FAFC),#FFFFFF);margin-top:8px}
+.cond-block.hidden{display:none}
+.cond-block .group-subtitle::before{background:var(--sec-c,#7C3AED)}
+.cond-block .group-subtitle .badge{background:var(--sec-c-bg,rgba(124,58,237,0.10));color:var(--sec-c,#7C3AED)}
+/* Action bar */
+.action-bar{background:rgba(247,249,252,0.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+/* Date wrapper */
+.fld-date-wrap{position:relative}
+.fld-date-wrap .fld-input{padding-right:36px;cursor:pointer;background-image:none}
+.fld-date-wrap .cal-icn{position:absolute;right:11px;top:50%;transform:translateY(-50%);width:15px;height:15px;color:rgba(30,41,59,0.5);pointer-events:none;transition:color .15s}
+.fld-date-wrap:hover .cal-icn{color:#2D56D2}
+/* Flatpickr custom theme */
+.flatpickr-calendar{font-family:'Kanit',sans-serif !important;border-radius:14px !important;box-shadow:0 10px 40px rgba(11,20,48,0.18) !important;border:1px solid #E2E8F0 !important}
+.flatpickr-calendar.arrowTop:before,.flatpickr-calendar.arrowTop:after{display:none}
+.flatpickr-day.selected,.flatpickr-day.selected:hover,.flatpickr-day.startRange,.flatpickr-day.endRange{background:#2D56D2 !important;border-color:#2D56D2 !important}
+.flatpickr-day.today{border-color:#4790FF !important;color:#2D56D2 !important;font-weight:600}
+.flatpickr-day:hover{background:rgba(71,144,255,0.10) !important;border-color:transparent !important;color:#0B1430 !important}
+.flatpickr-day.selected:hover{color:#fff !important}
+.flatpickr-months .flatpickr-month{color:#0B1430 !important;font-weight:500}
+.flatpickr-current-month .flatpickr-monthDropdown-months,.flatpickr-current-month input.cur-year{color:#0B1430 !important;font-weight:600 !important}
+.flatpickr-weekday{color:rgba(30,41,59,0.5) !important;font-weight:500 !important;font-size:11.5px !important}
+/* Map preview placeholder */
+.map-preview{height:160px;border-radius:10px;background:linear-gradient(135deg,#F8FAFC 0%,#EBF5FF 100%);border:1px dashed #CBD5E1;display:flex;align-items:center;justify-content:center;color:rgba(30,41,59,0.5);font-size:12px;gap:6px}
+/* Fade in on load */
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.section-card{animation:fadeUp .25s ease backwards}
+.section-card:nth-child(1){animation-delay:.02s}
+.section-card:nth-child(2){animation-delay:.06s}
+.section-card:nth-child(3){animation-delay:.10s}
+.section-card:nth-child(4){animation-delay:.14s}
+.section-card:nth-child(5){animation-delay:.18s}
+.section-card:nth-child(6){animation-delay:.22s}
+/* Hint helper */
+.helper{font-size:11px;color:rgba(30,41,59,0.5);margin-top:5px}
+.helper-err{color:#E11D48}
+/* Toast */
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#0B1430;color:#fff;padding:10px 18px;border-radius:10px;font-size:13px;z-index:100;box-shadow:0 10px 30px rgba(11,20,48,0.3);display:none}
+#toast.show{display:block;animation:fadeUp .2s ease}
+/* Multi-select component */
+.multi-select{position:relative}
+.multi-select-input{min-height:38px;width:100%;padding:5px 36px 5px 8px;background:#FCFDFE;border:1px solid #E2E8F0;border-radius:8px;font-size:13px;color:#0B1430;cursor:pointer;transition:all .15s;display:flex;align-items:center;flex-wrap:wrap;gap:4px;position:relative}
+.multi-select-input:hover{background:#fff;border-color:#CBD5E8}
+.multi-select.open .multi-select-input{background:#fff;border-color:#4790FF;box-shadow:0 0 0 3px rgba(71,144,255,0.18)}
+.multi-select-arrow{position:absolute;right:12px;top:50%;transform:translateY(-50%);width:12px;height:12px;color:#64748b;pointer-events:none;transition:transform .15s}
+.multi-select.open .multi-select-arrow{transform:translateY(-50%) rotate(180deg)}
+.multi-select-chips{display:flex;flex-wrap:wrap;gap:4px;flex:1;min-height:26px;align-items:center}
+.multi-select-placeholder{color:rgba(30,41,59,0.35);font-size:13px;padding:0 4px}
+.ms-chip{display:inline-flex;align-items:center;gap:4px;padding:3px 4px 3px 8px;background:rgba(45,86,210,0.10);color:#213268;border-radius:6px;font-size:11.5px;font-weight:500;line-height:1.2}
+.ms-chip .x{width:16px;height:16px;border-radius:4px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:.15s;color:#2D56D2}
+.ms-chip .x:hover{background:rgba(45,86,210,0.18)}
+.multi-select-dropdown{position:absolute;top:calc(100% + 4px);left:0;right:0;background:#fff;border:1px solid #E2E8F0;border-radius:8px;box-shadow:0 10px 30px rgba(11,20,48,0.12);max-height:240px;overflow-y:auto;z-index:30;padding:4px}
+.multi-select-dropdown.hidden{display:none}
+.ms-option{padding:8px 10px;border-radius:6px;font-size:12.5px;color:#1E293B;cursor:pointer;display:flex;align-items:center;gap:8px;transition:.12s}
+.ms-option:hover{background:rgba(71,144,255,0.08)}
+.ms-option input[type=checkbox]{appearance:none;width:15px;height:15px;border:1.5px solid #CBD5E1;border-radius:4px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;transition:.15s}
+.ms-option input[type=checkbox]:checked{background:#2D56D2;border-color:#2D56D2}
+.ms-option input[type=checkbox]:checked::after{content:'';width:8px;height:4px;border:1.5px solid #fff;border-top:0;border-right:0;transform:rotate(-45deg) translate(1px,-1px)}
+.ms-option.selected{background:rgba(71,144,255,0.10);color:#213268;font-weight:500}
+.ms-empty{padding:14px 12px;text-align:center;font-size:12px;color:rgba(30,41,59,0.45)}
+</style>
+<script src="shared/sidebar.js"></script>
+</head>
+<body class="font-kanit" style="background:#F7F9FC;color:#0B1430">
+
+<div class="min-h-screen flex">
+  <!-- SIDEBAR -->
+  <div id="sidebar-overlay" class="hidden fixed inset-0 bg-black/40 z-20 lg:hidden" onclick="toggleMobile()"></div>
+  <aside id="sidebar" class="w-64 flex flex-col fixed h-full z-30 transition-all duration-200 -translate-x-full lg:translate-x-0 bg-white border-r border-[#E2E8F0]">
+    <div class="px-4 h-16 flex items-center gap-2.5 border-b border-[#E2E8F0]" id="sidebar-brand">
+      <div class="sidebar-label flex items-center gap-2 min-w-0">
+        <img src="logo.jpg" alt="Plan-B Media" class="h-8 w-auto rounded shrink-0" />
+        <span class="text-[11px] font-semibold tracking-wide uppercase border-l border-[#E2E8F0] pl-2 truncate" style="color:rgba(30,41,59,0.55)">Media Flow System</span>
+      </div>
+    </div>
+    <nav class="flex-1 py-3 px-2 overflow-y-auto text-sm sidebar-scroll space-y-0.5">
+      <a href="dashboard.html" class="sidebar-nav w-full flex items-center gap-3 h-10 rounded-md px-3 cursor-pointer">
+        <svg class="w-[18px] h-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25a2.25 2.25 0 01-2.25-2.25v-2.25z"/></svg>
+        <span class="flex-1 text-left truncate sidebar-label">Dashboard</span>
+      </a>
+      <a href="inventory.html" class="active sidebar-nav w-full flex items-center gap-3 h-10 rounded-md px-3 cursor-pointer">
+        <svg class="w-[18px] h-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z"/></svg>
+        <span class="flex-1 text-left truncate sidebar-label">Inventory</span>
+      </a>
+      <a href="sale.html" class="sidebar-nav w-full flex items-center gap-3 h-10 rounded-md px-3 cursor-pointer">
+        <svg class="w-[18px] h-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z"/></svg>
+        <span class="flex-1 text-left truncate sidebar-label">Sale</span>
+      </a>
+      <div class="pt-3">
+        <button onclick="toggleMenu('ma')" class="nav-parent sidebar-nav-parent w-full flex items-center gap-3 h-8 px-3 cursor-pointer text-left">
+          <span class="sidebar-group-icon sgi-ma"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></span><span class="flex-1 text-left">Media Approval</span>
+          <svg id="ma-chevron" class="w-3 h-3 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
+        </button>
+        <div id="ma-sub" class="space-y-0.5 hidden">
+          <a href="ma-dashboard.html" class="sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]"><span class="flex-1 text-left truncate">Dashboard</span></a>
+          <a href="job-list.html" class="sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]"><span class="flex-1 text-left truncate">Media Ticket</span></a>
+          <a href="assign-job.html" class="sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]"><span class="flex-1 text-left truncate">Assign Ticket</span></a>
+          <a href="receive-job.html" class="sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]"><span class="flex-1 text-left truncate">Verify & Production</span></a>
+        </div>
+      </div>
+      <a href="production.html" class="sidebar-nav w-full flex items-center gap-3 h-10 rounded-md px-3 cursor-pointer">
+        <svg class="w-[18px] h-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17l-5.1-5.1a2.25 2.25 0 010-3.182l.71-.71a2.25 2.25 0 013.18 0l2.8 2.8 2.8-2.8a2.25 2.25 0 013.18 0l.71.71a2.25 2.25 0 010 3.182l-5.1 5.1a2.25 2.25 0 01-3.18 0z"/></svg>
+        <span class="flex-1 text-left truncate sidebar-label">Production</span>
+      </a>
+      <a href="claim.html" class="sidebar-nav w-full flex items-center gap-3 h-10 rounded-md px-3 cursor-pointer">
+        <svg class="w-[18px] h-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25z"/></svg>
+        <span class="flex-1 text-left truncate sidebar-label">Claim</span>
+      </a>
+      <div class="pt-3">
+        <button onclick="toggleMenu('rpt')" class="nav-parent sidebar-nav-parent w-full flex items-center gap-3 h-8 px-3 cursor-pointer text-left">
+          <span class="sidebar-group-icon sgi-rpt"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg></span><span class="flex-1 text-left">Report</span>
+          <svg id="rpt-chevron" class="w-3 h-3 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
+        </button>
+        <div id="rpt-sub" class="space-y-0.5 hidden">
+          <a href="kpi-dashboard.html" class="sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]"><span class="flex-1 text-left truncate">KPI Dashboard</span></a>
+          <a href="export-airtime.html" class="sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]"><span class="flex-1 text-left truncate">Export Airtime</span></a>
+          <a href="report-monthly.html" class="sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]"><span class="flex-1 text-left truncate">Monthly Report</span></a>
+          <a href="report-audit.html" class="sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]"><span class="flex-1 text-left truncate">Audit Log</span></a>
+        </div>
+      </div>
+      <div class="pt-3">
+        <button onclick="toggleMenu('stg')" class="nav-parent sidebar-nav-parent w-full flex items-center gap-3 h-8 px-3 cursor-pointer text-left">
+          <span class="sidebar-group-icon sgi-stg"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.93.398.164.855.142 1.205-.108l.737-.527a1.125 1.125 0 011.45.12l.773.774c.39.389.44 1.002.12 1.45l-.527.737c-.25.35-.272.806-.107 1.204.165.397.505.71.93.78l.893.15c.543.09.94.56.94 1.109v1.094c0 .55-.397 1.02-.94 1.11l-.893.149c-.425.07-.765.383-.93.78-.165.398-.143.854.107 1.204l.527.738c.32.447.269 1.06-.12 1.45l-.774.773a1.125 1.125 0 01-1.449.12l-.738-.527c-.35-.25-.806-.272-1.203-.107-.398.165-.71.505-.781.929l-.149.894c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.019-.398-1.11-.94l-.148-.894c-.071-.424-.384-.764-.781-.93-.398-.164-.854-.142-1.204.108l-.738.527c-.447.32-1.06.269-1.45-.12l-.773-.774a1.125 1.125 0 01-.12-1.45l.527-.737c.25-.35.273-.806.108-1.204-.165-.397-.505-.71-.93-.78l-.894-.15c-.542-.09-.94-.56-.94-1.109v-1.094c0-.55.398-1.02.94-1.11l.894-.149c.424-.07.765-.383.93-.78.165-.398.143-.854-.107-1.204l-.527-.738a1.125 1.125 0 01.12-1.45l.773-.773a1.125 1.125 0 011.45-.12l.737.527c.35.25.807.272 1.204.107.397-.165.71-.505.78-.929l.15-.894zM15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg></span><span class="flex-1 text-left">Setting</span>
+          <svg id="stg-chevron" class="w-3 h-3 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
+        </button>
+        <div id="stg-sub" class="space-y-0.5 hidden">
+          <a href="settings-user.html" class="sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]"><span class="flex-1 text-left truncate">User Management</span></a>
+          <a href="settings-usergroup.html" class="sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]"><span class="flex-1 text-left truncate">User Group Management</span></a>
+          <a href="settings-email.html" class="sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]"><span class="flex-1 text-left truncate">Email Setup</span></a>
+          <a href="settings-master.html" class="sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]"><span class="flex-1 text-left truncate">Master Data</span></a>
+        </div>
+      </div>
+    </nav>
+    <div class="p-3 border-t border-[#E2E8F0]">
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-full flex items-center justify-center text-white font-semibold text-[13px] shrink-0" style="background:#4790FF">RK</div>
+        <div class="flex-1 min-w-0 sidebar-label">
+          <div class="text-[13px] font-medium text-[#0B1430] truncate">Raveewan Kaewmanee</div>
+          <div class="text-[11px] truncate" style="color:rgba(30,41,59,0.5)">Admin · Plan-B</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="flex-1 lg:ml-64 min-h-screen">
+    <!-- Top Bar -->
+    <header class="topbar-white h-16 shrink-0 sticky top-0 z-20 flex items-center gap-4 px-4 sm:px-6">
+      <button onclick="collapseSidebar()" class="w-9 h-9 rounded-md hover:bg-surface-100 flex items-center justify-center text-ink-700">
+        <svg class="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/></svg>
+      </button>
+      <div class="flex items-center gap-1.5 text-[13px]" style="color:rgba(30,41,59,0.6)">
+        <span>Home</span>
+        <svg class="w-3 h-3 opacity-30" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
+        <a href="inventory.html" class="hover:text-pb-700 transition">Inventory</a>
+        <svg class="w-3 h-3 opacity-30" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
+        <span class="font-medium" style="color:#0B1430">New Media</span>
+      </div>
+      <div class="flex-1"></div>
+      <button class="w-9 h-9 rounded-md hover:bg-surface-100 flex items-center justify-center relative" style="color:#1E293B">
+        <svg class="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"/></svg>
+        <span class="absolute top-2 right-2 w-2 h-2 bg-rose-500 rounded-full"></span>
+      </button>
+    </header>
+
+    <!-- Action Bar (sticky) -->
+    <div class="sticky top-16 z-10 action-bar border-b border-[#E2E8F0]">
+      <div class="w-full px-4 sm:px-6 pt-4 pb-3 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+        <div class="flex items-start gap-3 min-w-0">
+          <a href="inventory.html" class="w-10 h-10 rounded-lg border border-[#E2E8F0] bg-white hover:bg-pb-50 hover:border-pb-500 hover:text-pb-700 flex items-center justify-center transition shrink-0" title="Back">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
+          </a>
+          <div class="min-w-0">
+            <div class="flex items-center gap-2 flex-wrap">
+              <h1 class="text-[22px] font-semibold text-[#0B1430] leading-tight">Add New Media</h1>
+              <span class="text-[10.5px] font-mono px-1.5 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-100 inline-flex items-center gap-1">
+                <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>NEW
+              </span>
+            </div>
+            <p class="text-[12px] mt-0.5" style="color:rgba(30,41,59,0.55)">กรอกข้อมูล Media ใหม่ตามขั้นตอนทั้ง 6 ส่วน · ฟิลด์ที่มี <span class="text-rose-500 font-semibold">*</span> เป็นฟิลด์บังคับ</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2 flex-wrap">
+          <a href="inventory.html" class="h-9 px-3.5 bg-white text-[#0B1430] rounded-lg border border-[#E2E8F0] text-[13px] font-medium hover:bg-[#F8FAFC] inline-flex items-center gap-1.5">
+            Cancel
+          </a>
+          <button onclick="saveDraft()" class="h-9 px-3.5 bg-white text-[#0B1430] rounded-lg border border-[#E2E8F0] text-[13px] font-medium hover:bg-[#F8FAFC] inline-flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 3.75V16.5L12 14.25 7.5 16.5V3.75m9 0H18A2.25 2.25 0 0120.25 6v12A2.25 2.25 0 0118 20.25H6A2.25 2.25 0 013.75 18V6A2.25 2.25 0 016 3.75h1.5m9 0h-9"/></svg>
+            <span>Save Draft</span>
+          </button>
+          <button onclick="saveAsset()" class="h-9 px-4 text-white rounded-lg text-[13px] font-semibold inline-flex items-center gap-1.5 transition-transform hover:scale-[1.02]" style="background:linear-gradient(135deg,#2D56D2,#4790FF);box-shadow:0 4px 14px rgba(45,86,210,0.30)">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+            <span>Save Media</span>
+          </button>
+        </div>
+      </div>
+      <!-- Section nav tabs -->
+      <div class="w-full px-4 sm:px-6 pb-3">
+        <div class="flex items-center gap-1 overflow-x-auto -mx-1 px-1">
+          <a href="#sec-general"  onclick="setActiveTab(this)" class="tab-pill active" data-sec="sec-general"  style="--tab-c:#2D56D2;--tab-c-bg:rgba(45,86,210,0.12);--tab-c-bg-soft:rgba(45,86,210,0.05)"><span class="num">1</span>General Info</a>
+          <a href="#sec-location" onclick="setActiveTab(this)" class="tab-pill"        data-sec="sec-location" style="--tab-c:#059669;--tab-c-bg:rgba(16,185,129,0.14);--tab-c-bg-soft:rgba(16,185,129,0.05)"><span class="num">2</span>Location & Map</a>
+          <a href="#sec-media"    onclick="setActiveTab(this)" class="tab-pill"        data-sec="sec-media"    style="--tab-c:#7C3AED;--tab-c-bg:rgba(124,58,237,0.13);--tab-c-bg-soft:rgba(124,58,237,0.05)"><span class="num">3</span>Media & Status</a>
+          <a href="#sec-schedule" onclick="setActiveTab(this)" class="tab-pill"        data-sec="sec-schedule" style="--tab-c:#0EA5E9;--tab-c-bg:rgba(14,165,233,0.14);--tab-c-bg-soft:rgba(14,165,233,0.05)"><span class="num">4</span>Schedule</a>
+          <a href="#sec-rate"     onclick="setActiveTab(this)" class="tab-pill"        data-sec="sec-rate"     style="--tab-c:#D97706;--tab-c-bg:rgba(245,158,11,0.15);--tab-c-bg-soft:rgba(245,158,11,0.06)"><span class="num">5</span>Rate Card</a>
+          <a href="#sec-struct"   onclick="setActiveTab(this)" class="tab-pill"        data-sec="sec-struct"   style="--tab-c:#DC2626;--tab-c-bg:rgba(220,38,38,0.13);--tab-c-bg-soft:rgba(220,38,38,0.05)"><span class="num">6</span>Structure & Electric</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Form Content -->
+    <div class="w-full px-4 sm:px-6 py-6 space-y-6">
+
+      <!-- =====================================================
+           SECTION 1 — General Info (ข้อมูลทั่วไป)
+           ===================================================== -->
+      <section id="sec-general" class="section-card scroll-anchor" style="--sec-c:#2D56D2;--sec-c-bg:rgba(45,86,210,0.10);--sec-c-bg-soft:rgba(45,86,210,0.04)">
+        <div class="section-head">
+          <span class="section-icon" style="background:rgba(45,86,210,0.10);color:#2D56D2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"/></svg>
+          </span>
+          <div class="flex-1 min-w-0">
+            <div class="section-title">General Info <span class="text-[12.5px] font-normal" style="color:rgba(30,41,59,0.55)">— ข้อมูลทั่วไป</span></div>
+            <div class="section-sub">รหัส, เจ้าของ, ชื่อสื่อ และข้อมูลพื้นฐาน</div>
+          </div>
+          <span class="section-step">ส่วนที่ 1 / 6</span>
+        </div>
+        <div class="section-body">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-4">
+            <div>
+              <label class="fld-label">Media Code <span class="req">*</span></label>
+              <input class="fld-input font-mono" placeholder="เช่น PB-2026-001" />
+              <div class="helper">รหัสป้ายสำหรับการขาย</div>
+            </div>
+            <div>
+              <label class="fld-label">Owner Group <span class="req">*</span></label>
+              <select class="fld-select">
+                <option value="">— เลือก Owner Group —</option>
+                <option>PlanB Group</option>
+                <option>Sale Right</option>
+              </select>
+            </div>
+            <div>
+              <label class="fld-label">Product Owner <span class="req">*</span></label>
+              <select class="fld-select" id="owner-select">
+                <option value="">— เลือก Product Owner —</option>
+                <!-- populated from PO_NAMES seed -->
+              </select>
+              <div class="helper">บริษัทในกลุ่มแพลนบีที่รับผิดชอบ</div>
+            </div>
+            <div>
+              <div class="fld-label-row">
+                <label class="fld-label" for="owner-original-input">Owner Original <span class="req">*</span></label>
+                <label class="fld-inline-check" for="owner-original-same">
+                  <input type="checkbox" id="owner-original-same" onchange="onOwnerOriginalSameToggle(this)" />
+                  <span>เหมือน Product Owner</span>
+                </label>
+              </div>
+              <input type="text" class="fld-input" id="owner-original-input" placeholder="ระบุบริษัทเจ้าของ Media" />
+              <div class="helper">บริษัทเจ้าของ Media</div>
+            </div>
+            <div>
+              <label class="fld-label">Past Owner</label>
+              <input class="fld-input" placeholder="บริษัทเจ้าของเดิม (หากมี)" />
+            </div>
+            <div>
+              <label class="fld-label">Old Code</label>
+              <input class="fld-input" placeholder="เช่น S-NCM-5" />
+            </div>
+            <div>
+              <label class="fld-label">Product Site</label>
+              <input class="fld-input" placeholder="เช่น Sukhumvit Asoke Junction" />
+            </div>
+            <div>
+              <label class="fld-label">PB Code</label>
+              <input class="fld-input font-mono" placeholder="เช่น PB-001234" />
+            </div>
+            <div>
+              <label class="fld-label">Equipment ID</label>
+              <input class="fld-input font-mono" placeholder="รหัสทรัพย์สินใน Epicor" />
+            </div>
+            <div>
+              <label class="fld-label">Rental Expired Date</label>
+              <div class="fld-date-wrap"><input type="text" class="fld-input js-date" placeholder="dd/mm/yyyy" /><svg class="cal-icn" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg></div>
+            </div>
+            <div>
+              <label class="fld-label">Description (TH) <span class="req">*</span></label>
+              <input class="fld-input" placeholder="จุดรับสายตาป้าย/สื่อ (ภาษาไทย)" />
+            </div>
+            <div>
+              <label class="fld-label">Description (EN)</label>
+              <input class="fld-input" placeholder="Media display name (English)" />
+            </div>
+            <div>
+              <label class="fld-label">Remark (หมายเหตุทั่วไป)</label>
+              <textarea class="fld-textarea" placeholder="หมายเหตุเพิ่มเติม"></textarea>
+            </div>
+            <div>
+              <label class="fld-label">Condition (สภาพป้าย)</label>
+              <textarea class="fld-textarea" placeholder="สภาพปัจจุบัน เช่น สีหลุด, ไฟดับ, สมบูรณ์"></textarea>
+            </div>
+            <div class="lg:col-span-2">
+              <label class="fld-label">Problem / Comment</label>
+              <textarea class="fld-textarea" placeholder="ปัญหาหรือความคิดเห็น"></textarea>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =====================================================
+           SECTION 2 — Location and Map (ที่ตั้ง & แผนที่)
+           ===================================================== -->
+      <section id="sec-location" class="section-card scroll-anchor" style="--sec-c:#059669;--sec-c-bg:rgba(16,185,129,0.10);--sec-c-bg-soft:rgba(16,185,129,0.04)">
+        <div class="section-head">
+          <span class="section-icon" style="background:rgba(16,185,129,0.10);color:#059669">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/></svg>
+          </span>
+          <div class="flex-1 min-w-0">
+            <div class="section-title">Location and Map <span class="text-[12.5px] font-normal" style="color:rgba(30,41,59,0.55)">— ที่ตั้ง & แผนที่</span></div>
+            <div class="section-sub">โซน, จังหวัด, ถนน และพิกัด</div>
+          </div>
+          <span class="section-step">ส่วนที่ 2 / 6</span>
+        </div>
+        <div class="section-body">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-4">
+            <div>
+              <label class="fld-label">Location (TH) <span class="req">*</span></label>
+              <input class="fld-input" placeholder="จุดติดตั้งป้าย/สื่อ (ภาษาไทย)" />
+            </div>
+            <div>
+              <label class="fld-label">Location (EN)</label>
+              <input class="fld-input" placeholder="Installation location (English)" />
+            </div>
+            <div>
+              <label class="fld-label">Road Code</label>
+              <input class="fld-input font-mono" placeholder="รหัสถนน (อิงจากการตั้งรหัสป้าย Billboard)" />
+            </div>
+            <div></div>
+            <div>
+              <label class="fld-label">Road (TH) <span class="req">*</span></label>
+              <input class="fld-input" placeholder="เช่น ถนนสุขุมวิท" />
+            </div>
+            <div>
+              <label class="fld-label">Road (EN)</label>
+              <input class="fld-input" placeholder="e.g. Sukhumvit Rd." />
+            </div>
+            <div>
+              <label class="fld-label">Province <span class="req">*</span></label>
+              <select class="fld-select" id="province-select" onchange="onProvinceChange()">
+                <option value="">— เลือกจังหวัด —</option>
+                <!-- populated from PROVINCES_SEED -->
+              </select>
+            </div>
+            <div>
+              <label class="fld-label">Region <span class="req">*</span></label>
+              <input type="text" class="fld-input fld-readonly" id="region-input" readonly placeholder="(แสดงอัตโนมัติเมื่อเลือกจังหวัด)" />
+            </div>
+            <div>
+              <label class="fld-label">District <span class="req">*</span></label>
+              <select class="fld-select" id="district-select" onchange="onDistrictChange()" disabled>
+                <option value="">— เลือกจังหวัดก่อน —</option>
+              </select>
+            </div>
+            <div>
+              <label class="fld-label">Sub-district</label>
+              <select class="fld-select" id="subdistrict-select" disabled>
+                <option value="">— เลือกอำเภอก่อน —</option>
+              </select>
+            </div>
+            <div>
+              <label class="fld-label">Area</label>
+              <select class="fld-select">
+                <option value="">— เลือก Area —</option>
+                <option>Central</option>
+                <option>West</option>
+                <option>East</option>
+                <option>Northeast</option>
+                <option>South</option>
+                <option>North</option>
+                <option>Bangkok</option>
+                <option>Greater Bangkok</option>
+                <option>International</option>
+                <option>Domestic</option>
+              </select>
+            </div>
+            <div></div>
+            <div>
+              <label class="fld-label">Major Zone</label>
+              <select class="fld-select">
+                <option value="">— เลือก Major Zone —</option>
+                <option>Airport Zone - Airport Entrance</option>
+                <option>Bangkok - CBD</option>
+                <option>Bangkok - Expressway</option>
+                <option>Gateway Bangkok - Eastgate</option>
+                <option>Gateway Bangkok - Northgate</option>
+                <option>Gateway Bangkok - Southgate</option>
+                <option>Gateway Bangkok - Westgate</option>
+                <option>Small Billboard NTW - Daily Traffic In Town</option>
+                <option>Up Country - Daily Traffic In Town</option>
+                <option>Up Country - Highway</option>
+                <option>Arrival Hall</option>
+                <option>Outdoor</option>
+                <option>Passenger Hall</option>
+                <option>Departure Hall</option>
+              </select>
+            </div>
+            <div>
+              <label class="fld-label">Minor Zone</label>
+              <select class="fld-select">
+                <option value="">— เลือก Minor Zone —</option>
+                <option>Airport Entrance Float</option>
+                <option>Airport Entrance-Chiang Mai</option>
+                <option>Airport Entrance-Chiang Rai</option>
+                <option>Airport Entrance-Phuket</option>
+                <option>Airport Entrance-Samui</option>
+                <option>Airport Entrance-Surat Thani</option>
+                <option>Expressway</option>
+                <option>Expressway Burapha Withi</option>
+                <option>Expressway Chalerm Maha Nakhon - Bangna</option>
+                <option>Expressway Chalerm Maha Nakhon - Din Daeng</option>
+                <option>Expressway Chalerm Maha Nakhon - Dao Khanong</option>
+              </select>
+            </div>
+            <div>
+              <label class="fld-label">Latitude <span class="req">*</span></label>
+              <div class="fld-with-icon">
+                <svg class="icn" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21.75a9.75 9.75 0 100-19.5 9.75 9.75 0 000 19.5zM3.75 12h16.5"/></svg>
+                <input type="number" step="any" class="fld-input font-mono" placeholder="13.737501" />
+              </div>
+            </div>
+            <div>
+              <label class="fld-label">Longitude <span class="req">*</span></label>
+              <div class="fld-with-icon">
+                <svg class="icn" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21.75a9.75 9.75 0 100-19.5 9.75 9.75 0 000 19.5zM12 3.75v16.5"/></svg>
+                <input type="number" step="any" class="fld-input font-mono" placeholder="100.560020" />
+              </div>
+            </div>
+            <div class="lg:col-span-2">
+              <label class="fld-label">Google Street View</label>
+              <textarea class="fld-textarea" placeholder="วาง Embed Code (iframe) ของ Google Street View ที่นี่"></textarea>
+              <div class="helper">ใส่ข้อมูลเป็น Embed Code เพื่อให้แสดงผลเป็น Google Street View</div>
+            </div>
+            <div class="lg:col-span-2">
+              <div class="map-preview">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/></svg>
+                Map preview จะปรากฏเมื่อกรอกพิกัดครบ
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =====================================================
+           SECTION 3 — Media and Status (สื่อ & สถานะ)
+           ===================================================== -->
+      <section id="sec-media" class="section-card scroll-anchor" style="--sec-c:#7C3AED;--sec-c-bg:rgba(124,58,237,0.10);--sec-c-bg-soft:rgba(124,58,237,0.04)">
+        <div class="section-head">
+          <span class="section-icon" style="background:rgba(124,58,237,0.10);color:#7C3AED">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.375 19.5h17.25m-17.25 0a1.125 1.125 0 01-1.125-1.125M3.375 19.5h7.5c.621 0 1.125-.504 1.125-1.125m-9.75 0V5.625m0 12.75v-1.5c0-.621.504-1.125 1.125-1.125m18.375 2.625V5.625m0 12.75c0 .621-.504 1.125-1.125 1.125m1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125m0 3.75h-7.5A1.125 1.125 0 0112 18.375M21.375 8.25v6.75m-9-9v9.75m-1.125-9.75H4.875A1.125 1.125 0 003.75 6.375v1.5c0 .621.504 1.125 1.125 1.125h6.375"/></svg>
+          </span>
+          <div class="flex-1 min-w-0">
+            <div class="section-title">Media and Status <span class="text-[12.5px] font-normal" style="color:rgba(30,41,59,0.55)">— สื่อ & สถานะ</span></div>
+            <div class="section-sub">ประเภทสื่อ, แพ็คเกจ, สถานะ และคุณสมบัติเฉพาะกลุ่มสื่อ</div>
+          </div>
+          <span class="section-step">ส่วนที่ 3 / 6</span>
+        </div>
+        <div class="section-body space-y-6">
+
+          <!-- General media fields (always show) -->
+          <div>
+            <div class="group-subtitle">ข้อมูลสื่อทั่วไป</div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-4">
+              <div>
+                <label class="fld-label">Media Group <span class="req">*</span></label>
+                <select class="fld-select" id="media-group-select" onchange="onMediaGroupChange()">
+                  <option value="">— เลือก Media Group —</option>
+                  <option value="DIG">Digital (ดิจิทัล)</option>
+                  <option value="AIR">Airport (สนามบิน)</option>
+                  <option value="RTL">Retail (รีเทล)</option>
+                  <option value="TRN">Transit (ทรานสิท)</option>
+                  <option value="CLS">Classic (คลาสสิก)</option>
+                </select>
+                <div class="helper">เลือกกลุ่มสื่อเพื่อแสดงฟิลด์เฉพาะที่เกี่ยวข้อง</div>
+              </div>
+              <div>
+                <label class="fld-label">Media Type <span class="req">*</span></label>
+                <select class="fld-select" id="media-type-select">
+                  <option value="">— เลือก Media Type —</option>
+                </select>
+              </div>
+              <div>
+                <label class="fld-label">Media Branding <span class="req">*</span></label>
+                <select class="fld-select" id="branding-select">
+                  <option value="">— เลือก Media Branding —</option>
+                </select>
+              </div>
+              <div>
+                <label class="fld-label">Media Status <span class="req">*</span></label>
+                <select class="fld-select">
+                  <option value="">— เลือกสถานะ —</option>
+                  <option>Active</option>
+                  <option>Under Process</option>
+                  <option>Inactive</option>
+                </select>
+              </div>
+              <div>
+                <label class="fld-label">Product Group</label>
+                <input class="fld-input" placeholder="เช่น OOH, Digital, Transit" />
+              </div>
+              <div>
+                <label class="fld-label">Product Group Name</label>
+                <input class="fld-input" placeholder="ชื่อกลุ่มสินค้า/แคมเปญ" />
+              </div>
+              <div>
+                <label class="fld-label">Package</label>
+                <div class="multi-select" id="package-multiselect">
+                  <div class="multi-select-input" onclick="togglePackageDropdown(event)">
+                    <div class="multi-select-chips" id="package-chips">
+                      <span class="multi-select-placeholder">— เลือก Package (เลือกได้หลายรายการ) —</span>
+                    </div>
+                    <svg class="multi-select-arrow" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
+                  </div>
+                  <div class="multi-select-dropdown hidden" id="package-dropdown">
+                    <div class="ms-empty">เลือก Media Group ก่อนเพื่อดู Package ที่มี</div>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <label class="fld-label">History Format</label>
+                <input class="fld-input" placeholder="ประวัติการเคยเปลี่ยนรูปแบบการขาย" />
+              </div>
+              <div>
+                <label class="fld-label">No. of Panel <span class="req">*</span></label>
+                <input type="number" class="fld-input tnum" placeholder="0" />
+                <div class="helper">จำนวนหน้าป้ายที่เปิดการขาย ต่อ 1 รหัสโครง</div>
+              </div>
+              <div>
+                <label class="fld-label">Eyeballs / Month</label>
+                <div class="fld-with-suffix">
+                  <input type="number" class="fld-input tnum" placeholder="0" />
+                  <span class="suffix">ครั้ง</span>
+                </div>
+              </div>
+              <div>
+                <label class="fld-label">Unit</label>
+                <input type="number" class="fld-input tnum" placeholder="0" />
+              </div>
+              <div>
+                <label class="fld-label">Spot</label>
+                <input type="number" class="fld-input tnum" placeholder="0" />
+              </div>
+              <div class="lg:col-span-2">
+                <label class="fld-label">Sale Condition</label>
+                <textarea class="fld-textarea" placeholder="เงื่อนไขการขาย"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- =================== Transit-only fields =================== -->
+          <div id="cond-transit" class="cond-block hidden">
+            <div class="group-subtitle">
+              <span>คุณสมบัติเฉพาะ Transit</span>
+              <span class="badge">เฉพาะ Media Group Transit</span>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-4">
+              <div>
+                <label class="fld-label">Parking Garage <span class="req">*</span></label>
+                <input class="fld-input" placeholder="อู่จอดรถเมล์" />
+              </div>
+              <div>
+                <label class="fld-label">Bus Model <span class="req">*</span></label>
+                <select class="fld-select">
+                  <option value="">— เลือก Bus Model —</option>
+                  <option>Benz</option>
+                  <option>BLK</option>
+                  <option>Daewoo67</option>
+                  <option>Hino44</option>
+                  <option>Hino44B</option>
+                  <option>Hino44C</option>
+                  <option>Hino44E</option>
+                  <option>Hino45</option>
+                  <option>Isuzu55A</option>
+                  <option>Isuzu55B</option>
+                  <option>Isuzu56</option>
+                  <option>TSB01</option>
+                  <option>TSB02</option>
+                </select>
+              </div>
+              <div>
+                <label class="fld-label">Bus Line Fixed <span class="req">*</span></label>
+                <select class="fld-select">
+                  <option value="">— เลือกสายรถเมล์ —</option>
+                  <option>bus2</option><option>bus11</option><option>bus15</option><option>Bus1-8</option><option>Bus1-50</option>
+                  <option>bus20</option><option>bus21</option><option>Bus21E</option><option>Bus22</option><option>bus23</option>
+                  <option>Bus2-14</option><option>bus2-36</option><option>bus102</option><option>bus107</option><option>bus114</option>
+                  <option>bus129</option><option>bus137</option><option>bus138</option><option>bus141</option><option>bus142</option>
+                  <option>bus145</option><option>bus168</option><option>Bus18</option><option>bus198</option><option>bus204</option>
+                  <option>bus205</option><option>bus206</option>
+                </select>
+                <div class="helper">สายที่รถทะเบียนคันนี้ขึ้นทะเบียนวิ่ง</div>
+              </div>
+              <div>
+                <label class="fld-label">Bus Line Update <span class="req">*</span></label>
+                <select class="fld-select">
+                  <option value="">— เลือกสายรถเมล์ —</option>
+                  <option>bus2</option><option>bus11</option><option>bus15</option><option>Bus1-8</option><option>Bus1-50</option>
+                  <option>bus20</option><option>bus21</option><option>Bus21E</option><option>Bus22</option><option>bus23</option>
+                  <option>Bus2-14</option><option>bus2-36</option><option>bus102</option><option>bus107</option><option>bus114</option>
+                  <option>bus129</option><option>bus137</option><option>bus138</option><option>bus141</option><option>bus142</option>
+                  <option>bus145</option><option>bus168</option><option>Bus18</option><option>bus198</option><option>bus204</option>
+                  <option>bus205</option><option>bus206</option>
+                </select>
+                <div class="helper">สายที่รถคันนี้ถูกนำไปช่วยวิ่งกรณีรถไม่พอ</div>
+              </div>
+              <div>
+                <label class="fld-label">Bus Line Spare</label>
+                <select class="fld-select">
+                  <option value="">— เลือกสายรถเมล์ —</option>
+                  <option>bus2</option><option>bus11</option><option>bus15</option><option>Bus1-8</option><option>Bus1-50</option>
+                  <option>bus20</option><option>bus21</option><option>Bus21E</option><option>Bus22</option><option>bus23</option>
+                  <option>Bus2-14</option><option>bus2-36</option><option>bus102</option><option>bus107</option><option>bus114</option>
+                  <option>bus129</option><option>bus137</option><option>bus138</option><option>bus141</option><option>bus142</option>
+                  <option>bus145</option><option>bus168</option><option>Bus18</option><option>bus198</option><option>bus204</option>
+                  <option>bus205</option><option>bus206</option>
+                </select>
+                <div class="helper">สายสำรอง (กรณีรถหลักไม่พร้อมใช้งาน)</div>
+              </div>
+              <div>
+                <label class="fld-label">Bus No. <span class="req">*</span></label>
+                <input class="fld-input font-mono" placeholder="เลขข้างตัวถังรถ" />
+              </div>
+              <div>
+                <label class="fld-label">Route Distance <span class="req">*</span></label>
+                <div class="fld-with-suffix">
+                  <input type="number" class="fld-input tnum" placeholder="0" />
+                  <span class="suffix">km</span>
+                </div>
+                <div class="helper">ระยะทางจากต้นสาย–ปลายสาย / เที่ยว</div>
+              </div>
+              <div class="lg:col-span-2">
+                <label class="fld-label">Near Location</label>
+                <div class="radio-grp">
+                  <label class="radio-pill"><input type="radio" name="near-loc" />Department Store</label>
+                  <label class="radio-pill"><input type="radio" name="near-loc" />School / University</label>
+                  <label class="radio-pill"><input type="radio" name="near-loc" />Hospital</label>
+                  <label class="radio-pill"><input type="radio" name="near-loc" />Public transportation connection point</label>
+                </div>
+              </div>
+              <div class="lg:col-span-2">
+                <label class="fld-label">Near Location Detail</label>
+                <textarea class="fld-textarea" placeholder="ข้อมูลเพิ่มเติมของสถานที่ที่รถเมล์ขับผ่าน"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- =================== Retail-only fields =================== -->
+          <div id="cond-retail" class="cond-block hidden">
+            <div class="group-subtitle">
+              <span>คุณสมบัติเฉพาะ Retail</span>
+              <span class="badge">เฉพาะ Media Group Retail</span>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-4">
+              <div>
+                <label class="fld-label">Location Base <span class="req">*</span></label>
+                <select class="fld-select">
+                  <option value="">— เลือก Location Base —</option>
+                  <option>Residential Area</option>
+                  <option>Gas Station</option>
+                  <option>Commercial Area</option>
+                  <option>Office Building</option>
+                </select>
+                <div class="helper">ประเภทกลุ่มสถานที่ตั้งของสื่อ 7-11</div>
+              </div>
+              <div></div>
+              <div>
+                <label class="fld-label">Profile <span class="req">*</span></label>
+                <select class="fld-select">
+                  <option value="">— เลือก Profile —</option>
+                  <option>1. ที่พักอาศัย/ตลาด</option>
+                  <option>2. สถานศึกษา</option>
+                  <option>3. สำนักงาน</option>
+                  <option>4. ปั๊มน้ำมัน</option>
+                  <option>5. โรงงาน</option>
+                  <option>6. โรงพยาบาล</option>
+                  <option>7. สถานที่ท่องเที่ยว</option>
+                  <option>8. สถานบันเทิง</option>
+                  <option>9. จุดต่อรถ</option>
+                </select>
+                <div class="helper">ประเภทกลุ่มสถานที่ตั้งของสื่อ 7-11 (กำหนดโดย CP)</div>
+              </div>
+              <div>
+                <label class="fld-label">Sub-Profile <span class="req">*</span></label>
+                <select class="fld-select">
+                  <option value="">— เลือก Sub-Profile —</option>
+                  <option>1.1 H-M บ้านเดี่ยว</option>
+                  <option>1.1 บ้านเดี่ยว, ทาวน์โฮม</option>
+                  <option>1.2 High คอนโดฯ, อพาร์ทเมนต์, แฟลต</option>
+                  <option>1.2 L-บ้านเดี่ยว</option>
+                  <option>1.3 H-M ทาวน์โฮม, ทาวน์เฮ้าส์, อาคารพาณิชย์</option>
+                  <option>1.3 Standard คอนโดฯ, อพาร์ทเมนต์, แฟลต</option>
+                  <option>1.4 L-ทาวน์โฮม, ทาวน์เฮ้าส์, อาคารพาณิชย์</option>
+                  <option>1.4 ตลาด</option>
+                  <option>1.5 H-M คอนโดมิเนียม</option>
+                  <option>1.6 L-คอนโดมิเนียม, อพาร์ทเมนต์, แฟลต</option>
+                  <option>1.7 ตลาด</option>
+                  <option>2.1 โรงเรียน</option>
+                  <option>2.2 อุดมศึกษา</option>
+                  <option>3.1 ส่วนราชการ / Office อาคารพาณิชย์</option>
+                  <option>3.2 Office Tower</option>
+                  <option>4.1 ปั๊มน้ำมันทางผ่าน</option>
+                  <option>4.2 ปั๊มน้ำมันชุมชน</option>
+                  <option>4.3 ปั๊มน้ำมันทางผ่าน+ชุมชน</option>
+                  <option>5 โรงงาน</option>
+                  <option>6 โรงพยาบาล</option>
+                  <option>7.1 สถานที่ท่องเที่ยวทางทะเล</option>
+                  <option>7.2 สถานที่ท่องเที่ยวอื่นๆ</option>
+                  <option>8 สถานบันเทิง</option>
+                  <option>9.1 สถานีขนส่ง</option>
+                  <option>9.3 จุดต่อรถ และอื่นๆ</option>
+                </select>
+              </div>
+              <div>
+                <label class="fld-label">Screen Type</label>
+                <select class="fld-select">
+                  <option value="">— เลือก Screen Type —</option>
+                  <option>Over Vault</option>
+                  <option>Open Type</option>
+                  <option>Top Shelf</option>
+                  <option>Kiosk</option>
+                  <option>Pole</option>
+                  <option>Clamp</option>
+                  <option>Street Furniture</option>
+                  <option>LED Screen</option>
+                  <option>Baggage Claim</option>
+                  <option>Immigration</option>
+                  <option>Mobile Charger</option>
+                  <option>LED Charger</option>
+                  <option>LED Station</option>
+                  <option>LED Baggage Claim</option>
+                </select>
+              </div>
+              <div>
+                <label class="fld-label">No. of Screen</label>
+                <input type="number" class="fld-input tnum" placeholder="0" />
+                <div class="helper">จำนวนจอโฆษณารายประเภทจอ</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- =================== Digital-only fields =================== -->
+          <div id="cond-digital" class="cond-block hidden">
+            <div class="group-subtitle">
+              <span>คุณสมบัติเฉพาะ Digital</span>
+              <span class="badge">เฉพาะ Media Group Digital</span>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-4">
+              <div>
+                <label class="fld-label">Traffic Light Name</label>
+                <select class="fld-select">
+                  <option value="">— เลือกสี่แยก —</option>
+                  <option>แยกนิด้า</option>
+                </select>
+                <div class="helper">ชื่อสี่แยกที่จอติดตั้งอยู่</div>
+              </div>
+              <div>
+                <label class="fld-label">Venue Type</label>
+                <select class="fld-select">
+                  <option value="">— เลือก Venue Type —</option>
+                  <option>LED ป้อมตำรวจ</option>
+                  <option>LED Vertical</option>
+                  <option>LED Screens</option>
+                  <option>จอภายในห้าง (INMALL)</option>
+                  <option>จอภายในสถานี (MRT)</option>
+                </select>
+              </div>
+              <div>
+                <label class="fld-label">Maximum visibility distance</label>
+                <div class="fld-with-suffix">
+                  <input type="number" class="fld-input tnum" placeholder="0" />
+                  <span class="suffix">m</span>
+                </div>
+                <div class="helper">ระยะการมองเห็นที่ดีที่สุด</div>
+              </div>
+              <div>
+                <label class="fld-label">Minimum readable distance</label>
+                <div class="fld-with-suffix">
+                  <input type="number" class="fld-input tnum" placeholder="0" />
+                  <span class="suffix">m</span>
+                </div>
+                <div class="helper">ระยะเริ่มมองเห็นโฆษณาในจอภาพรู้เรื่อง</div>
+              </div>
+              <div>
+                <label class="fld-label">Dwell Time</label>
+                <div class="fld-with-suffix">
+                  <input type="number" class="fld-input tnum" placeholder="0" />
+                  <span class="suffix">sec</span>
+                </div>
+                <div class="helper">ระยะเวลาที่มองเห็นภาพโฆษณาขณะขับรถ</div>
+              </div>
+              <div>
+                <label class="fld-label">Customization Tier</label>
+                <select class="fld-select">
+                  <option value="">— เลือก Tier —</option>
+                  <option>B1</option><option>B2</option><option>B3</option><option>B4</option><option>B5</option><option>B6</option>
+                </select>
+                <div class="helper">ขนาดของจอที่มีการแบ่ง Sq.m.</div>
+              </div>
+              <div>
+                <label class="fld-label">Pixel Pitch</label>
+                <input class="fld-input" placeholder="ความละเอียดของจอภาพ / ตร.นิ้ว" />
+              </div>
+              <div>
+                <label class="fld-label">Height from ground to screen/sign bottom edge</label>
+                <div class="fld-with-suffix">
+                  <input type="number" class="fld-input tnum" placeholder="0" />
+                  <span class="suffix">m</span>
+                </div>
+              </div>
+              <div>
+                <label class="fld-label">Resolution File (W)</label>
+                <div class="fld-with-suffix">
+                  <input type="number" class="fld-input tnum" placeholder="0" />
+                  <span class="suffix">px</span>
+                </div>
+              </div>
+              <div>
+                <label class="fld-label">Resolution File (H)</label>
+                <div class="fld-with-suffix">
+                  <input type="number" class="fld-input tnum" placeholder="0" />
+                  <span class="suffix">px</span>
+                </div>
+              </div>
+              <div>
+                <label class="fld-label">Format <span class="req">*</span></label>
+                <select class="fld-select">
+                  <option value="">— เลือก Format —</option>
+                  <option>พิเศษ</option>
+                  <option>16-9</option>
+                  <option>4-3</option>
+                  <option>43</option>
+                  <option>179</option>
+                  <option>11</option>
+                  <option>AT16-9</option>
+                  <option>AT4-3</option>
+                </select>
+              </div>
+              <div>
+                <label class="fld-label">Format Name <span class="req">*</span></label>
+                <select class="fld-select">
+                  <option value="">— เลือก Format Name —</option>
+                  <option>11</option><option>16-9</option><option>179</option><option>43</option><option>4-3</option>
+                  <option>ANYA</option><option>AT16-9</option><option>AT4-3</option><option>BN</option><option>BNEX</option>
+                  <option>BNOA</option><option>BNOB</option><option>BNOP</option><option>BNOPB</option><option>BNOS</option>
+                  <option>BTS</option><option>CHL</option><option>CLF</option>
+                </select>
+              </div>
+              <div>
+                <label class="fld-label">Format Ratio = Resolution (px) <span class="req">*</span></label>
+                <select class="fld-select">
+                  <option value="">— เลือก Format Ratio —</option>
+                  <option>1000×880</option><option>1008×384</option><option>1008×576</option><option>1008×720</option>
+                  <option>1020×480</option><option>1020×540</option><option>1020×660</option><option>1024×256</option>
+                  <option>1024×576</option><option>1024×768</option>
+                </select>
+                <div class="helper">อัตราส่วนของภาพโฆษณา</div>
+              </div>
+              <div>
+                <label class="fld-label">Duration <span class="req">*</span></label>
+                <select class="fld-select">
+                  <option value="">— เลือก Duration —</option>
+                  <option value="15">15 sec</option>
+                  <option value="30">30 sec</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- =================== Classic-only fields =================== -->
+          <div id="cond-classic" class="cond-block hidden">
+            <div class="group-subtitle">
+              <span>คุณสมบัติเฉพาะ Classic</span>
+              <span class="badge">เฉพาะ Media Group Classic</span>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-x-8 gap-y-4">
+              <div>
+                <label class="fld-label">Number of Ad Faces / Signs <span class="req">*</span></label>
+                <input type="number" class="fld-input tnum" placeholder="0" />
+                <div class="helper">จำนวนสูงสุดที่ภาพโฆษณาจะสามารถมีได้ต่อ 1 ป้าย</div>
+              </div>
+              <div>
+                <label class="fld-label">Cost of Production <span class="req">*</span></label>
+                <div class="fld-with-suffix">
+                  <input type="number" class="fld-input tnum" placeholder="0" />
+                  <span class="suffix">฿</span>
+                </div>
+              </div>
+              <div>
+                <label class="fld-label">Cost of Install <span class="req">*</span></label>
+                <div class="fld-with-suffix">
+                  <input type="number" class="fld-input tnum" placeholder="0" />
+                  <span class="suffix">฿</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- =================== Airport-only fields =================== -->
+          <div id="cond-airport" class="cond-block hidden">
+            <div class="group-subtitle">
+              <span>คุณสมบัติเฉพาะ Airport</span>
+              <span class="badge">เฉพาะ Media Group Airport</span>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-4">
+              <div>
+                <label class="fld-label">IATA Code <span class="req">*</span></label>
+                <select class="fld-select">
+                  <option value="">— เลือก IATA Code —</option>
+                  <option>BKK</option><option>DMK</option><option>HKT</option><option>CNX</option><option>CEI</option>
+                  <option>HDY</option><option>KBV</option><option>KKC</option><option>CJM</option><option>TST</option>
+                  <option>KOP</option><option>NST</option>
+                </select>
+              </div>
+              <div>
+                <label class="fld-label">Airport <span class="req">*</span></label>
+                <select class="fld-select">
+                  <option value="">— เลือกสนามบิน —</option>
+                  <option>ท่าอากาศยานสุวรรณภูมิ</option>
+                  <option>ท่าอากาศยานนานาชาติดอนเมือง</option>
+                  <option>ท่าอากาศยานนานาชาติภูเก็ต</option>
+                  <option>ท่าอากาศยานนานาชาติเชียงใหม่</option>
+                  <option>ท่าอากาศยานนานาชาติแม่ฟ้าหลวง-เชียงราย</option>
+                  <option>ท่าอากาศยานนานาชาติหาดใหญ่</option>
+                  <option>ท่าอากาศยานนานาชาติกระบี่</option>
+                  <option>ท่าอากาศยานนานาชาติขอนแก่น</option>
+                  <option>ท่าอากาศยานชุมพร</option>
+                  <option>ท่าอากาศยานตรัง</option>
+                  <option>ท่าอากาศยานนครพนม</option>
+                  <option>ท่าอากาศยานนานาชาตินครศรีธรรมราช</option>
+                </select>
+              </div>
+              <div class="lg:col-span-2">
+                <label class="fld-label">Int'l / Dom. <span class="req">*</span></label>
+                <div class="radio-grp">
+                  <label class="radio-pill"><input type="radio" name="intl-dom" />Domestic</label>
+                  <label class="radio-pill"><input type="radio" name="intl-dom" />International</label>
+                  <label class="radio-pill"><input type="radio" name="intl-dom" />Outdoor</label>
+                  <label class="radio-pill"><input type="radio" name="intl-dom" />Passenger Hall</label>
+                </div>
+              </div>
+              <div>
+                <label class="fld-label">Passenger Movement <span class="req">*</span></label>
+                <div class="fld-with-suffix">
+                  <input type="number" class="fld-input tnum" placeholder="0" />
+                  <span class="suffix">คน</span>
+                </div>
+              </div>
+              <div>
+                <label class="fld-label">Airtime (min/hr)</label>
+                <div class="fld-with-suffix">
+                  <input type="number" class="fld-input tnum" placeholder="0" />
+                  <span class="suffix">min/hr</span>
+                </div>
+                <div class="helper">ระยะเวลาขึ้นโฆษณาที่ลูกค้าจะเห็นใน 1 ชั่วโมง</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Empty state hint when no Media Group selected -->
+          <div id="cond-empty" class="text-center py-6 px-4 rounded-xl border border-dashed border-[#CBD5E1] bg-[#F8FAFC] text-[12.5px]" style="color:rgba(30,41,59,0.55)">
+            <svg class="w-5 h-5 mx-auto mb-1.5 opacity-50" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"/></svg>
+            เลือก <strong>Media Group</strong> ด้านบนเพื่อแสดงฟิลด์เฉพาะของกลุ่มสื่อนั้น
+          </div>
+
+        </div>
+      </section>
+
+      <!-- =====================================================
+           SECTION 4 — Schedule (กำหนดการ)
+           ===================================================== -->
+      <section id="sec-schedule" class="section-card scroll-anchor" style="--sec-c:#0EA5E9;--sec-c-bg:rgba(14,165,233,0.10);--sec-c-bg-soft:rgba(14,165,233,0.04)">
+        <div class="section-head">
+          <span class="section-icon" style="background:rgba(14,165,233,0.10);color:#0EA5E9">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>
+          </span>
+          <div class="flex-1 min-w-0">
+            <div class="section-title">Schedule <span class="text-[12.5px] font-normal" style="color:rgba(30,41,59,0.55)">— กำหนดการ</span></div>
+            <div class="section-sub">วันก่อสร้าง, เริ่ม-สิ้นสุดการขาย, รื้อถอน และค่าใช้จ่าย</div>
+          </div>
+          <span class="section-step">ส่วนที่ 4 / 6</span>
+        </div>
+        <div class="section-body space-y-6">
+          <!-- Dates -->
+          <div>
+            <div class="group-subtitle">วันที่สำคัญ</div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-4">
+              <div>
+                <label class="fld-label">Year of Sign Construction <span class="req">*</span></label>
+                <div class="fld-date-wrap"><input type="text" class="fld-input js-date" placeholder="dd/mm/yyyy" /><svg class="cal-icn" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg></div>
+                <div class="helper">ปีที่ก่อสร้างป้าย</div>
+              </div>
+              <div>
+                <label class="fld-label">Media Start Date <span class="req">*</span></label>
+                <div class="fld-date-wrap"><input type="text" class="fld-input js-date" placeholder="dd/mm/yyyy" /><svg class="cal-icn" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg></div>
+                <div class="helper">วันที่สื่อพร้อมขึ้นโฆษณา</div>
+              </div>
+              <div class="lg:col-span-2">
+                <label class="fld-label">Media Write Off <span class="req">*</span></label>
+                <div class="radio-grp">
+                  <label class="radio-pill"><input type="radio" name="write-off" value="yes" onchange="onWriteOffChange()" />Yes</label>
+                  <label class="radio-pill"><input type="radio" name="write-off" value="no" onchange="onWriteOffChange()" checked />No</label>
+                </div>
+                <div class="helper">มีการเขียนตัดทรัพย์สินออกจากสมุดบัญชีหรือไม่</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Conditional Write Off block -->
+          <div id="cond-writeoff" class="cond-block hidden">
+            <div class="group-subtitle">
+              <span>รายละเอียดการ Write Off</span>
+              <span class="badge">แสดงเมื่อเลือก Media Write Off = Yes</span>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-4">
+              <div>
+                <label class="fld-label">Media Write Off Date <span class="req">*</span></label>
+                <div class="fld-date-wrap"><input type="text" class="fld-input js-date" id="writeoff-date" placeholder="dd/mm/yyyy" /><svg class="cal-icn" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg></div>
+                <div class="helper">วันที่สื่อสิ้นสุดการโฆษณา</div>
+              </div>
+              <div>
+                <label class="fld-label">Reason Write Off Media <span class="req">*</span></label>
+                <select class="fld-select">
+                  <option value="">— เลือกสาเหตุ —</option>
+                  <option>Landlord Not Renew</option>
+                  <option>Cancel Contract</option>
+                  <option>Change Format</option>
+                  <option>Non-Perform</option>
+                  <option>Government Complain</option>
+                </select>
+              </div>
+              <div>
+                <label class="fld-label">Demolished Date <span class="req">*</span></label>
+                <div class="fld-date-wrap"><input type="text" class="fld-input js-date" placeholder="dd/mm/yyyy" /><svg class="cal-icn" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg></div>
+                <div class="helper">วันที่รื้อโครงสร้างป้ายโฆษณา</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Capex/Opex -->
+          <div>
+            <div class="group-subtitle">ค่าใช้จ่าย</div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-4">
+              <div>
+                <label class="fld-label">Capex <span class="req">*</span></label>
+                <textarea class="fld-textarea" placeholder="ค่าก่อสร้าง, ค่าธรรมเนียม, ติดตั้งมิเตอร์ — รายการครั้งเดียว"></textarea>
+              </div>
+              <div>
+                <label class="fld-label">Opex <span class="req">*</span></label>
+                <textarea class="fld-textarea" placeholder="ค่าไฟ, ค่าภาษี, ค่าประกัน, ค่า Maintenance — รายการรายเดือน"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- Maintenance & Presale -->
+          <div>
+            <div class="group-subtitle">Maintenance & Pre-sale</div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-4">
+              <div>
+                <label class="fld-label">Maintenance Start</label>
+                <div class="fld-date-wrap"><input type="text" class="fld-input js-date" placeholder="dd/mm/yyyy" /><svg class="cal-icn" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg></div>
+              </div>
+              <div>
+                <label class="fld-label">Maintenance End</label>
+                <div class="fld-date-wrap"><input type="text" class="fld-input js-date" placeholder="dd/mm/yyyy" /><svg class="cal-icn" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg></div>
+              </div>
+              <div>
+                <label class="fld-label">Presale Date</label>
+                <div class="fld-date-wrap"><input type="text" class="fld-input js-date" placeholder="dd/mm/yyyy" /><svg class="cal-icn" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg></div>
+              </div>
+              <div>
+                <label class="fld-label">Description Presale Date</label>
+                <div class="fld-date-wrap"><input type="text" class="fld-input js-date" placeholder="dd/mm/yyyy" /><svg class="cal-icn" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =====================================================
+           SECTION 5 — Rate Card (ราคาขาย)
+           ===================================================== -->
+      <section id="sec-rate" class="section-card scroll-anchor" style="--sec-c:#D97706;--sec-c-bg:rgba(245,158,11,0.12);--sec-c-bg-soft:rgba(245,158,11,0.05)">
+        <div class="section-head">
+          <span class="section-icon" style="background:rgba(245,158,11,0.10);color:#D97706">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          </span>
+          <div class="flex-1 min-w-0">
+            <div class="section-title">Rate Card <span class="text-[12.5px] font-normal" style="color:rgba(30,41,59,0.55)">— ราคาขาย</span></div>
+            <div class="section-sub">ราคาขายปัจจุบัน + ประวัติราคาย้อนหลัง</div>
+          </div>
+          <button type="button" onclick="openRatePreview()" class="h-8 px-3 rounded-md text-[12px] font-medium inline-flex items-center gap-1.5 transition" style="background:rgba(123,31,162,0.10);color:#7B1FA2;border:1px solid rgba(123,31,162,0.25)">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            Preview Rate Card
+          </button>
+          <span class="section-step">ส่วนที่ 5 / 6</span>
+        </div>
+        <div class="section-body space-y-5">
+          <!-- Current Rate Card -->
+          <div>
+            <div class="group-subtitle">
+              <span>ราคาขายปัจจุบัน</span>
+              <span class="badge" style="background:rgba(22,163,74,0.10);color:#15803D">Current</span>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-x-6 gap-y-4">
+              <div>
+                <label class="fld-label">ปี (Year) <span class="req">*</span></label>
+                <select class="fld-select tnum" id="rate-current-year">
+                  <option value="2026" selected>2026</option>
+                  <option value="2025">2025</option>
+                  <option value="2024">2024</option>
+                  <option value="2023">2023</option>
+                  <option value="2022">2022</option>
+                </select>
+              </div>
+              <div>
+                <label class="fld-label">วันที่ <span class="req">*</span></label>
+                <div class="fld-date-wrap"><input type="text" class="fld-input js-date" placeholder="dd/mm/yyyy" /><svg class="cal-icn" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg></div>
+              </div>
+              <div>
+                <label class="fld-label">ราคา <span class="req">*</span></label>
+                <div class="fld-with-suffix">
+                  <input type="number" class="fld-input tnum" id="rate-current-price" placeholder="0" />
+                  <span class="suffix">฿</span>
+                </div>
+              </div>
+              <div>
+                <label class="fld-label">ราคาต่อหน่วย <span class="req">*</span></label>
+                <select class="fld-select" id="rate-current-unit">
+                  <option value="">— เลือก —</option>
+                  <option>Day</option>
+                  <option>Month</option>
+                  <option>Package</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Past Rate Cards (collapsible) -->
+          <div class="border border-[#E2E8F0] rounded-xl overflow-hidden">
+            <button type="button" id="past-rate-toggle" onclick="togglePastRates()" class="w-full px-5 py-3 bg-[#F8FAFC] hover:bg-[#F1F5F9] flex items-center gap-3 transition text-left">
+              <span class="w-7 h-7 rounded-md inline-flex items-center justify-center" style="background:rgba(45,86,210,0.10);color:#2D56D2">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              </span>
+              <div class="flex-1 min-w-0">
+                <div class="text-[13px] font-semibold text-[#0B1430]">ราคาขายย้อนหลัง</div>
+                <div class="text-[11.5px]" style="color:rgba(30,41,59,0.55)">ประวัติราคาที่เคยตั้ง — กดเพื่อดู / แก้ไข</div>
+              </div>
+              <span class="text-[11px] font-mono px-2 py-0.5 rounded-md tnum" style="background:rgba(30,41,59,0.06);color:rgba(30,41,59,0.65)" id="past-rate-count">3 รายการ</span>
+              <svg id="past-rate-chevron" class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
+            </button>
+            <div id="past-rate-body" class="hidden border-t border-[#E2E8F0] bg-white">
+              <div id="past-rate-list" class="divide-y divide-[#F1F5F9]">
+                <!-- Past rate rows -->
+                <div class="px-5 py-4 grid grid-cols-1 lg:grid-cols-[1fr_1fr_1fr_1fr_auto] gap-x-4 gap-y-3 items-end">
+                  <div>
+                    <label class="fld-label">ปี (Year)</label>
+                    <select class="fld-select tnum">
+                      <option value="2025" selected>2025</option>
+                      <option value="2026">2026</option>
+                      <option value="2024">2024</option>
+                      <option value="2023">2023</option>
+                      <option value="2022">2022</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="fld-label">วันที่</label>
+                    <div class="fld-date-wrap"><input type="text" class="fld-input js-date" placeholder="dd/mm/yyyy" /><svg class="cal-icn" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg></div>
+                  </div>
+                  <div>
+                    <label class="fld-label">ราคา</label>
+                    <div class="fld-with-suffix">
+                      <input type="number" class="fld-input tnum" placeholder="0" />
+                      <span class="suffix">฿</span>
+                    </div>
+                  </div>
+                  <div>
+                    <label class="fld-label">ราคาต่อหน่วย</label>
+                    <select class="fld-select">
+                      <option value="">— เลือก —</option>
+                      <option>Day</option>
+                      <option>Month</option>
+                      <option>Package</option>
+                    </select>
+                  </div>
+                  <button type="button" onclick="removePastRate(this)" class="h-9 w-9 rounded-lg border border-[#E2E8F0] hover:border-rose-300 hover:bg-rose-50 hover:text-rose-600 flex items-center justify-center transition" style="color:rgba(30,41,59,0.55)" title="ลบรายการ">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>
+                  </button>
+                </div>
+                <div class="px-5 py-4 grid grid-cols-1 lg:grid-cols-[1fr_1fr_1fr_1fr_auto] gap-x-4 gap-y-3 items-end">
+                  <div>
+                    <label class="fld-label">ปี (Year)</label>
+                    <select class="fld-select tnum">
+                      <option value="2024" selected>2024</option>
+                      <option value="2026">2026</option>
+                      <option value="2025">2025</option>
+                      <option value="2023">2023</option>
+                      <option value="2022">2022</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="fld-label">วันที่</label>
+                    <div class="fld-date-wrap"><input type="text" class="fld-input js-date" placeholder="dd/mm/yyyy" /><svg class="cal-icn" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg></div>
+                  </div>
+                  <div>
+                    <label class="fld-label">ราคา</label>
+                    <div class="fld-with-suffix">
+                      <input type="number" class="fld-input tnum" placeholder="0" />
+                      <span class="suffix">฿</span>
+                    </div>
+                  </div>
+                  <div>
+                    <label class="fld-label">ราคาต่อหน่วย</label>
+                    <select class="fld-select">
+                      <option value="">— เลือก —</option>
+                      <option>Day</option>
+                      <option>Month</option>
+                      <option>Package</option>
+                    </select>
+                  </div>
+                  <button type="button" onclick="removePastRate(this)" class="h-9 w-9 rounded-lg border border-[#E2E8F0] hover:border-rose-300 hover:bg-rose-50 hover:text-rose-600 flex items-center justify-center transition" style="color:rgba(30,41,59,0.55)" title="ลบรายการ">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>
+                  </button>
+                </div>
+                <div class="px-5 py-4 grid grid-cols-1 lg:grid-cols-[1fr_1fr_1fr_1fr_auto] gap-x-4 gap-y-3 items-end">
+                  <div>
+                    <label class="fld-label">ปี (Year)</label>
+                    <select class="fld-select tnum">
+                      <option value="2023" selected>2023</option>
+                      <option value="2026">2026</option>
+                      <option value="2025">2025</option>
+                      <option value="2024">2024</option>
+                      <option value="2022">2022</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="fld-label">วันที่</label>
+                    <div class="fld-date-wrap"><input type="text" class="fld-input js-date" placeholder="dd/mm/yyyy" /><svg class="cal-icn" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg></div>
+                  </div>
+                  <div>
+                    <label class="fld-label">ราคา</label>
+                    <div class="fld-with-suffix">
+                      <input type="number" class="fld-input tnum" placeholder="0" />
+                      <span class="suffix">฿</span>
+                    </div>
+                  </div>
+                  <div>
+                    <label class="fld-label">ราคาต่อหน่วย</label>
+                    <select class="fld-select">
+                      <option value="">— เลือก —</option>
+                      <option>Day</option>
+                      <option>Month</option>
+                      <option>Package</option>
+                    </select>
+                  </div>
+                  <button type="button" onclick="removePastRate(this)" class="h-9 w-9 rounded-lg border border-[#E2E8F0] hover:border-rose-300 hover:bg-rose-50 hover:text-rose-600 flex items-center justify-center transition" style="color:rgba(30,41,59,0.55)" title="ลบรายการ">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>
+                  </button>
+                </div>
+              </div>
+              <div class="px-5 py-3 border-t border-[#F1F5F9] bg-[#FAFBFE]">
+                <button type="button" onclick="addPastRate()" class="w-full h-10 border border-dashed border-[#CBD5E1] hover:border-pb-500 hover:bg-pb-50/40 rounded-lg text-[12.5px] font-medium inline-flex items-center justify-center gap-1.5 transition" style="color:rgba(30,41,59,0.65)">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+                  <span>Add Past Rate</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- =====================================================
+           SECTION 6 — Structure and Electric (โครงสร้างป้าย & ระบบไฟฟ้า)
+           ===================================================== -->
+      <section id="sec-struct" class="section-card scroll-anchor" style="--sec-c:#DC2626;--sec-c-bg:rgba(220,38,38,0.10);--sec-c-bg-soft:rgba(220,38,38,0.04)">
+        <div class="section-head">
+          <span class="section-icon" style="background:rgba(239,68,68,0.10);color:#DC2626">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"/></svg>
+          </span>
+          <div class="flex-1 min-w-0">
+            <div class="section-title">Structure and Electric <span class="text-[12.5px] font-normal" style="color:rgba(30,41,59,0.55)">— โครงสร้างป้าย & ระบบไฟฟ้า</span></div>
+            <div class="section-sub">รหัสโครง, หน้าป้าย, ขนาด, วัสดุ, ระบบไฟฟ้า และค่าใช้จ่าย</div>
+          </div>
+          <span class="section-step">ส่วนที่ 6 / 6</span>
+        </div>
+        <div class="section-body space-y-6">
+
+          <!-- Cost -->
+          <div>
+            <div class="group-subtitle">ต้นทุน & ภาษี</div>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-x-8 gap-y-4">
+              <div>
+                <label class="fld-label">Production Cost</label>
+                <div class="fld-with-suffix">
+                  <input type="number" class="fld-input tnum" placeholder="0" />
+                  <span class="suffix">฿</span>
+                </div>
+              </div>
+              <div>
+                <label class="fld-label">Product Cost (UOM)</label>
+                <select class="fld-select">
+                  <option value="">— เลือกหน่วย —</option>
+                  <option>per Panel</option>
+                  <option>per Site</option>
+                  <option>per Sqm</option>
+                </select>
+              </div>
+              <div>
+                <label class="fld-label">Tax Cost (บาท/ป้าย)</label>
+                <div class="fld-with-suffix">
+                  <input type="number" class="fld-input tnum" placeholder="0" />
+                  <span class="suffix">฿</span>
+                </div>
+              </div>
+              <div class="lg:col-span-3">
+                <label class="fld-label">Cost Condition</label>
+                <textarea class="fld-textarea" placeholder="เงื่อนไขต้นทุน"></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- Electric -->
+          <div>
+            <div class="group-subtitle">ระบบไฟฟ้า</div>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-x-8 gap-y-4">
+              <div>
+                <label class="fld-label">Electric (ดวง)</label>
+                <input type="number" class="fld-input tnum" placeholder="0" />
+              </div>
+              <div>
+                <label class="fld-label">Electric Condition</label>
+                <select class="fld-select">
+                  <option value="">— เลือกเงื่อนไข —</option>
+                  <option>ทันที</option>
+                  <option>ภายใน 7 วัน</option>
+                  <option>ภายใน 10 วัน</option>
+                  <option>ภายใน 45 วัน</option>
+                </select>
+              </div>
+              <div>
+                <label class="fld-label">Electric Type</label>
+                <select class="fld-select">
+                  <option value="">— เลือกประเภทไฟ —</option>
+                  <option>LED</option>
+                  <option>Metal Halide</option>
+                  <option>Light Box</option>
+                  <option>Lighting</option>
+                  <option>Digital</option>
+                  <option>None</option>
+                  <option>Other</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Media & Code -->
+          <div>
+            <div class="group-subtitle">รหัสโครงสร้าง & หน้าป้าย</div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-4">
+              <div>
+                <label class="fld-label">Media Acquire <span class="req">*</span></label>
+                <select class="fld-select">
+                  <option value="">— เลือก —</option>
+                  <option>สร้างใหม่</option>
+                  <option>ซื้อโครง</option>
+                  <option>เช่าโครง</option>
+                  <option>สัมปทาน</option>
+                </select>
+                <div class="helper">ประเภทการได้มาของทรัพย์สิน</div>
+              </div>
+              <div>
+                <label class="fld-label">Face <span class="req">*</span></label>
+                <select class="fld-select">
+                  <option value="">— เลือก Face —</option>
+                  <option>A</option>
+                  <option>B</option>
+                  <option>C</option>
+                  <option>S</option>
+                  <option>Left (ซ้าย)</option>
+                  <option>Right (ขวา)</option>
+                  <option>Upper (บน)</option>
+                  <option>Below (ล่าง)</option>
+                </select>
+              </div>
+              <div>
+                <label class="fld-label">Code (Structure) <span class="req">*</span></label>
+                <input class="fld-input font-mono" placeholder="รหัสโครงป้าย" />
+                <div class="helper">จะสอดคล้องกับรหัสป้าย เพื่อตรวจสอบความเป็นโครงเดียวกัน</div>
+              </div>
+              <div>
+                <label class="fld-label">Operation Code <span class="req">*</span></label>
+                <input class="fld-input font-mono" placeholder="รหัสป้ายสำหรับ Backoffice" />
+                <div class="helper">บอกว่าเดิมเคยใช้รหัสป้ายอะไรมา</div>
+              </div>
+              <div>
+                <label class="fld-label">Direction 1</label>
+                <div class="fld-with-suffix">
+                  <input type="number" class="fld-input tnum" placeholder="0" />
+                  <span class="suffix">°</span>
+                </div>
+                <div class="helper">องศาการรับสายตาของป้าย/สื่อ</div>
+              </div>
+              <div>
+                <label class="fld-label">Direction 2</label>
+                <div class="fld-with-suffix">
+                  <input type="number" class="fld-input tnum" placeholder="0" />
+                  <span class="suffix">°</span>
+                </div>
+              </div>
+              <div>
+                <label class="fld-label">Grade / Tier</label>
+                <select class="fld-select">
+                  <option value="">— เลือก Grade —</option>
+                  <option>A</option><option>B</option><option>C</option>
+                </select>
+                <div class="helper">การจัดเกรดป้าย/สื่อ เพื่อวิเคราะห์โอกาสในการขาย</div>
+              </div>
+              <div></div>
+              <div>
+                <label class="fld-label">Material Type <span class="req">*</span></label>
+                <select class="fld-select">
+                  <option value="">— เลือก Material Type —</option>
+                  <option>Frontlit Sticker / สติกเกอร์ทึบแสง</option>
+                  <option>Backlit Sticker / สติกเกอร์โปร่งแสง</option>
+                  <option>Paper Art Cards / กระดาษอาร์ตการ์ด</option>
+                  <option>Frontlit Vinyl / ไวนิลทึบแสง</option>
+                  <option>Backlit Vinyl / ไวนิลโปร่งแสง</option>
+                  <option>Frontlit Vinyl / ไวนิลโปร่งแสง 1000×1000 หน้า 5 ม.</option>
+                  <option>Backlit Film / แบล็คลิสฟิล์ม</option>
+                  <option>Transparent Sticker / สติ๊กเกอร์ใส รองขาว</option>
+                  <option>Seethrough & Frontlit Sticker (ดำ)</option>
+                  <option>อื่นๆ</option>
+                </select>
+              </div>
+              <div>
+                <label class="fld-label">Signage Type <span class="req">*</span></label>
+                <select class="fld-select">
+                  <option value="">— เลือก Signage Type —</option>
+                  <option>Light Box</option>
+                  <option>Vinyl</option>
+                  <option>Sticker Wrap</option>
+                  <option>Backlit film</option>
+                  <option>Sticker Wrap / Backlit Film</option>
+                  <option>Sticker Wrap + Light Box</option>
+                  <option>Vinyl + Light Box</option>
+                  <option>LED Digital</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Position & Structure & Background -->
+          <div>
+            <div class="group-subtitle">โครงสร้าง & ตำแหน่ง</div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-4">
+              <div>
+                <label class="fld-label">Position <span class="req">*</span></label>
+                <select class="fld-select">
+                  <option value="">— เลือก Position —</option>
+                  <option>ป้ายบนดิน</option>
+                  <option>ป้ายผนังอาคาร</option>
+                  <option>ป้ายดาดฟ้าอาคาร</option>
+                  <option>Top Shelf — จอติดตั้งหน้า-หลัง (A+B) เหนือชั้นวางสินค้า</option>
+                  <option>Open Type — เหนือตู้แช่แบบเปิด</option>
+                  <option>Over Vault — เหนือตู้แช่เครื่องดื่ม</option>
+                </select>
+              </div>
+              <div>
+                <label class="fld-label">Structure Type <span class="req">*</span></label>
+                <select class="fld-select">
+                  <option value="">— เลือก Structure Type —</option>
+                  <option>โครงผนังอาคาร</option>
+                  <option>โครง Truss บนพื้นดิน</option>
+                  <option>โครง Truss บนอาคาร</option>
+                  <option>โครงเสากลมเดี่ยว</option>
+                  <option>โครงเสากลม 2 เสา</option>
+                  <option>โครงเสากลม 3 เสา</option>
+                  <option>โครงเสากลม 4 เสา</option>
+                  <option>โครง Truss เสาเดี่ยว</option>
+                  <option>โครง Truss เสาคู่</option>
+                  <option>โครง Truss 3 เสา</option>
+                  <option>โครง Truss 4 เสา</option>
+                  <option>กรอบป้าย</option>
+                  <option>กล่องไฟ</option>
+                  <option>Sticker Wrap</option>
+                  <option>ไม่มีโครงสร้าง</option>
+                </select>
+              </div>
+              <div class="lg:col-span-2">
+                <label class="fld-label">Background <span class="req">*</span></label>
+                <div class="radio-grp">
+                  <label class="radio-pill"><input type="radio" name="background" value="yes" />มีแผ่นรองหลัง</label>
+                  <label class="radio-pill"><input type="radio" name="background" value="no" />ไม่มีแผ่นรองหลัง</label>
+                </div>
+              </div>
+              <div class="lg:col-span-2">
+                <label class="fld-label">License <span class="req">*</span></label>
+                <div class="radio-grp">
+                  <label class="radio-pill"><input type="radio" name="license" value="yes" />มีใบอนุญาตก่อสร้างป้ายโฆษณา</label>
+                  <label class="radio-pill"><input type="radio" name="license" value="no" />ไม่มีใบอนุญาตก่อสร้างป้ายโฆษณา</label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- View size & Material size (3 sets) -->
+          <div>
+            <div class="group-subtitle">ขนาดป้าย / จอ (ชุดที่ 1)</div>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-x-8 gap-y-4">
+              <div>
+                <label class="fld-label">View size Height (1) <span class="req">*</span></label>
+                <input type="number" step="any" class="fld-input tnum" placeholder="0" />
+                <div class="helper">ขนาดความสูงสำหรับเสนอขาย</div>
+              </div>
+              <div>
+                <label class="fld-label">View size Width (1) <span class="req">*</span></label>
+                <input type="number" step="any" class="fld-input tnum" placeholder="0" />
+              </div>
+              <div>
+                <label class="fld-label">View size SQM./panel (1) <span class="req">*</span></label>
+                <div class="fld-with-suffix">
+                  <input type="number" step="any" class="fld-input tnum" placeholder="คำนวณอัตโนมัติ" />
+                  <span class="suffix">㎡</span>
+                </div>
+                <div class="helper">คำนวณอัตโนมัติจาก H × W (สามารถแก้ไขเพิ่มได้)</div>
+              </div>
+              <div>
+                <label class="fld-label">Material Height (1) <span class="req">*</span></label>
+                <input type="number" step="any" class="fld-input tnum" placeholder="0" />
+                <div class="helper">ขนาดความสูงสำหรับงานผลิต</div>
+              </div>
+              <div>
+                <label class="fld-label">Material Width (1) <span class="req">*</span></label>
+                <input type="number" step="any" class="fld-input tnum" placeholder="0" />
+              </div>
+              <div>
+                <label class="fld-label">Material SQM./panel (1) <span class="req">*</span></label>
+                <div class="fld-with-suffix">
+                  <input type="number" step="any" class="fld-input tnum fld-readonly" placeholder="คำนวณอัตโนมัติ" readonly />
+                  <span class="suffix">㎡</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Add set 2 button -->
+          <div id="add-size-2-btn-wrap">
+            <button type="button" onclick="addSizeSet(2)" class="w-full h-10 border border-dashed border-[#CBD5E1] hover:border-pb-500 hover:bg-pb-50/40 rounded-xl text-[12.5px] font-medium inline-flex items-center justify-center gap-1.5 transition" style="color:rgba(30,41,59,0.65)">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+              <span>Add Size Set 2</span>
+              <span class="text-[10.5px] font-normal" style="color:rgba(30,41,59,0.45)">(if there are more than 1 size set)</span>
+            </button>
+          </div>
+
+          <!-- Size set 2 (hidden by default) -->
+          <div id="size-set-2" class="hidden">
+            <div class="group-subtitle">
+              <span>ขนาดป้าย / จอ (ชุดที่ 2)</span>
+              <button type="button" onclick="removeSizeSet(2)" class="ml-auto h-7 px-2.5 rounded-md text-[11.5px] font-medium inline-flex items-center gap-1 transition" style="background:rgba(225,29,72,0.08);color:#BE123C">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                Remove Set 2
+              </button>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-x-8 gap-y-4">
+              <div>
+                <label class="fld-label">View size Height (2)</label>
+                <input type="number" step="any" class="fld-input tnum" placeholder="0" />
+              </div>
+              <div>
+                <label class="fld-label">View size Width (2)</label>
+                <input type="number" step="any" class="fld-input tnum" placeholder="0" />
+              </div>
+              <div>
+                <label class="fld-label">View size SQM./panel (2)</label>
+                <div class="fld-with-suffix">
+                  <input type="number" step="any" class="fld-input tnum" placeholder="คำนวณอัตโนมัติ" />
+                  <span class="suffix">㎡</span>
+                </div>
+              </div>
+              <div>
+                <label class="fld-label">Material Height (2)</label>
+                <input type="number" step="any" class="fld-input tnum" placeholder="0" />
+              </div>
+              <div>
+                <label class="fld-label">Material Width (2)</label>
+                <input type="number" step="any" class="fld-input tnum" placeholder="0" />
+              </div>
+              <div>
+                <label class="fld-label">Material SQM./panel (2)</label>
+                <div class="fld-with-suffix">
+                  <input type="number" step="any" class="fld-input tnum fld-readonly" placeholder="คำนวณอัตโนมัติ" readonly />
+                  <span class="suffix">㎡</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Add set 3 button (hidden until set 2 is shown) -->
+          <div id="add-size-3-btn-wrap" class="hidden">
+            <button type="button" onclick="addSizeSet(3)" class="w-full h-10 border border-dashed border-[#CBD5E1] hover:border-pb-500 hover:bg-pb-50/40 rounded-xl text-[12.5px] font-medium inline-flex items-center justify-center gap-1.5 transition" style="color:rgba(30,41,59,0.65)">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+              <span>Add Size Set 3</span>
+            </button>
+          </div>
+
+          <!-- Size set 3 (hidden by default) -->
+          <div id="size-set-3" class="hidden">
+            <div class="group-subtitle">
+              <span>ขนาดป้าย / จอ (ชุดที่ 3)</span>
+              <button type="button" onclick="removeSizeSet(3)" class="ml-auto h-7 px-2.5 rounded-md text-[11.5px] font-medium inline-flex items-center gap-1 transition" style="background:rgba(225,29,72,0.08);color:#BE123C">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                Remove Set 3
+              </button>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-x-8 gap-y-4">
+              <div>
+                <label class="fld-label">View size Height (3)</label>
+                <input type="number" step="any" class="fld-input tnum" placeholder="0" />
+              </div>
+              <div>
+                <label class="fld-label">View size Width (3)</label>
+                <input type="number" step="any" class="fld-input tnum" placeholder="0" />
+              </div>
+              <div>
+                <label class="fld-label">View size SQM./panel (3)</label>
+                <div class="fld-with-suffix">
+                  <input type="number" step="any" class="fld-input tnum" placeholder="คำนวณอัตโนมัติ" />
+                  <span class="suffix">㎡</span>
+                </div>
+              </div>
+              <div>
+                <label class="fld-label">Material Height (3)</label>
+                <input type="number" step="any" class="fld-input tnum" placeholder="0" />
+              </div>
+              <div>
+                <label class="fld-label">Material Width (3)</label>
+                <input type="number" step="any" class="fld-input tnum" placeholder="0" />
+              </div>
+              <div>
+                <label class="fld-label">Material SQM./panel (3)</label>
+                <div class="fld-with-suffix">
+                  <input type="number" step="any" class="fld-input tnum fld-readonly" placeholder="คำนวณอัตโนมัติ" readonly />
+                  <span class="suffix">㎡</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Size Layout (overall layout size) -->
+          <div>
+            <div class="group-subtitle">Size Layout</div>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-x-8 gap-y-4">
+              <div>
+                <label class="fld-label">Size Layout Height</label>
+                <div class="fld-with-suffix">
+                  <input type="number" step="any" class="fld-input tnum" id="size-layout-h" placeholder="0" oninput="calcSizeLayoutSqm()" />
+                  <span class="suffix">m</span>
+                </div>
+                <div class="helper">ความสูงของขนาด Layout โดยรวม</div>
+              </div>
+              <div>
+                <label class="fld-label">Size Layout Width</label>
+                <div class="fld-with-suffix">
+                  <input type="number" step="any" class="fld-input tnum" id="size-layout-w" placeholder="0" oninput="calcSizeLayoutSqm()" />
+                  <span class="suffix">m</span>
+                </div>
+                <div class="helper">ความกว้างของขนาด Layout โดยรวม</div>
+              </div>
+              <div>
+                <label class="fld-label">Size Layout SQM</label>
+                <div class="fld-with-suffix">
+                  <input type="number" step="any" class="fld-input tnum" id="size-layout-sqm" placeholder="0" />
+                  <span class="suffix">㎡</span>
+                </div>
+                <div class="helper">คำนวณอัตโนมัติจาก H × W (แก้ไขเพิ่มได้)</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Units -->
+          <div>
+            <div class="group-subtitle">หน่วยวัด</div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-4">
+              <div>
+                <label class="fld-label">Height Unit</label>
+                <select class="fld-select">
+                  <option>M (เมตร)</option>
+                  <option>CM (เซนติเมตร)</option>
+                  <option>PX (พิกเซล)</option>
+                </select>
+              </div>
+              <div>
+                <label class="fld-label">Width Unit</label>
+                <select class="fld-select">
+                  <option>M (เมตร)</option>
+                  <option>CM (เซนติเมตร)</option>
+                  <option>PX (พิกเซล)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Notes -->
+          <div>
+            <div class="group-subtitle">หมายเหตุ</div>
+            <div class="grid grid-cols-1 gap-y-4">
+              <div>
+                <label class="fld-label">Media Data Change History</label>
+                <textarea class="fld-textarea" placeholder="ประวัติการเปลี่ยนแปลงข้อมูลสื่อ เช่น ขนาด, ไฟ"></textarea>
+              </div>
+              <div>
+                <label class="fld-label">Remark Back Office</label>
+                <textarea class="fld-textarea" placeholder="หมายเหตุเพิ่มเติมเพื่อเป็นข้อมูลประกอบ"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<!-- ===================== RATE CARD PREVIEW MODAL ===================== -->
+<style>
+#rate-preview-modal{position:fixed;inset:0;background:rgba(11,20,48,0.55);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);z-index:60;display:flex;align-items:center;justify-content:center;padding:24px;opacity:0;pointer-events:none;transition:opacity .2s ease}
+#rate-preview-modal.open{opacity:1;pointer-events:auto}
+#rate-preview-modal .rp-shell{width:100%;max-width:1180px;max-height:92vh;display:flex;flex-direction:column;background:#F3F3F3;border-radius:14px;overflow:hidden;box-shadow:0 24px 60px rgba(11,20,48,0.35);transform:translateY(8px) scale(.98);transition:transform .2s ease}
+#rate-preview-modal.open .rp-shell{transform:translateY(0) scale(1)}
+.rp-toolbar{display:flex;align-items:center;gap:10px;padding:10px 16px;background:#0B1430;color:#fff}
+.rp-toolbar .rp-title{font-size:13px;font-weight:500;letter-spacing:.02em}
+.rp-toolbar .rp-tag{font-size:10.5px;font-weight:600;padding:2px 8px;border-radius:99px;background:rgba(255,255,255,0.12);color:#fff;text-transform:uppercase;letter-spacing:.05em}
+.rp-toolbar .rp-actions{margin-left:auto;display:flex;gap:6px}
+.rp-toolbar button{height:30px;padding:0 12px;background:rgba(255,255,255,0.10);border:1px solid rgba(255,255,255,0.15);border-radius:7px;color:#fff;font-size:12px;font-weight:500;display:inline-flex;align-items:center;gap:5px;cursor:pointer;transition:.15s}
+.rp-toolbar button:hover{background:rgba(255,255,255,0.18);border-color:rgba(255,255,255,0.3)}
+.rp-toolbar button.primary{background:#fff;color:#0B1430}
+.rp-toolbar button.primary:hover{background:#F1F5F9}
+.rp-canvas{flex:1;overflow:auto;background:#E5E5E5;padding:24px;display:flex;align-items:flex-start;justify-content:center}
+/* The actual rate card sheet (mimicking the Plan-B example) */
+.rc-sheet{width:100%;max-width:1100px;aspect-ratio:16/9;background:#fff;border:6px solid #7B1FA2;border-radius:4px;position:relative;font-family:'Kanit',sans-serif;color:#0B1430;display:grid;grid-template-rows:auto 1fr;overflow:hidden;box-shadow:0 8px 30px rgba(11,20,48,0.15)}
+/* Top brand row */
+.rc-brandbar{display:flex;align-items:center;padding:10px 24px 12px;border-bottom:0;background:#fff}
+.rc-brand{display:flex;align-items:flex-end;gap:0}
+.rc-brand-text{font-size:22px;font-weight:700;color:#7B1FA2;line-height:1;letter-spacing:-.01em;font-family:'Kanit',sans-serif}
+.rc-brand-text .small{display:block;font-size:13px;font-weight:500;color:#7B1FA2;line-height:1.1}
+.rc-region-badge{width:64px;height:64px;border-radius:50%;background:#7B1FA2;color:#fff;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;letter-spacing:.02em;margin-left:-10px;flex-shrink:0;border:3px solid #fff;box-shadow:0 0 0 2px #7B1FA2}
+/* Body grid */
+.rc-body{display:grid;grid-template-columns:1fr 1.15fr;gap:0;padding:0 24px 16px}
+.rc-left{display:flex;flex-direction:column;gap:0}
+.rc-codebar{display:grid;grid-template-columns:auto 1fr;align-items:stretch;border:0;margin-bottom:6px}
+.rc-code{background:#7B1FA2;color:#fff;font-weight:700;font-size:22px;padding:14px 18px;letter-spacing:.01em;display:inline-flex;align-items:center;justify-content:center;min-width:140px}
+.rc-title-th{background:#fff;color:#7B1FA2;font-weight:700;font-size:22px;padding:14px 18px;border:2px solid #7B1FA2;border-left:0;display:inline-flex;align-items:center}
+.rc-info{display:flex;flex-direction:column;gap:0}
+.rc-info-row{display:grid;grid-template-columns:130px 1fr;padding:10px 14px;background:#F3F3F3;border-bottom:2px solid #fff;font-size:12.5px;color:#0B1430;line-height:1.35}
+.rc-info-row:nth-child(even){background:#FAFAFA}
+.rc-info-row .k{font-weight:600;color:#0B1430}
+.rc-info-row .v{color:#0B1430;white-space:pre-line;word-break:break-word}
+.rc-info-row .v.empty{color:rgba(30,41,59,0.4);font-style:italic}
+.rc-map{margin-top:10px;height:140px;background:linear-gradient(135deg,#FAFAFA,#F1F5F9);border:1px dashed #CBD5E1;border-radius:6px;display:flex;align-items:center;justify-content:center;color:rgba(30,41,59,0.4);font-size:11px;gap:6px}
+.rc-right{position:relative;display:flex;flex-direction:column}
+.rc-photo{flex:1;background:linear-gradient(135deg,#E5E5E5,#CBD5E1);border-radius:0;display:flex;align-items:center;justify-content:center;color:rgba(30,41,59,0.5);font-size:13px;gap:8px;min-height:300px;position:relative;overflow:hidden}
+.rc-photo .ph-icn{width:56px;height:56px;opacity:.35}
+.rc-photo .ph-hint{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);font-size:11px;color:rgba(30,41,59,0.5);background:rgba(255,255,255,0.7);padding:3px 10px;border-radius:99px}
+.rc-roadtag{position:absolute;right:8px;bottom:8px;background:#7B1FA2;color:#fff;font-size:11.5px;font-weight:600;padding:4px 12px;border-radius:0;letter-spacing:.02em}
+@media (max-width:900px){
+  .rc-sheet{aspect-ratio:auto}
+  .rc-body{grid-template-columns:1fr}
+  .rc-photo{min-height:220px}
+}
+@media print{
+  body > *:not(#rate-preview-modal){display:none !important}
+  #rate-preview-modal{position:static !important;background:#fff !important;padding:0 !important;opacity:1 !important;pointer-events:auto !important}
+  #rate-preview-modal .rp-shell{box-shadow:none !important;background:#fff !important;max-height:none !important}
+  #rate-preview-modal .rp-toolbar{display:none !important}
+  #rate-preview-modal .rp-canvas{background:#fff !important;padding:0 !important}
+  .rc-sheet{box-shadow:none !important;max-width:none !important}
+}
+</style>
+<div id="rate-preview-modal" onclick="if(event.target===this)closeRatePreview()">
+  <div class="rp-shell">
+    <div class="rp-toolbar">
+      <span class="rp-title">Rate Card Preview</span>
+      <span class="rp-tag">Preview</span>
+      <div class="rp-actions">
+        <button type="button" class="primary" onclick="closeRatePreview()">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+          Close
+        </button>
+      </div>
+    </div>
+    <div class="rp-canvas" id="rp-canvas">
+      <!-- Sheet rendered here by renderRatePreview() -->
+    </div>
+  </div>
+</div>
+
+<!-- ===================== DATA SEEDS ===================== -->
+<script>
+// Product Owner names (from master-product-owner.html)
+const PO_NAMES = [
+  'MACO','ODC','OHM','MIDAS','CO-MASS','MTS','Focus Ad','EOA','Other','Hello Bangkok',
+  'Splash','PlanB','Aqua','Boardway','SR','Verisign','Maxview','Looker','Acreative','Out there',
+  'Eye On','Egg Group','T.P.S. Media','Stark','BMN','The One Plus','Bright Sky Media','BMTA','Thai Smile Bus','Smart Bus',
+  'MIS','STN','TTD','EXAT','ADS CUISINE','Siampiwat','Thai Airways','CPN','Innova (Inter)','Bluesign',
+  'BNO','Plan B Eleven','NEO Media','King Power','Roctec','CMYK','Billboard DD','AOB','Signature Media','Phukao Advertising',
+  'Innova (Asia)','VGI'
+];
+
+// Media Groups (from master-data-media.html)
+const MEDIA_GROUPS_DATA = {
+  DIG: {
+    nameTh: 'Digital',
+    sections: ['The Network', 'Signature Screen', 'BKK Prime'],
+    types: ['Plan B TV', 'Plan B TV Nationwide', 'Customize BKK', 'Bangkok Jams', 'Rama 9 Connect', 'The District EM', 'Siam Paragon Facade', 'ParcParagon 90°', 'The Panoramix', 'Signature Max', 'Dusit Central Park', 'The Big Y', 'Bravo BKK', 'Twin Tube+', 'So-BKK', 'Base', 'Ploenchit Interchange', 'At-Narong Interchange', 'Airtraveller Gateway', 'Lido Connect', 'LA Plan B', 'The 20', 'Bangkok Jams 2.0', 'Digital Gateway X', 'City Max'],
+    packages: ['PlanBTV 240Full', 'PlanBTV 80Red', 'PlanBTV 80Blue', 'PlanBTV 40Red', 'PlanBTV 40Blue', 'Customize BKK', 'Bangkok Jams', 'Rama 9 Connect', 'City Max']
+  },
+  AIR: {
+    nameTh: 'Airport',
+    sections: ['Fly', 'Thai Flight'],
+    types: ['Airtraveller Series', 'Thai Airway', 'Air Traveller 2.0', 'Air Traveller Supreme', 'Don Mueang Digital Network', 'Airport Digital Network'],
+    packages: ['Airtraveller Series', 'Thai Airway', 'LED Baggage Claim', 'Mobile Charger', 'LED Station ADN', 'LED Pole']
+  },
+  RTL: {
+    nameTh: 'Retail',
+    sections: ['Luxury', 'In-store'],
+    types: ['Central Network', 'Motion Block', 'Nextopia Siam Paragon', 'Siam Paragon In-Mall', '7-Eleven Plus'],
+    packages: ['Central Network', 'Central Network 360', 'Central Network Max', 'Motion Block', 'Nextopia Siam Paragon', 'Siam Paragon In-Mall', '7-Eleven Multimedia', '7-Eleven Metro LED', '7-Eleven POS', '7-Eleven Radio']
+  },
+  TRN: {
+    nameTh: 'Transit',
+    sections: ['Rail', 'BTS'],
+    types: ['Digital MRT', 'Pid@MRT', 'BTS Cityline', 'BTS Cityline [Gold]', 'BTS Concourse', 'BTS Max', 'BTS Skytrain', 'BTS Station', 'Chongnonsri Skywalk', 'MBK', 'Prime Office', 'Station Takeover', 'Walkway Balustrade'],
+    packages: ['Digital MRT', 'Pid@MRT', 'BTS Cityline', 'BTS Cityline [Gold]', 'BTS Concourse', 'BTS Max', 'BTS Skytrain', 'BTS Station']
+  },
+  CLS: {
+    nameTh: 'Classic',
+    sections: ['The Canvas Collection'],
+    types: ['Cookie & Cream'],
+    packages: ['Cream']
+  }
+};
+
+// Provinces — simplified seed (subset of master-data-province.html)
+const REGIONS_BY_ID = {
+  central:   { th:'ภาคกลาง',                  en:'Central'   },
+  north:     { th:'ภาคเหนือ',                 en:'North'     },
+  northeast: { th:'ภาคตะวันออกเฉียงเหนือ', en:'Northeast' },
+  east:      { th:'ภาคตะวันออก',             en:'East'      },
+  west:      { th:'ภาคตะวันตก',              en:'West'      },
+  south:     { th:'ภาคใต้',                   en:'South'     }
+};
+const PROVINCES_DATA = [
+  { id:'10', region:'central', nameTh:'กรุงเทพมหานคร', nameEn:'Bangkok', districts:[
+    { name:'พระนคร', subs:['พระบรมมหาราชวัง','วังบูรพาภิรมย์','วัดราชบพิธ'] },
+    { name:'ปทุมวัน', subs:['รองเมือง','วังใหม่','ปทุมวัน','ลุมพินี'] },
+    { name:'บางรัก', subs:['มหาพฤฒาราม','สีลม','สุริยวงศ์','บางรัก','สี่พระยา'] },
+    { name:'วัฒนา', subs:['คลองเตยเหนือ','คลองตันเหนือ','พระโขนงเหนือ'] },
+    { name:'จตุจักร', subs:['ลาดยาว','เสนานิคม','จันทรเกษม','จอมพล','จตุจักร'] }
+  ]},
+  { id:'11', region:'central', nameTh:'สมุทรปราการ', nameEn:'Samut Prakan', districts:[
+    { name:'เมืองสมุทรปราการ', subs:['ปากน้ำ','สำโรงเหนือ','บางเมือง'] },
+    { name:'บางพลี', subs:['บางพลีใหญ่','บางแก้ว','บางปลา'] }
+  ]},
+  { id:'12', region:'central', nameTh:'นนทบุรี', nameEn:'Nonthaburi', districts:[
+    { name:'เมืองนนทบุรี', subs:['สวนใหญ่','ตลาดขวัญ','บางเขน'] },
+    { name:'ปากเกร็ด', subs:['ปากเกร็ด','บางตลาด','บ้านใหม่'] }
+  ]},
+  { id:'50', region:'north', nameTh:'เชียงใหม่', nameEn:'Chiang Mai', districts:[
+    { name:'เมืองเชียงใหม่', subs:['ศรีภูมิ','พระสิงห์','ช้างม่อย'] },
+    { name:'หางดง', subs:['หางดง','หนองแก๋ว','หนองควาย'] }
+  ]},
+  { id:'83', region:'south', nameTh:'ภูเก็ต', nameEn:'Phuket', districts:[
+    { name:'เมืองภูเก็ต', subs:['ตลาดใหญ่','ตลาดเหนือ','เกาะแก้ว'] },
+    { name:'ถลาง', subs:['เทพกระษัตรี','ศรีสุนทร','เชิงทะเล'] }
+  ]},
+  { id:'20', region:'east', nameTh:'ชลบุรี', nameEn:'Chonburi', districts:[
+    { name:'เมืองชลบุรี', subs:['บางปลาสร้อย','มะขามหย่ง','บ้านโขด'] },
+    { name:'บางละมุง', subs:['บางละมุง','หนองปรือ','นาเกลือ'] }
+  ]},
+  { id:'30', region:'northeast', nameTh:'นครราชสีมา', nameEn:'Nakhon Ratchasima', districts:[
+    { name:'เมืองนครราชสีมา', subs:['ในเมือง','โพธิ์กลาง','หนองไผ่ล้อม'] }
+  ]}
+];
+</script>
+
+<!-- ===================== APP LOGIC ===================== -->
+<script>
+/* Populate Product Owner dropdown */
+(function populateOwners(){
+  const ownerOpts = PO_NAMES.map(n => `<option value="${n}">${n}</option>`).join('');
+  const $own  = document.getElementById('owner-select');
+  if($own)  $own.insertAdjacentHTML('beforeend', ownerOpts);
+})();
+
+/* Owner Original: sync from Product Owner when checkbox is checked (still editable) */
+function onOwnerOriginalSameToggle(cb){
+  const $own  = document.getElementById('owner-select');
+  const $orig = document.getElementById('owner-original-input');
+  if(!$own || !$orig) return;
+  if(cb.checked){
+    $orig.value = $own.value || '';
+    $orig.focus();
+  }
+}
+/* Keep Owner Original in sync while checkbox is checked and Product Owner changes */
+(function bindOwnerSync(){
+  const $own = document.getElementById('owner-select');
+  const $cb  = document.getElementById('owner-original-same');
+  const $orig= document.getElementById('owner-original-input');
+  if(!$own || !$cb || !$orig) return;
+  $own.addEventListener('change', () => {
+    if($cb.checked){ $orig.value = $own.value || ''; }
+  });
+  // If user manually edits Owner Original, uncheck the "same" box
+  $orig.addEventListener('input', () => {
+    if($cb.checked && $orig.value !== ($own.value || '')){
+      $cb.checked = false;
+    }
+  });
+})();
+
+/* Populate Province dropdown (TH / EN) */
+(function populateProvinces(){
+  const $p = document.getElementById('province-select');
+  if(!$p) return;
+  PROVINCES_DATA.forEach(p => {
+    const opt = document.createElement('option');
+    opt.value = p.id;
+    opt.textContent = p.nameTh + ' / ' + p.nameEn;
+    $p.appendChild(opt);
+  });
+})();
+
+function onProvinceChange(){
+  const $p = document.getElementById('province-select');
+  const $d = document.getElementById('district-select');
+  const $sd = document.getElementById('subdistrict-select');
+  const $r = document.getElementById('region-input');
+  const pid = $p.value;
+  const prov = PROVINCES_DATA.find(p => p.id === pid);
+  // Region — show TH / EN
+  const reg = prov ? REGIONS_BY_ID[prov.region] : null;
+  $r.value = reg ? (reg.th + ' / ' + reg.en) : '';
+  // Reset districts/subdistricts
+  $d.innerHTML = '<option value="">— เลือกอำเภอ —</option>';
+  $sd.innerHTML = '<option value="">— เลือกอำเภอก่อน —</option>';
+  $d.disabled = !prov;
+  $sd.disabled = true;
+  if(prov){
+    prov.districts.forEach((d, i) => {
+      const opt = document.createElement('option');
+      opt.value = i;
+      opt.textContent = d.name;
+      $d.appendChild(opt);
+    });
+  }
+  updateProgress();
+}
+
+function onDistrictChange(){
+  const $p = document.getElementById('province-select');
+  const $d = document.getElementById('district-select');
+  const $sd = document.getElementById('subdistrict-select');
+  const pid = $p.value;
+  const di = $d.value;
+  const prov = PROVINCES_DATA.find(p => p.id === pid);
+  $sd.innerHTML = '<option value="">— เลือกตำบล —</option>';
+  $sd.disabled = !(prov && di !== '');
+  if(prov && di !== ''){
+    const dist = prov.districts[parseInt(di, 10)];
+    if(dist){
+      dist.subs.forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s;
+        opt.textContent = s;
+        $sd.appendChild(opt);
+      });
+    }
+  }
+  updateProgress();
+}
+
+/* Media Group conditional rendering */
+function onMediaGroupChange(){
+  const $g = document.getElementById('media-group-select');
+  const $br = document.getElementById('branding-select');
+  const $mt = document.getElementById('media-type-select');
+  const g = $g.value;
+  // Toggle conditional blocks
+  ['transit','retail','digital','classic','airport'].forEach(k => {
+    const el = document.getElementById('cond-' + k);
+    if(el) el.classList.add('hidden');
+  });
+  const map = { TRN:'transit', RTL:'retail', DIG:'digital', CLS:'classic', AIR:'airport' };
+  const empty = document.getElementById('cond-empty');
+  if(map[g]){
+    document.getElementById('cond-' + map[g]).classList.remove('hidden');
+    if(empty) empty.classList.add('hidden');
+  } else {
+    if(empty) empty.classList.remove('hidden');
+  }
+  // Repopulate Media Branding, Media Type, Package
+  const data = MEDIA_GROUPS_DATA[g];
+  $br.innerHTML = '<option value="">— เลือก Media Branding —</option>';
+  $mt.innerHTML = '<option value="">— เลือก Media Type —</option>';
+  // Package is a multi-select — repopulate dropdown items
+  populatePackageOptions(data ? data.packages : []);
+  if(data){
+    data.sections.forEach(s => $br.insertAdjacentHTML('beforeend', `<option>${s}</option>`));
+    data.types.forEach(t => $mt.insertAdjacentHTML('beforeend', `<option>${t}</option>`));
+  }
+  updateProgress();
+}
+
+/* === Package Multi-Select === */
+let SELECTED_PACKAGES = [];
+let AVAILABLE_PACKAGES = [];
+
+function populatePackageOptions(packages){
+  AVAILABLE_PACKAGES = Array.isArray(packages) ? packages.slice() : [];
+  // Drop any currently selected items no longer in the list
+  SELECTED_PACKAGES = SELECTED_PACKAGES.filter(p => AVAILABLE_PACKAGES.includes(p));
+  renderPackageDropdown();
+  renderPackageChips();
+}
+
+function renderPackageDropdown(){
+  const dd = document.getElementById('package-dropdown');
+  if(!dd) return;
+  if(!AVAILABLE_PACKAGES.length){
+    dd.innerHTML = '<div class="ms-empty">เลือก Media Group ก่อนเพื่อดู Package ที่มี</div>';
+    return;
+  }
+  dd.innerHTML = AVAILABLE_PACKAGES.map(pkg => {
+    const checked = SELECTED_PACKAGES.includes(pkg);
+    return `<label class="ms-option ${checked?'selected':''}" onclick="event.stopPropagation()">
+      <input type="checkbox" ${checked?'checked':''} onchange="togglePackageItem('${pkg.replace(/'/g,"\\'")}', this.checked)" />
+      <span>${pkg}</span>
+    </label>`;
+  }).join('');
+}
+
+function renderPackageChips(){
+  const wrap = document.getElementById('package-chips');
+  if(!wrap) return;
+  if(!SELECTED_PACKAGES.length){
+    wrap.innerHTML = '<span class="multi-select-placeholder">— เลือก Package (เลือกได้หลายรายการ) —</span>';
+    return;
+  }
+  wrap.innerHTML = SELECTED_PACKAGES.map(pkg => `
+    <span class="ms-chip">
+      ${pkg}
+      <span class="x" onclick="event.stopPropagation();removePackageItem('${pkg.replace(/'/g,"\\'")}')" title="Delete">
+        <svg width="9" height="9" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+      </span>
+    </span>
+  `).join('');
+}
+
+function togglePackageItem(pkg, checked){
+  if(checked){
+    if(!SELECTED_PACKAGES.includes(pkg)) SELECTED_PACKAGES.push(pkg);
+  } else {
+    SELECTED_PACKAGES = SELECTED_PACKAGES.filter(p => p !== pkg);
+  }
+  renderPackageDropdown();
+  renderPackageChips();
+  updateProgress();
+}
+
+function removePackageItem(pkg){
+  SELECTED_PACKAGES = SELECTED_PACKAGES.filter(p => p !== pkg);
+  renderPackageDropdown();
+  renderPackageChips();
+  updateProgress();
+}
+
+function togglePackageDropdown(e){
+  if(e) e.stopPropagation();
+  const ms = document.getElementById('package-multiselect');
+  const dd = document.getElementById('package-dropdown');
+  if(!ms || !dd) return;
+  const isOpen = !dd.classList.contains('hidden');
+  if(isOpen){
+    dd.classList.add('hidden');
+    ms.classList.remove('open');
+  } else {
+    dd.classList.remove('hidden');
+    ms.classList.add('open');
+  }
+}
+
+// Close on click outside
+document.addEventListener('click', e => {
+  const ms = document.getElementById('package-multiselect');
+  if(!ms) return;
+  if(!ms.contains(e.target)){
+    const dd = document.getElementById('package-dropdown');
+    if(dd) dd.classList.add('hidden');
+    ms.classList.remove('open');
+  }
+});
+
+/* Write Off conditional */
+function onWriteOffChange(){
+  const v = document.querySelector('input[name="write-off"]:checked');
+  const block = document.getElementById('cond-writeoff');
+  if(!block) return;
+  if(v && v.value === 'yes') block.classList.remove('hidden');
+  else block.classList.add('hidden');
+  updateProgress();
+}
+
+/* === Rate Card Preview Modal === */
+function _findFieldByLabel(text, sectionId){
+  const sec = sectionId ? document.getElementById(sectionId) : document;
+  if(!sec) return null;
+  const labels = sec.querySelectorAll('.fld-label');
+  for(const lab of labels){
+    const t = lab.textContent.replace(/\s+/g,' ').trim();
+    // Match label that starts with the requested text (ignoring optional asterisk)
+    if(t === text || t.startsWith(text + ' ') || t.startsWith(text + '*') || t.startsWith(text)){
+      const parent = lab.parentElement;
+      const inp = parent?.querySelector('input:not([type=radio]):not([type=checkbox]), select, textarea');
+      if(inp) return inp;
+    }
+  }
+  return null;
+}
+function _val(text, sectionId){
+  const el = _findFieldByLabel(text, sectionId);
+  if(!el) return '';
+  if(el.tagName === 'SELECT'){
+    if(!el.value) return '';
+    const opt = el.options[el.selectedIndex];
+    return opt ? opt.text : '';
+  }
+  return (el.value || '').trim();
+}
+function _num(v){
+  const n = parseFloat(String(v).replace(/,/g,''));
+  return isNaN(n) ? null : n;
+}
+function _fmtMoney(n){
+  if(n === null || n === undefined || n === '') return '';
+  return Number(n).toLocaleString('en-US') + ' บาท';
+}
+function _fmtNum(n){
+  if(n === null || n === undefined || n === '') return '';
+  return Number(n).toLocaleString('en-US');
+}
+
+function buildRatePreview(){
+  // Read form data
+  const mediaCode = _val('Media Code', 'sec-general') || 'M-CODE-000';
+  const titleTh   = _val('Description (TH)', 'sec-general') || _val('Location (TH)', 'sec-location') || '— กรุณากรอก Description (TH) —';
+  const locTh     = _val('Location (TH)', 'sec-location') || '—';
+  const descTh    = _val('Description (TH)', 'sec-general') || '—';
+  const provinceText = _val('Province', 'sec-location') || '';
+  const eyeballs  = _val('Eyeballs', 'sec-media');
+  const viewH     = _num(_val('View size Height (1)', 'sec-struct'));
+  const viewW     = _num(_val('View size Width (1)', 'sec-struct'));
+  const electric  = _val('Electric (ดวง)', 'sec-struct');
+  const lat       = _val('Latitude', 'sec-location');
+  const lng       = _val('Longitude', 'sec-location');
+  const roadTh    = _val('Road (TH)', 'sec-location');
+  const roadCode  = _val('Road Code', 'sec-location');
+  // Rate
+  const priceEl = document.getElementById('rate-current-price');
+  const unitEl  = document.getElementById('rate-current-unit');
+  const price   = priceEl ? _num(priceEl.value) : null;
+  const unit    = unitEl && unitEl.value ? unitEl.value : '';
+  const unitTh  = unit === 'Day' ? 'วัน' : unit === 'Month' ? 'เดือน' : unit === 'Package' ? 'แพ็คเกจ' : '';
+  // Media group / region for branding
+  const mgEl = document.getElementById('media-group-select');
+  const mg   = mgEl ? mgEl.value : '';
+  const brandMap = {
+    DIG: { line:'Digital Network',     color:'#2D56D2' },
+    AIR: { line:'Airport Network',     color:'#F59E0B' },
+    RTL: { line:'Retail Network',      color:'#10B981' },
+    TRN: { line:'Transit Media',       color:'#7C3AED' },
+    CLS: { line:'Billboard Nationwide', color:'#7B1FA2' },
+    '':  { line:'Plan-B Media',        color:'#7B1FA2' }
+  };
+  const brand = brandMap[mg] || brandMap[''];
+  // Region badge (SOUTH/NORTH/etc.) from province → REGIONS_BY_ID
+  let regionLabel = '';
+  const provSel = document.getElementById('province-select');
+  if(provSel && provSel.value){
+    const prov = PROVINCES_DATA.find(p => p.id === provSel.value);
+    if(prov){
+      const r = REGIONS_BY_ID[prov.region];
+      if(r) regionLabel = r.en.toUpperCase();
+    }
+  }
+  // Compose
+  const sizeTxt   = (viewH && viewW) ? `สูง ${viewH.toFixed(2)} เมตร × ยาว ${viewW.toFixed(2)} เมตร` : '';
+  const rentalTxt = (price !== null && unit) ? `${_fmtNum(price)} บาท/${unitTh}` : (price !== null ? `${_fmtNum(price)} บาท` : '');
+  const elecTxt   = electric ? `จำนวน ${electric} ดวง` : '';
+  const latLng    = (lat && lng) ? `${lat}, ${lng}` : (lat || lng || '');
+  const roadTag   = roadCode || (roadTh ? roadTh.replace(/^ถนน/,'').trim() : '');
+
+  const row = (k, v) => `<div class="rc-info-row"><div class="k">${k}</div><div class="v ${v ? '' : 'empty'}">${v || '— ยังไม่ระบุ —'}</div></div>`;
+
+  return `
+    <div class="rc-sheet" style="border-color:${brand.color}">
+      <div class="rc-brandbar">
+        <div class="rc-brand">
+          <div class="rc-brand-text" style="color:${brand.color}">
+            Billboard<br/><span class="small">Nationwide</span>
+          </div>
+          <div class="rc-region-badge" style="background:${brand.color};box-shadow:0 0 0 2px ${brand.color}">${regionLabel || 'AREA'}</div>
+        </div>
+      </div>
+      <div class="rc-body">
+        <div class="rc-left">
+          <div class="rc-codebar">
+            <div class="rc-code" style="background:${brand.color}">${mediaCode}</div>
+            <div class="rc-title-th" style="color:${brand.color};border-color:${brand.color}">${titleTh}</div>
+          </div>
+          <div class="rc-info">
+            ${row('Location', locTh)}
+            ${row('Viewable From', descTh)}
+            ${row('Eyeballs/Month', eyeballs ? _fmtNum(_num(eyeballs)) : '')}
+            ${row('Size', sizeTxt)}
+            ${row('Media Rental', rentalTxt)}
+            ${row('Electricity', elecTxt)}
+            ${row('Lat & Long', latLng)}
+          </div>
+          <div class="rc-map">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/></svg>
+            Map placeholder
+          </div>
+        </div>
+        <div class="rc-right">
+          <div class="rc-photo">
+            <svg class="ph-icn" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/></svg>
+            <span>Photo placeholder</span>
+            <div class="ph-hint">รูปจริงจะแสดงเมื่ออัพโหลดภาพประกอบ Media</div>
+          </div>
+          ${roadTag ? `<div class="rc-roadtag" style="background:${brand.color}">${roadTag}</div>` : ''}
+        </div>
+      </div>
+    </div>`;
+}
+
+function openRatePreview(){
+  const m = document.getElementById('rate-preview-modal');
+  const canvas = document.getElementById('rp-canvas');
+  if(!m || !canvas) return;
+  canvas.innerHTML = buildRatePreview();
+  m.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeRatePreview(){
+  const m = document.getElementById('rate-preview-modal');
+  if(!m) return;
+  m.classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', e => { if(e.key === 'Escape') closeRatePreview(); });
+
+/* === Past Rate Card: collapse + add/remove rows === */
+function togglePastRates(){
+  const body = document.getElementById('past-rate-body');
+  const chev = document.getElementById('past-rate-chevron');
+  if(!body) return;
+  const opening = body.classList.contains('hidden');
+  body.classList.toggle('hidden');
+  if(chev) chev.style.transform = opening ? 'rotate(180deg)' : '';
+}
+function updatePastRateCount(){
+  const list = document.getElementById('past-rate-list');
+  const count = document.getElementById('past-rate-count');
+  if(!list || !count) return;
+  const n = list.children.length;
+  count.textContent = n + ' รายการ';
+}
+function addPastRate(){
+  const list = document.getElementById('past-rate-list');
+  if(!list) return;
+  const row = document.createElement('div');
+  row.className = 'px-5 py-4 grid grid-cols-1 lg:grid-cols-[1fr_1fr_1fr_1fr_auto] gap-x-4 gap-y-3 items-end';
+  row.innerHTML = `
+    <div>
+      <label class="fld-label">ปี (Year)</label>
+      <select class="fld-select tnum">
+        <option value="">— เลือกปี —</option>
+        <option value="2026">2026</option>
+        <option value="2025">2025</option>
+        <option value="2024">2024</option>
+        <option value="2023">2023</option>
+        <option value="2022">2022</option>
+      </select>
+    </div>
+    <div>
+      <label class="fld-label">วันที่</label>
+      <div class="fld-date-wrap"><input type="text" class="fld-input js-date" placeholder="dd/mm/yyyy" /><svg class="cal-icn" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg></div>
+    </div>
+    <div>
+      <label class="fld-label">ราคา</label>
+      <div class="fld-with-suffix">
+        <input type="number" class="fld-input tnum" placeholder="0" />
+        <span class="suffix">฿</span>
+      </div>
+    </div>
+    <div>
+      <label class="fld-label">ราคาต่อหน่วย</label>
+      <select class="fld-select">
+        <option value="">— เลือก —</option>
+        <option>Day</option>
+        <option>Month</option>
+        <option>Package</option>
+      </select>
+    </div>
+    <button type="button" onclick="removePastRate(this)" class="h-9 w-9 rounded-lg border border-[#E2E8F0] hover:border-rose-300 hover:bg-rose-50 hover:text-rose-600 flex items-center justify-center transition" style="color:rgba(30,41,59,0.55)" title="ลบรายการ">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>
+    </button>`;
+  list.appendChild(row);
+  // Re-init flatpickr on the new date input
+  if(typeof flatpickr !== 'undefined'){
+    flatpickr(row.querySelector('.js-date'), { dateFormat:'d/m/Y', allowInput:true, disableMobile:true });
+  }
+  updatePastRateCount();
+}
+function removePastRate(btn){
+  const row = btn.closest('.grid');
+  if(row) row.remove();
+  updatePastRateCount();
+}
+
+/* Add / remove optional size sets (2, 3) */
+function addSizeSet(n){
+  const set = document.getElementById('size-set-' + n);
+  const btn = document.getElementById('add-size-' + n + '-btn-wrap');
+  if(set) set.classList.remove('hidden');
+  if(btn) btn.classList.add('hidden');
+  // When set 2 appears, also reveal the "add set 3" button
+  if(n === 2){
+    const next = document.getElementById('add-size-3-btn-wrap');
+    const set3 = document.getElementById('size-set-3');
+    if(next && set3 && set3.classList.contains('hidden')) next.classList.remove('hidden');
+  }
+  updateProgress();
+}
+function removeSizeSet(n){
+  const set = document.getElementById('size-set-' + n);
+  const btn = document.getElementById('add-size-' + n + '-btn-wrap');
+  if(set){
+    set.querySelectorAll('input').forEach(i => { i.value = ''; });
+    set.classList.add('hidden');
+  }
+  if(btn) btn.classList.remove('hidden');
+  // If we removed set 2, also hide set 3 (and its add button)
+  if(n === 2){
+    const set3 = document.getElementById('size-set-3');
+    const btn3 = document.getElementById('add-size-3-btn-wrap');
+    if(set3){
+      set3.querySelectorAll('input').forEach(i => { i.value = ''; });
+      set3.classList.add('hidden');
+    }
+    if(btn3) btn3.classList.add('hidden');
+  }
+  updateProgress();
+}
+
+/* Tab navigation (highlight active section pill on click / scroll) */
+function setActiveTab(el){
+  if(!el) return;
+  document.querySelectorAll('.tab-pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+}
+
+/* Highlight tab pill matching the section currently in view */
+(function setupScrollSpy(){
+  const tabs = document.querySelectorAll('.tab-pill[data-sec]');
+  if(!tabs.length) return;
+  const secMap = {};
+  tabs.forEach(t => { const id = t.dataset.sec; if(id) secMap[id] = t; });
+  const ids = Object.keys(secMap);
+  if(!ids.length) return;
+  window.addEventListener('scroll', () => {
+    const offset = 160;
+    let currentId = ids[0];
+    for(const id of ids){
+      const sec = document.getElementById(id);
+      if(!sec) continue;
+      const top = sec.getBoundingClientRect().top;
+      if(top - offset <= 0) currentId = id;
+    }
+    tabs.forEach(p => p.classList.remove('active'));
+    if(secMap[currentId]) secMap[currentId].classList.add('active');
+  }, { passive: true });
+})();
+
+/* Progress / completion indicator (lightweight: marks tabs whose required
+   fields are all filled with a green check) */
+function updateProgress(){
+  const sections = ['sec-general','sec-location','sec-media','sec-schedule','sec-rate','sec-struct'];
+  sections.forEach(secId => {
+    const sec = document.getElementById(secId);
+    const tab = document.querySelector('.tab-pill[data-sec="' + secId + '"]');
+    if(!sec || !tab) return;
+    const requiredLabels = sec.querySelectorAll('.fld-label .req');
+    let done = requiredLabels.length > 0;
+    requiredLabels.forEach(req => {
+      const wrap = req.closest('div');
+      if(!wrap) return;
+      const field = wrap.querySelector('input:not([type=radio]):not([type=checkbox]), select, textarea');
+      if(!field){
+        // Radio groups
+        const grp = wrap.parentElement?.querySelector('.radio-grp input[type=radio]:checked');
+        if(!grp) done = false;
+        return;
+      }
+      const v = (field.value || '').trim();
+      if(!v) done = false;
+    });
+    const num = tab.querySelector('.num');
+    if(num){
+      if(done) num.classList.add('done');
+      else num.classList.remove('done');
+    }
+  });
+}
+
+/* Toast helper */
+function showToast(msg){
+  let t = document.getElementById('toast');
+  if(!t){
+    t = document.createElement('div');
+    t.id = 'toast';
+    document.body.appendChild(t);
+  }
+  t.textContent = msg || 'บันทึกแล้ว';
+  t.classList.add('show');
+  clearTimeout(t._h);
+  t._h = setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+/* Save actions (prototype — no backend) */
+function saveDraft(){
+  showToast('บันทึกแบบร่างแล้ว');
+}
+function saveAsset(){
+  showToast('บันทึก Media เรียบร้อย');
+}
+
+/* Initialize flatpickr on all .js-date inputs + run an initial progress pass */
+document.addEventListener('DOMContentLoaded', () => {
+  if(typeof flatpickr !== 'undefined'){
+    document.querySelectorAll('.js-date').forEach(el => {
+      flatpickr(el, { dateFormat:'d/m/Y', allowInput:true, disableMobile:true });
+    });
+  }
+  // Wire up onchange listeners to keep progress meter live
+  document.querySelectorAll('input, select, textarea').forEach(el => {
+    el.addEventListener('change', updateProgress);
+    el.addEventListener('input', updateProgress);
+  });
+  updateProgress();
+});
+</script>
+
+</main>
+</div>
+
+</body>
+</html>

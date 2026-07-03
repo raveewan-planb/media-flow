@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Master Data — Plan-B CRM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config={theme:{extend:{fontFamily:{kanit:['Kanit','sans-serif']},colors:{pb:{900:'#213268',700:'#2D56D2',500:'#4790FF',300:'#5FCBF9',50:'#EBF5FF',100:'#D6ECFF'},ink:{900:'#0B1430',800:'#162040',700:'#1E293B'},surface:{0:'#FFFFFF',50:'#F8FAFC',100:'#F1F5F9',200:'#E2E8F0',300:'#CBD5E1'}}}}}
+</script>
+<style>
+*{font-family:'Kanit',sans-serif;-webkit-font-smoothing:antialiased}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#CBD5E8;border-radius:10px;border:2px solid #F7F9FC}
+::-webkit-scrollbar-thumb:hover{background:#93A4C4}
+.sidebar-scroll::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.06);border:2px solid transparent}
+.sidebar-scroll::-webkit-scrollbar-track{background:transparent}
+/* Sidebar nav items — White theme */
+.sidebar-nav{color:rgba(30,41,59,0.6);transition:all 0.15s;position:relative;font-size:13px}
+.sidebar-nav:hover{color:#0B1430;background:rgba(71,144,255,0.06)}
+.sidebar-nav.active{color:#2D56D2;font-weight:500;background:linear-gradient(90deg,rgba(71,144,255,0.10),rgba(71,144,255,0))}
+.sidebar-nav.active::before{content:'';position:absolute;left:0;top:8px;bottom:8px;width:3px;border-radius:2px;background:#2D56D2}
+/* Sidebar group headers */
+.sidebar-nav-parent{color:rgba(30,41,59,0.4);transition:all 0.15s;font-size:10.5px;text-transform:uppercase;letter-spacing:0.05em;font-weight:600}
+.sidebar-nav-parent:hover{color:rgba(30,41,59,0.7)}
+.sidebar-nav-parent.active{color:rgba(30,41,59,0.7)}
+/* Sidebar sub-items */
+.sidebar-sub{color:rgba(30,41,59,0.55);transition:all 0.15s;position:relative}
+.sidebar-sub:hover{color:#0B1430;background:rgba(71,144,255,0.06)}
+.sidebar-sub.active{color:#2D56D2;font-weight:500;background:linear-gradient(90deg,rgba(71,144,255,0.10),rgba(71,144,255,0))}
+.sidebar-sub.active::before{content:'';position:absolute;left:0;top:6px;bottom:6px;width:3px;border-radius:2px;background:#2D56D2;box-shadow:0 0 8px rgba(45,86,210,0.4)}
+.sidebar-nav.active::before{box-shadow:0 0 8px rgba(45,86,210,0.4)}
+.sidebar-group-icon{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:8px;background:transparent;transition:all .15s;flex-shrink:0;color:rgba(30,41,59,0.55)}
+.sgi-ma{color:#7C3AED}.sgi-rpt{color:#0EA5E9}.sgi-stg{color:#EF4444}
+.nav-parent{border-radius:8px;transition:all .15s}
+.nav-parent:hover{background:#F1F5F9}
+.nav-parent.active:has(.sgi-ma){background:rgba(124,58,237,0.10);color:#7C3AED}
+.nav-parent.active:has(.sgi-ma) .sidebar-group-icon{background:rgba(124,58,237,0.20)}
+.nav-parent.active:has(.sgi-rpt){background:rgba(14,165,233,0.10);color:#0EA5E9}
+.nav-parent.active:has(.sgi-rpt) .sidebar-group-icon{background:rgba(14,165,233,0.20)}
+.nav-parent.active:has(.sgi-stg){background:rgba(239,68,68,0.10);color:#EF4444}
+.nav-parent.active:has(.sgi-stg) .sidebar-group-icon{background:rgba(239,68,68,0.20)}
+#sidebar{background:linear-gradient(180deg,#fff 0%,#fff 60%,#F8FAFC 100%) !important}
+#sidebar-brand{background:linear-gradient(135deg,rgba(45,86,210,0.04),rgba(95,203,249,0.04))}
+/* nav-item for page content compatibility */
+.nav-item{transition:all 0.2s;border-radius:8px}
+.nav-item:hover,.nav-item.active{background:rgba(71,144,255,0.12);color:#4790FF}
+.nav-parent.active{color:#2D56D2;font-weight:500}
+/* Cards & general UI */
+.card-hover{transition:all 0.2s}
+.card-hover:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(33,50,104,0.12)}
+.badge-pulse{animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.7}}
+.status-dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+input:focus,select:focus,textarea:focus{outline:none;border-color:#4790FF;box-shadow:0 0 0 3px rgba(71,144,255,0.15)}
+.tab-btn{transition:all 0.2s}
+.tab-btn.active{color:#2D56D2;border-bottom:2px solid #2D56D2}
+table th{position:sticky;top:0;z-index:1}
+.progress-bar{transition:width 0.6s ease}
+/* Topbar — White glass */
+.topbar-white{background:rgba(255,255,255,0.9);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid #E2E8F0}
+/* Dashboard extras */
+.tnum{font-variant-numeric:tabular-nums}
+.shine{background:linear-gradient(135deg,#2D56D2,#5FCBF9)}
+.shine-soft{background:linear-gradient(135deg,rgba(71,144,255,0.08),rgba(95,203,249,0.08))}
+.ai-border{box-shadow:0 0 0 1px rgba(45,86,210,0.25),0 2px 8px rgba(45,86,210,0.08)}
+.pulse-dot{animation:pulseDot 2s ease-in-out infinite}
+@keyframes pulseDot{0%,100%{transform:scale(1);opacity:.4}50%{transform:scale(1.5);opacity:0}}
+.map-bg{background:linear-gradient(135deg,#F8FAFC 0%,#EBF5FF 100%)}
+.shadow-pop{box-shadow:0 8px 30px rgba(11,20,48,0.12)}
+.shadow-card{box-shadow:0 1px 3px rgba(11,20,48,0.06),0 1px 2px rgba(11,20,48,0.04)}
+/* Sidebar collapse label */
+.sidebar-label{transition:opacity 0.15s;white-space:nowrap;overflow:hidden}
+/* Master card — compact */
+.md-card{box-shadow:0 1px 2px rgba(11,20,48,0.04);transition:all .2s ease}
+.md-card:hover{transform:translateY(-3px);border-color:rgba(45,86,210,0.25);box-shadow:0 12px 28px rgba(11,20,48,0.10)}
+.md-card .md-accent{position:absolute;top:0;left:0;right:0;height:3px;background:#2D56D2;opacity:0;transition:opacity .2s}
+.md-card:hover .md-accent{opacity:1}
+.md-card .md-arrow{position:absolute;top:12px;right:12px;opacity:0;transform:translateX(-4px);transition:all .2s}
+.md-card:hover .md-arrow{opacity:1;transform:translateX(0)}
+.line-clamp-2{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+</style>
+<script src="shared/sidebar.js"></script>
+</head>
+<body class="font-kanit" style="background:#F7F9FC;color:#0B1430">
+
+<div class="min-h-screen flex">
+  <!-- SIDEBAR — Clean White -->
+  <!-- Mobile overlay -->
+  <div id="sidebar-overlay" class="hidden fixed inset-0 bg-black/40 z-20 lg:hidden" onclick="toggleMobile()"></div>
+  <aside id="sidebar" class="w-64 flex flex-col fixed h-full z-30 transition-all duration-200 -translate-x-full lg:translate-x-0 bg-white border-r border-[#E2E8F0]">
+    <!-- Brand -->
+    <div class="px-4 h-16 flex items-center gap-2.5 border-b border-[#E2E8F0]" id="sidebar-brand">
+      <div class="sidebar-label flex items-center gap-2 min-w-0">
+        <img src="logo.jpg" alt="Plan-B Media" class="h-8 w-auto rounded shrink-0" />
+        <span class="text-[11px] font-semibold tracking-wide uppercase border-l border-[#E2E8F0] pl-2 truncate" style="color:rgba(30,41,59,0.55)">Media Flow System</span>
+      </div>
+    </div>
+    <!-- Nav -->
+    <nav class="flex-1 py-3 px-2 overflow-y-auto text-sm sidebar-scroll space-y-0.5">
+
+      <!-- Dashboard -->
+      <a href="dashboard.html" class=" sidebar-nav w-full flex items-center gap-3 h-10 rounded-md px-3 cursor-pointer" data-page="dashboard">
+        <svg class="w-[18px] h-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25a2.25 2.25 0 01-2.25-2.25v-2.25z" /></svg>
+        <span class="flex-1 text-left truncate sidebar-label">Dashboard</span>
+      </a>
+
+      <!-- Inventory -->
+      <a href="inventory.html" class=" sidebar-nav w-full flex items-center gap-3 h-10 rounded-md px-3 cursor-pointer">
+        <svg class="w-[18px] h-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" /></svg>
+        <span class="flex-1 text-left truncate sidebar-label">Inventory</span>
+      </a>
+
+      <!-- Sale -->
+      <a href="sale.html" class=" sidebar-nav w-full flex items-center gap-3 h-10 rounded-md px-3 cursor-pointer">
+        <svg class="w-[18px] h-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z" /></svg>
+        <span class="flex-1 text-left truncate sidebar-label">Sale</span>
+      </a>
+
+      <!-- Media Approval (Expandable) -->
+      <div class="pt-3">
+        <button onclick="toggleMenu('ma')" class="nav-parent sidebar-nav-parent w-full flex items-center gap-3 h-8 px-3 cursor-pointer text-left">
+          <span class="sidebar-group-icon sgi-ma"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></span><span class="flex-1 text-left">Media Approval</span>
+          <svg id="ma-chevron" class="w-3 h-3 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" /></svg>
+        </button>
+        <div id="ma-sub" class="space-y-0.5 hidden">
+          <a href="ma-dashboard.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Dashboard</span>
+          </a>
+          <a href="job-list.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Media Ticket</span>
+            <span class="text-[10px] bg-pb-500 text-white rounded-full px-1.5 min-w-[18px] text-center">12</span>
+          </a>
+          <a href="assign-job.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Assign Ticket</span>
+            <span class="text-[10px] bg-amber-500 text-white rounded-full px-1.5 min-w-[18px] text-center">5</span>
+          </a>
+          <a href="receive-job.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Verify & Production</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Production -->
+      <a href="production.html" class=" sidebar-nav w-full flex items-center gap-3 h-10 rounded-md px-3 cursor-pointer">
+        <svg class="w-[18px] h-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17l-5.1-5.1a2.25 2.25 0 010-3.182l.71-.71a2.25 2.25 0 013.18 0l2.8 2.8 2.8-2.8a2.25 2.25 0 013.18 0l.71.71a2.25 2.25 0 010 3.182l-5.1 5.1a2.25 2.25 0 01-3.18 0z" /></svg>
+        <span class="flex-1 text-left truncate sidebar-label">Production</span>
+      </a>
+
+      <!-- Claim -->
+      <a href="claim.html" class=" sidebar-nav w-full flex items-center gap-3 h-10 rounded-md px-3 cursor-pointer">
+        <svg class="w-[18px] h-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z" /></svg>
+        <span class="flex-1 text-left truncate sidebar-label">Claim</span>
+      </a>
+
+      <!-- Report (Expandable) -->
+      <div class="pt-3">
+        <button onclick="toggleMenu('rpt')" class="nav-parent sidebar-nav-parent w-full flex items-center gap-3 h-8 px-3 cursor-pointer text-left">
+          <span class="sidebar-group-icon sgi-rpt"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg></span><span class="flex-1 text-left">Report</span>
+          <svg id="rpt-chevron" class="w-3 h-3 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" /></svg>
+        </button>
+        <div id="rpt-sub" class="space-y-0.5 hidden">
+          <a href="kpi-dashboard.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">KPI Dashboard</span>
+          </a>
+          <a href="export-airtime.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Export Airtime</span>
+          </a>
+          <a href="report-monthly.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Monthly Report</span>
+          </a>
+          <a href="report-audit.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Audit Log</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Setting (Expandable) -->
+      <div class="pt-3">
+        <button onclick="toggleMenu('stg')" class="nav-parent active sidebar-nav-parent w-full flex items-center gap-3 h-8 px-3 cursor-pointer text-left">
+          <span class="sidebar-group-icon sgi-stg"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75"/></svg></span><span class="flex-1 text-left">Setting</span>
+          <svg id="stg-chevron" class="w-3 h-3 transition-transform duration-200 rotate-90" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" /></svg>
+        </button>
+        <div id="stg-sub" class="space-y-0.5">
+          <a href="settings-user.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">User Management</span>
+          </a>
+          <a href="settings-usergroup.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">User Group Management</span>
+          </a>
+          <a href="settings-email.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Email Setup</span>
+          </a>
+          <a href="settings-master.html" class="active sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Master Data</span>
+          </a>
+        </div>
+      </div>
+
+    </nav>
+
+    <!-- User Footer -->
+    <div class="p-3 border-t border-[#E2E8F0]">
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-full flex items-center justify-center text-white font-semibold text-[13px] shrink-0" style="background:#4790FF">RK</div>
+        <div class="flex-1 min-w-0 sidebar-label">
+          <div class="text-[13px] font-medium text-[#0B1430] truncate">Raveewan Kaewmanee</div>
+          <div class="text-[11px] truncate" style="color:rgba(30,41,59,0.5)">Admin · Plan-B</div>
+        </div>
+        <a href="login.html" class="transition sidebar-label hover:opacity-80" style="color:rgba(30,41,59,0.4)" title="ออกจากระบบ">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" /></svg>
+        </a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="flex-1 lg:ml-64 min-h-screen">
+    <!-- Top Bar — White Glass -->
+    <header class="topbar-white h-16 shrink-0 sticky top-0 z-20 flex items-center gap-4 px-4 sm:px-6">
+      <!-- Collapse / Mobile toggle -->
+      <button onclick="collapseSidebar()" class="w-9 h-9 rounded-md hover:bg-surface-100 flex items-center justify-center text-ink-700">
+        <svg class="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" /></svg>
+      </button>
+
+      <!-- Breadcrumbs -->
+      <div class="flex items-center gap-1.5 text-[13px]" style="color:rgba(30,41,59,0.6)">
+        <span>Home</span>
+        <svg class="w-3 h-3 opacity-30" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
+        <span class="font-medium" style="color:#0B1430">Master Data</span>
+      </div>
+
+      <div class="flex-1"></div>
+
+      <!-- Notification -->
+      <button class="w-9 h-9 rounded-md hover:bg-surface-100 flex items-center justify-center relative" style="color:#1E293B">
+        <svg class="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" /></svg>
+        <span class="absolute top-2 right-2 w-2 h-2 bg-rose-500 rounded-full"></span>
+      </button>
+
+      <!-- Ask AI -->
+      <button id="ai-toggle" onclick="toggleAI()" class="h-9 px-3 rounded-lg border flex items-center gap-2 text-[13px] font-medium transition-colors bg-white border-surface-300 text-ink-900 hover:bg-surface-50">
+        <svg class="w-[15px] h-[15px]" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"/></svg>
+        <span>Ask AI</span>
+      </button>
+    </header>
+
+    <!-- Page Content -->
+    <div class="p-3 sm:p-6">
+    <div class="space-y-5 max-w-[1600px] mx-auto">
+
+<!-- Header -->
+<div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+  <div>
+    <div class="text-[10.5px] font-semibold tracking-wide uppercase mb-1" style="color:rgba(30,41,59,0.5)">Settings</div>
+    <h1 class="text-[24px] font-semibold text-[#0B1430]">Master Data</h1>
+    <p class="text-[13px] mt-0.5" style="color:rgba(30,41,59,0.6)">ตารางอ้างอิงที่ใช้ทั่วระบบ — เลือกหมวดเพื่อจัดการรายการ</p>
+  </div>
+</div>
+
+<!-- Stat strip -->
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+  <div class="bg-white border border-[#E2E8F0] rounded-xl px-4 py-3 flex items-center gap-3 shadow-sm">
+    <div class="w-9 h-9 rounded-lg flex items-center justify-center shrink-0" style="background:rgba(45,86,210,0.14);color:#2D56D2">
+      <svg class="w-[17px] h-[17px]" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25a2.25 2.25 0 01-2.25-2.25v-2.25z" /></svg>
+    </div>
+    <div class="min-w-0">
+      <div class="text-[10px] uppercase font-semibold tracking-wider" style="color:rgba(30,41,59,0.55)">หมวดทั้งหมด</div>
+      <div class="text-[18px] font-semibold tnum" id="kpi-total">0</div>
+    </div>
+  </div>
+  <div class="bg-white border border-[#E2E8F0] rounded-xl px-4 py-3 flex items-center gap-3 shadow-sm">
+    <div class="w-9 h-9 rounded-lg flex items-center justify-center shrink-0" style="background:rgba(16,185,129,0.14);color:#10B981">
+      <svg class="w-[17px] h-[17px]" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+    </div>
+    <div class="min-w-0">
+      <div class="text-[10px] uppercase font-semibold tracking-wider" style="color:rgba(30,41,59,0.55)">รายการรวม</div>
+      <div class="text-[18px] font-semibold tnum" id="kpi-items">0</div>
+    </div>
+  </div>
+  <div class="bg-white border border-[#E2E8F0] rounded-xl px-4 py-3 flex items-center gap-3 shadow-sm">
+    <div class="w-9 h-9 rounded-lg flex items-center justify-center shrink-0" style="background:rgba(124,58,237,0.14);color:#7C3AED">
+      <svg class="w-[17px] h-[17px]" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+    </div>
+    <div class="min-w-0">
+      <div class="text-[10px] uppercase font-semibold tracking-wider" style="color:rgba(30,41,59,0.55)">อัปเดตล่าสุด</div>
+      <div class="text-[13px] font-semibold" id="kpi-last">—</div>
+    </div>
+  </div>
+  <div class="bg-white border border-[#E2E8F0] rounded-xl px-4 py-3 flex items-center gap-3 shadow-sm">
+    <div class="w-9 h-9 rounded-lg flex items-center justify-center shrink-0" style="background:rgba(245,158,11,0.14);color:#F59E0B">
+      <svg class="w-[17px] h-[17px]" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664"/></svg>
+    </div>
+    <div class="min-w-0">
+      <div class="text-[10px] uppercase font-semibold tracking-wider" style="color:rgba(30,41,59,0.55)">หมวดที่แก้ไขได้</div>
+      <div class="text-[18px] font-semibold tnum" id="kpi-editable">0</div>
+    </div>
+  </div>
+</div>
+
+<!-- Search + Filter -->
+<div class="bg-white border border-[#E2E8F0] rounded-xl p-3 shadow-sm">
+  <div class="flex items-center gap-2 flex-wrap">
+    <div class="relative flex-1 min-w-[240px]">
+      <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style="color:rgba(30,41,59,0.35)" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>
+      <input id="master-search" placeholder="ค้นหาหมวด — เช่น Media, Province, Package..."
+        class="w-full h-9 pl-9 pr-3 bg-surface-50 border border-surface-200 rounded-lg text-[13px] placeholder:opacity-40" />
+    </div>
+    <button onclick="resetMasterFilters()" class="h-9 px-3 bg-white border border-surface-200 rounded-lg text-[12px] hover:bg-surface-50 inline-flex items-center gap-1.5">
+      <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182"/></svg>
+      Reset
+    </button>
+  </div>
+</div>
+
+<!-- Result count -->
+<div class="flex items-center justify-between px-1">
+  <div class="text-[12px]" style="color:rgba(30,41,59,0.6)">
+    แสดง <b style="color:rgba(30,41,59,0.85)" id="result-count">0</b> หมวด
+  </div>
+</div>
+
+<!-- Category Cards -->
+<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3" id="master-cards"></div>
+
+<!-- Empty state (hidden by default) -->
+<div id="empty-state" class="hidden bg-white border border-[#E2E8F0] rounded-xl p-12 text-center shadow-sm">
+  <div class="w-14 h-14 rounded-full bg-surface-100 mx-auto mb-3 flex items-center justify-center" style="color:rgba(30,41,59,0.3)">
+    <svg class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>
+  </div>
+  <div class="text-[14px] font-semibold text-[#0B1430] mb-1">ไม่พบหมวดที่ค้นหา</div>
+  <div class="text-[12px]" style="color:rgba(30,41,59,0.5)">ลองพิมพ์คำอื่นหรือกด Reset</div>
+</div>
+
+<!-- Helper footer -->
+<div class="text-[11px] px-1 leading-relaxed" style="color:rgba(30,41,59,0.45)">
+  <svg class="inline-block -mt-0.5 mr-1 w-3 h-3 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+  ข้อมูลในตารางหลัก (Master Data) ถูกใช้อ้างอิงจากหลายระบบ — ตรวจสอบความถูกต้องก่อนแก้ไข
+</div>
+
+<script>
+var MASTER_DATA = [
+  { cat:'Media', th:'ประเภทสื่อ', desc:'หมวด/ประเภทของสื่อโฆษณา (Group → Type)', count:48, updated:'Jun 18, 2026', updatedDays:0, status:'active', href:'master-data-media.html', icon:'M20.25 6.375c0 2.278-3.694 4.125-8.25 4.125S3.75 8.653 3.75 6.375m16.5 0c0-2.278-3.694-4.125-8.25-4.125S3.75 4.097 3.75 6.375m16.5 0v11.25c0 2.278-3.694 4.125-8.25 4.125s-8.25-1.847-8.25-4.125V6.375', color:'#2D56D2' },
+  { cat:'Media Branding', th:'แบรนด์สื่อ', desc:'แบรนด์/Branding ของสื่อ — ใช้สำหรับติด label, จัดกลุ่มแคมเปญ, และอ้างอิงในรายงาน', count:14, updated:'Jun 18, 2026', updatedDays:0, status:'active', href:'master-data-media-branding.html', icon:'M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L10.16 3.66A2.25 2.25 0 008.568 3z M6 6h.008v.008H6V6z', color:'#06B6D4' },
+  { cat:'Province', th:'จังหวัด', desc:'ที่อยู่ตามมาตรฐานไทย: จังหวัด → อำเภอ → ตำบล + รหัสไปรษณีย์', count:77, updated:'Apr 28, 2026', updatedDays:21, status:'active', href:'master-data-province.html', icon:'M15 10.5a3 3 0 11-6 0 3 3 0 016 0z M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z', color:'#10B981' },
+  { cat:'Package', th:'แพ็กเกจ', desc:'แพ็กเกจขายสื่อสำเร็จรูป — Standard / Premium / Burst / Annual', count:6, updated:'May 15, 2026', updatedDays:4, status:'active', href:'master-data-package.html', icon:'M21 11.25v8.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5v-8.25M12 4.875A2.625 2.625 0 109.375 7.5H12m0-2.625V7.5m0-2.625A2.625 2.625 0 1114.625 7.5H12m0 0V21m-8.625-9.75h18c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125h-18c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z', color:'#F59E0B' },
+  { cat:'Department', th:'แผนก', desc:'แผนกในองค์กร — Sales, Media Operation, Graphic, Production, Accounting', count:8, updated:'May 22, 2026', updatedDays:1, status:'active', href:'master-data-department.html', icon:'M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21', color:'#7C3AED' },
+  { cat:'Holiday', th:'วันหยุด', desc:'วันหยุดราชการ/บริษัท ใช้คำนวณ SLA, วันส่งงาน และตารางการขาย', count:18, updated:'May 25, 2026', updatedDays:2, status:'active', href:'master-data-holiday.html', icon:'M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5', color:'#EF4444' },
+  { cat:'Product Owner', th:'เจ้าของผลิตภัณฑ์', desc:'รายชื่อ Product Owner สำหรับกำกับดูแลสื่อ/แพ็กเกจ และอนุมัติงานที่เกี่ยวข้อง', count:12, updated:'May 27, 2026', updatedDays:1, status:'active', href:'master-product-owner.html', icon:'M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z', color:'#0EA5E9' },
+  { cat:'System Status', th:'สถานะระบบ', desc:'รายการ Status ในระบบ — แบ่งเป็น Product Status, Booking Status, Take Down Status', count:18, updated:'May 28, 2026', updatedDays:0, status:'active', href:'master-status.html', icon:'M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z', color:'#EC4899' },
+  { cat:'Zone', th:'โซน', desc:'รายการ Zone ในระบบ — แบ่งเป็น Major Zone และ Minor Zone สำหรับจัดกลุ่มสื่อตามพื้นที่', count:48, updated:'May 28, 2026', updatedDays:0, status:'active', href:'master-zone.html', icon:'M9 6.75V15m6-6v8.25m.503 3.498l4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-1.006l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.252a1.125 1.125 0 00-1.006 0L3.622 5.689C3.24 5.88 3 6.27 3 6.695V19.18c0 .836.88 1.38 1.628 1.006l3.869-1.934c.317-.159.69-.159 1.006 0l4.994 2.497c.317.158.69.158 1.006 0z', color:'#14B8A6' },
+  { cat:'Area', th:'พื้นที่', desc:'พื้นที่ติดตั้งสื่อ — แบ่งตามทำเล/บริเวณย่อยภายในจังหวัด หรือศูนย์การค้า', count:32, updated:'Jun 20, 2026', updatedDays:0, status:'active', href:'master-area.html', icon:'M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7', color:'#3B82F6' },
+  { cat:'Screen Type', th:'ประเภทจอ', desc:'ประเภทของจอแสดงผล — LED, LCD, Static, Digital Frame ฯลฯ', count:8, updated:'Jun 19, 2026', updatedDays:1, status:'active', href:'master-screen-type.html', icon:'M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25m18 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25m18 0V12a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 12V5.25', color:'#8B5CF6' },
+  { cat:'Traffic Light Name', th:'ชื่อไฟจราจร', desc:'รายการจุด/ชื่อไฟจราจรอ้างอิงตำแหน่งติดตั้งสื่อบริเวณแยกถนน', count:24, updated:'Jun 18, 2026', updatedDays:2, status:'active', href:'master-traffice-light.html', icon:'M12 2.25a.75.75 0 01.75.75v.75h.75A2.25 2.25 0 0115.75 6v12A2.25 2.25 0 0113.5 20.25h-3A2.25 2.25 0 018.25 18V6A2.25 2.25 0 0110.5 3.75h.75V3a.75.75 0 01.75-.75zM12 7.5a.75.75 0 100-1.5.75.75 0 000 1.5zm0 4.5a.75.75 0 100-1.5.75.75 0 000 1.5zm0 4.5a.75.75 0 100-1.5.75.75 0 000 1.5z', color:'#EF4444' },
+  { cat:'Format', th:'รูปแบบ', desc:'รูปแบบของสื่อ — Static, Motion, Interactive, Spectacular ฯลฯ', count:6, updated:'Jun 17, 2026', updatedDays:3, status:'active', href:'master-format.html', icon:'M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5', color:'#F97316' },
+  { cat:'Format Name', th:'ชื่อรูปแบบ', desc:'ชื่อย่อ/Code อ้างอิงของแต่ละรูปแบบสื่อสำหรับใช้ในสัญญาและรายงาน', count:18, updated:'Jun 16, 2026', updatedDays:4, status:'active', href:'master-format-name.html', icon:'M2.25 12.76c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.184-4.183a1.14 1.14 0 01.778-.332 48.294 48.294 0 005.83-.498c1.585-.233 2.708-1.626 2.708-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z', color:'#D946EF' },
+  { cat:'Format Ratio', th:'อัตราส่วนรูปแบบ', desc:'อัตราส่วนภาพ (Aspect Ratio) ที่รองรับ — 16:9, 9:16, 4:3, 1:1, Custom', count:9, updated:'Jun 15, 2026', updatedDays:5, status:'active', href:'master-format-ratio.html', icon:'M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15', color:'#22D3EE' },
+  { cat:'Venue Type', th:'ประเภทสถานที่', desc:'ประเภทสถานที่ติดตั้งสื่อ — ห้างสรรพสินค้า, สนามบิน, สถานีรถไฟฟ้า, อาคารสำนักงาน', count:14, updated:'Jun 14, 2026', updatedDays:6, status:'active', href:'master-venue-type.html', icon:'M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21', color:'#A855F7' },
+  { cat:'Bus Model & Line', th:'รุ่น/สายรถบัส', desc:'จัดการรุ่นรถบัส (Model) และสายรถบัส (Line) — Line เชื่อมกับ Model ได้หลายรุ่น', count:48, updated:'Jun 13, 2026', updatedDays:7, status:'active', href:'master-bus.html', icon:'M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12', color:'#F59E0B' },
+  { cat:'Material Type', th:'ประเภทวัสดุ', desc:'ประเภทวัสดุที่ใช้พิมพ์/ติดตั้งสื่อ — Vinyl, Inkjet, Backlit, Mesh, Static Cling', count:15, updated:'Jun 11, 2026', updatedDays:9, status:'active', href:'master-material-type.html', icon:'M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L10.16 3.66A2.25 2.25 0 008.568 3z M6 6h.008v.008H6V6z', color:'#0EA5E9' },
+  { cat:'Signage Type', th:'ประเภทป้าย', desc:'ประเภทของป้ายโฆษณา — Billboard, Standalone, Wallscape, Pole, Marquee', count:11, updated:'Jun 10, 2026', updatedDays:10, status:'active', href:'master-signage-type.html', icon:'M3 3v1.5M3 21v-6m0 0l2.77-.693a9 9 0 016.208.682l.108.054a9 9 0 006.086.71l3.114-.732a48.524 48.524 0 01-.005-10.499l-3.11.732a9 9 0 01-6.085-.711l-.108-.054a9 9 0 00-6.208-.682L3 4.5M3 15V4.5', color:'#DC2626' },
+  { cat:'Position', th:'ตำแหน่ง', desc:'ตำแหน่งการติดตั้งสื่อ — Outside, Inside, Roof, Wall, Floor, Ceiling', count:10, updated:'Jun 09, 2026', updatedDays:11, status:'active', href:'master-position.html', icon:'M15 10.5a3 3 0 11-6 0 3 3 0 016 0z M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z', color:'#10B981' },
+  { cat:'Structure Type', th:'ประเภทโครงสร้าง', desc:'ประเภทของโครงสร้างป้าย — Single Pole, Double Pole, Wall Mount, Roof Top, Bridge', count:8, updated:'Jun 08, 2026', updatedDays:12, status:'active', href:'master-structure-type.html', icon:'M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h6m-6 4h6m-6 4h6M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21', color:'#6366F1' },
+  { cat:'Customization Tier', th:'ระดับการปรับแต่ง', desc:'ระดับการปรับแต่งสื่อ (Customization Tier) — แบ่งเป็น B1–B6 ตามความซับซ้อนของงาน', count:6, updated:'Jun 07, 2026', updatedDays:13, status:'active', href:'master-customization-tier.html', icon:'M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z', color:'#EAB308' }
+];
+
+var _searchQuery = '';
+
+function resetMasterFilters() {
+  _searchQuery = '';
+  document.getElementById('master-search').value = '';
+  renderMasterCards();
+}
+
+function getFiltered() {
+  var q = _searchQuery.toLowerCase();
+  return MASTER_DATA.filter(function(m) {
+    if (!q) return true;
+    return (m.cat + ' ' + m.th + ' ' + m.desc).toLowerCase().indexOf(q) > -1;
+  });
+}
+
+function renderMasterCards() {
+  var rows = getFiltered();
+  var el = document.getElementById('master-cards');
+  var emptyEl = document.getElementById('empty-state');
+  document.getElementById('result-count').textContent = rows.length;
+
+  if (rows.length === 0) {
+    el.classList.add('hidden');
+    emptyEl.classList.remove('hidden');
+    return;
+  }
+  el.classList.remove('hidden');
+  emptyEl.classList.add('hidden');
+
+  var html = '';
+  rows.forEach(function(m) {
+    var isRecent = m.updatedDays <= 7;
+    html += '<a href="' + m.href + '" class="md-card group relative block bg-white border border-[#E2E8F0] rounded-xl p-3.5 hover:shadow-lg transition-all overflow-hidden" style="text-decoration:none;color:inherit;--acc:' + m.color + '">' +
+      '<span class="md-accent" style="background:' + m.color + '"></span>' +
+      '<div class="w-10 h-10 rounded-lg flex items-center justify-center mb-2.5 transition-transform group-hover:scale-110" style="background:' + m.color + '14;color:' + m.color + '">' +
+        '<svg class="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="' + m.icon + '"/></svg>' +
+      '</div>' +
+      '<div class="text-[14px] font-semibold text-[#0B1430] leading-tight">' + m.cat + '</div>' +
+      '<div class="text-[10.5px] mb-2" style="color:rgba(30,41,59,0.5)">' + m.th + '</div>' +
+      '<div class="text-[11px] leading-snug line-clamp-2 min-h-[30px]" style="color:rgba(30,41,59,0.65)">' + m.desc + '</div>' +
+      '<div class="mt-2.5 pt-2.5 border-t border-[#F1F5F9] flex items-center justify-between">' +
+        '<span class="text-[10.5px] font-semibold inline-flex items-center gap-1 px-1.5 py-0.5 rounded-md" style="background:' + m.color + '12;color:' + m.color + '">' +
+          '<svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/></svg>' +
+          m.count +
+        '</span>' +
+        '<span class="text-[10px]" style="color:rgba(30,41,59,0.45)" title="Updated ' + m.updated + '">' + (m.updatedDays === 0 ? 'Today' : m.updatedDays + 'd') + '</span>' +
+      '</div>' +
+      '<span class="md-arrow" style="color:' + m.color + '">' +
+        '<svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>' +
+      '</span>' +
+    '</a>';
+  });
+  el.innerHTML = html;
+}
+
+function renderKpis() {
+  var totalItems = MASTER_DATA.reduce(function(s, m) { return s + m.count; }, 0);
+  var editable = MASTER_DATA.filter(function(m) { return m.status === 'active'; }).length;
+  var latest = MASTER_DATA.slice().sort(function(a, b) { return a.updatedDays - b.updatedDays; })[0];
+  document.getElementById('kpi-total').textContent = MASTER_DATA.length;
+  document.getElementById('kpi-items').textContent = totalItems.toLocaleString();
+  document.getElementById('kpi-last').textContent = latest ? latest.updated : '—';
+  document.getElementById('kpi-editable').textContent = editable;
+}
+
+/* Wire up search */
+document.getElementById('master-search').addEventListener('input', function(e) {
+  _searchQuery = e.target.value;
+  renderMasterCards();
+});
+
+/* Init */
+renderKpis();
+renderMasterCards();
+</script>
+    </div>
+
+  </main>
+</div>
+
+<!-- AI Panel -->
+<div id="ai-panel" class="fixed right-0 top-0 bottom-0 w-[420px] bg-white border-l border-surface-200 z-40 flex flex-col translate-x-full transition-transform duration-200" style="box-shadow:-8px 0 30px rgba(11,20,48,0.08)">
+  <div class="h-16 px-5 border-b border-surface-200 flex items-center gap-3">
+    <div class="w-8 h-8 rounded-lg flex items-center justify-center text-white" style="background:linear-gradient(135deg,#2D56D2,#5FCBF9)">
+      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"/></svg>
+    </div>
+    <div class="flex-1">
+      <div class="text-[14px] font-semibold">Plan-B Copilot</div>
+      <div class="text-[11px] flex items-center gap-1" style="color:rgba(30,41,59,0.6)"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>Connected to live CRM data</div>
+    </div>
+    <button onclick="toggleAI()" class="w-8 h-8 rounded-md hover:bg-surface-100 flex items-center justify-center">
+      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+    </button>
+  </div>
+
+  <!-- Messages -->
+  <div id="ai-messages" class="flex-1 overflow-y-auto px-5 py-4 space-y-3">
+    <div><div class="text-[10px] font-medium uppercase tracking-wide mb-1" style="color:rgba(30,41,59,0.5)">Copilot</div><div class="inline-block max-w-[90%] text-[13px] leading-relaxed rounded-xl px-3.5 py-2.5 bg-surface-50 border border-surface-200">Hi — I can summarize occupancy, flag anomalies, draft proposals, or forecast revenue. What are we digging into?</div></div>
+  </div>
+
+  <!-- Suggestions -->
+  <div id="ai-suggestions" class="px-5 pb-2 space-y-2">
+    <div class="text-[10px] uppercase tracking-wide font-semibold" style="color:rgba(30,41,59,0.5)">Try asking</div>
+    <button onclick="aiSend(this.textContent)" class="w-full text-left text-[12px] px-3 py-2 border border-surface-200 rounded-lg hover:border-pb-500 hover:bg-blue-50/30 transition-colors">Forecast May occupancy for BTS inventory</button>
+    <button onclick="aiSend(this.textContent)" class="w-full text-left text-[12px] px-3 py-2 border border-surface-200 rounded-lg hover:border-pb-500 hover:bg-blue-50/30 transition-colors">Summarize this week's claims by severity</button>
+    <button onclick="aiSend(this.textContent)" class="w-full text-left text-[12px] px-3 py-2 border border-surface-200 rounded-lg hover:border-pb-500 hover:bg-blue-50/30 transition-colors">Who are my top 3 clients and where are they underspending?</button>
+    <button onclick="aiSend(this.textContent)" class="w-full text-left text-[12px] px-3 py-2 border border-surface-200 rounded-lg hover:border-pb-500 hover:bg-blue-50/30 transition-colors">Draft a proposal: AIS wants 30-day coverage in Bangkok + Chiang Mai</button>
+  </div>
+
+  <!-- Input -->
+  <div class="p-4 border-t border-surface-200">
+    <div class="rounded-xl bg-white border border-surface-200 focus-within:border-pb-500 transition" style="box-shadow:0 0 0 1px rgba(45,86,210,0.1)">
+      <div class="flex items-end gap-2 p-2">
+        <input id="ai-input" type="text" placeholder="Ask about occupancy, pipeline, claims…" class="flex-1 text-[13px] bg-transparent outline-none px-2 py-1.5 placeholder:opacity-40" onkeydown="if(event.key==='Enter'){event.preventDefault();aiSend()}" />
+        <button onclick="aiSend()" class="w-8 h-8 rounded-md bg-ink-900 hover:bg-ink-700 flex items-center justify-center text-white shrink-0">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 18-8-8 18-2-8-8-2Z"/></svg>
+        </button>
+      </div>
+    </div>
+    <p class="text-[10px] text-center mt-2" style="color:rgba(30,41,59,0.4)">Plan-B Copilot — may hallucinate, verify critical actions</p>
+  </div>
+</div>
+
+<script>
+/* === Expand/collapse sub-menus === */
+function toggleMenu(id){
+  const sub=document.getElementById(id+'-sub');
+  const chevron=document.getElementById(id+'-chevron');
+  if(sub.classList.contains('hidden')){
+    sub.classList.remove('hidden');
+    chevron.classList.add('rotate-90');
+  }else{
+    sub.classList.add('hidden');
+    chevron.classList.remove('rotate-90');
+  }
+}
+
+/* === Mobile sidebar overlay === */
+function toggleMobile(){
+  const sidebar=document.getElementById('sidebar');
+  const overlay=document.getElementById('sidebar-overlay');
+  sidebar.classList.toggle('-translate-x-full');
+  overlay.classList.toggle('hidden');
+}
+
+/* === Desktop collapse sidebar === */
+let _sidebarCollapsed = false;
+function collapseSidebar(){
+  // On mobile, toggle mobile drawer instead
+  if(window.innerWidth < 1024){
+    toggleMobile();
+    return;
+  }
+  _sidebarCollapsed = !_sidebarCollapsed;
+  const sb = document.getElementById('sidebar');
+  const main = document.querySelector('main');
+  const labels = sb.querySelectorAll('.sidebar-label');
+  const groups = sb.querySelectorAll('.sidebar-nav-parent');
+  const subs = sb.querySelectorAll('[id$="-sub"]');
+  const brand = document.getElementById('sidebar-brand');
+
+  if(_sidebarCollapsed){
+    sb.classList.remove('w-64');
+    sb.classList.add('w-[68px]');
+    main.classList.remove('lg:ml-64');
+    main.classList.add('lg:ml-[68px]');
+    labels.forEach(el=>el.classList.add('hidden'));
+    groups.forEach(el=>el.classList.add('hidden'));
+    subs.forEach(el=>el.classList.add('hidden'));
+    if(brand) brand.classList.replace('px-4','px-0');
+    if(brand) brand.classList.add('justify-center');
+  } else {
+    sb.classList.remove('w-[68px]');
+    sb.classList.add('w-64');
+    main.classList.remove('lg:ml-[68px]');
+    main.classList.add('lg:ml-64');
+    labels.forEach(el=>el.classList.remove('hidden'));
+    groups.forEach(el=>el.classList.remove('hidden'));
+    // Re-show sub-menus that were explicitly open (have active items)
+    subs.forEach(el=>{
+      if(el.querySelector('.active')) el.classList.remove('hidden');
+    });
+    if(brand) brand.classList.replace('px-0','px-4');
+    if(brand) brand.classList.remove('justify-center');
+  }
+}
+
+/* === AI Panel === */
+let _aiOpen = false;
+function toggleAI(){
+  _aiOpen = !_aiOpen;
+  const panel = document.getElementById('ai-panel');
+  const btn = document.getElementById('ai-toggle');
+  if(_aiOpen){
+    panel.classList.remove('translate-x-full');
+    btn.classList.remove('bg-white','border-surface-300','text-ink-900','hover:bg-surface-50');
+    btn.classList.add('bg-ink-900','text-white','border-ink-900');
+  } else {
+    panel.classList.add('translate-x-full');
+    btn.classList.remove('bg-ink-900','text-white','border-ink-900');
+    btn.classList.add('bg-white','border-surface-300','text-ink-900','hover:bg-surface-50');
+  }
+}
+
+/* AI demo chat */
+const _aiReplies = [
+  "Based on current data, BTS corridor occupancy is trending at 84% — above the 78% network average. If the pattern holds, May could hit 89% with AIS and TrueMove briefs both targeting Silom.",
+  "This week we have 3 open claims: #1284 (high — LED flicker, 2h remaining SLA), #1282 (critical — content not playing, urgent), and #1283 (med — vinyl peel, within SLA). The critical item needs immediate attention.",
+  "Your top 3 clients YTD: AIS Thailand (฿24.8M, 18 campaigns), TrueMove H (฿18.5M, 14 campaigns), and Toyota Motor (฿15.2M, 9 campaigns). Toyota is underspending on digital LED — they only use 2 of your 5 available LED sites.",
+  "Draft proposal ready: AIS 30-day coverage across 8 Bangkok sites (including Silom LED, Rama IX, Asoke) + 2 Chiang Mai sites. Estimated package: ฿4.2M. Occupancy conflicts on TH-SIL-09 for May 5-12 — recommend offering X-CAYA-FY-1 as substitute.",
+];
+let _aiReplyIdx = 0;
+
+function aiSend(text){
+  const input = document.getElementById('ai-input');
+  const msg = text || input.value.trim();
+  if(!msg) return;
+  input.value = '';
+  document.getElementById('ai-suggestions').style.display='none';
+
+  const box = document.getElementById('ai-messages');
+  // User bubble
+  box.innerHTML += '<div class="text-right"><div class="inline-block max-w-[90%] text-[13px] leading-relaxed rounded-xl px-3.5 py-2.5 bg-ink-900 text-white">'+msg.replace(/</g,'&lt;')+'</div></div>';
+  box.scrollTop = box.scrollHeight;
+
+  // Thinking dots
+  const thinkId = 'ai-think-'+Date.now();
+  box.innerHTML += '<div id="'+thinkId+'" class="flex items-center gap-2 text-[12px]" style="color:rgba(30,41,59,0.6)"><div class="flex gap-1"><span class="w-1.5 h-1.5 bg-pb-500 rounded-full pulse-dot"></span><span class="w-1.5 h-1.5 bg-pb-500 rounded-full pulse-dot" style="animation-delay:.2s"></span><span class="w-1.5 h-1.5 bg-pb-500 rounded-full pulse-dot" style="animation-delay:.4s"></span></div>analyzing CRM data…</div>';
+  box.scrollTop = box.scrollHeight;
+
+  setTimeout(()=>{
+    const el = document.getElementById(thinkId);
+    if(el) el.remove();
+    const reply = _aiReplies[_aiReplyIdx % _aiReplies.length];
+    _aiReplyIdx++;
+    box.innerHTML += '<div><div class="text-[10px] font-medium uppercase tracking-wide mb-1" style="color:rgba(30,41,59,0.5)">Copilot</div><div class="inline-block max-w-[90%] text-[13px] leading-relaxed rounded-xl px-3.5 py-2.5 bg-surface-50 border border-surface-200">'+reply+'</div></div>';
+    box.scrollTop = box.scrollHeight;
+  }, 1500);
+}
+</script>
+</body>
+</html>

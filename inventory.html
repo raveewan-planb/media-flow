@@ -1,0 +1,1366 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Inventory — Plan-B CRM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config={theme:{extend:{fontFamily:{kanit:['Kanit','sans-serif']},colors:{pb:{900:'#213268',700:'#2D56D2',500:'#4790FF',300:'#5FCBF9',50:'#EBF5FF',100:'#D6ECFF'},ink:{900:'#0B1430',800:'#162040',700:'#1E293B'},surface:{0:'#FFFFFF',50:'#F8FAFC',100:'#F1F5F9',200:'#E2E8F0',300:'#CBD5E1'}}}}}
+</script>
+<style>
+*{font-family:'Kanit',sans-serif;-webkit-font-smoothing:antialiased}
+html,body{overflow-x:hidden}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#CBD5E8;border-radius:10px;border:2px solid #F7F9FC}
+::-webkit-scrollbar-thumb:hover{background:#93A4C4}
+.sidebar-scroll::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.06);border:2px solid transparent}
+.sidebar-scroll::-webkit-scrollbar-track{background:transparent}
+/* Sidebar nav items — White theme */
+.sidebar-nav{color:rgba(30,41,59,0.6);transition:all 0.15s;position:relative;font-size:13px}
+.sidebar-nav:hover{color:#0B1430;background:rgba(71,144,255,0.06)}
+.sidebar-nav.active{color:#2D56D2;font-weight:500;background:linear-gradient(90deg,rgba(71,144,255,0.10),rgba(71,144,255,0))}
+.sidebar-nav.active::before{content:'';position:absolute;left:0;top:8px;bottom:8px;width:3px;border-radius:2px;background:#2D56D2}
+/* Sidebar group headers */
+.sidebar-nav-parent{color:rgba(30,41,59,0.4);transition:all 0.15s;font-size:10.5px;text-transform:uppercase;letter-spacing:0.05em;font-weight:600}
+.sidebar-nav-parent:hover{color:rgba(30,41,59,0.7)}
+.sidebar-nav-parent.active{color:rgba(30,41,59,0.7)}
+/* Sidebar sub-items */
+.sidebar-sub{color:rgba(30,41,59,0.55);transition:all 0.15s;position:relative}
+.sidebar-sub:hover{color:#0B1430;background:rgba(71,144,255,0.06)}
+.sidebar-sub.active{color:#2D56D2;font-weight:500;background:linear-gradient(90deg,rgba(71,144,255,0.10),rgba(71,144,255,0))}
+.sidebar-sub.active::before{content:'';position:absolute;left:0;top:6px;bottom:6px;width:3px;border-radius:2px;background:#2D56D2;box-shadow:0 0 8px rgba(45,86,210,0.4)}
+.sidebar-nav.active::before{box-shadow:0 0 8px rgba(45,86,210,0.4)}
+.sidebar-group-icon{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:8px;background:transparent;transition:all .15s;flex-shrink:0;color:rgba(30,41,59,0.55)}
+.sgi-ma{color:#7C3AED}.sgi-rpt{color:#0EA5E9}.sgi-stg{color:#EF4444}
+.nav-parent{border-radius:8px;transition:all .15s}
+.nav-parent:hover{background:#F1F5F9}
+.nav-parent.active:has(.sgi-ma){background:rgba(124,58,237,0.10);color:#7C3AED}
+.nav-parent.active:has(.sgi-ma) .sidebar-group-icon{background:rgba(124,58,237,0.20)}
+.nav-parent.active:has(.sgi-rpt){background:rgba(14,165,233,0.10);color:#0EA5E9}
+.nav-parent.active:has(.sgi-rpt) .sidebar-group-icon{background:rgba(14,165,233,0.20)}
+.nav-parent.active:has(.sgi-stg){background:rgba(239,68,68,0.10);color:#EF4444}
+.nav-parent.active:has(.sgi-stg) .sidebar-group-icon{background:rgba(239,68,68,0.20)}
+#sidebar{background:linear-gradient(180deg,#fff 0%,#fff 60%,#F8FAFC 100%) !important}
+#sidebar-brand{background:linear-gradient(135deg,rgba(45,86,210,0.04),rgba(95,203,249,0.04))}
+/* nav-item for page content compatibility */
+.nav-item{transition:all 0.2s;border-radius:8px}
+.nav-item:hover,.nav-item.active{background:rgba(71,144,255,0.12);color:#4790FF}
+.nav-parent.active{color:#2D56D2;font-weight:500}
+/* Cards & general UI */
+.card-hover{transition:all 0.2s}
+.card-hover:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(33,50,104,0.12)}
+.badge-pulse{animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.7}}
+.status-dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+input:focus,select:focus,textarea:focus{outline:none;border-color:#4790FF;box-shadow:0 0 0 3px rgba(71,144,255,0.15)}
+.tab-btn{transition:all 0.2s}
+.tab-btn.active{color:#2D56D2;border-bottom:2px solid #2D56D2}
+table th{position:sticky;top:0;z-index:1}
+.progress-bar{transition:width 0.6s ease}
+/* Topbar — White glass */
+.topbar-white{background:rgba(255,255,255,0.9);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid #E2E8F0}
+/* Dashboard extras */
+.tnum{font-variant-numeric:tabular-nums}
+.shine{background:linear-gradient(135deg,#2D56D2,#5FCBF9)}
+.shine-soft{background:linear-gradient(135deg,rgba(71,144,255,0.08),rgba(95,203,249,0.08))}
+.ai-border{box-shadow:0 0 0 1px rgba(45,86,210,0.25),0 2px 8px rgba(45,86,210,0.08)}
+.pulse-dot{animation:pulseDot 2s ease-in-out infinite}
+@keyframes pulseDot{0%,100%{transform:scale(1);opacity:.4}50%{transform:scale(1.5);opacity:0}}
+.map-bg{background:linear-gradient(135deg,#F8FAFC 0%,#EBF5FF 100%)}
+.shadow-pop{box-shadow:0 8px 30px rgba(11,20,48,0.12)}
+.shadow-card{box-shadow:0 1px 3px rgba(11,20,48,0.06),0 1px 2px rgba(11,20,48,0.04)}
+/* Sidebar collapse label */
+.sidebar-label{transition:opacity 0.15s;white-space:nowrap;overflow:hidden}
+/* === Group stat cards — flat compact === */
+.gs-card{position:relative;border-radius:10px;border:1px solid #E2E8F0;background:#fff;padding:10px 12px;cursor:pointer;transition:all .18s ease;overflow:hidden}
+.gs-card:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(11,20,48,0.06);border-color:var(--gs-color,#CBD5E1)}
+.gs-card.active{background:var(--gs-color,#2D56D2);border-color:var(--gs-color,#2D56D2)}
+.gs-card .gs-icon{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:7px;flex-shrink:0;transition:all .18s}
+.gs-card.active .gs-icon{background:rgba(255,255,255,0.22) !important;color:#fff !important}
+.gs-card .gs-label{font-size:9.5px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:rgba(30,41,59,0.6);margin-top:6px;line-height:1.2}
+.gs-card.active .gs-label{color:rgba(255,255,255,0.85)}
+.gs-card .gs-num{font-size:19px;font-weight:700;line-height:1.1;margin-top:1px;font-variant-numeric:tabular-nums;letter-spacing:-0.02em;color:#0B1430}
+.gs-card.active .gs-num,.gs-card.active .gs-num span{color:#fff !important}
+.gs-card .gs-pct{font-size:9.5px;font-weight:600;font-variant-numeric:tabular-nums;padding:1px 6px;border-radius:99px;background:#F1F5F9;color:rgba(30,41,59,0.65)}
+.gs-card.active .gs-pct{background:rgba(255,255,255,0.22);color:#fff}
+.gs-card .gs-bar{margin-top:6px;height:3px;border-radius:99px;background:#F1F5F9;overflow:hidden}
+.gs-card.active .gs-bar{background:rgba(255,255,255,0.25)}
+.gs-card .gs-bar-fill{height:100%;border-radius:99px;transition:width .4s cubic-bezier(.22,1,.36,1);background:var(--gs-color,#2D56D2)}
+.gs-card.active .gs-bar-fill{background:#fff}
+.gs-card .gs-active-tick{display:none;width:16px;height:16px;border-radius:50%;background:#fff;color:var(--gs-color);align-items:center;justify-content:center}
+.gs-card.active .gs-active-tick{display:inline-flex}
+.gs-card.active .gs-pct{display:none}
+/* === Table polish === */
+#inv-table-body tr{transition:background-color .12s}
+#inv-table-body tr:hover{background:#F4F8FE}
+#inv-table-body tr:nth-child(even){background:#FAFCFE}
+#inv-table-body tr:nth-child(even):hover{background:#F4F8FE}
+#inv-thead th{padding:8px 8px;font-size:10.5px;letter-spacing:.04em;background:#F8FAFC;color:rgba(30,41,59,0.55);font-weight:600;border-bottom:1px solid #E2E8F0;vertical-align:middle;white-space:normal;line-height:1.25}
+#inv-thead th:first-child{padding-left:12px}
+#inv-thead th:last-child{padding-right:12px}
+#inv-table-body td{padding:8px 8px;border-bottom:1px solid #F1F5F9;vertical-align:middle}
+#inv-table-body td:first-child{padding-left:12px}
+#inv-table-body td:last-child{padding-right:12px}
+#inv-table-body tr:last-child td{border-bottom:0}
+/* Sortable headers — clean, no layout shift */
+th.sortable{cursor:pointer;user-select:none;transition:color .15s,background-color .15s;position:relative}
+th.sortable:hover{color:rgba(30,41,59,0.85);background:#F1F5F9}
+th.sortable .sort-ind{display:inline-flex;width:10px;height:10px;align-items:center;justify-content:center;margin-left:4px;vertical-align:-1px;opacity:0;color:rgba(30,41,59,0.5);transition:opacity .15s}
+th.sortable:hover .sort-ind{opacity:.7}
+th.sortable.sort-active{color:#2D56D2;background:rgba(45,86,210,0.06)}
+th.sortable.sort-active .sort-ind{opacity:1;color:#2D56D2}
+/* Pagination */
+.pg-btn{min-width:32px;height:32px;padding:0 8px;display:inline-flex;align-items:center;justify-content:center;border:1px solid #E2E8F0;border-radius:8px;background:#fff;font-size:12.5px;font-weight:500;color:#0B1430;cursor:pointer;transition:all .12s}
+.pg-btn:hover:not(:disabled){background:#F8FAFC;border-color:#CBD5E1}
+.pg-btn.active{background:#2D56D2;border-color:#2D56D2;color:#fff}
+.pg-btn:disabled{opacity:.4;cursor:not-allowed}
+.pg-dots{padding:0 4px;color:rgba(30,41,59,0.4);font-weight:600}
+/* fade-in for cards on first render */
+@keyframes gsFadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.gs-card{animation:gsFadeUp .28s ease backwards}
+.gs-card:nth-child(1){animation-delay:.02s}
+.gs-card:nth-child(2){animation-delay:.05s}
+.gs-card:nth-child(3){animation-delay:.08s}
+.gs-card:nth-child(4){animation-delay:.11s}
+.gs-card:nth-child(5){animation-delay:.14s}
+.gs-card:nth-child(6){animation-delay:.17s}
+/* === Go to top button === */
+#go-top{position:fixed !important;right:24px;bottom:28px;width:46px;height:46px;border-radius:50%;background:#5FCBF9;color:#0B1430;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 22px rgba(95,203,249,0.45),0 2px 6px rgba(95,203,249,0.30);opacity:1;visibility:visible;transition:opacity .2s ease,transform .15s ease,background .15s,box-shadow .15s;z-index:9999;border:none;cursor:pointer;padding:0;margin:0}
+#go-top.hide-gt{opacity:0;visibility:hidden;pointer-events:none}
+#go-top:hover{background:#4790FF;color:#fff;transform:translateY(-3px);box-shadow:0 12px 30px rgba(71,144,255,0.50)}
+#go-top:active{transform:translateY(-1px)}
+#go-top svg{display:block;width:22px;height:22px}
+/* === Multi-select filter component === */
+.filter-ms{position:relative;display:inline-flex;align-items:stretch;min-width:140px}
+.filter-ms-btn{height:32px;padding:0 28px 0 10px;background:#fff;border:1px solid #E2E8F0;border-radius:6px;font-size:12.5px;color:#1E293B;cursor:pointer;text-align:left;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;width:100%;transition:all .15s;position:relative;font-family:inherit}
+.filter-ms-btn:hover{border-color:#CBD5E1;background:#FBFCFE}
+.filter-ms.open .filter-ms-btn{border-color:#4790FF;box-shadow:0 0 0 3px rgba(71,144,255,0.15);background:#fff}
+.filter-ms-btn::after{content:'';position:absolute;right:10px;top:50%;width:7px;height:7px;border-right:1.5px solid #64748b;border-bottom:1.5px solid #64748b;transform:translateY(-65%) rotate(45deg);pointer-events:none;transition:transform .15s}
+.filter-ms.open .filter-ms-btn::after{transform:translateY(-30%) rotate(225deg)}
+.filter-ms-label{flex:1;overflow:hidden;text-overflow:ellipsis}
+.filter-ms-label.has-sel{color:#0B1430}
+.filter-ms-count{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:16px;padding:0 5px;background:#2D56D2;color:#fff;border-radius:99px;font-size:10px;font-weight:700;line-height:1;margin-left:4px}
+.filter-ms-panel{position:absolute;top:calc(100% + 4px);left:0;min-width:220px;max-width:320px;background:#fff;border:1px solid #E2E8F0;border-radius:8px;box-shadow:0 10px 30px rgba(11,20,48,0.14);z-index:30;padding:4px;max-height:280px;overflow:auto}
+.filter-ms-panel.hidden{display:none}
+.filter-ms-opt{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:6px;font-size:12.5px;color:#1E293B;cursor:pointer;transition:.12s;user-select:none}
+.filter-ms-opt:hover{background:rgba(71,144,255,0.08)}
+.filter-ms-opt input{appearance:none;width:14px;height:14px;border:1.5px solid #CBD5E1;border-radius:4px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;transition:.15s;cursor:pointer;margin:0}
+.filter-ms-opt input:checked{background:#2D56D2;border-color:#2D56D2}
+.filter-ms-opt input:checked::after{content:'';width:7px;height:4px;border:1.5px solid #fff;border-top:0;border-right:0;transform:rotate(-45deg) translate(1px,-1px)}
+.filter-ms-opt input:indeterminate{background:#2D56D2;border-color:#2D56D2}
+.filter-ms-opt input:indeterminate::after{content:'';width:8px;height:2px;background:#fff;border-radius:1px}
+.filter-ms-all{font-weight:600;color:#213268;border-bottom:1px solid #F1F5F9;border-radius:6px 6px 0 0;margin-bottom:2px}
+.filter-ms-all.selected{background:rgba(45,86,210,0.08)}
+.filter-ms-opt.selected{background:rgba(71,144,255,0.08);font-weight:500;color:#213268}
+.filter-ms-empty{padding:14px;text-align:center;font-size:11.5px;color:rgba(30,41,59,0.45)}
+.filter-ms-actions{display:flex;align-items:center;justify-content:space-between;padding:6px 8px;border-top:1px solid #F1F5F9;margin-top:4px}
+.filter-ms-actions button{font-size:11px;color:#2D56D2;font-weight:500;background:transparent;border:0;cursor:pointer;padding:4px 8px;border-radius:4px;font-family:inherit}
+.filter-ms-actions button:hover{background:rgba(45,86,210,0.08)}
+.filter-ms-actions .ms-count-hint{font-size:10.5px;color:rgba(30,41,59,0.45)}
+</style>
+<script src="shared/sidebar.js"></script>
+</head>
+<body class="font-kanit" style="background:#F7F9FC;color:#0B1430">
+
+<div class="min-h-screen flex">
+  <!-- SIDEBAR — Clean White -->
+  <!-- Mobile overlay -->
+  <div id="sidebar-overlay" class="hidden fixed inset-0 bg-black/40 z-20 lg:hidden" onclick="toggleMobile()"></div>
+  <aside id="sidebar" class="w-64 flex flex-col fixed h-full z-30 transition-all duration-200 -translate-x-full lg:translate-x-0 bg-white border-r border-[#E2E8F0]">
+    <!-- Brand -->
+    <div class="px-4 h-16 flex items-center gap-2.5 border-b border-[#E2E8F0]" id="sidebar-brand">
+      <div class="sidebar-label flex items-center gap-2 min-w-0">
+        <img src="logo.jpg" alt="Plan-B Media" class="h-8 w-auto rounded shrink-0" />
+        <span class="text-[11px] font-semibold tracking-wide uppercase border-l border-[#E2E8F0] pl-2 truncate" style="color:rgba(30,41,59,0.55)">Media Flow System</span>
+      </div>
+    </div>
+    <!-- Nav -->
+    <nav class="flex-1 py-3 px-2 overflow-y-auto text-sm sidebar-scroll space-y-0.5">
+
+      <!-- Dashboard -->
+      <a href="dashboard.html" class=" sidebar-nav w-full flex items-center gap-3 h-10 rounded-md px-3 cursor-pointer" data-page="dashboard">
+        <svg class="w-[18px] h-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25a2.25 2.25 0 01-2.25-2.25v-2.25z" /></svg>
+        <span class="flex-1 text-left truncate sidebar-label">Dashboard</span>
+      </a>
+
+      <!-- Inventory -->
+      <a href="inventory.html" class="active sidebar-nav w-full flex items-center gap-3 h-10 rounded-md px-3 cursor-pointer">
+        <svg class="w-[18px] h-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" /></svg>
+        <span class="flex-1 text-left truncate sidebar-label">Inventory</span>
+      </a>
+
+      <!-- Sale -->
+      <a href="sale.html" class=" sidebar-nav w-full flex items-center gap-3 h-10 rounded-md px-3 cursor-pointer">
+        <svg class="w-[18px] h-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z" /></svg>
+        <span class="flex-1 text-left truncate sidebar-label">Sale</span>
+      </a>
+
+      <!-- Media Approval (Expandable) -->
+      <div class="pt-3">
+        <button onclick="toggleMenu('ma')" class="nav-parent sidebar-nav-parent w-full flex items-center gap-3 h-8 px-3 cursor-pointer text-left">
+          <span class="sidebar-group-icon sgi-ma"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></span><span class="flex-1 text-left">Media Approval</span>
+          <svg id="ma-chevron" class="w-3 h-3 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" /></svg>
+        </button>
+        <div id="ma-sub" class="space-y-0.5 hidden">
+          <a href="ma-dashboard.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Dashboard</span>
+          </a>
+          <a href="job-list.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Media Ticket</span>
+            <span class="text-[10px] bg-pb-500 text-white rounded-full px-1.5 min-w-[18px] text-center">12</span>
+          </a>
+          <a href="assign-job.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Assign Ticket</span>
+            <span class="text-[10px] bg-amber-500 text-white rounded-full px-1.5 min-w-[18px] text-center">5</span>
+          </a>
+          <a href="receive-job.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Verify & Production</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Production -->
+      <a href="production.html" class=" sidebar-nav w-full flex items-center gap-3 h-10 rounded-md px-3 cursor-pointer">
+        <svg class="w-[18px] h-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17l-5.1-5.1a2.25 2.25 0 010-3.182l.71-.71a2.25 2.25 0 013.18 0l2.8 2.8 2.8-2.8a2.25 2.25 0 013.18 0l.71.71a2.25 2.25 0 010 3.182l-5.1 5.1a2.25 2.25 0 01-3.18 0z" /></svg>
+        <span class="flex-1 text-left truncate sidebar-label">Production</span>
+      </a>
+
+      <!-- Claim -->
+      <a href="claim.html" class=" sidebar-nav w-full flex items-center gap-3 h-10 rounded-md px-3 cursor-pointer">
+        <svg class="w-[18px] h-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z" /></svg>
+        <span class="flex-1 text-left truncate sidebar-label">Claim</span>
+      </a>
+
+      <!-- Report (Expandable) -->
+      <div class="pt-3">
+        <button onclick="toggleMenu('rpt')" class="nav-parent sidebar-nav-parent w-full flex items-center gap-3 h-8 px-3 cursor-pointer text-left">
+          <span class="sidebar-group-icon sgi-rpt"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg></span><span class="flex-1 text-left">Report</span>
+          <svg id="rpt-chevron" class="w-3 h-3 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" /></svg>
+        </button>
+        <div id="rpt-sub" class="space-y-0.5 hidden">
+          <a href="kpi-dashboard.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">KPI Dashboard</span>
+          </a>
+          <a href="export-airtime.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Export Airtime</span>
+          </a>
+          <a href="report-monthly.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Monthly Report</span>
+          </a>
+          <a href="report-audit.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Audit Log</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Setting (Expandable) -->
+      <div class="pt-3">
+        <button onclick="toggleMenu('stg')" class="nav-parent sidebar-nav-parent w-full flex items-center gap-3 h-8 px-3 cursor-pointer text-left">
+          <span class="sidebar-group-icon sgi-stg"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.93.398.164.855.142 1.205-.108l.737-.527a1.125 1.125 0 011.45.12l.773.774c.39.389.44 1.002.12 1.45l-.527.737c-.25.35-.272.806-.107 1.204.165.397.505.71.93.78l.893.15c.543.09.94.56.94 1.109v1.094c0 .55-.397 1.02-.94 1.11l-.893.149c-.425.07-.765.383-.93.78-.165.398-.143.854.107 1.204l.527.738c.32.447.269 1.06-.12 1.45l-.774.773a1.125 1.125 0 01-1.449.12l-.738-.527c-.35-.25-.806-.272-1.203-.107-.398.165-.71.505-.781.929l-.149.894c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.019-.398-1.11-.94l-.148-.894c-.071-.424-.384-.764-.781-.93-.398-.164-.854-.142-1.204.108l-.738.527c-.447.32-1.06.269-1.45-.12l-.773-.774a1.125 1.125 0 01-.12-1.45l.527-.737c.25-.35.273-.806.108-1.204-.165-.397-.505-.71-.93-.78l-.894-.15c-.542-.09-.94-.56-.94-1.109v-1.094c0-.55.398-1.02.94-1.11l.894-.149c.424-.07.765-.383.93-.78.165-.398.143-.854-.107-1.204l-.527-.738a1.125 1.125 0 01.12-1.45l.773-.773a1.125 1.125 0 011.45-.12l.737.527c.35.25.807.272 1.204.107.397-.165.71-.505.78-.929l.15-.894zM15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg></span><span class="flex-1 text-left">Setting</span>
+          <svg id="stg-chevron" class="w-3 h-3 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" /></svg>
+        </button>
+        <div id="stg-sub" class="space-y-0.5 hidden">
+          <a href="settings-user.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">User Management</span>
+          </a>
+          <a href="settings-usergroup.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">User Group Management</span>
+          </a>
+          <a href="settings-email.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Email Setup</span>
+          </a>
+          <a href="settings-master.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Master Data</span>
+          </a>
+        </div>
+      </div>
+
+    </nav>
+
+    <!-- User Footer -->
+    <div class="p-3 border-t border-[#E2E8F0]">
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-full flex items-center justify-center text-white font-semibold text-[13px] shrink-0" style="background:#4790FF">RK</div>
+        <div class="flex-1 min-w-0 sidebar-label">
+          <div class="text-[13px] font-medium text-[#0B1430] truncate">Raveewan Kaewmanee</div>
+          <div class="text-[11px] truncate" style="color:rgba(30,41,59,0.5)">Admin · Plan-B</div>
+        </div>
+        <a href="login.html" class="transition sidebar-label hover:opacity-80" style="color:rgba(30,41,59,0.4)" title="ออกจากระบบ">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" /></svg>
+        </a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="flex-1 lg:ml-64 min-h-screen">
+    <!-- Top Bar — White Glass -->
+    <header class="topbar-white h-16 shrink-0 sticky top-0 z-20 flex items-center gap-4 px-4 sm:px-6">
+      <!-- Collapse / Mobile toggle -->
+      <button onclick="collapseSidebar()" class="w-9 h-9 rounded-md hover:bg-surface-100 flex items-center justify-center text-ink-700">
+        <svg class="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" /></svg>
+      </button>
+
+      <!-- Breadcrumbs -->
+      <div class="flex items-center gap-1.5 text-[13px]" style="color:rgba(30,41,59,0.6)">
+        <span>Home</span>
+        <svg class="w-3 h-3 opacity-30" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
+        <span class="font-medium" style="color:#0B1430">Inventory</span>
+      </div>
+
+      <div class="flex-1"></div>
+
+      <!-- Notification -->
+      <button class="w-9 h-9 rounded-md hover:bg-surface-100 flex items-center justify-center relative" style="color:#1E293B">
+        <svg class="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" /></svg>
+        <span class="absolute top-2 right-2 w-2 h-2 bg-rose-500 rounded-full"></span>
+      </button>
+
+      <!-- Ask AI -->
+      <button id="ai-toggle" onclick="toggleAI()" class="h-9 px-3 rounded-lg border flex items-center gap-2 text-[13px] font-medium transition-colors bg-white border-surface-300 text-ink-900 hover:bg-surface-50">
+        <svg class="w-[15px] h-[15px]" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"/></svg>
+        <span>Ask AI</span>
+      </button>
+    </header>
+
+    <!-- Page Content -->
+    <div class="p-3 sm:p-4">
+    <div class="px-2 space-y-3 max-w-[1600px] mx-auto">
+<!-- Header — compact -->
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+<div class="flex items-baseline gap-3">
+<h1 class="text-[18px] font-semibold text-[#0B1430] leading-none">Inventory</h1>
+<span class="text-[12px]" style="color:rgba(30,41,59,0.55)" id="header-count"></span>
+</div>
+<div class="flex items-center gap-1.5">
+<a href="inventory-import.html" class="h-8 px-3 bg-white text-[#0B1430] rounded-md border border-[#E2E8F0] text-[12.5px] font-medium hover:bg-[#F8FAFC] inline-flex items-center gap-1.5">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24"><path d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span>Import</span>
+</a>
+<button class="h-8 px-3 bg-white text-[#0B1430] rounded-md border border-[#E2E8F0] text-[12.5px] font-medium hover:bg-[#F8FAFC] inline-flex items-center gap-1.5">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24"><path d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12M12 16.5V3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span>Export</span>
+</button>
+<a href="inventory-create.html" class="h-8 px-3 bg-[#2D56D2] text-white rounded-md text-[12.5px] font-medium hover:bg-[#213268] inline-flex items-center gap-1.5">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M12 4.5v15m7.5-7.5h-15" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span>New Media</span>
+</a>
+</div>
+</div>
+<!-- Media Group Stats — count per Media Group -->
+<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3" id="group-stats"></div>
+<!-- Search Panel — compact -->
+<div class="bg-white border border-[#E2E8F0] rounded-xl shadow-sm p-2.5">
+  <!-- Basic Search: 4 fields + 3 buttons on one row -->
+  <div class="flex items-center gap-2 flex-wrap">
+    <div class="relative flex-1 min-w-[180px]">
+      <svg class="absolute left-2.5 top-1/2 -translate-y-1/2 w-[13px] h-[13px] opacity-40" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24"><path d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <input id="sf-code" oninput="filterInventory()" placeholder="Media Code, Description..." class="w-full h-8 pl-8 pr-3 bg-[#F8FAFC] border border-[#E2E8F0] rounded-md text-[12.5px] focus:outline-none focus:border-[#4790FF] focus:bg-white placeholder:opacity-40 transition"/>
+    </div>
+    <div class="filter-ms" id="sf-group" data-label="Media Group">
+      <button type="button" class="filter-ms-btn" onclick="filterMsToggle('sf-group')"><span class="filter-ms-label">Media Group</span></button>
+      <div class="filter-ms-panel hidden"></div>
+    </div>
+    <div class="filter-ms" id="sf-type" data-label="Media Type" style="min-width:150px">
+      <button type="button" class="filter-ms-btn" onclick="filterMsToggle('sf-type')"><span class="filter-ms-label">Media Type</span></button>
+      <div class="filter-ms-panel hidden"></div>
+    </div>
+    <div class="filter-ms" id="sf-branding" data-label="Media Branding">
+      <button type="button" class="filter-ms-btn" onclick="filterMsToggle('sf-branding')"><span class="filter-ms-label">Media Branding</span></button>
+      <div class="filter-ms-panel hidden"></div>
+    </div>
+    <button type="button" onclick="toggleAdvancedSearch()" class="h-8 px-2.5 rounded-md text-[12px] font-medium text-[#2D56D2] hover:bg-[#EBF5FF] inline-flex items-center gap-1 transition-colors">
+      <svg id="adv-chev" class="w-3 h-3 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
+      <span id="adv-text">Advanced</span>
+    </button>
+    <button type="button" onclick="clearSearch()" class="h-8 px-3 bg-white text-[#0B1430] rounded-md border border-[#E2E8F0] text-[12px] font-medium hover:bg-[#F8FAFC] inline-flex items-center gap-1">
+      Clear
+    </button>
+  </div>
+
+  <!-- Advanced Search (collapsible, label-less, compact) -->
+  <div id="sf-advanced" class="hidden mt-2.5 pt-2.5 border-t border-[#F1F5F9]">
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2">
+      <div class="filter-ms" id="sf-package" data-label="Package" style="min-width:0">
+        <button type="button" class="filter-ms-btn" onclick="filterMsToggle('sf-package')"><span class="filter-ms-label">Package</span></button>
+        <div class="filter-ms-panel hidden"></div>
+      </div>
+      <div class="filter-ms" id="sf-province" data-label="Province" style="min-width:0">
+        <button type="button" class="filter-ms-btn" onclick="filterMsToggle('sf-province')"><span class="filter-ms-label">Province</span></button>
+        <div class="filter-ms-panel hidden"></div>
+      </div>
+      <div class="filter-ms" id="sf-region" data-label="Region" style="min-width:0">
+        <button type="button" class="filter-ms-btn" onclick="filterMsToggle('sf-region')"><span class="filter-ms-label">Region</span></button>
+        <div class="filter-ms-panel hidden"></div>
+      </div>
+      <div class="filter-ms" id="sf-owner" data-label="Product Owner" style="min-width:0">
+        <button type="button" class="filter-ms-btn" onclick="filterMsToggle('sf-owner')"><span class="filter-ms-label">Product Owner</span></button>
+        <div class="filter-ms-panel hidden"></div>
+      </div>
+      <input id="sf-old-code" oninput="filterInventory()" placeholder="Old Code" class="h-8 px-3 bg-[#F8FAFC] border border-[#E2E8F0] rounded-md text-[12.5px] focus:outline-none focus:border-[#4790FF] focus:bg-white placeholder:opacity-40 transition"/>
+      <input id="sf-epicor" oninput="filterInventory()" placeholder="Equipment ID" class="h-8 px-3 bg-[#F8FAFC] border border-[#E2E8F0] rounded-md text-[12.5px] focus:outline-none focus:border-[#4790FF] focus:bg-white placeholder:opacity-40 transition"/>
+      <input id="sf-location" oninput="filterInventory()" placeholder="Location" class="h-8 px-3 bg-[#F8FAFC] border border-[#E2E8F0] rounded-md text-[12.5px] focus:outline-none focus:border-[#4790FF] focus:bg-white placeholder:opacity-40 transition"/>
+      <div class="filter-ms" id="sf-product-status" data-label="Product Status" style="min-width:0">
+        <button type="button" class="filter-ms-btn" onclick="filterMsToggle('sf-product-status')"><span class="filter-ms-label">Product Status</span></button>
+        <div class="filter-ms-panel hidden"></div>
+      </div>
+      <div class="filter-ms" id="sf-booking-status" data-label="Booking Status" style="min-width:0">
+        <button type="button" class="filter-ms-btn" onclick="filterMsToggle('sf-booking-status')"><span class="filter-ms-label">Booking Status</span></button>
+        <div class="filter-ms-panel hidden"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Table -->
+<div class="bg-white border border-[#E2E8F0] rounded-xl shadow-sm overflow-hidden">
+<div class="overflow-x-auto">
+<table class="w-full text-[13px]" style="table-layout:auto">
+<thead class="bg-[#F8FAFC]/80 border-b border-[#E2E8F0]">
+<tr class="text-left text-[11px] uppercase tracking-wide" style="color:rgba(30,41,59,0.6)" id="inv-thead">
+<th class="font-medium text-center" style="width:90px">Action</th>
+<th class="px-4 py-3 font-medium sortable" data-sort="code">Media Code <span class="sort-ind"></span></th>
+<th class="px-4 py-3 font-medium sortable" data-sort="epicorCode">Equipment ID <span class="sort-ind"></span></th>
+<th class="px-4 py-3 font-medium sortable" data-sort="name">Description <span class="sort-ind"></span></th>
+<th class="px-4 py-3 font-medium sortable" data-sort="group">Media Group <span class="sort-ind"></span></th>
+<th class="px-4 py-3 font-medium sortable" data-sort="branding">Media Branding <span class="sort-ind"></span></th>
+<th class="px-4 py-3 font-medium sortable" data-sort="type">Media Type <span class="sort-ind"></span></th>
+<th class="px-4 py-3 font-medium text-right sortable" data-sort="rate">Current Rate Card <span class="sort-ind"></span></th>
+<th class="px-4 py-3 font-medium sortable" data-sort="productStatus">Product Status <span class="sort-ind"></span></th>
+<th class="px-4 py-3 font-medium sortable" data-sort="bookingStatus">Booking Status <span class="sort-ind"></span></th>
+<th class="px-4 py-3 font-medium sortable" data-sort="province">Province <span class="sort-ind"></span></th>
+<th class="px-4 py-3 font-medium sortable" data-sort="productOwner">Product Owner <span class="sort-ind"></span></th>
+</tr>
+</thead>
+<tbody id="inv-table-body">
+<!-- Populated by JS -->
+</tbody>
+</table>
+</div>
+<!-- Pagination -->
+<div id="inv-pagination" class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-4 py-3 border-t border-[#E2E8F0] bg-[#F8FAFC]/40"></div>
+</div>
+
+<!-- Hidden placeholders (kept so legacy JS refs don't error) -->
+<div class="hidden" id="view-grid"><div id="inv-grid-body"></div></div>
+<div class="hidden" id="view-map"><div id="inv-map-pins"></div></div>
+<!-- Inventory Data & View Logic -->
+<script>
+const LOCATIONS = [
+  // ===== Digital =====
+  { code:'DGT001', name:'Sukhumvit — Asoke Junction',     type:'Plan B TV',            city:'Bangkok',    district:'Wattana',       size:'12x24m', lat:13.737, lng:100.560, occ:92, rate:180000, status:'live' },
+  { code:'DGT002', name:'Lat Phrao — Si Rat Expy',        type:'Plan B TV',            city:'Bangkok',    district:'Chatuchak',     size:'8x16m',  lat:13.810, lng:100.561, occ:78, rate:220000, status:'live' },
+  { code:'DGT003', name:'Phaholyothin Future Park',       type:'Customize BKK',        city:'Pathum Thani',district:'Lam Luk Ka',   size:'6x12m',  lat:13.988, lng:100.617, occ:64, rate:95000,  status:'live' },
+  { code:'DGT004', name:'Rama IX — Central Grand',        type:'Rama 9 Connect',       city:'Bangkok',    district:'Huai Khwang',   size:'10x20m', lat:13.757, lng:100.566, occ:88, rate:240000, status:'live' },
+  { code:'DGT005', name:'Silom — Central Pattana',        type:'Bangkok Jams',         city:'Bangkok',    district:'Bang Rak',      size:'9x18m',  lat:13.728, lng:100.534, occ:95, rate:260000, status:'live' },
+  { code:'DGT006', name:'Sukhumvit 22 — Emquartier',      type:'The District EM',      city:'Bangkok',    district:'Khlong Toei',   size:'7x14m',  lat:13.730, lng:100.570, occ:83, rate:195000, status:'live' },
+  { code:'DGT007', name:'Siam Paragon Facade',            type:'Siam Paragon Facade',  city:'Bangkok',    district:'Pathum Wan',    size:'15x30m', lat:13.746, lng:100.535, occ:98, rate:380000, status:'live' },
+  { code:'DGT008', name:'Sukhumvit Soi 11 — So-BKK',      type:'So-BKK',               city:'Bangkok',    district:'Wattana',       size:'8x16m',  lat:13.741, lng:100.553, occ:81, rate:175000, status:'live' },
+  { code:'DGT009', name:'Bravo Tower — Asoke',            type:'Bravo BKK',            city:'Bangkok',    district:'Wattana',       size:'10x18m', lat:13.739, lng:100.562, occ:76, rate:210000, status:'live' },
+  { code:'DGT010', name:'Lat Phrao — The Crystal',        type:'Plan B TV',            city:'Bangkok',    district:'Lat Phrao',     size:'8x16m',  lat:13.795, lng:100.595, occ:67, rate:155000, status:'live' },
+  { code:'DGT011', name:'Bang Na — Trat Km 3',            type:'Plan B TV',            city:'Samut Prakan',district:'Bang Na',      size:'14x28m', lat:13.667, lng:100.605, occ:71, rate:210000, status:'maint' },
+  { code:'DGT012', name:'Chaeng Wattana — IT Square',     type:'Customize BKK',        city:'Nonthaburi', district:'Pak Kret',      size:'4x8m',   lat:13.906, lng:100.548, occ:55, rate:68000,  status:'live' },
+  { code:'DGT013', name:'Ratchada — Esplanade',           type:'Bangkok Jams',         city:'Bangkok',    district:'Huai Khwang',   size:'9x18m',  lat:13.768, lng:100.575, occ:72, rate:165000, status:'live' },
+  { code:'DGT014', name:'Phra Khanong — Sukhumvit 71',    type:'Plan B TV',            city:'Bangkok',    district:'Watthana',      size:'8x16m',  lat:13.715, lng:100.585, occ:62, rate:140000, status:'live' },
+  { code:'DGT015', name:'Pinklao — Central Pinklao',      type:'Customize BKK',        city:'Bangkok',    district:'Bangkok Noi',   size:'7x14m',  lat:13.776, lng:100.480, occ:58, rate:88000,  status:'live' },
+  { code:'DGT016', name:'Lumphini Park Facade',           type:'Rama 9 Connect',       city:'Bangkok',    district:'Pathum Wan',    size:'10x20m', lat:13.731, lng:100.541, occ:84, rate:225000, status:'live' },
+  { code:'DGT017', name:'Sathon — Empire Tower',          type:'The District EM',      city:'Bangkok',    district:'Sathon',        size:'8x16m',  lat:13.722, lng:100.530, occ:79, rate:185000, status:'live' },
+  { code:'DGT018', name:'Phra Ram 4 — One Bangkok',       type:'Bangkok Jams',         city:'Bangkok',    district:'Pathum Wan',    size:'12x20m', lat:13.728, lng:100.547, occ:91, rate:295000, status:'live' },
+  { code:'DGT019', name:'Bang Sue — Grand Station',       type:'Plan B TV',            city:'Bangkok',    district:'Bang Sue',      size:'10x18m', lat:13.802, lng:100.535, occ:53, rate:115000, status:'vac' },
+  { code:'DGT020', name:'Min Buri — Suburb Megaplex',     type:'Customize BKK',        city:'Bangkok',    district:'Min Buri',      size:'6x12m',  lat:13.812, lng:100.733, occ:48, rate:62000,  status:'vac' },
+  // ===== Digital — Nationwide =====
+  { code:'DGT-NW01', name:'Chiang Mai Ring Rd — North',   type:'Plan B TV Nationwide', city:'Chiang Mai', district:'Mueang',        size:'10x20m', lat:18.801, lng:98.970,  occ:42, rate:72000,  status:'vac' },
+  { code:'DGT-NW02', name:'Phuket — Patong Beach Rd',     type:'Plan B TV Nationwide', city:'Phuket',     district:'Kathu',         size:'6x12m',  lat:7.895,  lng:98.300,  occ:60, rate:88000,  status:'live' },
+  { code:'DGT-NW03', name:'Korat — The Mall',             type:'Plan B TV Nationwide', city:'Nakhon Ratchasima',district:'Mueang',   size:'8x16m',  lat:14.975, lng:102.078, occ:74, rate:128000, status:'live' },
+  { code:'DGT-NW04', name:'Khon Kaen — Central Plaza',    type:'Plan B TV Nationwide', city:'Khon Kaen',  district:'Mueang',        size:'8x16m',  lat:16.435, lng:102.832, occ:65, rate:95000,  status:'live' },
+  { code:'DGT-NW05', name:'Pattaya — Walking Street',     type:'Plan B TV Nationwide', city:'Chonburi',   district:'Bang Lamung',   size:'10x18m', lat:12.927, lng:100.881, occ:88, rate:165000, status:'live' },
+  { code:'DGT-NW06', name:'Hat Yai — Junction Lee',       type:'Plan B TV Nationwide', city:'Songkhla',   district:'Hat Yai',       size:'7x14m',  lat:7.008,  lng:100.476, occ:51, rate:75000,  status:'live' },
+  { code:'DGT-NW07', name:'Udon Thani — Central',         type:'Plan B TV Nationwide', city:'Udon Thani', district:'Mueang',        size:'8x16m',  lat:17.404, lng:102.815, occ:39, rate:64000,  status:'vac' },
+  { code:'DGT-NW08', name:'Surat Thani — Tesco Lotus',    type:'Plan B TV Nationwide', city:'Surat Thani',district:'Mueang',        size:'6x12m',  lat:9.139,  lng:99.321,  occ:46, rate:58000,  status:'live' },
+
+  // ===== Airport =====
+  { code:'AIR001', name:'Suvarnabhumi — Concourse A',     type:'Airtraveller Series',  city:'Samut Prakan',district:'Bang Phli',    size:'5x10m',  lat:13.689, lng:100.749, occ:96, rate:340000, status:'live' },
+  { code:'AIR002', name:'Suvarnabhumi — Departure Hall',  type:'Airtraveller Series',  city:'Samut Prakan',district:'Bang Phli',    size:'8x16m',  lat:13.690, lng:100.750, occ:99, rate:420000, status:'live' },
+  { code:'AIR003', name:'Don Mueang — Terminal 1',        type:'Don Mueang Digital Network', city:'Bangkok', district:'Don Mueang', size:'6x12m',  lat:13.913, lng:100.605, occ:88, rate:265000, status:'live' },
+  { code:'AIR004', name:'Don Mueang — Terminal 2',        type:'Don Mueang Digital Network', city:'Bangkok', district:'Don Mueang', size:'6x12m',  lat:13.916, lng:100.606, occ:82, rate:245000, status:'live' },
+  { code:'AIR005', name:'Phuket Airport — Arrival',       type:'Airport Digital Network',city:'Phuket',  district:'Thalang',       size:'5x10m',  lat:8.110,  lng:98.317,  occ:75, rate:155000, status:'live' },
+  { code:'AIR006', name:'Chiang Mai Airport — Lounge',    type:'Airport Digital Network',city:'Chiang Mai',district:'Mueang',      size:'4x8m',   lat:18.766, lng:98.962,  occ:68, rate:120000, status:'live' },
+  { code:'AIR007', name:'Krabi Airport — Departure',      type:'Airport Digital Network',city:'Krabi',   district:'Nuea Khlong',   size:'4x8m',   lat:8.099,  lng:98.987,  occ:54, rate:78000,  status:'maint' },
+
+  // ===== Retail =====
+  { code:'RTL001', name:'CentralWorld — Atrium',          type:'Central Network',      city:'Bangkok',    district:'Pathum Wan',    size:'8x16m',  lat:13.746, lng:100.539, occ:97, rate:310000, status:'live' },
+  { code:'RTL002', name:'Central Bangna — Main Hall',     type:'Central Network',      city:'Bangkok',    district:'Bang Na',       size:'6x12m',  lat:13.668, lng:100.605, occ:82, rate:185000, status:'live' },
+  { code:'RTL003', name:'Central Chiang Mai',             type:'Central Network',      city:'Chiang Mai', district:'Mueang',        size:'5x10m',  lat:18.808, lng:98.967,  occ:73, rate:138000, status:'live' },
+  { code:'RTL004', name:'7-Eleven Asoke',                 type:'7-Eleven Plus',        city:'Bangkok',    district:'Wattana',       size:'2x4m',   lat:13.738, lng:100.561, occ:100,rate:35000,  status:'live' },
+  { code:'RTL005', name:'7-Eleven Silom 1',               type:'7-Eleven Plus',        city:'Bangkok',    district:'Bang Rak',      size:'2x4m',   lat:13.727, lng:100.533, occ:95, rate:32000,  status:'live' },
+  { code:'RTL006', name:'7-Eleven Sukhumvit 33',          type:'7-Eleven Plus',        city:'Bangkok',    district:'Wattana',       size:'2x4m',   lat:13.737, lng:100.566, occ:90, rate:30000,  status:'live' },
+  { code:'RTL007', name:'7-Eleven Phuket Phuket Town',    type:'7-Eleven Plus',        city:'Phuket',     district:'Mueang',        size:'2x4m',   lat:7.880,  lng:98.391,  occ:71, rate:22000,  status:'live' },
+  { code:'RTL008', name:'7-Eleven Chiang Mai Old City',   type:'7-Eleven Plus',        city:'Chiang Mai', district:'Mueang',        size:'2x4m',   lat:18.795, lng:98.985,  occ:64, rate:20000,  status:'vac' },
+
+  // ===== Transit =====
+  { code:'TRN001', name:'Asok BTS — Concourse',           type:'BTS Concourse',        city:'Bangkok',    district:'Wattana',       size:'4x8m',   lat:13.737, lng:100.560, occ:99, rate:175000, status:'live' },
+  { code:'TRN002', name:'Siam BTS — Interchange',         type:'BTS Concourse',        city:'Bangkok',    district:'Pathum Wan',    size:'4x8m',   lat:13.745, lng:100.534, occ:100,rate:225000, status:'live' },
+  { code:'TRN003', name:'Phrom Phong BTS — Cityline',     type:'BTS Cityline',         city:'Bangkok',    district:'Khlong Toei',   size:'3x6m',   lat:13.730, lng:100.569, occ:92, rate:135000, status:'live' },
+  { code:'TRN004', name:'Thong Lo BTS — Cityline',        type:'BTS Cityline',         city:'Bangkok',    district:'Watthana',      size:'3x6m',   lat:13.724, lng:100.580, occ:88, rate:125000, status:'live' },
+  { code:'TRN005', name:'BTS Skytrain — Sukhumvit Line',  type:'BTS Skytrain',         city:'Bangkok',    district:'Wattana',       size:'2x4m',   lat:13.738, lng:100.561, occ:96, rate:95000,  status:'live' },
+  { code:'TRN006', name:'BTS Skytrain — Silom Line',      type:'BTS Skytrain',         city:'Bangkok',    district:'Bang Rak',      size:'2x4m',   lat:13.728, lng:100.534, occ:89, rate:88000,  status:'live' },
+  { code:'TRN007', name:'Ratchadaphisek — MRT Exit 3',    type:'Digital MRT',          city:'Bangkok',    district:'Din Daeng',     size:'3x6m',   lat:13.763, lng:100.574, occ:100,rate:45000,  status:'live' },
+  { code:'TRN008', name:'Phahon Yothin — MRT',            type:'Digital MRT',          city:'Bangkok',    district:'Chatuchak',     size:'3x6m',   lat:13.812, lng:100.560, occ:78, rate:42000,  status:'live' },
+  { code:'TRN009', name:'Sukhumvit MRT — Interchange',    type:'Digital MRT',          city:'Bangkok',    district:'Wattana',       size:'3x6m',   lat:13.738, lng:100.561, occ:94, rate:55000,  status:'live' },
+  { code:'TRN010', name:'Chatuchak Park MRT',             type:'Digital MRT',          city:'Bangkok',    district:'Chatuchak',     size:'3x6m',   lat:13.802, lng:100.553, occ:81, rate:40000,  status:'live' },
+  { code:'TRN011', name:'Lat Phrao MRT — Exit 1',         type:'Digital MRT',          city:'Bangkok',    district:'Chatuchak',     size:'3x6m',   lat:13.806, lng:100.561, occ:66, rate:35000,  status:'maint' },
+  { code:'TRN012', name:'Hua Lamphong MRT',               type:'Digital MRT',          city:'Bangkok',    district:'Pathum Wan',    size:'3x6m',   lat:13.738, lng:100.516, occ:58, rate:32000,  status:'live' },
+
+  // ===== Classic =====
+  { code:'CLS001', name:'Cookie & Cream — Sukhumvit',     type:'Cookie & Cream',       city:'Bangkok',    district:'Wattana',       size:'4x6m',   lat:13.741, lng:100.567, occ:71, rate:42000,  status:'live' },
+  { code:'CLS002', name:'Cookie & Cream — Siam',          type:'Cookie & Cream',       city:'Bangkok',    district:'Pathum Wan',    size:'4x6m',   lat:13.746, lng:100.535, occ:80, rate:55000,  status:'live' },
+  { code:'CLS003', name:'Cookie & Cream — RCA',           type:'Cookie & Cream',       city:'Bangkok',    district:'Huai Khwang',   size:'4x6m',   lat:13.761, lng:100.574, occ:48, rate:32000,  status:'vac' },
+  { code:'CLS004', name:'Cookie & Cream — Thong Lor',     type:'Cookie & Cream',       city:'Bangkok',    district:'Watthana',      size:'4x6m',   lat:13.726, lng:100.582, occ:62, rate:38000,  status:'live' },
+];
+
+/* === Enrichment data === */
+const ALL_GROUPS = ['Digital','Airport','Retail','Transit','Classic'];
+const GROUP_COLOR = { Digital:'#2D56D2', Airport:'#F59E0B', Retail:'#10B981', Transit:'#7C3AED', Classic:'#EC4899' };
+const TYPE_TO_GROUP = {
+  'Plan B TV':'Digital', 'Plan B TV Nationwide':'Digital', 'Customize BKK':'Digital',
+  'Bangkok Jams':'Digital', 'Rama 9 Connect':'Digital', 'The District EM':'Digital',
+  'Siam Paragon Facade':'Digital', 'So-BKK':'Digital', 'Bravo BKK':'Digital',
+  'Airtraveller Series':'Airport', 'Don Mueang Digital Network':'Airport', 'Airport Digital Network':'Airport',
+  'Central Network':'Retail', '7-Eleven Plus':'Retail',
+  'Digital MRT':'Transit', 'BTS Skytrain':'Transit', 'BTS Concourse':'Transit', 'BTS Cityline':'Transit',
+  'Cookie & Cream':'Classic',
+};
+const TYPE_TO_BRANDING = {
+  'Plan B TV':'The Network', 'Plan B TV Nationwide':'The Network', 'Customize BKK':'The Network',
+  'Bangkok Jams':'BKK Prime', 'Rama 9 Connect':'BKK Prime',
+  'The District EM':'Signature Screen', 'Siam Paragon Facade':'Signature Screen', 'So-BKK':'Signature Screen', 'Bravo BKK':'Signature Screen',
+  'Airtraveller Series':'Fly', 'Don Mueang Digital Network':'Fly', 'Airport Digital Network':'Thai Flight',
+  'Central Network':'Luxury', '7-Eleven Plus':'In-store',
+  'Digital MRT':'Rail', 'BTS Skytrain':'BTS', 'BTS Concourse':'BTS', 'BTS Cityline':'BTS',
+  'Cookie & Cream':'The Canvas Collection',
+};
+const TYPE_TO_PACKAGE = {
+  'Plan B TV':'PlanBTV_240Full', 'Plan B TV Nationwide':'PlanBTV_Nationwide120',
+  'Customize BKK':'Customize BKK', 'Bangkok Jams':'BangkokJams_Standard',
+  'Rama 9 Connect':'Rama9_Connect', 'The District EM':'TheDistrict_Standard',
+  'Siam Paragon Facade':'SiamParagon_Facade', 'So-BKK':'So_BKK', 'Bravo BKK':'Bravo_BKK',
+  'Airtraveller Series':'AirTraveller_Series', 'Don Mueang Digital Network':'DMK_Network', 'Airport Digital Network':'ADN_Standard',
+  'Central Network':'Central_360', '7-Eleven Plus':'Multimedia',
+  'Digital MRT':'DigitalMRT_Standard', 'BTS Skytrain':'BTS_Skytrain', 'BTS Concourse':'BTS_Concourse', 'BTS Cityline':'BTS_Cityline',
+  'Cookie & Cream':'CC_Standard',
+};
+const CITY_TO_PROVINCE = {
+  'Bangkok':'กรุงเทพมหานคร', 'Pathum Thani':'ปทุมธานี', 'Nonthaburi':'นนทบุรี',
+  'Samut Prakan':'สมุทรปราการ', 'Chiang Mai':'เชียงใหม่', 'Phuket':'ภูเก็ต',
+  'Nakhon Ratchasima':'นครราชสีมา', 'Khon Kaen':'ขอนแก่น', 'Chonburi':'ชลบุรี',
+  'Songkhla':'สงขลา', 'Udon Thani':'อุดรธานี', 'Surat Thani':'สุราษฎร์ธานี', 'Krabi':'กระบี่',
+};
+const PROVINCE_TO_REGION = {
+  'กรุงเทพมหานคร':'ภาคกลาง', 'ปทุมธานี':'ภาคกลาง', 'นนทบุรี':'ภาคกลาง', 'สมุทรปราการ':'ภาคกลาง',
+  'เชียงใหม่':'ภาคเหนือ', 'ภูเก็ต':'ภาคใต้', 'นครราชสีมา':'ภาคตะวันออกเฉียงเหนือ',
+  'ขอนแก่น':'ภาคตะวันออกเฉียงเหนือ', 'อุดรธานี':'ภาคตะวันออกเฉียงเหนือ',
+  'ชลบุรี':'ภาคตะวันออก', 'สงขลา':'ภาคใต้', 'สุราษฎร์ธานี':'ภาคใต้', 'กระบี่':'ภาคใต้',
+};
+const OWNERS_POOL = ['PlanB','MACO','VGI','MIDAS','BMN','OHM','Splash','BFKT','Hello Bangkok'];
+const PRODUCT_STATUS_BY_STATUS = { live:'มีลูกค้า / Occupied', maint:'ระงับการขาย / Suspension of sale', vac:'ว่าง / Available' };
+const BOOKING_STATUS_BY_STATUS = { live:'จอง', maint:'งดจอง', vac:'ว่าง' };
+const TAKEDOWN_STATUS_BY_STATUS = { live:'รอก่อน', maint:'รื้อได้เลย', vac:'รื้อได้เลย' };
+
+LOCATIONS.forEach(function(l, i){
+  l.group         = TYPE_TO_GROUP[l.type] || 'Other';
+  l.branding      = TYPE_TO_BRANDING[l.type] || '—';
+  l.package       = TYPE_TO_PACKAGE[l.type] || 'Standard';
+  l.province      = CITY_TO_PROVINCE[l.city] || l.city;
+  l.region        = PROVINCE_TO_REGION[l.province] || '—';
+  l.productOwner  = OWNERS_POOL[i % OWNERS_POOL.length];
+  l.oldCode       = 'OLD-' + (1001 + i);
+  l.epicorCode    = 'EPI-' + (501 + i);
+  l.locationText  = l.name;
+  l.productStatus = PRODUCT_STATUS_BY_STATUS[l.status] || '—';
+  l.bookingStatus = BOOKING_STATUS_BY_STATUS[l.status] || '—';
+  l.takedownStatus= TAKEDOWN_STATUS_BY_STATUS[l.status] || '—';
+});
+
+function uniqSorted(arr){
+  var seen = {}; var out = [];
+  arr.forEach(function(v){ if (v && !seen[v]){ seen[v] = true; out.push(v); } });
+  return out.sort(function(a,b){ return String(a).localeCompare(String(b), 'th'); });
+}
+
+/* ============================================================
+ * Multi-Select Filter component
+ * ============================================================ */
+var FILTER_MS_STATE = {}; // { 'sf-group': ['Digital','Airport'], ... }
+
+function filterMsToggle(id){
+  var el = document.getElementById(id);
+  if(!el) return;
+  // Close other open panels
+  document.querySelectorAll('.filter-ms.open').forEach(function(o){
+    if(o.id !== id){ o.classList.remove('open'); var p=o.querySelector('.filter-ms-panel'); if(p) p.classList.add('hidden'); }
+  });
+  var panel = el.querySelector('.filter-ms-panel');
+  if(!panel) return;
+  var open = !panel.classList.contains('hidden');
+  if(open){ panel.classList.add('hidden'); el.classList.remove('open'); }
+  else { panel.classList.remove('hidden'); el.classList.add('open'); }
+}
+
+/* Click-away closes any open panel */
+document.addEventListener('click', function(e){
+  if(e.target.closest && e.target.closest('.filter-ms')) return;
+  document.querySelectorAll('.filter-ms.open').forEach(function(o){
+    o.classList.remove('open');
+    var p = o.querySelector('.filter-ms-panel');
+    if(p) p.classList.add('hidden');
+  });
+});
+
+function filterMsFill(id, values){
+  var el = document.getElementById(id);
+  if(!el) return;
+  var panel = el.querySelector('.filter-ms-panel');
+  var current = FILTER_MS_STATE[id] || [];
+  // Cache available values on the element for Select All / clear logic
+  el._msValues = values.slice();
+  var html;
+  if(!values.length){
+    html = '<div class="filter-ms-empty">ไม่มีข้อมูล</div>';
+  } else {
+    var allChecked  = values.every(function(v){ return current.indexOf(v) > -1; });
+    var someChecked = !allChecked && values.some(function(v){ return current.indexOf(v) > -1; });
+    // Select All row at top
+    html = '<label class="filter-ms-opt filter-ms-all' + (allChecked?' selected':'') + '">'
+         +   '<input type="checkbox"' + (allChecked?' checked':'') + (someChecked?' data-indeterminate="1"':'') + ' onchange="filterMsToggleAll(\'' + id + '\')" />'
+         +   '<span>Select All</span>'
+         + '</label>';
+    html += values.map(function(v){
+      var checked = current.indexOf(v) > -1;
+      var safe = String(v).replace(/'/g,"\\'");
+      return '<label class="filter-ms-opt' + (checked?' selected':'') + '">'
+        + '<input type="checkbox" ' + (checked?'checked':'') + ' onchange="filterMsItem(\'' + id + '\',this,\'' + safe + '\')" />'
+        + '<span>' + v + '</span>'
+      + '</label>';
+    }).join('');
+    html += '<div class="filter-ms-actions">'
+         + '<button type="button" onclick="filterMsClear(\'' + id + '\')">Clear</button>'
+         + '<span class="ms-count-hint">' + values.length + ' รายการ</span>'
+         + '</div>';
+  }
+  panel.innerHTML = html;
+  // Apply indeterminate state (must be set via JS property — HTML attribute alone won't do it)
+  var allCb = panel.querySelector('.filter-ms-all input[type=checkbox]');
+  if(allCb && allCb.dataset.indeterminate) allCb.indeterminate = true;
+  filterMsRefreshLabel(id);
+}
+
+function _filterMsSyncAll(id){
+  var el = document.getElementById(id);
+  if(!el || !el._msValues) return;
+  var values = el._msValues;
+  var arr = FILTER_MS_STATE[id] || [];
+  var allChecked  = values.length > 0 && values.every(function(v){ return arr.indexOf(v) > -1; });
+  var someChecked = !allChecked && values.some(function(v){ return arr.indexOf(v) > -1; });
+  var allCb  = el.querySelector('.filter-ms-all input[type=checkbox]');
+  var allRow = el.querySelector('.filter-ms-all');
+  if(allCb){
+    allCb.checked = allChecked;
+    allCb.indeterminate = someChecked;
+  }
+  if(allRow){
+    if(allChecked) allRow.classList.add('selected');
+    else allRow.classList.remove('selected');
+  }
+}
+
+function filterMsItem(id, cb, val){
+  var arr = (FILTER_MS_STATE[id] || []).slice();
+  if(cb.checked){ if(arr.indexOf(val) === -1) arr.push(val); }
+  else { arr = arr.filter(function(x){ return x !== val; }); }
+  FILTER_MS_STATE[id] = arr;
+  // Update visual selected class on the row
+  var row = cb.closest('.filter-ms-opt');
+  if(row){ if(cb.checked) row.classList.add('selected'); else row.classList.remove('selected'); }
+  _filterMsSyncAll(id);
+  filterMsRefreshLabel(id);
+  _page = 1;
+  filterInventory();
+}
+
+function filterMsToggleAll(id){
+  var el = document.getElementById(id);
+  if(!el || !el._msValues) return;
+  var values = el._msValues;
+  var arr = FILTER_MS_STATE[id] || [];
+  var allChecked = values.every(function(v){ return arr.indexOf(v) > -1; });
+  FILTER_MS_STATE[id] = allChecked ? [] : values.slice();
+  // Re-render panel to reflect changes everywhere
+  filterMsFill(id, values);
+  _page = 1;
+  filterInventory();
+}
+
+function filterMsClear(id){
+  FILTER_MS_STATE[id] = [];
+  var el = document.getElementById(id);
+  if(el){
+    el.querySelectorAll('.filter-ms-opt input').forEach(function(cb){ cb.checked = false; cb.indeterminate = false; });
+    el.querySelectorAll('.filter-ms-opt').forEach(function(o){ o.classList.remove('selected'); });
+  }
+  filterMsRefreshLabel(id);
+  _page = 1;
+  filterInventory();
+}
+
+function filterMsRefreshLabel(id){
+  var el = document.getElementById(id);
+  if(!el) return;
+  var labelEl = el.querySelector('.filter-ms-label');
+  if(!labelEl) return;
+  var label = el.dataset.label || '';
+  var arr = FILTER_MS_STATE[id] || [];
+  if(arr.length === 0){
+    labelEl.textContent = label;
+    labelEl.classList.remove('has-sel');
+  } else if(arr.length === 1){
+    labelEl.innerHTML = label + ': <span style="color:#2D56D2;font-weight:600">' + arr[0] + '</span>';
+    labelEl.classList.add('has-sel');
+  } else {
+    labelEl.innerHTML = label + ' <span class="filter-ms-count">' + arr.length + '</span>';
+    labelEl.classList.add('has-sel');
+  }
+}
+
+function filterMsVal(id){ return FILTER_MS_STATE[id] || []; }
+
+/* Programmatically set selected values (used by group-stat card clicks) */
+function filterMsSet(id, values){
+  FILTER_MS_STATE[id] = values.slice();
+  // If panel was rendered, sync checkbox visual state (skip the Select All row)
+  var el = document.getElementById(id);
+  if(el){
+    el.querySelectorAll('.filter-ms-opt:not(.filter-ms-all)').forEach(function(o){
+      var cb = o.querySelector('input');
+      if(!cb) return;
+      var labelText = (o.querySelector('span') || {}).textContent || '';
+      var match = values.indexOf(labelText) > -1;
+      cb.checked = match;
+      if(match) o.classList.add('selected'); else o.classList.remove('selected');
+    });
+  }
+  _filterMsSyncAll(id);
+  filterMsRefreshLabel(id);
+}
+
+let _currentView = 'list';
+
+function fmtRate(v) {
+  return v >= 1000000 ? '\u0E3F' + (v/1000000).toFixed(1) + 'M' : '\u0E3F' + (v/1000) + 'K';
+}
+
+function getTypeIcon(type) {
+  if (type === 'Digital LED' || type === 'LED') return '<svg class="w-3.5 h-3.5 text-[#2D56D2]" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25A2.25 2.25 0 015.25 3h13.5A2.25 2.25 0 0121 5.25z"/></svg>';
+  if (type === 'BTS/MRT') return '<svg class="w-3.5 h-3.5 text-[#2D56D2]" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12"/></svg>';
+  return '<svg class="w-3.5 h-3.5 text-[#2D56D2]" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 0h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008z"/></svg>';
+}
+
+function getTypeBadge(type) {
+  var map = {
+    'Plan B TV':            'bg-blue-50 text-blue-700 border-blue-100',
+    'Plan B TV Nationwide': 'bg-indigo-50 text-indigo-700 border-indigo-100',
+    'Customize BKK':        'bg-slate-50 text-slate-700 border-slate-200',
+    'Bangkok Jams':         'bg-violet-50 text-violet-700 border-violet-100',
+    'Rama 9 Connect':       'bg-violet-50 text-violet-700 border-violet-100',
+    'The District EM':      'bg-violet-50 text-violet-700 border-violet-100',
+    'Digital MRT':          'bg-purple-50 text-purple-700 border-purple-100',
+    'BTS Skytrain':         'bg-purple-50 text-purple-700 border-purple-100',
+  };
+  var cls = map[type] || 'bg-slate-50 text-slate-700 border-slate-200';
+  return '<span class="text-[11px] px-2 py-0.5 rounded-full font-medium border ' + cls + '">' + type + '</span>';
+}
+
+function getStatusBadge(status) {
+  if (status === 'live')  return '<span class="inline-flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span><span class="text-[11px] font-medium text-emerald-700">Live</span></span>';
+  if (status === 'maint') return '<span class="inline-flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span><span class="text-[11px] font-medium text-amber-700">Maintenance</span></span>';
+  return '<span class="inline-flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span><span class="text-[11px] font-medium" style="color:rgba(30,41,59,0.6)">Vacant</span></span>';
+}
+
+function occBarColor(occ) {
+  if (occ >= 85) return '#2D56D2';
+  if (occ >= 60) return '#4790FF';
+  if (occ >= 40) return '#5FCBF9';
+  return '#F59E0B';
+}
+
+function sfVal(id){ var el = document.getElementById(id); return el ? (el.value || '') : ''; }
+
+/* Sort & pagination state */
+var _sortKey = 'code';
+var _sortDir = 'asc';
+var _page = 1;
+var _pageSize = 10;
+
+function getFiltered() {
+  var code     = sfVal('sf-code').toLowerCase();
+  var group    = filterMsVal('sf-group');
+  var branding = filterMsVal('sf-branding');
+  var type     = filterMsVal('sf-type');
+  var pkg      = filterMsVal('sf-package');
+  var prov     = filterMsVal('sf-province');
+  var region   = filterMsVal('sf-region');
+  var owner    = filterMsVal('sf-owner');
+  var oldCode  = sfVal('sf-old-code').toLowerCase();
+  var epicor   = sfVal('sf-epicor').toLowerCase();
+  var locTxt   = sfVal('sf-location').toLowerCase();
+  var prodSt   = filterMsVal('sf-product-status');
+  var bookSt   = filterMsVal('sf-booking-status');
+
+  var rows = LOCATIONS.filter(function(l) {
+    if (code         && !(l.code.toLowerCase().includes(code) || l.name.toLowerCase().includes(code))) return false;
+    if (group.length    && group.indexOf(l.group) === -1)              return false;
+    if (branding.length && branding.indexOf(l.branding) === -1)        return false;
+    if (type.length     && type.indexOf(l.type) === -1)                return false;
+    if (pkg.length      && pkg.indexOf(l.package) === -1)              return false;
+    if (prov.length     && prov.indexOf(l.province) === -1)            return false;
+    if (region.length   && region.indexOf(l.region) === -1)            return false;
+    if (owner.length    && owner.indexOf(l.productOwner) === -1)       return false;
+    if (oldCode      && !l.oldCode.toLowerCase().includes(oldCode))    return false;
+    if (epicor       && !l.epicorCode.toLowerCase().includes(epicor))  return false;
+    if (locTxt       && !l.locationText.toLowerCase().includes(locTxt))return false;
+    if (prodSt.length   && prodSt.indexOf(l.productStatus) === -1)     return false;
+    if (bookSt.length   && bookSt.indexOf(l.bookingStatus) === -1)     return false;
+    return true;
+  });
+  // Sort
+  rows.sort(function(a, b) {
+    var av = a[_sortKey], bv = b[_sortKey];
+    if (av == null) av = '';
+    if (bv == null) bv = '';
+    var cmp;
+    if (typeof av === 'number' && typeof bv === 'number') cmp = av - bv;
+    else cmp = String(av).localeCompare(String(bv), 'th', { numeric: true });
+    return _sortDir === 'asc' ? cmp : -cmp;
+  });
+  return rows;
+}
+
+function setSort(key){
+  if (_sortKey === key) {
+    _sortDir = _sortDir === 'asc' ? 'desc' : 'asc';
+  } else {
+    _sortKey = key;
+    _sortDir = 'asc';
+  }
+  _page = 1;
+  filterInventory();
+}
+
+function refreshSortIndicators(){
+  var arrowAsc  = '<svg class="w-3 h-3 inline-block" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5"/></svg>';
+  var arrowDesc = '<svg class="w-3 h-3 inline-block" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>';
+  var arrowIdle = '<svg class="w-3 h-3 inline-block" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 15L12 18.75 15.75 15M8.25 9L12 5.25 15.75 9"/></svg>';
+  document.querySelectorAll('#inv-thead th.sortable').forEach(function(th){
+    var key = th.dataset.sort;
+    var ind = th.querySelector('.sort-ind');
+    if (key === _sortKey){
+      th.classList.add('sort-active');
+      if (ind) ind.innerHTML = _sortDir === 'asc' ? arrowAsc : arrowDesc;
+    } else {
+      th.classList.remove('sort-active');
+      if (ind) ind.innerHTML = arrowIdle;
+    }
+  });
+}
+
+function goPage(p){ _page = p; filterInventory(); window.scrollTo({ top: document.querySelector('table').offsetTop - 90, behavior:'smooth' }); }
+function setPageSize(s){ _pageSize = Number(s) || 10; _page = 1; filterInventory(); }
+
+function renderPagination(total){
+  var el = document.getElementById('inv-pagination');
+  if (!el) return;
+  var totalPages = Math.max(1, Math.ceil(total / _pageSize));
+  if (_page > totalPages) _page = totalPages;
+  var from = total === 0 ? 0 : (_page - 1) * _pageSize + 1;
+  var to   = Math.min(_page * _pageSize, total);
+
+  // Page numbers with ellipsis
+  function pageBtn(n, opts){
+    opts = opts || {};
+    return '<button class="pg-btn' + (opts.active ? ' active' : '') + '"' + (opts.disabled ? ' disabled' : '') + ' onclick="goPage(' + n + ')">' + (opts.label || n) + '</button>';
+  }
+  var pages = [];
+  pages.push('<button class="pg-btn" ' + (_page === 1 ? 'disabled' : '') + ' onclick="goPage(' + (_page - 1) + ')" title="Previous">' +
+    '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg></button>');
+  function add(n){ pages.push('<button class="pg-btn' + (n === _page ? ' active' : '') + '" onclick="goPage(' + n + ')">' + n + '</button>'); }
+  if (totalPages <= 7) {
+    for (var i = 1; i <= totalPages; i++) add(i);
+  } else {
+    add(1);
+    if (_page > 4) pages.push('<span class="pg-dots">…</span>');
+    var start = Math.max(2, _page - 1);
+    var end   = Math.min(totalPages - 1, _page + 1);
+    for (var j = start; j <= end; j++) add(j);
+    if (_page < totalPages - 3) pages.push('<span class="pg-dots">…</span>');
+    add(totalPages);
+  }
+  pages.push('<button class="pg-btn" ' + (_page === totalPages ? 'disabled' : '') + ' onclick="goPage(' + (_page + 1) + ')" title="Next">' +
+    '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg></button>');
+
+  el.innerHTML =
+    '<div class="text-[12.5px]" style="color:rgba(30,41,59,0.65)">แสดง <b class="text-[#0B1430] tnum">' + from + '–' + to + '</b> จาก <b class="text-[#0B1430] tnum">' + total + '</b> รายการ</div>' +
+    '<div class="flex items-center gap-1.5 flex-wrap">' + pages.join('') + '</div>' +
+    '<div class="flex items-center gap-2 text-[12.5px]" style="color:rgba(30,41,59,0.65)">' +
+      '<span>ต่อหน้า</span>' +
+      '<select onchange="setPageSize(this.value)" class="h-8 px-2 pr-7 bg-white border border-[#E2E8F0] rounded-md text-[12.5px] focus:outline-none focus:border-[#4790FF]">' +
+        ['10','25','50','100'].map(function(n){ return '<option ' + (Number(n) === _pageSize ? 'selected' : '') + '>' + n + '</option>'; }).join('') +
+      '</select>' +
+    '</div>';
+}
+
+function toggleAdvancedSearch(){
+  var adv = document.getElementById('sf-advanced');
+  var txt = document.getElementById('adv-text');
+  var chev = document.getElementById('adv-chev');
+  var hidden = adv.classList.contains('hidden');
+  if (hidden){ adv.classList.remove('hidden'); txt.textContent = 'Hide Advanced'; chev.style.transform = 'rotate(180deg)'; }
+  else { adv.classList.add('hidden'); txt.textContent = 'Advance Search'; chev.style.transform = ''; }
+}
+
+function clearSearch(){
+  // Clear plain inputs
+  ['sf-code','sf-old-code','sf-epicor','sf-location']
+    .forEach(function(id){ var el = document.getElementById(id); if (el) el.value = ''; });
+  // Clear multi-selects
+  ['sf-group','sf-type','sf-branding','sf-package','sf-province','sf-region','sf-owner',
+   'sf-product-status','sf-booking-status']
+    .forEach(function(id){ filterMsClear(id); });
+  _page = 1;
+  filterInventory();
+}
+
+const GROUP_ICONS = {
+  'All Media': '<svg fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25a2.25 2.25 0 01-2.25-2.25v-2.25z"/></svg>',
+  'Digital':   '<svg fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25A2.25 2.25 0 015.25 3h13.5A2.25 2.25 0 0121 5.25z"/></svg>',
+  'Airport':   '<svg fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.125A59.769 59.769 0 0121.485 12 59.768 59.768 0 013.27 20.875L5.999 12zm0 0h7.5"/></svg>',
+  'Retail':    '<svg fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"/></svg>',
+  'Transit':   '<svg fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12"/></svg>',
+  'Classic':   '<svg fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/></svg>',
+};
+
+function renderGroupStats(){
+  var el = document.getElementById('group-stats');
+  if (!el) return;
+  var total = LOCATIONS.length;
+  var currentGroup = filterMsVal('sf-group');
+
+  function card(label, count, color, isAll){
+    var pct = total > 0 ? Math.round((count / total) * 100) : 0;
+    var active = isAll ? currentGroup.length === 0 : (currentGroup.length === 1 && currentGroup[0] === label);
+    var inlineStyle = '--gs-color:' + color + ';';
+    var icnHTML = GROUP_ICONS[label] || GROUP_ICONS['All Media'];
+    var clickFn = isAll ? "clearGroupFilter()" : "filterByGroup('" + label + "')";
+    return '<div class="gs-card ' + (active ? 'active' : '') + '" style="' + inlineStyle + '" onclick="' + clickFn + '" tabindex="0" role="button" aria-label="Filter by ' + label + '">' +
+      '<div class="flex items-center justify-between">' +
+        '<div class="gs-icon" style="background:' + color + '1A;color:' + color + '"><span class="w-[14px] h-[14px] block">' + icnHTML + '</span></div>' +
+        '<span class="gs-pct">' + pct + '%</span>' +
+        '<div class="gs-active-tick"><svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg></div>' +
+      '</div>' +
+      '<div class="gs-label">' + label + '</div>' +
+      '<div class="gs-num">' + count + '</div>' +
+      '<div class="gs-bar"><div class="gs-bar-fill" style="width:' + pct + '%"></div></div>' +
+    '</div>';
+  }
+
+  var cards = [card('All Media', total, '#2D56D2', true)];
+  ALL_GROUPS.forEach(function(g){
+    var n = LOCATIONS.filter(function(l){ return l.group === g; }).length;
+    cards.push(card(g, n, GROUP_COLOR[g] || '#64748B', false));
+  });
+  el.innerHTML = cards.join('');
+}
+
+function filterByGroup(g){
+  var cur = filterMsVal('sf-group');
+  // Toggle: clicking the only-active group clears the filter, otherwise set sole selection
+  if (cur.length === 1 && cur[0] === g) filterMsSet('sf-group', []);
+  else filterMsSet('sf-group', [g]);
+  _page = 1;
+  filterInventory();
+}
+
+function clearGroupFilter(){
+  filterMsSet('sf-group', []);
+  _page = 1;
+  filterInventory();
+}
+
+function populateSearchDropdowns(){
+  filterMsFill('sf-group',          uniqSorted(LOCATIONS.map(function(l){ return l.group; })));
+  filterMsFill('sf-branding',       uniqSorted(LOCATIONS.map(function(l){ return l.branding; })));
+  filterMsFill('sf-type',           uniqSorted(LOCATIONS.map(function(l){ return l.type; })));
+  filterMsFill('sf-package',        uniqSorted(LOCATIONS.map(function(l){ return l.package; })));
+  filterMsFill('sf-province',       uniqSorted(LOCATIONS.map(function(l){ return l.province; })));
+  filterMsFill('sf-region',         uniqSorted(LOCATIONS.map(function(l){ return l.region; })));
+  filterMsFill('sf-owner',          uniqSorted(LOCATIONS.map(function(l){ return l.productOwner; })));
+  filterMsFill('sf-product-status', uniqSorted(LOCATIONS.map(function(l){ return l.productStatus; })));
+  filterMsFill('sf-booking-status', uniqSorted(LOCATIONS.map(function(l){ return l.bookingStatus; })));
+}
+
+function groupChip(g){
+  var c = GROUP_COLOR[g] || '#64748B';
+  return '<span class="inline-flex items-center gap-1.5 text-[11px] font-medium" style="color:' + c + '"><span class="w-1.5 h-1.5 rounded-full" style="background:' + c + '"></span>' + g + '</span>';
+}
+function productStatusColor(s){
+  if (s.indexOf('Available') >= 0) return '#059669';
+  if (s.indexOf('Occupied') >= 0) return '#2D56D2';
+  if (s.indexOf('ระงับ') >= 0) return '#D97706';
+  if (s.indexOf('ยกเลิก') >= 0) return '#DC2626';
+  return '#64748B';
+}
+function productStatusChip(s){
+  var c = productStatusColor(s);
+  return '<span class="inline-flex items-center gap-1 text-[11px] font-medium px-1.5 py-0.5 rounded" style="background:' + c + '14;color:' + c + '">' + s + '</span>';
+}
+function bookingStatusColor(s){
+  if (s === 'ว่าง') return '#059669';
+  if (s === 'จอง') return '#2D56D2';
+  if (s === 'งดจอง') return '#DC2626';
+  if (s.indexOf('Promotion') >= 0) return '#D97706';
+  return '#64748B';
+}
+function bookingStatusChip(s){
+  var c = bookingStatusColor(s);
+  return '<span class="text-[11px] font-medium px-1.5 py-0.5 rounded" style="background:' + c + '14;color:' + c + '">' + s + '</span>';
+}
+function typeBadgeMini(type){
+  return '<span class="text-[11px] text-[#0B1430]" style="color:rgba(30,41,59,0.78)">' + type + '</span>';
+}
+function actionButtons(code){
+  var safe = String(code).replace(/'/g, "\\'");
+  return '<div class="inline-flex items-center gap-1">' +
+    '<button onclick="event.stopPropagation();invView(\'' + safe + '\')" title="View" class="w-7 h-7 rounded-md inline-flex items-center justify-center transition-colors" style="background:rgba(14,165,233,0.10);color:#0284C7" onmouseover="this.style.background=\'rgba(14,165,233,0.20)\'" onmouseout="this.style.background=\'rgba(14,165,233,0.10)\'">' +
+      '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>' +
+    '</button>' +
+    '<button onclick="event.stopPropagation();invEdit(\'' + safe + '\')" title="Edit" class="w-7 h-7 rounded-md inline-flex items-center justify-center transition-colors" style="background:rgba(245,158,11,0.12);color:#B45309" onmouseover="this.style.background=\'rgba(245,158,11,0.22)\'" onmouseout="this.style.background=\'rgba(245,158,11,0.12)\'">' +
+      '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125"/></svg>' +
+    '</button>' +
+  '</div>';
+}
+function invView(code){ console.log('View', code); }
+function invEdit(code){ window.location.href = 'inventory-edit.html'; }
+
+function renderList(allRows) {
+  var tbody = document.getElementById('inv-table-body');
+  if (!allRows.length) {
+    tbody.innerHTML = '<tr><td colspan="12" class="px-4 py-12 text-center text-[13px]" style="color:rgba(30,41,59,0.5)">No matching assets found</td></tr>';
+    return;
+  }
+  // Page slice
+  var start = (_page - 1) * _pageSize;
+  var rows = allRows.slice(start, start + _pageSize);
+  tbody.innerHTML = rows.map(function(r) {
+    return '<tr class="cursor-pointer">' +
+      '<td class="text-center">' + actionButtons(r.code) + '</td>' +
+      '<td><span class="text-[11.5px] font-mono font-semibold" style="color:#0B1430">' + r.code + '</span></td>' +
+      '<td><span class="text-[11px] font-mono" style="color:rgba(30,41,59,0.55)">' + r.epicorCode + '</span></td>' +
+      '<td><div class="text-[12.5px] font-medium text-[#0B1430] truncate max-w-[180px]" title="' + r.name + '">' + r.name + '</div></td>' +
+      '<td>' + groupChip(r.group) + '</td>' +
+      '<td><span class="text-[11.5px]" style="color:rgba(30,41,59,0.75)">' + r.branding + '</span></td>' +
+      '<td>' + typeBadgeMini(r.type) + '</td>' +
+      '<td class="text-right"><span class="text-[12.5px] font-semibold tnum text-[#0B1430]">' + fmtRate(r.rate) + '</span></td>' +
+      '<td>' + productStatusChip(r.productStatus) + '</td>' +
+      '<td>' + bookingStatusChip(r.bookingStatus) + '</td>' +
+      '<td><span class="text-[11.5px]" style="color:rgba(30,41,59,0.75)">' + r.province + '</span></td>' +
+      '<td><span class="text-[12px] font-medium" style="color:rgba(30,41,59,0.85)">' + r.productOwner + '</span></td>' +
+      '</tr>';
+  }).join('');
+}
+
+function renderGrid(rows) {
+  var container = document.getElementById('inv-grid-body');
+  if (!rows.length) { container.innerHTML = '<div class="col-span-3 py-10 text-center text-[13px]" style="color:rgba(30,41,59,0.5)">No matching assets found</div>'; return; }
+  container.innerHTML = rows.map(function(r) {
+    var statusTag = r.status === 'live' ? '<span class="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full font-medium bg-emerald-500/20 text-emerald-200 border border-emerald-400/20"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>Live</span>' : r.status === 'maint' ? '<span class="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full font-medium bg-amber-500/20 text-amber-200 border border-amber-400/20"><span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>Maint.</span>' : '<span class="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full font-medium bg-white/10 text-white/60 border border-white/10"><span class="w-1.5 h-1.5 rounded-full bg-white/40"></span>Vacant</span>';
+    return '<div class="bg-white border border-[#E2E8F0] rounded-xl shadow-sm overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"><div class="h-32 relative overflow-hidden" style="background:linear-gradient(135deg,#213268,#2D56D2 60%,#4790FF)"><div class="absolute inset-0 opacity-20" style="background-image:repeating-linear-gradient(0deg,transparent,transparent 19px,rgba(255,255,255,.06) 20px),repeating-linear-gradient(90deg,transparent,transparent 19px,rgba(255,255,255,.06) 20px)"></div><div class="absolute top-3 left-3 right-3 flex items-start justify-between"><span class="text-[10px] px-2 py-0.5 rounded-full font-medium bg-white/15 text-white border border-white/10">' + r.type + '</span>' + statusTag + '</div><div class="absolute bottom-3 left-3 text-white"><div class="text-[10px] opacity-70 font-mono">' + r.code + '</div><div class="text-[18px] font-semibold leading-tight">' + r.size + '</div></div></div><div class="p-4"><div class="text-[13px] font-semibold text-[#0B1430] mb-1">' + r.name + '</div><div class="text-[11px] mb-3" style="color:rgba(30,41,59,0.6)">' + r.city + ' / ' + r.district + '</div><div class="flex items-center justify-between"><div><div class="text-[10px] uppercase font-medium" style="color:rgba(30,41,59,0.6)">Occupancy</div><div class="text-[15px] font-semibold tnum">' + r.occ + '%</div></div><div class="text-right"><div class="text-[10px] uppercase font-medium" style="color:rgba(30,41,59,0.6)">Rate / mo</div><div class="text-[15px] font-semibold tnum">' + fmtRate(r.rate) + '</div></div></div><div class="mt-3 h-1.5 rounded-full bg-[#F1F5F9]"><div class="h-full rounded-full transition-all" style="width:' + r.occ + '%;background:' + occBarColor(r.occ) + '"></div></div></div></div>';
+  }).join('');
+}
+
+function renderMap(rows) {
+  var container = document.getElementById('inv-map-pins');
+  function proj(lat, lng) {
+    var xL = 97.5, xR = 103, yT = 19, yB = 7;
+    return { x: ((lng - xL) / (xR - xL)) * 100, y: ((yT - lat) / (yT - yB)) * 100 };
+  }
+  container.innerHTML = rows.map(function(r) {
+    var p = proj(r.lat, r.lng);
+    var sz = r.occ >= 90 ? 18 : r.occ >= 70 ? 14 : 11;
+    var color = r.status === 'vac' ? '#9CA3AF' : r.status === 'maint' ? '#F59E0B' : r.occ >= 85 ? '#213268' : '#2D56D2';
+    return '<div class="absolute -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-white shadow-md group cursor-pointer" style="left:' + p.x + '%;top:' + p.y + '%;width:' + sz + 'px;height:' + sz + 'px;background:' + color + '"><div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block z-10"><div class="bg-white rounded-lg shadow-lg border border-[#E2E8F0] p-3 whitespace-nowrap text-[12px]"><div class="font-semibold text-[#0B1430]">' + r.name + '</div><div class="text-[11px]" style="color:rgba(30,41,59,0.6)">' + r.code + ' \u00B7 ' + r.type + '</div><div class="flex gap-3 mt-1.5"><span class="font-semibold tnum">' + r.occ + '%</span><span class="font-semibold tnum">' + fmtRate(r.rate) + '</span>' + getStatusBadge(r.status) + '</div></div><div class="w-2 h-2 bg-white border-r border-b border-[#E2E8F0] rotate-45 absolute left-1/2 -translate-x-1/2 -bottom-1"></div></div></div>';
+  }).join('');
+}
+
+function setView(v) {
+  _currentView = v;
+  document.querySelectorAll('#view-toggle button').forEach(function(btn) {
+    if (btn.dataset.view === v) {
+      btn.classList.add('bg-white', 'text-[#0B1430]', 'shadow-sm');
+      btn.classList.remove('text-[#1E293B]/70');
+    } else {
+      btn.classList.remove('bg-white', 'text-[#0B1430]', 'shadow-sm');
+      btn.classList.add('text-[#1E293B]/70');
+    }
+  });
+  document.getElementById('view-list').classList.toggle('hidden', v !== 'list');
+  document.getElementById('view-grid').classList.toggle('hidden', v !== 'grid');
+  document.getElementById('view-map').classList.toggle('hidden', v !== 'map');
+  filterInventory();
+}
+
+function filterInventory() {
+  var rows = getFiltered();
+  if (_currentView === 'list') renderList(rows);
+  if (_currentView === 'grid') renderGrid(rows);
+  if (_currentView === 'map')  renderMap(rows);
+  var hc = document.getElementById('header-count');
+  if (hc) {
+    hc.textContent = rows.length === LOCATIONS.length
+      ? LOCATIONS.length + ' media'
+      : rows.length + ' / ' + LOCATIONS.length + ' media (filtered)';
+  }
+  renderPagination(rows.length);
+  refreshSortIndicators();
+  renderGroupStats(); // re-sync active card highlight with current group filter
+}
+
+/* Reset to page 1 whenever a plain input search field changes.
+   Multi-selects already call _page = 1 inside filterMsItem / filterMsClear. */
+['sf-code','sf-old-code','sf-epicor','sf-location']
+  .forEach(function(id){
+    document.addEventListener('input', function(e){ if (e.target.id === id) _page = 1; });
+  });
+
+/* Wire up sortable header clicks */
+document.addEventListener('click', function(e){
+  var th = e.target.closest('#inv-thead th.sortable');
+  if (th) setSort(th.dataset.sort);
+});
+
+renderGroupStats();
+populateSearchDropdowns();
+filterInventory();
+
+/* === Go to top button === */
+function scrollToTopAll(){
+  // Try every plausible scroll container, since layout may scroll on main/body/html
+  try { window.scrollTo({ top: 0, behavior: 'smooth' }); } catch(e){ window.scrollTo(0, 0); }
+  document.documentElement.scrollTop = 0;
+  document.body.scrollTop = 0;
+  var main = document.querySelector('main');
+  if (main && main.scrollTop) { try { main.scrollTo({ top:0, behavior:'smooth' }); } catch(e){ main.scrollTop = 0; } }
+}
+function curScrollPos(){
+  var m = document.querySelector('main');
+  return Math.max(
+    window.pageYOffset || 0,
+    document.documentElement.scrollTop || 0,
+    document.body.scrollTop || 0,
+    (m && m.scrollTop) || 0
+  );
+}
+function updateGoTopVisibility(){
+  var btn = document.getElementById('go-top');
+  if (!btn) return;
+  if (curScrollPos() < 30) btn.classList.add('hide-gt');
+  else btn.classList.remove('hide-gt');
+}
+// Listen on all plausible scrollers
+window.addEventListener('scroll', updateGoTopVisibility, { passive: true });
+document.addEventListener('scroll', updateGoTopVisibility, { passive: true });
+window.addEventListener('DOMContentLoaded', function(){
+  var m = document.querySelector('main');
+  if (m) m.addEventListener('scroll', updateGoTopVisibility, { passive: true });
+  updateGoTopVisibility();
+});
+// Document-level click delegation — works even if button is added after this script runs
+document.addEventListener('click', function(e){
+  var btn = e.target.closest && e.target.closest('#go-top');
+  if (btn) { e.preventDefault(); scrollToTopAll(); }
+});
+</script>
+    </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- AI Panel -->
+<div id="ai-panel" class="fixed right-0 top-0 bottom-0 w-[420px] bg-white border-l border-surface-200 z-40 flex flex-col translate-x-full transition-transform duration-200" style="box-shadow:-8px 0 30px rgba(11,20,48,0.08)">
+  <div class="h-16 px-5 border-b border-surface-200 flex items-center gap-3">
+    <div class="w-8 h-8 rounded-lg flex items-center justify-center text-white" style="background:linear-gradient(135deg,#2D56D2,#5FCBF9)">
+      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"/></svg>
+    </div>
+    <div class="flex-1">
+      <div class="text-[14px] font-semibold">Plan-B Copilot</div>
+      <div class="text-[11px] flex items-center gap-1" style="color:rgba(30,41,59,0.6)"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>Connected to live CRM data</div>
+    </div>
+    <button onclick="toggleAI()" class="w-8 h-8 rounded-md hover:bg-surface-100 flex items-center justify-center">
+      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+    </button>
+  </div>
+
+  <!-- Messages -->
+  <div id="ai-messages" class="flex-1 overflow-y-auto px-5 py-4 space-y-3">
+    <div><div class="text-[10px] font-medium uppercase tracking-wide mb-1" style="color:rgba(30,41,59,0.5)">Copilot</div><div class="inline-block max-w-[90%] text-[13px] leading-relaxed rounded-xl px-3.5 py-2.5 bg-surface-50 border border-surface-200">Hi — I can summarize occupancy, flag anomalies, draft proposals, or forecast revenue. What are we digging into?</div></div>
+  </div>
+
+  <!-- Suggestions -->
+  <div id="ai-suggestions" class="px-5 pb-2 space-y-2">
+    <div class="text-[10px] uppercase tracking-wide font-semibold" style="color:rgba(30,41,59,0.5)">Try asking</div>
+    <button onclick="aiSend(this.textContent)" class="w-full text-left text-[12px] px-3 py-2 border border-surface-200 rounded-lg hover:border-pb-500 hover:bg-blue-50/30 transition-colors">Forecast May occupancy for BTS inventory</button>
+    <button onclick="aiSend(this.textContent)" class="w-full text-left text-[12px] px-3 py-2 border border-surface-200 rounded-lg hover:border-pb-500 hover:bg-blue-50/30 transition-colors">Summarize this week's claims by severity</button>
+    <button onclick="aiSend(this.textContent)" class="w-full text-left text-[12px] px-3 py-2 border border-surface-200 rounded-lg hover:border-pb-500 hover:bg-blue-50/30 transition-colors">Who are my top 3 clients and where are they underspending?</button>
+    <button onclick="aiSend(this.textContent)" class="w-full text-left text-[12px] px-3 py-2 border border-surface-200 rounded-lg hover:border-pb-500 hover:bg-blue-50/30 transition-colors">Draft a proposal: AIS wants 30-day coverage in Bangkok + Chiang Mai</button>
+  </div>
+
+  <!-- Input -->
+  <div class="p-4 border-t border-surface-200">
+    <div class="rounded-xl bg-white border border-surface-200 focus-within:border-pb-500 transition" style="box-shadow:0 0 0 1px rgba(45,86,210,0.1)">
+      <div class="flex items-end gap-2 p-2">
+        <input id="ai-input" type="text" placeholder="Ask about occupancy, pipeline, claims…" class="flex-1 text-[13px] bg-transparent outline-none px-2 py-1.5 placeholder:opacity-40" onkeydown="if(event.key==='Enter'){event.preventDefault();aiSend()}" />
+        <button onclick="aiSend()" class="w-8 h-8 rounded-md bg-ink-900 hover:bg-ink-700 flex items-center justify-center text-white shrink-0">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 18-8-8 18-2-8-8-2Z"/></svg>
+        </button>
+      </div>
+    </div>
+    <p class="text-[10px] text-center mt-2" style="color:rgba(30,41,59,0.4)">Plan-B Copilot — may hallucinate, verify critical actions</p>
+  </div>
+</div>
+
+<script>
+/* === Expand/collapse sub-menus === */
+function toggleMenu(id){
+  const sub=document.getElementById(id+'-sub');
+  const chevron=document.getElementById(id+'-chevron');
+  if(sub.classList.contains('hidden')){
+    sub.classList.remove('hidden');
+    chevron.classList.add('rotate-90');
+  }else{
+    sub.classList.add('hidden');
+    chevron.classList.remove('rotate-90');
+  }
+}
+
+/* === Mobile sidebar overlay === */
+function toggleMobile(){
+  const sidebar=document.getElementById('sidebar');
+  const overlay=document.getElementById('sidebar-overlay');
+  sidebar.classList.toggle('-translate-x-full');
+  overlay.classList.toggle('hidden');
+}
+
+/* === Desktop collapse sidebar === */
+let _sidebarCollapsed = false;
+function collapseSidebar(){
+  // On mobile, toggle mobile drawer instead
+  if(window.innerWidth < 1024){
+    toggleMobile();
+    return;
+  }
+  _sidebarCollapsed = !_sidebarCollapsed;
+  const sb = document.getElementById('sidebar');
+  const main = document.querySelector('main');
+  const labels = sb.querySelectorAll('.sidebar-label');
+  const groups = sb.querySelectorAll('.sidebar-nav-parent');
+  const subs = sb.querySelectorAll('[id$="-sub"]');
+  const brand = document.getElementById('sidebar-brand');
+
+  if(_sidebarCollapsed){
+    sb.classList.remove('w-64');
+    sb.classList.add('w-[68px]');
+    main.classList.remove('lg:ml-64');
+    main.classList.add('lg:ml-[68px]');
+    labels.forEach(el=>el.classList.add('hidden'));
+    groups.forEach(el=>el.classList.add('hidden'));
+    subs.forEach(el=>el.classList.add('hidden'));
+    if(brand) brand.classList.replace('px-4','px-0');
+    if(brand) brand.classList.add('justify-center');
+  } else {
+    sb.classList.remove('w-[68px]');
+    sb.classList.add('w-64');
+    main.classList.remove('lg:ml-[68px]');
+    main.classList.add('lg:ml-64');
+    labels.forEach(el=>el.classList.remove('hidden'));
+    groups.forEach(el=>el.classList.remove('hidden'));
+    // Re-show sub-menus that were explicitly open (have active items)
+    subs.forEach(el=>{
+      if(el.querySelector('.active')) el.classList.remove('hidden');
+    });
+    if(brand) brand.classList.replace('px-0','px-4');
+    if(brand) brand.classList.remove('justify-center');
+  }
+}
+
+/* === AI Panel === */
+let _aiOpen = false;
+function toggleAI(){
+  _aiOpen = !_aiOpen;
+  const panel = document.getElementById('ai-panel');
+  const btn = document.getElementById('ai-toggle');
+  if(_aiOpen){
+    panel.classList.remove('translate-x-full');
+    btn.classList.remove('bg-white','border-surface-300','text-ink-900','hover:bg-surface-50');
+    btn.classList.add('bg-ink-900','text-white','border-ink-900');
+  } else {
+    panel.classList.add('translate-x-full');
+    btn.classList.remove('bg-ink-900','text-white','border-ink-900');
+    btn.classList.add('bg-white','border-surface-300','text-ink-900','hover:bg-surface-50');
+  }
+}
+
+/* AI demo chat */
+const _aiReplies = [
+  "Based on current data, BTS corridor occupancy is trending at 84% — above the 78% network average. If the pattern holds, May could hit 89% with AIS and TrueMove briefs both targeting Silom.",
+  "This week we have 3 open claims: #1284 (high — LED flicker, 2h remaining SLA), #1282 (critical — content not playing, urgent), and #1283 (med — vinyl peel, within SLA). The critical item needs immediate attention.",
+  "Your top 3 clients YTD: AIS Thailand (฿24.8M, 18 campaigns), TrueMove H (฿18.5M, 14 campaigns), and Toyota Motor (฿15.2M, 9 campaigns). Toyota is underspending on digital LED — they only use 2 of your 5 available LED sites.",
+  "Draft proposal ready: AIS 30-day coverage across 8 Bangkok sites (including Silom LED, Rama IX, Asoke) + 2 Chiang Mai sites. Estimated package: ฿4.2M. Occupancy conflicts on TH-SIL-09 for May 5-12 — recommend offering X-CAYA-FY-1 as substitute.",
+];
+let _aiReplyIdx = 0;
+
+function aiSend(text){
+  const input = document.getElementById('ai-input');
+  const msg = text || input.value.trim();
+  if(!msg) return;
+  input.value = '';
+  document.getElementById('ai-suggestions').style.display='none';
+
+  const box = document.getElementById('ai-messages');
+  // User bubble
+  box.innerHTML += '<div class="text-right"><div class="inline-block max-w-[90%] text-[13px] leading-relaxed rounded-xl px-3.5 py-2.5 bg-ink-900 text-white">'+msg.replace(/</g,'&lt;')+'</div></div>';
+  box.scrollTop = box.scrollHeight;
+
+  // Thinking dots
+  const thinkId = 'ai-think-'+Date.now();
+  box.innerHTML += '<div id="'+thinkId+'" class="flex items-center gap-2 text-[12px]" style="color:rgba(30,41,59,0.6)"><div class="flex gap-1"><span class="w-1.5 h-1.5 bg-pb-500 rounded-full pulse-dot"></span><span class="w-1.5 h-1.5 bg-pb-500 rounded-full pulse-dot" style="animation-delay:.2s"></span><span class="w-1.5 h-1.5 bg-pb-500 rounded-full pulse-dot" style="animation-delay:.4s"></span></div>analyzing CRM data…</div>';
+  box.scrollTop = box.scrollHeight;
+
+  setTimeout(()=>{
+    const el = document.getElementById(thinkId);
+    if(el) el.remove();
+    const reply = _aiReplies[_aiReplyIdx % _aiReplies.length];
+    _aiReplyIdx++;
+    box.innerHTML += '<div><div class="text-[10px] font-medium uppercase tracking-wide mb-1" style="color:rgba(30,41,59,0.5)">Copilot</div><div class="inline-block max-w-[90%] text-[13px] leading-relaxed rounded-xl px-3.5 py-2.5 bg-surface-50 border border-surface-200">'+reply+'</div></div>';
+    box.scrollTop = box.scrollHeight;
+  }, 1500);
+}
+</script>
+
+<!-- Go to top button -->
+<button id="go-top" aria-label="กลับขึ้นด้านบน" title="กลับขึ้นด้านบน">
+  <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 15.75l7.5-7.5 7.5 7.5"/></svg>
+</button>
+</body>
+</html>

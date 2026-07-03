@@ -1,0 +1,3 @@
+# Prototype — do not index in search engines
+User-agent: *
+Disallow: /

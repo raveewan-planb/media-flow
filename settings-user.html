@@ -1,0 +1,1071 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>User Management — Plan-B CRM</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: { extend: {
+      fontFamily: { kanit:['Kanit','sans-serif'], mono:['JetBrains Mono','monospace'] },
+      colors: {
+        pb:{900:'#213268',700:'#2D56D2',500:'#4790FF',300:'#5FCBF9',100:'#D6ECFF',50:'#EBF5FF'},
+        ink:{900:'#0B1430',800:'#162040',700:'#1E293B'},
+        surface:{0:'#FFFFFF',50:'#F8FAFC',100:'#F1F5F9',200:'#E2E8F0',300:'#CBD5E1'},
+      },
+    }},
+  };
+</script>
+
+<style>
+  *,*::before,*::after{font-family:'Kanit',sans-serif;-webkit-font-smoothing:antialiased}
+  body{background:#F7F9FC;color:#0B1430;margin:0}
+  .font-mono,code,.font-mono *{font-family:'JetBrains Mono',monospace}
+  ::-webkit-scrollbar{width:10px;height:10px}
+  ::-webkit-scrollbar-track{background:transparent}
+  ::-webkit-scrollbar-thumb{background:#CBD5E8;border-radius:10px;border:2px solid #F7F9FC}
+  ::-webkit-scrollbar-thumb:hover{background:#93A4C4}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:#4790FF;box-shadow:0 0 0 3px rgba(71,144,255,.15)}
+</style>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin="anonymous"></script>
+<script src="shared/shared-layout.js"></script>
+<script src="shared/sidebar.js"></script>
+</head>
+<body>
+<div id="root"></div>
+
+<!-- ========================================================
+     Seed: Media (for MediaPicker cascade) — from MasterDataMediaData.jsx
+     ======================================================== -->
+<script type="text/babel" data-presets="react">
+const MEDIA_GROUPS_SEED = [
+  { id:'DGT', nameTh:'ดิจิทัล', nameEn:'Digital', color:'#2D56D2',
+    sections:[
+      { id:'NET', nameTh:'The Network', nameEn:'The Network', types:[
+        { id:'PBTV',  nameTh:'Plan B TV',            nameEn:'Plan B TV',            status:'active' },
+        { id:'CBKK',  nameTh:'Customize BKK',        nameEn:'Customize BKK',        status:'active' },
+        { id:'PBTVN', nameTh:'Plan B TV Nationwide', nameEn:'Plan B TV Nationwide', status:'active' },
+        { id:'CNW',   nameTh:'Customize Nationwide', nameEn:'Customize Nationwide', status:'active' },
+      ]},
+      { id:'SIG', nameTh:'Signature Screen', nameEn:'Signature Screen', types:[
+        { id:'SPF',  nameTh:'Siam Paragon Facade', nameEn:'Siam Paragon Facade', status:'active' },
+        { id:'TDE',  nameTh:'The District EM',     nameEn:'The District EM',     status:'active' },
+        { id:'SGM',  nameTh:'Signature Max',       nameEn:'Signature Max',       status:'active' },
+        { id:'BBKK', nameTh:'Bravo BKK',           nameEn:'Bravo BKK',           status:'active' },
+      ]},
+      { id:'BKKP', nameTh:'BKK Prime', nameEn:'BKK Prime', types:[
+        { id:'BKJ',  nameTh:'Bangkok Jams',    nameEn:'Bangkok Jams',    status:'active' },
+        { id:'R9C',  nameTh:'Rama 9 Connect',  nameEn:'Rama 9 Connect',  status:'active' },
+        { id:'DGTX', nameTh:'Digital Gateway X', nameEn:'Digital Gateway X', status:'active' },
+      ]},
+    ]},
+  { id:'AIR', nameTh:'สนามบิน', nameEn:'Airport', color:'#F59E0B',
+    sections:[
+      { id:'FLY', nameTh:'Fly', nameEn:'Fly', types:[
+        { id:'ATS', nameTh:'Airtraveller Series', nameEn:'Airtraveller Series', status:'active' },
+        { id:'DMK', nameTh:'Don Mueang Digital Network', nameEn:'Don Mueang Digital Network', status:'active' },
+      ]},
+      { id:'TF', nameTh:'Thai Flight', nameEn:'Thai Flight', types:[
+        { id:'ADN', nameTh:'Airport Digital Network', nameEn:'Airport Digital Network', status:'active' },
+      ]},
+    ]},
+  { id:'RTL', nameTh:'รีเทล', nameEn:'Retail', color:'#10B981',
+    sections:[
+      { id:'LUX', nameTh:'Luxury', nameEn:'Luxury', types:[
+        { id:'CN', nameTh:'Central Network', nameEn:'Central Network', status:'active' },
+      ]},
+      { id:'INS', nameTh:'In-store', nameEn:'In-store', types:[
+        { id:'7E', nameTh:'7-Eleven Plus', nameEn:'7-Eleven Plus', status:'active' },
+      ]},
+    ]},
+  { id:'TRN', nameTh:'ทรานสิท', nameEn:'Transit', color:'#7C3AED',
+    sections:[
+      { id:'RL', nameTh:'Rail', nameEn:'Rail', types:[
+        { id:'DMRT', nameTh:'Digital MRT', nameEn:'Digital MRT', status:'active' },
+      ]},
+      { id:'BTS', nameTh:'BTS', nameEn:'BTS', types:[
+        { id:'BTS-SKY', nameTh:'BTS Skytrain',  nameEn:'BTS Skytrain',  status:'active' },
+        { id:'BTS-CON', nameTh:'BTS Concourse', nameEn:'BTS Concourse', status:'active' },
+        { id:'BTS-CL',  nameTh:'BTS Cityline',  nameEn:'BTS Cityline',  status:'active' },
+      ]},
+    ]},
+  { id:'CLS', nameTh:'คลาสสิก', nameEn:'Classic', color:'#DB2777',
+    sections:[
+      { id:'CCC', nameTh:'The Canvas Collection', nameEn:'The Canvas Collection', types:[
+        { id:'CKC', nameTh:'Cookie & Cream', nameEn:'Cookie & Cream', status:'active' },
+      ]},
+    ]},
+];
+// Inject Panel Packages per Media Type (mock data)
+MEDIA_GROUPS_SEED.forEach(g => g.sections.forEach(s => s.types.forEach(t => {
+  if (!t.packages) {
+    t.packages = [
+      { id: t.id + '-STD', nameEn: t.nameEn + ' — Standard' },
+      { id: t.id + '-PRM', nameEn: t.nameEn + ' — Premium'  },
+      { id: t.id + '-MAX', nameEn: t.nameEn + ' — Max'      },
+    ];
+  }
+})));
+window.MEDIA_GROUPS_SEED = MEDIA_GROUPS_SEED;
+</script>
+
+<!-- ========================================================
+     Seed: User Groups (form Select + helper)
+     ======================================================== -->
+<script type="text/babel" data-presets="react">
+const USER_GROUPS_SEED = [
+  { id:'admin',          name:'Admin',           nameTh:'ผู้ดูแลระบบ',  systems:['inventory','sale','media-approval','production','claim'] },
+  { id:'sales-lead',     name:'Sales — Lead',    nameTh:'หัวหน้าฝ่ายขาย', systems:['sale','inventory'] },
+  { id:'sales',          name:'Sales',           nameTh:'พนักงานขาย',    systems:['sale','inventory'] },
+  { id:'media-approval', name:'Media Approval',  nameTh:'อนุมัติสื่อ',    systems:['media-approval'] },
+  { id:'production',     name:'Production',      nameTh:'ฝ่ายผลิต',      systems:['production','claim','media-approval'] },
+  { id:'designer',       name:'Designer',        nameTh:'นักออกแบบ',    systems:['media-approval','production'] },
+  { id:'cs',             name:'Customer Care',   nameTh:'ดูแลลูกค้า',    systems:['claim','sale'] },
+  { id:'finance',        name:'Finance',         nameTh:'การเงิน',       systems:['sale'] },
+  { id:'media-ops',      name:'Media Operations',nameTh:'ปฏิบัติการสื่อ', systems:['inventory','media-approval'] },
+];
+window.USER_GROUPS_SEED = USER_GROUPS_SEED;
+</script>
+
+<!-- ========================================================
+     Seed: Users — from screens/SettingsUserData.jsx
+     ======================================================== -->
+<script type="text/babel" data-presets="react">
+const USER_ROLES = [
+  { id:'sale',       label:'Sale / Sale Co',   color:'#10B981' },
+  { id:'head-cg',    label:'Head CG',          color:'#2D56D2' },
+  { id:'team-cg',    label:'Team CG',          color:'#7C3AED' },
+  { id:'media-mgmt', label:'Media Management', color:'#F59E0B' },
+];
+
+const DEPARTMENTS = [
+  'Sales', 'Sales Lead', 'Sales Co',
+  'Creative Group A', 'Creative Group B', 'Creative Group C',
+  'Production', 'Media Operations', 'Customer Care',
+  'Finance', 'IT', 'Admin',
+];
+
+function getRoleById(id) { return USER_ROLES.find(r => r.id === id); }
+function userGroupHasMediaApproval(groupId) {
+  const g = (window.USER_GROUPS_SEED || []).find(x => x.id === groupId);
+  return !!(g && g.systems && g.systems.includes('media-approval'));
+}
+function findTypeChain(typeId) {
+  for (const g of (window.MEDIA_GROUPS_SEED || [])) {
+    for (const s of g.sections) {
+      const t = s.types.find(t => t.id === typeId);
+      if (t) return { group: g, section: s, type: t };
+    }
+  }
+  return null;
+}
+
+const USERS_SEED = [
+  { id:'U-101', name:'Preeya Wongsuwan',     department:'Sales Lead',         email:'preeya.w@planbmedia.co.th',   phone:'081-234-5678',
+    status:'active', dateCreated:'15/04/2026', userGroupId:'sales-lead',
+    mediaTypes:['LED-STD','LED-PRM','BB-STD','BTS-PLT'], role:'sale', teamCgIds:[] },
+  { id:'U-102', name:'Somchai Khamsri',    department:'Sales',              email:'somchai.k@planbmedia.co.th',  phone:'081-345-6789',
+    status:'active', dateCreated:'18/04/2026', userGroupId:'sales',
+    mediaTypes:['LED-STD','BB-STD','7E-CTR'], role:'sale', teamCgIds:[] },
+  { id:'U-103', name:'Weera Somboon', department:'Sales',              email:'weera.s@planbmedia.co.th',    phone:'089-111-2222',
+    status:'active', dateCreated:'02/03/2026', userGroupId:'sales-lead',
+    mediaTypes:['STA-RD','STA-WL','BB-MEG'], role:'sale', teamCgIds:[] },
+  { id:'U-104', name:'Suree Phromma',      department:'Creative Group A',   email:'suree.p@planbmedia.co.th',    phone:'081-456-7890',
+    status:'active', dateCreated:'11/01/2026', userGroupId:'media-approval',
+    mediaTypes:['LED-STD','LED-PRM','DGL'], role:'head-cg', teamCgIds:['U-201','U-202','U-203'] },
+  { id:'U-105', name:'Thanat Manopimoke',     department:'Creative Group B',   email:'thanat.m@planbmedia.co.th',   phone:'082-567-8901',
+    status:'active', dateCreated:'04/02/2026', userGroupId:'media-approval',
+    mediaTypes:['BB-STD','BB-MEG','STA-RD'], role:'head-cg', teamCgIds:['U-204','U-205'] },
+  { id:'U-106', name:'Anucha Limpaiboon',     department:'Creative Group C',   email:'anucha.l@planbmedia.co.th',   phone:'082-998-3210',
+    status:'active', dateCreated:'09/02/2026', userGroupId:'media-approval',
+    mediaTypes:['BTS-PLT','BTS-TRN','MRT-PLT','AIR-BKK'], role:'head-cg', teamCgIds:['U-206','U-207'] },
+  { id:'U-201', name:'Kitti Phutthiphan',      department:'Creative Group A',   email:'kitti.p@planbmedia.co.th',    phone:'083-111-2233',
+    status:'active', dateCreated:'15/02/2026', userGroupId:'designer',
+    mediaTypes:['PBTV','SPF'], mediaPackages:['PBTV-STD','PBTV-PRM','SPF-STD'], role:'team-cg', teamCgIds:[] },
+  { id:'U-202', name:'Napha Saetang',      department:'Creative Group A',   email:'napha.s@planbmedia.co.th',    phone:'083-222-3344',
+    status:'active', dateCreated:'15/02/2026', userGroupId:'designer',
+    mediaTypes:['PBTV','CBKK'], mediaPackages:['PBTV-PRM','PBTV-MAX','CBKK-STD'], role:'team-cg', teamCgIds:[] },
+  { id:'U-203', name:'Arada Tantipong',      department:'Creative Group A',   email:'arada.t@planbmedia.co.th',    phone:'083-333-4455',
+    status:'active', dateCreated:'21/03/2026', userGroupId:'designer',
+    mediaTypes:['PBTV','PBTVN'], mediaPackages:['PBTV-STD','PBTVN-STD'], role:'team-cg', teamCgIds:[] },
+  { id:'U-204', name:'Gan Wittayasak',        department:'Creative Group B',   email:'gan.w@planbmedia.co.th',      phone:'084-111-2233',
+    status:'active', dateCreated:'21/03/2026', userGroupId:'designer',
+    mediaTypes:['SPF','TDE'], mediaPackages:['SPF-STD','SPF-PRM','TDE-STD'], role:'team-cg', teamCgIds:[] },
+  { id:'U-205', name:'Fa Suriya',     department:'Creative Group B',   email:'fa.s@planbmedia.co.th',       phone:'084-222-3344',
+    status:'active', dateCreated:'01/04/2026', userGroupId:'designer',
+    mediaTypes:['SGM','BBKK'], mediaPackages:['SGM-PRM','BBKK-STD','BBKK-MAX'], role:'team-cg', teamCgIds:[] },
+  { id:'U-206', name:'Boonmee Limthong',    department:'Creative Group C',   email:'boonmee.l@planbmedia.co.th',  phone:'084-333-4455',
+    status:'active', dateCreated:'01/04/2026', userGroupId:'designer',
+    mediaTypes:['BTS-SKY','BTS-CON'], mediaPackages:['BTS-SKY-STD','BTS-SKY-PRM','BTS-CON-STD'], role:'team-cg', teamCgIds:[] },
+  { id:'U-207', name:'Chai Nakornsuk',       department:'Creative Group C',   email:'chai.n@planbmedia.co.th',     phone:'085-111-2233',
+    status:'inactive', dateCreated:'10/04/2026', userGroupId:'designer',
+    mediaTypes:['BTS-CL','DMRT'], mediaPackages:['BTS-CL-STD','DMRT-STD','DMRT-MAX'], role:'team-cg', teamCgIds:[] },
+  { id:'U-301', name:'Duangjai Photisarn',   department:'Media Operations',   email:'duangjai.p@planbmedia.co.th', phone:'086-444-5566',
+    status:'active', dateCreated:'05/01/2026', userGroupId:'media-ops',
+    mediaTypes:['LED-STD','BB-STD','BTS-PLT','MRT-PLT','7E-CTR'], role:'media-mgmt', teamCgIds:[] },
+  { id:'U-302', name:'Eakkachai Rakkanchanok',  department:'Media Operations',   email:'eakkachai.r@planbmedia.co.th',phone:'086-555-6677',
+    status:'active', dateCreated:'05/01/2026', userGroupId:'media-approval',
+    mediaTypes:['STV-RD','STA-RD'], role:'media-mgmt', teamCgIds:[] },
+  { id:'U-401', name:'Phanu Nantawong',      department:'Production',         email:'phanu.n@planbmedia.co.th',    phone:'087-100-2000',
+    status:'active', dateCreated:'10/01/2026', userGroupId:'production',
+    mediaTypes:[], role:null, teamCgIds:[] },
+  { id:'U-402', name:'Rapeepan Srichan',   department:'Production',         email:'rapeepan.s@planbmedia.co.th', phone:'087-200-3000',
+    status:'active', dateCreated:'12/01/2026', userGroupId:'production',
+    mediaTypes:[], role:null, teamCgIds:[] },
+  { id:'U-403', name:'Suchada Thongchai',    department:'Customer Care',      email:'suchada.t@planbmedia.co.th',  phone:'088-100-2000',
+    status:'active', dateCreated:'01/03/2026', userGroupId:'cs',
+    mediaTypes:[], role:null, teamCgIds:[] },
+  { id:'U-501', name:'Wirat Lertkulwong',      department:'Finance',            email:'wirat.l@planbmedia.co.th',    phone:'089-200-3000',
+    status:'active', dateCreated:'08/02/2026', userGroupId:'finance',
+    mediaTypes:[], role:null, teamCgIds:[] },
+  { id:'U-502', name:'Yongyut Methawan',    department:'IT',                 email:'yongyut.m@planbmedia.co.th',  phone:'089-300-4000',
+    status:'active', dateCreated:'01/01/2026', userGroupId:'admin',
+    mediaTypes:[], role:null, teamCgIds:[] },
+  { id:'U-503', name:'Atchara Vorapan',    department:'Admin',              email:'atchara.v@planbmedia.co.th',  phone:'089-400-5000',
+    status:'inactive', dateCreated:'20/12/2025', userGroupId:'admin',
+    mediaTypes:[], role:null, teamCgIds:[] },
+];
+
+Object.assign(window, { USER_ROLES, DEPARTMENTS, USERS_SEED, getRoleById, userGroupHasMediaApproval, findTypeChain });
+</script>
+
+<!-- ========================================================
+     Screen — from screens/SettingsUser.jsx
+     ======================================================== -->
+<script type="text/babel" data-presets="react">
+const { useState, useMemo, useRef, useEffect } = React;
+
+function UStatusBadge({ status }) {
+  const isActive = status === 'active';
+  return (
+    <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full font-medium border text-[11px]"
+      style={isActive
+        ? { background:'#ECFDF5', color:'#047857', borderColor:'#A7F3D0' }
+        : { background:'#F8FAFC', color:'#475569', borderColor:'#E2E8F0' }}>
+      <span className="w-1.5 h-1.5 rounded-full" style={{ background: isActive ? '#10B981' : '#94A3B8' }} />
+      {isActive ? 'Active' : 'Inactive'}
+    </span>
+  );
+}
+
+function UTile({ icon, label, value, tone='#2D56D2' }) {
+  return (
+    <div className="bg-white border border-surface-200 rounded-xl px-4 py-3 flex items-center gap-3"
+      style={{ boxShadow:'0 1px 3px rgba(11,20,48,.06), 0 1px 2px rgba(11,20,48,.04)' }}>
+      <div className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
+        style={{ background: `${tone}14`, color: tone }}><Icon name={icon} size={17} /></div>
+      <div className="min-w-0">
+        <div className="text-[10px] uppercase font-semibold tracking-wider text-ink-700/55">{label}</div>
+        <div className="text-[18px] font-semibold tracking-tight" style={{ fontVariantNumeric:'tabular-nums' }}>{value}</div>
+      </div>
+    </div>
+  );
+}
+
+function MediaCellChips({ typeIds }) {
+  if (!typeIds || typeIds.length === 0) return <span className="text-[11px] text-ink-700/35 italic">—</span>;
+  const chains = typeIds.map(id => window.findTypeChain(id)).filter(Boolean);
+  if (chains.length === 0) return <span className="text-[11px] text-ink-700/35 italic">—</span>;
+  const first = chains[0];
+  const rest = chains.length - 1;
+  return (
+    <div className="flex flex-col gap-0.5 max-w-[260px]">
+      <div className="flex items-center gap-1 text-[11.5px] truncate">
+        <span className="font-semibold text-[10px] px-1.5 py-0.5 rounded font-mono shrink-0"
+          style={{ background: first.group.color + '18', color: first.group.color }}>
+          {first.group.id}
+        </span>
+        <Icon name="chev-right" size={9} className="text-ink-700/30 shrink-0" />
+        <span className="text-ink-700/65 truncate">{first.section.nameTh}</span>
+        <Icon name="chev-right" size={9} className="text-ink-700/30 shrink-0" />
+        <span className="font-medium text-ink-900 truncate">{first.type.nameTh}</span>
+      </div>
+      {rest > 0 && (
+        <div className="text-[10.5px] text-ink-700/55 font-mono">+ อีก {rest} type{rest > 1 ? 's' : ''}</div>
+      )}
+    </div>
+  );
+}
+
+function UserGroupChip({ groupId }) {
+  const g = (window.USER_GROUPS_SEED || []).find(x => x.id === groupId);
+  if (!g) return <span className="text-[11px] text-ink-700/35">—</span>;
+  const hasMA = window.userGroupHasMediaApproval(groupId);
+  return (
+    <div className="flex items-center gap-1.5">
+      <span className="text-[12px] font-medium text-ink-900">{g.name}</span>
+      {hasMA && (
+        <span className="text-[9px] px-1 py-0.5 rounded font-mono uppercase tracking-wider bg-pb-50 text-pb-700 font-bold"
+          title="กลุ่มนี้มีสิทธิ์ Media Approval">MA</span>
+      )}
+    </div>
+  );
+}
+
+function RoleChip({ roleId }) {
+  if (!roleId) return null;
+  const r = window.USER_ROLES.find(x => x.id === roleId);
+  if (!r) return null;
+  return (
+    <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium"
+      style={{ background: r.color + '18', color: r.color }}>
+      <span className="w-1 h-1 rounded-full" style={{ background: r.color }} />{r.label}
+    </span>
+  );
+}
+
+function MediaPicker({ selected, onChange, selectedPackages, onChangePackages, mode }) {
+  const pickerMode = mode || 'full';
+  const groups = window.MEDIA_GROUPS_SEED || [];
+  const [activeGroup, setActiveGroup] = useState(groups[0]?.id);
+
+  const groupObj = groups.find(g => g.id === activeGroup) || groups[0];
+  // Flatten all types under the group (skip Section level for display)
+  const groupTypes = groupObj ? groupObj.sections.flatMap(s => s.types) : [];
+
+  const [activeType, setActiveType] = useState(groupTypes[0]?.id);
+  const typeObj = groupTypes.find(t => t.id === activeType) || groupTypes[0];
+
+  const pkgSel = selectedPackages || [];
+
+  const isTypeSelected = (id) => selected.includes(id);
+  const isPkgSelected  = (id) => pkgSel.includes(id);
+  const groupTypeIds   = (group)   => group.sections.flatMap(s => s.types.map(t => t.id));
+  const typePackageIds = (type)    => (type.packages || []).map(p => p.id);
+
+  const groupState = (g) => {
+    const ids = groupTypeIds(g);
+    const inSel = ids.filter(i => selected.includes(i)).length;
+    if (inSel === 0) return 'none';
+    if (inSel === ids.length) return 'all';
+    return 'some';
+  };
+
+  const toggleType = (typeId) => {
+    if (isTypeSelected(typeId)) onChange(selected.filter(s => s !== typeId));
+    else onChange([...selected, typeId]);
+  };
+  const togglePackage = (pkgId) => {
+    if (isPkgSelected(pkgId)) onChangePackages(pkgSel.filter(p => p !== pkgId));
+    else onChangePackages([...pkgSel, pkgId]);
+  };
+  const toggleGroup = (group) => {
+    const ids = groupTypeIds(group);
+    const st = groupState(group);
+    if (st === 'all') onChange(selected.filter(s => !ids.includes(s)));
+    else onChange([...new Set([...selected, ...ids])]);
+  };
+
+  useEffect(() => {
+    if (groupObj && !groupTypes.some(t => t.id === activeType)) {
+      setActiveType(groupTypes[0]?.id);
+    }
+  }, [activeGroup]);
+
+  // Bulk actions
+  const selectAllGroups   = () => onChange([...new Set(groups.flatMap(g => groupTypeIds(g)))]);
+  const clearAllGroups    = () => { onChange([]); onChangePackages && onChangePackages([]); };
+  const selectAllTypes    = () => groupObj && onChange([...new Set([...selected, ...groupTypeIds(groupObj)])]);
+  const clearAllTypes     = () => groupObj && onChange(selected.filter(s => !groupTypeIds(groupObj).includes(s)));
+  const selectAllPackages = () => typeObj && onChangePackages([...new Set([...pkgSel, ...typePackageIds(typeObj)])]);
+  const clearAllPackages  = () => typeObj && onChangePackages(pkgSel.filter(p => !typePackageIds(typeObj).includes(p)));
+
+  const TriCheckbox = ({ state, onClick }) => (
+    <button type="button" onClick={onClick}
+      className="w-4 h-4 rounded shrink-0 border flex items-center justify-center transition-colors"
+      style={{ background: state === 'none' ? '#fff' : '#2D56D2', borderColor: state === 'none' ? '#CBD5E1' : '#2D56D2' }}>
+      {state === 'all' && <Icon name="check" size={10} className="text-white" />}
+      {state === 'some' && <span className="w-2 h-0.5 bg-white rounded" />}
+    </button>
+  );
+
+  const ColHeader = ({ title, onSelectAll, onClearAll, disabled }) => (
+    <div className="px-3 py-2 border-b border-surface-200 flex items-center gap-2">
+      <span className="text-[10px] uppercase font-semibold tracking-wider text-ink-700/55 flex-1 truncate">{title}</span>
+      <div className="flex items-center gap-0.5 shrink-0">
+        <button type="button" disabled={disabled} onClick={onSelectAll}
+          title="Select All"
+          className="h-5 px-1.5 rounded text-[9.5px] font-semibold uppercase tracking-wider text-pb-700 hover:bg-pb-50 disabled:opacity-30 disabled:hover:bg-transparent transition-colors">
+          All
+        </button>
+        <span className="text-[10px] text-ink-700/20">|</span>
+        <button type="button" disabled={disabled} onClick={onClearAll}
+          title="Clear All"
+          className="h-5 px-1.5 rounded text-[9.5px] font-semibold uppercase tracking-wider text-rose-600 hover:bg-rose-50 disabled:opacity-30 disabled:hover:bg-transparent transition-colors">
+          Clear
+        </button>
+      </div>
+    </div>
+  );
+
+  // Mode: group-only — แสดง Media Group อย่างเดียว (สำหรับ user ที่ไม่ใช่ MA หรือ MA + Sales)
+  if (pickerMode === 'group-only') {
+    const selectedGroupCount = groups.filter(g => groupState(g) === 'all').length;
+    const partialGroupCount  = groups.filter(g => groupState(g) === 'some').length;
+    return (
+      <div className="border border-surface-200 rounded-lg overflow-hidden">
+        <div className="bg-surface-50/40 flex flex-col" style={{ height: 280 }}>
+          <ColHeader title="Media Group" onSelectAll={selectAllGroups} onClearAll={clearAllGroups} />
+          <div className="flex-1 overflow-y-auto p-2 space-y-1">
+            {groups.map(g => {
+              const st = groupState(g);
+              return (
+                <label key={g.id}
+                  className={`flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer text-[13px] transition-colors border ${st === 'all' ? 'bg-pb-50 border-pb-200 text-ink-900 font-medium' : st === 'some' ? 'bg-pb-50/40 border-pb-100 text-ink-900' : 'bg-white border-surface-200 hover:bg-surface-50 text-ink-700/85'}`}>
+                  <TriCheckbox state={st} onClick={(e) => { e.stopPropagation(); toggleGroup(g); }} />
+                  <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: g.color }} />
+                  <span className="flex-1 leading-snug">{g.nameEn}</span>
+                  <span className="font-mono text-[10.5px] text-ink-700/45 shrink-0">{g.id}</span>
+                </label>
+              );
+            })}
+          </div>
+        </div>
+        <div className="px-3 py-2 border-t border-surface-200 bg-surface-50 flex items-center gap-3 text-[11.5px] flex-wrap">
+          <Icon name="check-circle" size={12} className="text-emerald-500" />
+          <span className="text-ink-700/70">เลือกแล้ว <b className="text-ink-900 font-mono">{selectedGroupCount}</b> Media Group{partialGroupCount > 0 && <span className="text-ink-700/50"> · บางส่วน {partialGroupCount}</span>}</span>
+          {(selected.length > 0 || pkgSel.length > 0) && (
+            <button type="button" onClick={() => { onChange([]); onChangePackages && onChangePackages([]); }}
+              className="ml-auto text-[11px] text-rose-600 font-semibold hover:underline">Clear All</button>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  // Mode: full — Media Group ▸ Media Type ▸ Package (3 columns, ข้าม Section)
+  return (
+    <div className="border border-surface-200 rounded-lg overflow-hidden">
+      <div className="grid grid-cols-3 divide-x divide-surface-200" style={{ height: 320 }}>
+        {/* Col 1 — Media Group */}
+        <div className="flex flex-col bg-surface-50/40">
+          <ColHeader title="Media Group" onSelectAll={selectAllGroups} onClearAll={clearAllGroups} />
+          <div className="flex-1 overflow-y-auto p-1 space-y-0.5">
+            {groups.map(g => {
+              const st = groupState(g);
+              return (
+                <div key={g.id} onClick={() => setActiveGroup(g.id)}
+                  className={`flex items-start gap-2 px-2 py-1.5 rounded cursor-pointer text-[12px] transition-colors ${activeGroup === g.id ? 'bg-pb-50 text-ink-900' : 'hover:bg-surface-100 text-ink-700/85'}`}>
+                  <TriCheckbox state={st} onClick={(e) => { e.stopPropagation(); toggleGroup(g); }} />
+                  <span className="w-1.5 h-1.5 rounded-full shrink-0 mt-1.5" style={{ background: g.color }} />
+                  <span className="flex-1 leading-snug break-words">{g.nameEn}</span>
+                  <span className="font-mono text-[10px] text-ink-700/40 shrink-0 mt-0.5">{g.id}</span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Col 2 — Media Type (flatten ทุก section ภายใต้ group ที่เลือก) */}
+        <div className="flex flex-col bg-white">
+          <ColHeader title="Media Type" onSelectAll={selectAllTypes} onClearAll={clearAllTypes} disabled={!groupObj} />
+          <div className="flex-1 overflow-y-auto p-1 space-y-0.5">
+            {!groupObj ? (
+              <div className="px-3 py-6 text-center text-[11px] text-ink-700/40">เลือก Group ก่อน</div>
+            ) : groupTypes.length === 0 ? (
+              <div className="px-3 py-6 text-center text-[11px] text-ink-700/40">ไม่มี Type ใน Group นี้</div>
+            ) : groupTypes.map(t => {
+              const checked = isTypeSelected(t.id);
+              return (
+                <div key={t.id} onClick={() => setActiveType(t.id)}
+                  className={`flex items-start gap-2 px-2 py-1.5 rounded cursor-pointer text-[12px] transition-colors ${activeType === t.id ? 'bg-pb-50 text-ink-900' : checked ? 'bg-pb-50/40 text-ink-900 font-medium' : 'hover:bg-surface-100 text-ink-700/85'}`}>
+                  <input type="checkbox" checked={checked} onChange={() => toggleType(t.id)} onClick={(e) => e.stopPropagation()}
+                    className="w-4 h-4 rounded shrink-0 accent-[#2D56D2] mt-0.5" />
+                  <span className="flex-1 leading-snug break-words">{t.nameEn}</span>
+                  <span className="font-mono text-[10px] text-ink-700/40 shrink-0 mt-0.5">{t.id}</span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Col 3 — Package */}
+        <div className="flex flex-col bg-white">
+          <ColHeader title="Package" onSelectAll={selectAllPackages} onClearAll={clearAllPackages} disabled={!typeObj} />
+          <div className="flex-1 overflow-y-auto p-1 space-y-0.5">
+            {!typeObj ? (
+              <div className="px-3 py-6 text-center text-[11px] text-ink-700/40">เลือก Type ก่อน</div>
+            ) : (typeObj.packages || []).length === 0 ? (
+              <div className="px-3 py-6 text-center text-[11px] text-ink-700/40">ไม่มี Package</div>
+            ) : (typeObj.packages || []).map(p => {
+              const checked = isPkgSelected(p.id);
+              return (
+                <label key={p.id}
+                  className={`flex items-start gap-2 px-2 py-1.5 rounded cursor-pointer text-[12px] transition-colors ${checked ? 'bg-pb-50 text-ink-900 font-medium' : 'hover:bg-surface-100 text-ink-700/85'}`}>
+                  <input type="checkbox" checked={checked} onChange={() => togglePackage(p.id)}
+                    className="w-4 h-4 rounded shrink-0 accent-[#2D56D2] mt-0.5" />
+                  <span className="flex-1 leading-snug break-words">{p.nameEn}</span>
+                </label>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+      <div className="px-3 py-2 border-t border-surface-200 bg-surface-50 flex items-center gap-3 text-[11.5px] flex-wrap">
+        <Icon name="check-circle" size={12} className="text-emerald-500" />
+        <span className="text-ink-700/70">Media Type <b className="text-ink-900 font-mono">{selected.length}</b></span>
+        <span className="text-ink-700/30">·</span>
+        <span className="text-ink-700/70">Package <b className="text-ink-900 font-mono">{pkgSel.length}</b></span>
+        {(selected.length > 0 || pkgSel.length > 0) && (
+          <button type="button" onClick={() => { onChange([]); onChangePackages && onChangePackages([]); }}
+            className="ml-auto text-[11px] text-rose-600 font-semibold hover:underline">Clear All</button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function TeamCgPicker({ selectedIds, currentMedia, currentPackages, currentUserId, onChange }) {
+  const pkgList = currentPackages || [];
+  const candidates = window.USERS_SEED
+    .filter(u => u.role === 'team-cg' && u.id !== currentUserId)
+    .map(u => {
+      const typeOverlap = (u.mediaTypes    || []).filter(m => currentMedia.includes(m));
+      const pkgOverlap  = (u.mediaPackages || []).filter(p => pkgList.includes(p));
+      return { ...u, typeOverlap, pkgOverlap };
+    })
+    .filter(u => u.typeOverlap.length > 0 || u.pkgOverlap.length > 0);
+
+  const [search, setSearch] = useState('');
+  const filtered = candidates.filter(u =>
+    !search || u.name.toLowerCase().includes(search.toLowerCase()) || u.email.toLowerCase().includes(search.toLowerCase())
+  );
+
+  const toggle = (id) => {
+    if (selectedIds.includes(id)) onChange(selectedIds.filter(x => x !== id));
+    else onChange([...selectedIds, id]);
+  };
+
+  if (currentMedia.length === 0 && pkgList.length === 0) {
+    return (
+      <div className="p-4 rounded-lg bg-amber-50 border border-amber-200 text-[12px] text-amber-800 leading-relaxed flex items-start gap-2">
+        <Icon name="warning" size={14} className="text-amber-600 shrink-0 mt-0.5" />
+        <span>กรุณาเลือก <b>Media Type</b> หรือ <b>Panel Package</b> ของ Head CG ก่อน — Team CG ที่มีสิทธิ์ร่วมกันจะแสดงให้เลือกที่นี่</span>
+      </div>
+    );
+  }
+
+  return (
+    <div className="border border-surface-200 rounded-lg overflow-hidden">
+      <div className="px-3 py-2 border-b border-surface-200 bg-surface-50 flex items-center gap-2">
+        <Icon name="search" size={13} className="text-ink-700/35" />
+        <input value={search} onChange={e => setSearch(e.target.value)}
+          placeholder="ค้นหา Team CG..." className="flex-1 bg-transparent outline-none text-[12px]" />
+        <span className="text-[10.5px] font-mono text-ink-700/45">เลือกแล้ว {selectedIds.length}/{candidates.length}</span>
+      </div>
+      <div className="max-h-[240px] overflow-y-auto">
+        {filtered.length === 0 ? (
+          <div className="px-3 py-6 text-center text-[11.5px] text-ink-700/45">ไม่พบ Team CG ที่มีสิทธิ์ร่วมกับ Media / Package ที่เลือก</div>
+        ) : filtered.map(u => {
+          const checked = selectedIds.includes(u.id);
+          const matchedPkg = u.pkgOverlap.length > 0;
+          return (
+            <label key={u.id}
+              className={`flex items-center gap-3 px-3 py-2 cursor-pointer border-b border-surface-100 last:border-0 ${checked ? 'bg-pb-50/60' : 'hover:bg-surface-50'}`}>
+              <input type="checkbox" checked={checked} onChange={() => toggle(u.id)}
+                className="w-4 h-4 rounded shrink-0 accent-[#2D56D2]" />
+              <Avatar name={u.name} size={28} />
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[12.5px] font-medium text-ink-900 truncate">{u.name}</span>
+                  {matchedPkg && (
+                    <span className="text-[9px] px-1 py-0.5 rounded font-mono uppercase tracking-wider bg-emerald-50 text-emerald-700 font-bold border border-emerald-200"
+                      title="มีสิทธิ์ใน Panel Package ที่เลือก">PKG</span>
+                  )}
+                </div>
+                <div className="text-[10.5px] text-ink-700/55 font-mono truncate">{u.email}</div>
+              </div>
+            </label>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function UserDrawer({ open, mode, initial, onClose, onSave }) {
+  const blank = { id:'', name:'', department:'Sales', email:'', phone:'', status:'active', userGroupId:'', mediaTypes:[], mediaPackages:[], role:null, teamCgIds:[], setPassword:false, password:'', confirmPassword:'' };
+  const [form, setForm] = useState(blank);
+  const [showPwd, setShowPwd] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+  const firstRef = useRef(null);
+
+  useEffect(() => {
+    if (open) {
+      setForm(initial ? JSON.parse(JSON.stringify(initial)) : blank);
+      setTimeout(() => firstRef.current && firstRef.current.focus(), 60);
+    }
+  }, [open, initial]);
+
+  const update = (k, v) => setForm(f => ({ ...f, [k]: v }));
+
+  const handleGroupChange = (gid) => {
+    const hasMA = window.userGroupHasMediaApproval(gid);
+    setForm(f => ({ ...f, userGroupId: gid, role: hasMA ? (f.role || 'sale') : null, teamCgIds: hasMA ? f.teamCgIds : [] }));
+  };
+  const handleRoleChange = (r) => setForm(f => ({ ...f, role: r, teamCgIds: r === 'head-cg' ? f.teamCgIds : [] }));
+
+  const hasMA = window.userGroupHasMediaApproval(form.userGroupId);
+  // Media picker mode — full (Group▸Type▸Package) for Head CG / Team CG / Media Mgmt; group-only otherwise
+  const mediaMode = (hasMA && ['head-cg','team-cg','media-mgmt'].includes(form.role)) ? 'full' : 'group-only';
+
+  const submit = (e) => {
+    e.preventDefault();
+    if (!form.name.trim() || !form.email.trim()) return;
+    const now = new Date();
+    const dd = String(now.getDate()).padStart(2, '0');
+    const mm = String(now.getMonth() + 1).padStart(2, '0');
+    onSave({
+      ...form,
+      id: form.id || ('U-' + Math.random().toString(36).slice(2, 6).toUpperCase()),
+      dateCreated: form.dateCreated || `${dd}/${mm}/${now.getFullYear()}`,
+    });
+  };
+
+  return (
+    <React.Fragment>
+      <div onClick={onClose} className={`fixed inset-0 bg-black/30 z-30 transition-opacity ${open ? 'opacity-100' : 'pointer-events-none opacity-0'}`} />
+      <aside className={`fixed right-0 top-0 bottom-0 w-[640px] bg-white border-l border-surface-200 z-40 flex flex-col transition-transform duration-200 ${open ? '' : 'translate-x-full'}`}
+        style={{ boxShadow:'-8px 0 30px rgba(11,20,48,.10)' }}>
+        <header className="h-14 px-5 border-b border-surface-200 flex items-center shrink-0">
+          <div>
+            <div className="text-[10px] uppercase tracking-wider font-semibold text-ink-700/45">{mode === 'create' ? 'New' : 'Edit'}</div>
+            <div className="text-[15px] font-semibold text-ink-900 leading-tight">{mode === 'create' ? 'เพิ่ม User ใหม่' : 'แก้ไข User'}</div>
+          </div>
+          <button onClick={onClose} className="ml-auto w-8 h-8 rounded-md hover:bg-surface-100 flex items-center justify-center text-ink-700/40">
+            <Icon name="x" size={16} />
+          </button>
+        </header>
+
+        <form onSubmit={submit} className="flex-1 overflow-y-auto p-5 space-y-5">
+          <section className="space-y-3">
+            <div className="text-[10px] uppercase font-semibold tracking-wider text-ink-700/55">ข้อมูลทั่วไป</div>
+            <div className="grid grid-cols-2 gap-3">
+              <Field label="ชื่อ (Name)">
+                <input ref={firstRef} value={form.name} onChange={e => update('name', e.target.value)} required
+                  placeholder="ชื่อ–สกุล"
+                  className="w-full h-9 px-3 bg-surface-50 border border-surface-200 rounded-lg text-[13px] placeholder:opacity-40" />
+              </Field>
+              <Field label="ฝ่าย / Department">
+                <Select value={form.department} onChange={e => update('department', e.target.value)} options={window.DEPARTMENTS} />
+              </Field>
+              <Field label="อีเมล">
+                <input type="email" value={form.email} onChange={e => update('email', e.target.value)} required
+                  placeholder="name@planbmedia.co.th"
+                  className="w-full h-9 px-3 bg-surface-50 border border-surface-200 rounded-lg text-[13px] font-mono placeholder:opacity-40" />
+              </Field>
+              <Field label="เบอร์โทร">
+                <input value={form.phone} onChange={e => update('phone', e.target.value)}
+                  placeholder="081-234-5678"
+                  className="w-full h-9 px-3 bg-surface-50 border border-surface-200 rounded-lg text-[13px] font-mono placeholder:opacity-40" />
+              </Field>
+            </div>
+
+            <Field label="สถานะ">
+              <div className="flex gap-2">
+                {[
+                  { id:'active',   label:'Active',   color:'#10B981', bg:'#ECFDF5', border:'#A7F3D0', text:'#047857' },
+                  { id:'inactive', label:'Inactive', color:'#94A3B8', bg:'#F8FAFC', border:'#E2E8F0', text:'#475569' },
+                ].map(s => (
+                  <button key={s.id} type="button" onClick={() => update('status', s.id)}
+                    className="h-9 px-3 rounded-lg text-[12px] font-medium border transition-colors flex items-center gap-1.5 flex-1"
+                    style={form.status === s.id
+                      ? { background: s.bg, color: s.text, borderColor: s.border }
+                      : { background:'#fff', color:'rgba(30,41,59,.7)', borderColor:'#E2E8F0' }}>
+                    <span className="w-1.5 h-1.5 rounded-full" style={{ background: s.color }} />{s.label}
+                  </button>
+                ))}
+              </div>
+            </Field>
+          </section>
+
+          <section className="space-y-3">
+            <div className="text-[10px] uppercase font-semibold tracking-wider text-ink-700/55">การเข้าถึงระบบ</div>
+            <Field label="User Group" hint="กลุ่มสิทธิ์ที่ user นี้สังกัด — กำหนดเมนูที่เห็นได้">
+              <Select value={form.userGroupId} onChange={e => handleGroupChange(e.target.value)}
+                options={[
+                  { value:'', label:'— เลือก User Group —' },
+                  ...(window.USER_GROUPS_SEED || []).map(g => ({ value:g.id, label:`${g.name} (${g.nameTh})` })),
+                ]} />
+            </Field>
+
+            {hasMA && (
+              <div className="rounded-lg bg-pb-50/60 border border-pb-100 p-3 space-y-3">
+                <div className="flex items-center gap-2">
+                  <span className="text-[9px] px-1.5 py-0.5 rounded font-mono uppercase tracking-wider bg-pb-700 text-white font-bold">MA</span>
+                  <span className="text-[12px] font-semibold text-pb-900">กลุ่มนี้มีสิทธิ์ Media Approval — เลือก Role</span>
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  {window.USER_ROLES.map(r => (
+                    <button key={r.id} type="button" onClick={() => handleRoleChange(r.id)}
+                      className="h-10 px-3 rounded-lg text-[12px] font-medium border transition-colors text-left flex items-center gap-2"
+                      style={form.role === r.id
+                        ? { background:'#fff', color:r.color, borderColor: r.color, boxShadow:`inset 0 0 0 1px ${r.color}` }
+                        : { background:'#fff', color:'rgba(30,41,59,.75)', borderColor:'#E2E8F0' }}>
+                      <span className="w-2 h-2 rounded-full shrink-0" style={{ background: r.color }} />
+                      <span className="truncate">{r.label}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </section>
+
+          <section className="space-y-2">
+            <div className="flex items-baseline justify-between">
+              <div className="text-[10px] uppercase font-semibold tracking-wider text-ink-700/55">Media (เลือกหลายรายการได้)</div>
+              <span className="text-[11px] text-ink-700/55">
+                {mediaMode === 'full'
+                  ? <>Cascade: <b>Group</b> ▸ <b>Type</b> ▸ <b>Package</b></>
+                  : <>เลือก: <b>Media Group</b></>}
+              </span>
+            </div>
+            <MediaPicker
+              mode={mediaMode}
+              selected={form.mediaTypes}
+              onChange={(t) => update('mediaTypes', t)}
+              selectedPackages={form.mediaPackages || []}
+              onChangePackages={(p) => update('mediaPackages', p)} />
+          </section>
+
+          {/* SET PASSWORD section */}
+          <section className="space-y-2 pt-2 border-t border-surface-100">
+            <label className="flex items-center gap-2 cursor-pointer p-2.5 rounded-lg border border-surface-200 hover:bg-surface-50 transition-colors">
+              <input
+                type="checkbox"
+                checked={!!form.setPassword}
+                onChange={e => {
+                  update('setPassword', e.target.checked);
+                  if (!e.target.checked) { update('password', ''); update('confirmPassword', ''); }
+                }}
+                className="w-4 h-4 rounded accent-[#2D56D2] shrink-0"
+              />
+              <span className="text-[10.5px] font-bold tracking-wider uppercase text-ink-900">SET PASSWORD</span>
+              <span className="text-[11px] text-ink-700/55 ml-auto">เลือกเพื่อกำหนดรหัสผ่านในการใช้งาน</span>
+            </label>
+
+            {form.setPassword && (
+              <div className="pl-1 pt-2 grid grid-cols-2 gap-3">
+                <Field label="Password" hint="อย่างน้อย 8 ตัวอักษร">
+                  <div className="relative">
+                    <Icon name="lock" size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-700/35" />
+                    <input
+                      type={showPwd ? 'text' : 'password'}
+                      value={form.password || ''}
+                      onChange={e => update('password', e.target.value)}
+                      placeholder="••••••••"
+                      minLength="8"
+                      required
+                      className="w-full h-9 pl-9 pr-10 bg-surface-50 border border-surface-200 rounded-lg text-[13px] font-mono placeholder:opacity-40"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPwd(s => !s)}
+                      title={showPwd ? 'Hide password' : 'Show password'}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded-md flex items-center justify-center text-ink-700/50 hover:text-pb-700 hover:bg-pb-50 transition-colors"
+                    >
+                      <Icon name={showPwd ? 'eye-slash' : 'eye'} size={15} />
+                    </button>
+                  </div>
+                </Field>
+                <Field label="Confirm Password" hint={form.confirmPassword && form.password !== form.confirmPassword ? '⚠ รหัสผ่านไม่ตรงกัน' : 'พิมพ์ซ้ำเพื่อยืนยัน'}>
+                  <div className="relative">
+                    <Icon name="lock" size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-700/35" />
+                    <input
+                      type={showConfirm ? 'text' : 'password'}
+                      value={form.confirmPassword || ''}
+                      onChange={e => update('confirmPassword', e.target.value)}
+                      placeholder="••••••••"
+                      minLength="8"
+                      required
+                      className={`w-full h-9 pl-9 pr-10 border rounded-lg text-[13px] font-mono placeholder:opacity-40 ${form.confirmPassword && form.password !== form.confirmPassword ? 'border-rose-300 bg-rose-50/40' : 'border-surface-200 bg-surface-50'}`}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowConfirm(s => !s)}
+                      title={showConfirm ? 'Hide password' : 'Show password'}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded-md flex items-center justify-center text-ink-700/50 hover:text-pb-700 hover:bg-pb-50 transition-colors"
+                    >
+                      <Icon name={showConfirm ? 'eye-slash' : 'eye'} size={15} />
+                    </button>
+                  </div>
+                </Field>
+              </div>
+            )}
+          </section>
+        </form>
+
+        <footer className="p-4 border-t border-surface-200 flex gap-2 shrink-0">
+          <Button variant="primary" icon="check" className="flex-1" onClick={submit}>{mode === 'create' ? 'บันทึก User' : 'บันทึกการแก้ไข'}</Button>
+          <Button variant="secondary" onClick={onClose}>ยกเลิก</Button>
+        </footer>
+      </aside>
+    </React.Fragment>
+  );
+}
+
+function ConfirmDeleteUser({ open, target, onClose, onConfirm }) {
+  if (!target) return null;
+  return (
+    <React.Fragment>
+      <div onClick={onClose} className={`fixed inset-0 bg-black/40 z-40 transition-opacity ${open ? 'opacity-100' : 'pointer-events-none opacity-0'}`} />
+      <div className={`fixed inset-0 z-50 flex items-center justify-center pointer-events-none p-6 transition-opacity ${open ? 'opacity-100' : 'opacity-0'}`}>
+        <div className="bg-white rounded-2xl border border-surface-200 pointer-events-auto w-full max-w-md"
+          style={{ boxShadow:'0 24px 60px rgba(11,20,48,.18)' }}>
+          <div className="p-6">
+            <div className="w-12 h-12 rounded-full bg-rose-50 flex items-center justify-center mb-4">
+              <Icon name="warning" size={22} className="text-rose-600" />
+            </div>
+            <h3 className="text-[18px] font-semibold text-ink-900 mb-1">ยืนยันการลบ</h3>
+            <p className="text-[13px] text-ink-700/65 leading-relaxed">
+              ต้องการลบ user <span className="font-semibold text-ink-900">{target.name}</span> ใช่หรือไม่?
+              <span className="block mt-2 text-ink-700/45">การลบจะไม่สามารถย้อนกลับได้</span>
+            </p>
+          </div>
+          <div className="px-6 py-4 bg-surface-50 border-t border-surface-200 flex gap-2 justify-end rounded-b-2xl">
+            <Button variant="secondary" onClick={onClose}>ยกเลิก</Button>
+            <Button variant="primary" icon="trash" onClick={onConfirm} className="!bg-rose-600 hover:!bg-rose-700">Delete Permanently</Button>
+          </div>
+        </div>
+      </div>
+    </React.Fragment>
+  );
+}
+
+function SortHead({ children, k, sort, setSort, align='left', className='' }) {
+  const active = sort.key === k;
+  return (
+    <th className={`px-3 py-3 font-semibold cursor-pointer select-none hover:text-ink-900 transition-colors ${className}`}
+      style={{ textAlign: align }}
+      onClick={() => setSort(s => ({ key: k, dir: s.key === k && s.dir === 'asc' ? 'desc' : 'asc' }))}>
+      <span className="inline-flex items-center gap-1">{children}<span className="text-[9px] opacity-60">{active ? (sort.dir === 'asc' ? '▲' : '▼') : ''}</span></span>
+    </th>
+  );
+}
+
+function SettingsUserScreen() {
+  const [users, setUsers] = useState(() => JSON.parse(JSON.stringify(window.USERS_SEED)));
+  const [collapsed, setCollapsed] = useState(false);
+  const [search, setSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [deptFilter, setDeptFilter] = useState('all');
+  const [groupFilter, setGroupFilter] = useState('all');
+  const [sort, setSort] = useState({ key:'name', dir:'asc' });
+  const [drawer, setDrawer] = useState({ open:false, mode:'create', initial:null });
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [aiOpen, setAiOpen] = useState(false);
+
+  const filtered = useMemo(() => {
+    let rows = users;
+    if (statusFilter !== 'all') rows = rows.filter(u => u.status === statusFilter);
+    if (deptFilter !== 'all')   rows = rows.filter(u => u.department === deptFilter);
+    if (groupFilter !== 'all')  rows = rows.filter(u => u.userGroupId === groupFilter);
+    if (search) {
+      const q = search.toLowerCase();
+      rows = rows.filter(u =>
+        u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q) ||
+        (u.phone || '').includes(search) || (u.department || '').toLowerCase().includes(q));
+    }
+    const { key, dir } = sort;
+    rows = [...rows].sort((a, b) => {
+      let va = a[key], vb = b[key];
+      if (key === 'userGroupId') {
+        va = (window.USER_GROUPS_SEED.find(g => g.id === a.userGroupId) || {}).name || '';
+        vb = (window.USER_GROUPS_SEED.find(g => g.id === b.userGroupId) || {}).name || '';
+      }
+      if (key === 'dateCreated') {
+        va = (a.dateCreated || '').split('/').reverse().join('-');
+        vb = (b.dateCreated || '').split('/').reverse().join('-');
+      }
+      const sa = String(va || ''), sb = String(vb || '');
+      return dir === 'asc' ? sa.localeCompare(sb) : sb.localeCompare(sa);
+    });
+    return rows;
+  }, [users, search, statusFilter, deptFilter, groupFilter, sort]);
+
+  const stats = useMemo(() => {
+    const active = users.filter(u => u.status === 'active').length;
+    const headCG = users.filter(u => u.role === 'head-cg').length;
+    return { total: users.length, active, inactive: users.length - active, headCG };
+  }, [users]);
+
+  const openCreate = () => setDrawer({ open:true, mode:'create', initial:null });
+  const openEdit = (u) => setDrawer({ open:true, mode:'edit', initial:u });
+  const closeDrawer = () => setDrawer(d => ({ ...d, open:false }));
+
+  const saveUser = (data) => {
+    setUsers(prev => {
+      const idx = prev.findIndex(u => u.id === data.id);
+      if (idx === -1) return [data, ...prev];
+      const next = [...prev]; next[idx] = data; return next;
+    });
+    closeDrawer();
+  };
+  const confirmDelete = () => {
+    if (!deleteTarget) return;
+    setUsers(prev => prev.filter(u => u.id !== deleteTarget.id));
+    setDeleteTarget(null);
+  };
+  const resetFilters = () => { setSearch(''); setStatusFilter('all'); setDeptFilter('all'); setGroupFilter('all'); };
+
+  const leftPad = collapsed ? 68 : 256;
+
+  return (
+    <div className="min-h-screen flex bg-[#F7F9FC]" style={{ color: '#0B1430' }}>
+      <main className="flex-1 min-h-screen flex flex-col transition-[margin-left] duration-200 lg:ml-64">
+        <Topbar
+          crumbs={[
+            { label:'Home',    href:'dashboard.html' },
+            { label:'Setting', href:'settings-master.html' },
+            'User Management'
+          ]}
+          onToggleSidebar={() => window.collapseSidebar()}
+          onToggleAi={() => setAiOpen(o => !o)}
+          aiOpen={aiOpen} />
+
+        <div className="flex-1 p-4 sm:p-6">
+          <div className="max-w-[1600px] mx-auto space-y-4">
+            <div className="flex items-start justify-between gap-3 flex-wrap">
+              <div>
+                <h2 className="text-[22px] font-semibold text-ink-900 tracking-tight">User Management</h2>
+                <p className="text-[12px] text-ink-700/55 mt-0.5">
+                  จัดการ user ในระบบ — สิทธิ์เข้าถึง, Media ที่ดูแล, และโครงสร้างทีม CG
+                </p>
+              </div>
+              <div className="flex gap-2">
+                <Button variant="ghost" icon="upload">ส่งออก</Button>
+                <Button variant="primary" icon="plus" onClick={openCreate}>เพิ่ม User</Button>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <UTile icon="users"        label="Users ทั้งหมด" value={stats.total}    tone="#2D56D2" />
+              <UTile icon="check-circle" label="Active"        value={stats.active}   tone="#10B981" />
+              <UTile icon="x"            label="Inactive"      value={stats.inactive} tone="#94A3B8" />
+              <UTile icon="user"         label="Head CG"       value={stats.headCG}   tone="#7C3AED" />
+            </div>
+
+            <div className="bg-white border border-surface-200 rounded-xl p-3"
+              style={{ boxShadow:'0 1px 3px rgba(11,20,48,.06), 0 1px 2px rgba(11,20,48,.04)' }}>
+              <div className="flex items-center gap-2 flex-wrap">
+                <div className="relative flex-1 min-w-[240px]">
+                  <Icon name="search" size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-700/35" />
+                  <input value={search} onChange={e => setSearch(e.target.value)}
+                    placeholder="ค้นหา — ชื่อ, อีเมล, เบอร์โทร, ฝ่าย..."
+                    className="w-full h-9 pl-9 pr-3 bg-surface-50 border border-surface-200 rounded-lg text-[13px] placeholder:opacity-40" />
+                </div>
+                <Select value={statusFilter} onChange={e => setStatusFilter(e.target.value)}
+                  options={[{ value:'all', label:'ทุกสถานะ' }, { value:'active', label:'Active' }, { value:'inactive', label:'Inactive' }]} />
+                <Select value={deptFilter} onChange={e => setDeptFilter(e.target.value)}
+                  options={[{ value:'all', label:'ทุก Department' }, ...window.DEPARTMENTS]} />
+                <Select value={groupFilter} onChange={e => setGroupFilter(e.target.value)}
+                  options={[{ value:'all', label:'ทุก User Group' }, ...(window.USER_GROUPS_SEED || []).map(g => ({ value:g.id, label:g.name }))]} />
+                <Button variant="secondary" icon="refresh" onClick={resetFilters} className="!h-9 !px-3">รีเซ็ต</Button>
+              </div>
+            </div>
+
+            <div className="bg-white border border-surface-200 rounded-xl overflow-hidden"
+              style={{ boxShadow:'0 1px 3px rgba(11,20,48,.06), 0 1px 2px rgba(11,20,48,.04)' }}>
+              <div className="overflow-x-auto">
+                <table className="w-full text-[13px]">
+                  <thead className="border-b border-surface-200" style={{ background:'rgba(248,250,252,.8)' }}>
+                    <tr className="text-left text-[10.5px] uppercase tracking-wide text-ink-700/55">
+                      <SortHead k="name"        sort={sort} setSort={setSort}>Name</SortHead>
+                      <SortHead k="department"  sort={sort} setSort={setSort}>Department</SortHead>
+                      <th className="px-3 py-3 font-semibold">Media</th>
+                      <SortHead k="userGroupId" sort={sort} setSort={setSort}>User Group</SortHead>
+                      <SortHead k="email"       sort={sort} setSort={setSort}>Email</SortHead>
+                      <SortHead k="phone"       sort={sort} setSort={setSort}>Phone</SortHead>
+                      <SortHead k="status"      sort={sort} setSort={setSort}>Status</SortHead>
+                      <SortHead k="dateCreated" sort={sort} setSort={setSort} align="right">Date Created</SortHead>
+                      <th className="px-3 py-3 w-20"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filtered.map(u => (
+                      <tr key={u.id} className="border-b border-surface-100 hover:bg-pb-50/30 transition-colors">
+                        <td className="px-3 py-3 align-top">
+                          <div className="flex items-center gap-2.5">
+                            <Avatar name={u.name} size={32} />
+                            <div className="min-w-0">
+                              <div className="font-medium text-[13px] text-ink-900 truncate">{u.name}</div>
+                              <div className="font-mono text-[10.5px] text-ink-700/45">{u.id}</div>
+                              {u.role && <div className="mt-0.5"><RoleChip roleId={u.role} /></div>}
+                            </div>
+                          </div>
+                        </td>
+                        <td className="px-3 py-3 text-[12.5px] align-top">{u.department}</td>
+                        <td className="px-3 py-3 align-top"><MediaCellChips typeIds={u.mediaTypes} /></td>
+                        <td className="px-3 py-3 align-top"><UserGroupChip groupId={u.userGroupId} /></td>
+                        <td className="px-3 py-3 align-top">
+                          <a className="text-[12px] font-mono text-pb-700 hover:underline" href={`mailto:${u.email}`}>{u.email}</a>
+                        </td>
+                        <td className="px-3 py-3 align-top text-[12px] font-mono text-ink-700/70">{u.phone}</td>
+                        <td className="px-3 py-3 align-top"><UStatusBadge status={u.status} /></td>
+                        <td className="px-3 py-3 align-top text-right text-[11.5px] font-mono text-ink-700/60">{u.dateCreated}</td>
+                        <td className="px-3 py-3 align-top text-right">
+                          <div className="inline-flex items-center gap-1">
+                            <button onClick={() => openEdit(u)} title="Edit"
+                              className="w-7 h-7 rounded-md flex items-center justify-center bg-pb-50/60 text-pb-700 hover:bg-pb-100 hover:text-pb-900 transition-colors">
+                              <Icon name="pencil" size={13} />
+                            </button>
+                            <button onClick={() => setDeleteTarget(u)} title="Delete"
+                              className="w-7 h-7 rounded-md flex items-center justify-center bg-rose-50/60 text-rose-600 hover:bg-rose-100 hover:text-rose-700 transition-colors">
+                              <Icon name="trash" size={13} />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                    {!filtered.length && (
+                      <tr>
+                        <td colSpan="9" className="px-4 py-16 text-center">
+                          <div className="w-14 h-14 rounded-full bg-surface-100 mx-auto mb-3 flex items-center justify-center text-ink-700/30">
+                            <Icon name="users" size={24} />
+                          </div>
+                          <div className="text-[14px] font-semibold text-ink-900 mb-1">ไม่พบ User</div>
+                          <div className="text-[12px] text-ink-700/50 mb-3">ลองปรับตัวกรองหรือเพิ่ม user ใหม่</div>
+                          <Button variant="primary" icon="plus" onClick={openCreate}>เพิ่ม User</Button>
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+
+              <div className="px-4 py-3 border-t border-surface-200 flex items-center justify-between text-[12px]"
+                style={{ background:'rgba(248,250,252,.5)' }}>
+                <div className="text-ink-700/60">
+                  แสดง <b className="text-ink-700/85">{filtered.length}</b> จาก <b className="text-ink-700/85">{users.length}</b> users
+                </div>
+                <div className="flex gap-1">
+                  <button disabled className="px-3 py-1 border border-surface-300 rounded-md text-[12px] disabled:opacity-40">«</button>
+                  <button className="px-3 py-1 bg-pb-700 text-white rounded-md text-[12px] font-medium">1</button>
+                  <button className="px-3 py-1 border border-surface-300 rounded-md text-[12px] hover:bg-surface-50">»</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <UserDrawer open={drawer.open} mode={drawer.mode} initial={drawer.initial} onClose={closeDrawer} onSave={saveUser} />
+      <ConfirmDeleteUser open={!!deleteTarget} target={deleteTarget} onClose={() => setDeleteTarget(null)} onConfirm={confirmDelete} />
+      <AiPanel open={aiOpen} onClose={() => setAiOpen(false)} />
+    </div>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<SettingsUserScreen />);
+</script>
+</body>
+</html>

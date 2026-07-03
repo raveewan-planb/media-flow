@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Media Management — Plan-B CRM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config={theme:{extend:{fontFamily:{kanit:['Kanit','sans-serif']},colors:{pb:{900:'#213268',700:'#2D56D2',500:'#4790FF',300:'#5FCBF9',50:'#EBF5FF',100:'#D6ECFF'},ink:{900:'#0B1430',800:'#162040',700:'#1E293B'},surface:{0:'#FFFFFF',50:'#F8FAFC',100:'#F1F5F9',200:'#E2E8F0',300:'#CBD5E1'}}}}}
+</script>
+<style>
+*{font-family:'Kanit',sans-serif;-webkit-font-smoothing:antialiased}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#CBD5E8;border-radius:10px;border:2px solid #F7F9FC}
+::-webkit-scrollbar-thumb:hover{background:#93A4C4}
+.sidebar-scroll::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.06);border:2px solid transparent}
+.sidebar-scroll::-webkit-scrollbar-track{background:transparent}
+/* Sidebar nav items — White theme */
+.sidebar-nav{color:rgba(30,41,59,0.6);transition:all 0.15s;position:relative;font-size:13px}
+.sidebar-nav:hover{color:#0B1430;background:rgba(71,144,255,0.06)}
+.sidebar-nav.active{color:#2D56D2;font-weight:500;background:linear-gradient(90deg,rgba(71,144,255,0.10),rgba(71,144,255,0))}
+.sidebar-nav.active::before{content:'';position:absolute;left:0;top:8px;bottom:8px;width:3px;border-radius:2px;background:#2D56D2}
+/* Sidebar group headers */
+.sidebar-nav-parent{color:rgba(30,41,59,0.4);transition:all 0.15s;font-size:10.5px;text-transform:uppercase;letter-spacing:0.05em;font-weight:600}
+.sidebar-nav-parent:hover{color:rgba(30,41,59,0.7)}
+.sidebar-nav-parent.active{color:rgba(30,41,59,0.7)}
+/* Sidebar sub-items */
+.sidebar-sub{color:rgba(30,41,59,0.55);transition:all 0.15s;position:relative}
+.sidebar-sub:hover{color:#0B1430;background:rgba(71,144,255,0.06)}
+.sidebar-sub.active{color:#2D56D2;font-weight:500;background:linear-gradient(90deg,rgba(71,144,255,0.10),rgba(71,144,255,0))}
+.sidebar-sub.active::before{content:'';position:absolute;left:0;top:6px;bottom:6px;width:3px;border-radius:2px;background:#2D56D2;box-shadow:0 0 8px rgba(45,86,210,0.4)}
+.sidebar-nav.active::before{box-shadow:0 0 8px rgba(45,86,210,0.4)}
+.sidebar-group-icon{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:8px;background:transparent;transition:all .15s;flex-shrink:0;color:rgba(30,41,59,0.55)}
+.sgi-ma{color:#7C3AED}.sgi-rpt{color:#0EA5E9}.sgi-stg{color:#EF4444}
+.nav-parent{border-radius:8px;transition:all .15s}
+.nav-parent:hover{background:#F1F5F9}
+.nav-parent.active:has(.sgi-ma){background:rgba(124,58,237,0.10);color:#7C3AED}
+.nav-parent.active:has(.sgi-ma) .sidebar-group-icon{background:rgba(124,58,237,0.20)}
+.nav-parent.active:has(.sgi-rpt){background:rgba(14,165,233,0.10);color:#0EA5E9}
+.nav-parent.active:has(.sgi-rpt) .sidebar-group-icon{background:rgba(14,165,233,0.20)}
+.nav-parent.active:has(.sgi-stg){background:rgba(239,68,68,0.10);color:#EF4444}
+.nav-parent.active:has(.sgi-stg) .sidebar-group-icon{background:rgba(239,68,68,0.20)}
+#sidebar{background:linear-gradient(180deg,#fff 0%,#fff 60%,#F8FAFC 100%) !important}
+#sidebar-brand{background:linear-gradient(135deg,rgba(45,86,210,0.04),rgba(95,203,249,0.04))}
+/* nav-item for page content compatibility */
+.nav-item{transition:all 0.2s;border-radius:8px}
+.nav-item:hover,.nav-item.active{background:rgba(71,144,255,0.12);color:#4790FF}
+.nav-parent.active{color:#2D56D2;font-weight:500}
+/* Cards & general UI */
+.card-hover{transition:all 0.2s}
+.card-hover:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(33,50,104,0.12)}
+.badge-pulse{animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.7}}
+.status-dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+input:focus,select:focus,textarea:focus{outline:none;border-color:#4790FF;box-shadow:0 0 0 3px rgba(71,144,255,0.15)}
+.tab-btn{transition:all 0.2s}
+.tab-btn.active{color:#2D56D2;border-bottom:2px solid #2D56D2}
+table th{position:sticky;top:0;z-index:1}
+.progress-bar{transition:width 0.6s ease}
+/* Topbar — White glass */
+.topbar-white{background:rgba(255,255,255,0.9);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid #E2E8F0}
+/* Dashboard extras */
+.tnum{font-variant-numeric:tabular-nums}
+.shine{background:linear-gradient(135deg,#2D56D2,#5FCBF9)}
+.shine-soft{background:linear-gradient(135deg,rgba(71,144,255,0.08),rgba(95,203,249,0.08))}
+.ai-border{box-shadow:0 0 0 1px rgba(45,86,210,0.25),0 2px 8px rgba(45,86,210,0.08)}
+.pulse-dot{animation:pulseDot 2s ease-in-out infinite}
+@keyframes pulseDot{0%,100%{transform:scale(1);opacity:.4}50%{transform:scale(1.5);opacity:0}}
+.map-bg{background:linear-gradient(135deg,#F8FAFC 0%,#EBF5FF 100%)}
+.shadow-pop{box-shadow:0 8px 30px rgba(11,20,48,0.12)}
+.shadow-card{box-shadow:0 1px 3px rgba(11,20,48,0.06),0 1px 2px rgba(11,20,48,0.04)}
+/* Sidebar collapse label */
+.sidebar-label{transition:opacity 0.15s;white-space:nowrap;overflow:hidden}
+</style>
+<script src="shared/sidebar.js"></script>
+</head>
+<body class="font-kanit" style="background:#F7F9FC;color:#0B1430">
+
+<div class="min-h-screen flex">
+  <!-- SIDEBAR — Clean White -->
+  <!-- Mobile overlay -->
+  <div id="sidebar-overlay" class="hidden fixed inset-0 bg-black/40 z-20 lg:hidden" onclick="toggleMobile()"></div>
+  <aside id="sidebar" class="w-64 flex flex-col fixed h-full z-30 transition-all duration-200 -translate-x-full lg:translate-x-0 bg-white border-r border-[#E2E8F0]">
+    <!-- Brand -->
+    <div class="px-4 h-16 flex items-center gap-2.5 border-b border-[#E2E8F0]" id="sidebar-brand">
+      <div class="sidebar-label flex items-center gap-2 min-w-0">
+        <img src="logo.jpg" alt="Plan-B Media" class="h-8 w-auto rounded shrink-0" />
+        <span class="text-[11px] font-semibold tracking-wide uppercase border-l border-[#E2E8F0] pl-2 truncate" style="color:rgba(30,41,59,0.55)">Media Flow System</span>
+      </div>
+    </div>
+    <!-- Nav -->
+    <nav class="flex-1 py-3 px-2 overflow-y-auto text-sm sidebar-scroll space-y-0.5">
+
+      <!-- Dashboard -->
+      <a href="dashboard.html" class=" sidebar-nav w-full flex items-center gap-3 h-10 rounded-md px-3 cursor-pointer" data-page="dashboard">
+        <svg class="w-[18px] h-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25a2.25 2.25 0 01-2.25-2.25v-2.25z" /></svg>
+        <span class="flex-1 text-left truncate sidebar-label">Dashboard</span>
+      </a>
+
+      <!-- Inventory -->
+      <a href="inventory.html" class=" sidebar-nav w-full flex items-center gap-3 h-10 rounded-md px-3 cursor-pointer">
+        <svg class="w-[18px] h-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" /></svg>
+        <span class="flex-1 text-left truncate sidebar-label">Inventory</span>
+      </a>
+
+      <!-- Sale -->
+      <a href="sale.html" class=" sidebar-nav w-full flex items-center gap-3 h-10 rounded-md px-3 cursor-pointer">
+        <svg class="w-[18px] h-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z" /></svg>
+        <span class="flex-1 text-left truncate sidebar-label">Sale</span>
+      </a>
+
+      <!-- Media Approval (Expandable) -->
+      <div class="pt-3">
+        <button onclick="toggleMenu('ma')" class="nav-parent active sidebar-nav-parent w-full flex items-center gap-3 h-8 px-3 cursor-pointer text-left">
+          <span class="sidebar-group-icon sgi-ma"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></span><span class="flex-1 text-left">Media Approval</span>
+          <svg id="ma-chevron" class="w-3 h-3 transition-transform duration-200 rotate-90" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" /></svg>
+        </button>
+        <div id="ma-sub" class="space-y-0.5">
+          <a href="ma-dashboard.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Dashboard</span>
+          </a>
+          <a href="job-list.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Media Ticket</span>
+            <span class="text-[10px] bg-pb-500 text-white rounded-full px-1.5 min-w-[18px] text-center">12</span>
+          </a>
+          <a href="assign-job.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Assign Ticket</span>
+            <span class="text-[10px] bg-amber-500 text-white rounded-full px-1.5 min-w-[18px] text-center">5</span>
+          </a>
+          <a href="receive-job.html" class="active sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Verify & Production</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Production -->
+      <a href="production.html" class=" sidebar-nav w-full flex items-center gap-3 h-10 rounded-md px-3 cursor-pointer">
+        <svg class="w-[18px] h-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17l-5.1-5.1a2.25 2.25 0 010-3.182l.71-.71a2.25 2.25 0 013.18 0l2.8 2.8 2.8-2.8a2.25 2.25 0 013.18 0l.71.71a2.25 2.25 0 010 3.182l-5.1 5.1a2.25 2.25 0 01-3.18 0z" /></svg>
+        <span class="flex-1 text-left truncate sidebar-label">Production</span>
+      </a>
+
+      <!-- Claim -->
+      <a href="claim.html" class=" sidebar-nav w-full flex items-center gap-3 h-10 rounded-md px-3 cursor-pointer">
+        <svg class="w-[18px] h-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z" /></svg>
+        <span class="flex-1 text-left truncate sidebar-label">Claim</span>
+      </a>
+
+      <!-- Report (Expandable) -->
+      <div class="pt-3">
+        <button onclick="toggleMenu('rpt')" class="nav-parent sidebar-nav-parent w-full flex items-center gap-3 h-8 px-3 cursor-pointer text-left">
+          <span class="sidebar-group-icon sgi-rpt"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg></span><span class="flex-1 text-left">Report</span>
+          <svg id="rpt-chevron" class="w-3 h-3 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" /></svg>
+        </button>
+        <div id="rpt-sub" class="space-y-0.5 hidden">
+          <a href="kpi-dashboard.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">KPI Dashboard</span>
+          </a>
+          <a href="export-airtime.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Export Airtime</span>
+          </a>
+          <a href="report-monthly.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Monthly Report</span>
+          </a>
+          <a href="report-audit.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Audit Log</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Setting (Expandable) -->
+      <div class="pt-3">
+        <button onclick="toggleMenu('stg')" class="nav-parent sidebar-nav-parent w-full flex items-center gap-3 h-8 px-3 cursor-pointer text-left">
+          <span class="sidebar-group-icon sgi-stg"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75"/></svg></span><span class="flex-1 text-left">Setting</span>
+          <svg id="stg-chevron" class="w-3 h-3 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" /></svg>
+        </button>
+        <div id="stg-sub" class="space-y-0.5 hidden">
+          <a href="settings-user.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">User Management</span>
+          </a>
+          <a href="settings-usergroup.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">User Group Management</span>
+          </a>
+          <a href="settings-email.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Email Setup</span>
+          </a>
+          <a href="settings-master.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Master Data</span>
+          </a>
+        </div>
+      </div>
+
+    </nav>
+
+    <!-- User Footer -->
+    <div class="p-3 border-t border-[#E2E8F0]">
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-full flex items-center justify-center text-white font-semibold text-[13px] shrink-0" style="background:#4790FF">RK</div>
+        <div class="flex-1 min-w-0 sidebar-label">
+          <div class="text-[13px] font-medium text-[#0B1430] truncate">Raveewan Kaewmanee</div>
+          <div class="text-[11px] truncate" style="color:rgba(30,41,59,0.5)">Admin · Plan-B</div>
+        </div>
+        <a href="login.html" class="transition sidebar-label hover:opacity-80" style="color:rgba(30,41,59,0.4)" title="ออกจากระบบ">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" /></svg>
+        </a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="flex-1 lg:ml-64 min-h-screen">
+    <!-- Top Bar — White Glass -->
+    <header class="topbar-white h-16 shrink-0 sticky top-0 z-20 flex items-center gap-4 px-4 sm:px-6">
+      <!-- Collapse / Mobile toggle -->
+      <button onclick="collapseSidebar()" class="w-9 h-9 rounded-md hover:bg-surface-100 flex items-center justify-center text-ink-700">
+        <svg class="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" /></svg>
+      </button>
+
+      <!-- Breadcrumbs -->
+      <div class="flex items-center gap-1.5 text-[13px]" style="color:rgba(30,41,59,0.6)">
+        <span>Home</span>
+        <svg class="w-3 h-3 opacity-30" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
+        <span class="font-medium" style="color:#0B1430">Media Management</span>
+      </div>
+
+      <div class="flex-1"></div>
+
+      <!-- Notification -->
+      <button class="w-9 h-9 rounded-md hover:bg-surface-100 flex items-center justify-center relative" style="color:#1E293B">
+        <svg class="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" /></svg>
+        <span class="absolute top-2 right-2 w-2 h-2 bg-rose-500 rounded-full"></span>
+      </button>
+
+      <!-- Ask AI -->
+      <button id="ai-toggle" onclick="toggleAI()" class="h-9 px-3 rounded-lg border flex items-center gap-2 text-[13px] font-medium transition-colors bg-white border-surface-300 text-ink-900 hover:bg-surface-50">
+        <svg class="w-[15px] h-[15px]" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"/></svg>
+        <span>Ask AI</span>
+      </button>
+    </header>
+
+    <!-- Page Content -->
+    <div class="p-3 sm:p-6">
+    <div class="space-y-5 max-w-[1600px] mx-auto">
+<!-- Header -->
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-xl flex items-center justify-center shadow-lg" style="background:linear-gradient(135deg,#2D56D2,#5FCBF9)">
+<svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24"><path d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</div>
+<div>
+<h1 class="text-[22px] font-semibold text-[#0B1430]">Media Management</h1>
+<p class="text-[13px]" style="color:rgba(30,41,59,0.55)">Manage and track your requests</p>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<div class="inline-flex rounded-lg border border-[#E2E8F0] overflow-hidden bg-white" id="pr-view-toggle">
+<button class="h-9 px-3.5 text-[12px] font-medium flex items-center gap-1.5 border-r border-[#E2E8F0] bg-[#2D56D2] text-white" data-view="table" onclick="setPRView('table')">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24"><path d="M3.375 19.5h17.25m-17.25 0a1.125 1.125 0 01-1.125-1.125M3.375 19.5h7.5c.621 0 1.125-.504 1.125-1.125m-9.75 0V5.625m0 12.75v-1.5c0-.621.504-1.125 1.125-1.125m18.375 2.625V5.625m0 12.75c0 .621-.504 1.125-1.125 1.125m1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span>Table</span>
+</button>
+<button class="h-9 px-3.5 text-[12px] font-medium flex items-center gap-1.5 text-[#0B1430] hover:bg-[#F8FAFC]" data-view="board" onclick="setPRView('board')">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24"><path d="M9 4.5v15m6-15v15m-10.875 0h15.75c.621 0 1.125-.504 1.125-1.125V5.625c0-.621-.504-1.125-1.125-1.125H4.125c-.621 0-1.125.504-1.125 1.125v12.75c0 .621.504 1.125 1.125 1.125z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span>Board</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Status Summary — clickable cards -->
+<div class="bg-white border border-[#E2E8F0] rounded-xl shadow-sm p-4">
+<div class="flex items-center gap-3 mb-3">
+<div class="text-[13px] font-semibold text-[#0B1430]">Status Overview</div>
+<div class="inline-flex items-center gap-2">
+<span class="inline-flex items-center gap-1.5 text-[11px] font-semibold pl-2 pr-2.5 py-1 rounded-full bg-gradient-to-r from-[#2D56D2] to-[#4790FF] text-white tnum shadow-sm">
+<svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+<span id="kpi-total-badge">0 tickets</span>
+</span>
+<span class="inline-flex items-center gap-1.5 text-[11px] font-semibold pl-2 pr-2.5 py-1 rounded-full bg-gradient-to-r from-[#F59E0B] to-[#FBBF24] text-white tnum shadow-sm">
+<svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 14.15v4.25c0 1.094-.787 2.036-1.872 2.18-2.087.277-4.216.42-6.378.42s-4.291-.143-6.378-.42c-1.085-.144-1.872-1.086-1.872-2.18v-4.25m16.5 0a2.18 2.18 0 00.75-1.661V8.706c0-1.081-.768-2.015-1.837-2.175a48.114 48.114 0 00-3.413-.387m4.5 8.006c-.194.165-.42.295-.673.38A23.978 23.978 0 0112 15.75c-2.648 0-5.195-.429-7.577-1.22a2.16 2.16 0 01-.673-.38m0 0A2.18 2.18 0 013 12.489V8.706c0-1.081.768-2.015 1.837-2.175a48.111 48.111 0 013.413-.387m7.5 0V5.25A2.25 2.25 0 0013.5 3h-3a2.25 2.25 0 00-2.25 2.25v.894m7.5 0a48.667 48.667 0 00-7.5 0M12 12.75h.008v.008H12v-.008z"/></svg>
+<span id="kpi-jobs-badge">0 jobs</span>
+</span>
+</div>
+<button class="hidden text-[11px] text-rose-600 font-medium hover:underline ml-auto" id="kpi-clear-btn" onclick="clearStatusFilter()">Clear filter</button>
+</div>
+<div class="h-3 rounded-full bg-[#F1F5F9] overflow-hidden flex mb-3" id="kpi-progress-bar" style="transition:all 0.3s"></div>
+<div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2" id="kpi-cards"></div>
+</div>
+<!-- Filter Bar -->
+<div class="bg-white border border-[#E2E8F0] rounded-xl shadow-sm p-3">
+<div class="flex items-center gap-2 flex-wrap">
+<div class="relative flex-1 min-w-[200px]">
+<svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" style="color:rgba(30,41,59,0.35)" viewbox="0 0 24 24"><path d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<input class="w-full h-9 pl-9 pr-3 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[13px] focus:outline-none focus:border-[#4790FF] focus:bg-white" id="pr-search" oninput="filterPR()" placeholder="Search ticket, product, client..."/>
+</div>
+<select class="h-9 pl-3 pr-7 bg-white border border-[#E2E8F0] rounded-lg text-[12px] focus:outline-none focus:border-[#4790FF]" id="pr-status" onchange="filterPR()" style="appearance:none;background-image:url('data:image/svg+xml;utf8,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2210%22 height=%2210%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%236b7280%22 stroke-width=%222%22&gt;&lt;path d=%22M6 9l6 6 6-6%22/&gt;&lt;/svg&gt;');background-repeat:no-repeat;background-position:right 6px center">
+<option value="all">All Status</option><option>Revise</option><option>Assign</option><option>Verify</option><option>On Process</option><option>Review</option><option>Final Approve</option><option>Final Render</option><option>Done</option>
+</select>
+<select class="h-9 pl-3 pr-7 bg-white border border-[#E2E8F0] rounded-lg text-[12px] focus:outline-none focus:border-[#4790FF]" id="pr-media" onchange="filterPR()" style="appearance:none;background-image:url('data:image/svg+xml;utf8,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2210%22 height=%2210%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%236b7280%22 stroke-width=%222%22&gt;&lt;path d=%22M6 9l6 6 6-6%22/&gt;&lt;/svg&gt;');background-repeat:no-repeat;background-position:right 6px center">
+<option value="all">All Media</option><option>Digital</option><option>Airport</option><option>Retail</option><option>Transit</option><option>Classic</option>
+</select>
+<button class="h-9 px-3 bg-white text-[#0B1430] rounded-lg border border-[#E2E8F0] text-[12px] font-medium hover:bg-[#F8FAFC] inline-flex items-center gap-1 shrink-0" onclick="resetPRFilters()">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24"><path d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</button>
+</div>
+</div>
+<!-- TABLE VIEW -->
+<div id="pr-view-table">
+<div class="bg-white border border-[#E2E8F0] rounded-xl shadow-sm overflow-hidden">
+<div class="overflow-x-auto">
+<table class="text-[13px] table-fixed" style="min-width:1540px;width:100%">
+<colgroup>
+  <col style="width:130px"><!-- Job · Ticket -->
+  <col style="width:54px"><!-- Ver -->
+  <col style="width:62px"><!-- Mockup -->
+  <col style="width:160px"><!-- Product -->
+  <col style="width:240px"><!-- Media -->
+  <col style="width:110px"><!-- Period -->
+  <col style="width:130px"><!-- Sales -->
+  <col style="width:150px"><!-- Head / Assigned -->
+  <col style="width:104px"><!-- SLA -->
+  <col style="width:120px"><!-- Progress Date -->
+  <col style="width:120px"><!-- Status -->
+  <col style="width:160px"><!-- Approve -->
+</colgroup>
+<thead class="border-b border-[#E2E8F0]" style="background:rgba(248,250,252,0.8)">
+<tr class="text-left text-[11px] uppercase tracking-wide" style="color:rgba(30,41,59,0.55)">
+<th class="px-2 py-3 font-semibold">Job · Ticket</th>
+<th class="px-2 py-3 font-semibold text-center">Ver</th>
+<th class="px-2 py-3 font-semibold text-center">Mockup</th>
+<th class="px-2 py-3 font-semibold">Product</th>
+<th class="px-2 py-3 font-semibold">Media</th>
+<th class="px-2 py-3 font-semibold">Period</th>
+<th class="px-2 py-3 font-semibold">Sales Person</th>
+<th class="px-2 py-3 font-semibold">Head / Assigned</th>
+<th class="px-2 py-3 font-semibold">SLA</th>
+<th class="px-2 py-3 font-semibold">Progress Date</th>
+<th class="px-2 py-3 font-semibold">Status</th>
+<th class="px-2 py-3 font-semibold">Approve</th>
+</tr>
+</thead>
+<tbody id="pr-tbody"></tbody>
+</table>
+</div>
+<div class="px-4 py-3 border-t border-[#E2E8F0] flex items-center justify-between" style="background:rgba(248,250,252,0.5)">
+<div class="text-[12px]" style="color:rgba(30,41,59,0.5)">Showing <b id="pr-pag" style="color:rgba(30,41,59,0.7)">0</b> tickets</div>
+</div>
+</div>
+</div>
+<!-- BOARD VIEW -->
+<div class="hidden" id="pr-view-board">
+<div class="grid grid-cols-3 gap-4" id="pr-board-cols"></div>
+</div>
+<script>
+var PR_STATUSES = ['Revise','Assign','Verify','On Process','Review','Final Approve','Final Render','Done'];
+var PR_COLORS = {
+  'Revise':        { bg:'bg-amber-50',   border:'border-amber-200',  dot:'bg-amber-500',   text:'text-amber-700',  headerBg:'bg-amber-100',  hex:'#f59e0b' },
+  'Assign':        { bg:'bg-orange-50',  border:'border-orange-200', dot:'bg-orange-500',  text:'text-orange-700', headerBg:'bg-orange-100', hex:'#f97316' },
+  'Verify':        { bg:'bg-violet-50',  border:'border-violet-200', dot:'bg-violet-500',  text:'text-violet-700', headerBg:'bg-violet-100', hex:'#8b5cf6' },
+  'On Process':    { bg:'bg-blue-50',    border:'border-blue-200',   dot:'bg-blue-500',    text:'text-blue-700',   headerBg:'bg-blue-100',   hex:'#3b82f6' },
+  'Review':        { bg:'bg-cyan-50',    border:'border-cyan-200',   dot:'bg-cyan-500',    text:'text-cyan-700',   headerBg:'bg-cyan-100',   hex:'#06b6d4' },
+  'Final Approve': { bg:'bg-emerald-50', border:'border-emerald-200',dot:'bg-emerald-500', text:'text-emerald-700',headerBg:'bg-emerald-100',hex:'#10b981' },
+  'Final Render':  { bg:'bg-indigo-50',  border:'border-indigo-200', dot:'bg-indigo-500',  text:'text-indigo-700', headerBg:'bg-indigo-100', hex:'#6366f1' },
+  'Done':          { bg:'bg-teal-50',    border:'border-teal-200',   dot:'bg-teal-500',    text:'text-teal-700',   headerBg:'bg-teal-100',   hex:'#14b8a6' },
+};
+
+var PR_DATA = [
+  { id:'TK-2026040004', job:'JOB-1040',   version:1, mockup:'v1', product:'Chang Classic 620ml',  mediaGroup:'Digital', mediaSection:'The Network',      mediaType:'Plan B TV',                package:'PlanBTV 240Full',       sales:'Prapat Thanakit',    startEnd:'01/05/2026 - 31/07/2026', headTeam:'Suree Phoonsap',     assigned:'Napha Saengthong',   assignDate:'12/05/2026 10:00', progressDate:'12/05/2026 10:00', feedbackSla:'On track',  acceptDate:'',                  status:'Assign' },
+  { id:'TK-2026040003', job:'JOB-1039',   version:1, mockup:'v1', product:'Pepsi Max Zero',       mediaGroup:'Digital', mediaSection:'Signature Screen', mediaType:'Siam Paragon Facade',      package:'SiamParagonFacade',     sales:'Sajjaporn Suwanchai',startEnd:'01/05/2026 - 30/06/2026', headTeam:'Suree Phoonsap',     assigned:'Preeya Wongsa',      assignDate:'12/05/2026 14:30', progressDate:'12/05/2026 14:30', feedbackSla:'On track',  acceptDate:'',                  status:'Assign' },
+  { id:'TK-2026040001', job:'JOB-1037',   version:1, mockup:'v1', product:'Nescafe Latte',        mediaGroup:'Digital', mediaSection:'BKK Prime',        mediaType:'Rama 9 Connect',           package:'Rama9 Connect',         sales:'Sajjaporn Suwanchai',startEnd:'01/04/2026 - 30/06/2026', headTeam:'Wanchat Damrongsak', assigned:'Kitti Pongtep',      assignDate:'10/05/2026 09:15', progressDate:'14/05/2026 11:00', feedbackSla:'Overdue',   acceptDate:'',                  status:'Verify' },
+  { id:'TK-2026030016', job:'JOB-1036',   version:1, mockup:'v1', product:'SCB Easy 4.0',         mediaGroup:'Transit', mediaSection:'BTS',              mediaType:'BTS Skytrain',             package:'BTS Skytrain',          sales:'Sajjaporn Suwanchai',startEnd:'01/04/2026 - 30/09/2026', headTeam:'Suree Phoonsap',     assigned:'Sajjaporn Suwanchai',assignDate:'08/05/2026 11:00', progressDate:'20/05/2026 09:30', feedbackSla:'On track',  acceptDate:'20/05/2026 09:30',  status:'On Process' },
+  { id:'TK-2026030015', job:'JOB-1035',   version:2, mockup:'v2', product:'True 5G',              mediaGroup:'Digital', mediaSection:'The Network',      mediaType:'Plan B TV Nationwide',     package:'PlanBTV Nationwide120', sales:'Sajjaporn Suwanchai',startEnd:'15/03/2026 - 14/06/2026', headTeam:'Wanchat Damrongsak', assigned:'Preeya Wongsa',      assignDate:'05/05/2026 08:45', progressDate:'18/05/2026 16:20', feedbackSla:'Overdue',   acceptDate:'06/05/2026 10:15',  status:'On Process' },
+  { id:'TK-2026030014', job:'JOB-1034',   version:1, mockup:'v1', product:'Pantene Pro-V',        mediaGroup:'Retail',  mediaSection:'Luxury',           mediaType:'Central Network',          package:'CentralNetwork 360',    sales:'Sajjaporn Suwanchai',startEnd:'01/03/2026 - 31/05/2026', headTeam:'Suree Phoonsap',     assigned:'Kitti Pongtep',      assignDate:'01/05/2026 13:20', progressDate:'19/05/2026 14:00', feedbackSla:'On track',  acceptDate:'19/05/2026 14:00',  status:'Verify' },
+  { id:'TK-2026030013', job:'JOB-1033',   version:2, mockup:'v2', product:'TrueMove H Promo',     mediaGroup:'Transit', mediaSection:'Rail',             mediaType:'Digital MRT',              package:'Digital MRT',           sales:'Prapat Thanakit',    startEnd:'01/04/2026 - 30/06/2026', headTeam:'Suree Phoonsap',     assigned:'Napha Saengthong',   assignDate:'03/05/2026 10:15', progressDate:'20/05/2026 11:00', feedbackSla:'On track',  acceptDate:'20/05/2026 11:00',  status:'Review' },
+  { id:'TK-2026030012b',job:'JOB-1032-02',version:2, mockup:'v2', product:'Coke Zero Sugar Limit',mediaGroup:'Retail',  mediaSection:'In-store',         mediaType:'7-Eleven Plus',            package:'Multimedia',            sales:'Sajjaporn Suwanchai',startEnd:'15/04/2026 - 14/07/2026', headTeam:'Wanchat Damrongsak', assigned:'Wutti Chaiyaporn',   assignDate:'06/05/2026 14:00', progressDate:'19/05/2026 17:40', feedbackSla:'Overdue',   acceptDate:'07/05/2026 09:20',  status:'Review' },
+  { id:'TK-2026030012', job:'JOB-1032-01',version:3, mockup:'v3', product:'AIS 5G Smart Home',    mediaGroup:'Transit', mediaSection:'BTS',              mediaType:'BTS Concourse',            package:'BTS Concourse',         sales:'Prapat Thanakit',    startEnd:'01/04/2026 - 30/06/2026', headTeam:'Suree Phoonsap',     assigned:'Preeya Wongsa',      assignDate:'02/05/2026 09:30', progressDate:'19/05/2026 18:00', feedbackSla:'On track',  acceptDate:'19/05/2026 18:00',  status:'Revise' },
+  { id:'TK-2026030010', job:'JOB-1031',   version:2, mockup:'v2', product:'Singha Soda Lemon',    mediaGroup:'Retail',  mediaSection:'In-store',         mediaType:'7-Eleven Plus',            package:'Metro LED',             sales:'Sajjaporn Suwanchai',startEnd:'15/03/2026 - 30/06/2026', headTeam:'Wanchat Damrongsak', assigned:'Napha Saengthong',   assignDate:'28/04/2026 14:15', progressDate:'18/05/2026 13:10', feedbackSla:'Overdue',   acceptDate:'29/04/2026 11:20',  status:'Revise' },
+  { id:'TK-2026020011', job:'JOB-1031-F', version:3, mockup:'v3', product:'Lay\'s Salt Vinegar',  mediaGroup:'Digital', mediaSection:'The Network',      mediaType:'Plan B TV',                package:'PlanBTV 240Full',       sales:'Prapat Thanakit',    startEnd:'01/03/2026 - 30/05/2026', headTeam:'Suree Phoonsap',     assigned:'Kitti Pongtep',      assignDate:'22/04/2026 11:00', progressDate:'20/05/2026 08:30', feedbackSla:'On track',  acceptDate:'20/05/2026 08:30',  status:'Final Render' },
+  { id:'TK-2026020009', job:'JOB-1029',   version:3, mockup:'v3', product:'Nestle Bear Brand',    mediaGroup:'Transit', mediaSection:'Rail',             mediaType:'Digital MRT',              package:'Digital MRT',           sales:'Sajjaporn Suwanchai',startEnd:'15/02/2026 - 14/06/2026', headTeam:'Wanchat Damrongsak', assigned:'Wutti Chaiyaporn',   assignDate:'18/04/2026 09:45', progressDate:'19/05/2026 10:30', feedbackSla:'Overdue',   acceptDate:'18/04/2026 10:30',  status:'On Process' },
+  { id:'TK-2026020010', job:'JOB-1030',   version:3, mockup:'v3', product:'Yaris Ativ 2026',      mediaGroup:'Transit', mediaSection:'Rail',             mediaType:'Digital MRT',              package:'Digital MRT',           sales:'Prapat Thanakit',    startEnd:'15/02/2026 - 14/08/2026', headTeam:'Wanchat Damrongsak', assigned:'Kitti Pongtep',      assignDate:'20/04/2026 09:00', progressDate:'19/05/2026 21:00', feedbackSla:'On track',  acceptDate:'19/05/2026 21:00',  status:'Final Approve' },
+  { id:'TK-2026020008', job:'JOB-1028',   version:1, mockup:'v1', product:'5G Pro Max',           mediaGroup:'Airport', mediaSection:'Thai Flight',      mediaType:'Airport Digital Network',  package:'LED Baggage Claim',     sales:'Sajjaporn Suwanchai',startEnd:'01/02/2026 - 31/01/2027', headTeam:'Suree Phoonsap',     assigned:'Preeya Wongsa',      assignDate:'15/04/2026 15:30', progressDate:'17/05/2026 16:00', feedbackSla:'On track',  acceptDate:'15/04/2026 16:00',  status:'Final Render' },
+  { id:'TK-2026010003', job:'JOB-1023',   version:2, mockup:'v2', product:'Central Mid-Year',     mediaGroup:'Transit', mediaSection:'BTS',              mediaType:'BTS Concourse',            package:'BTS Concourse',         sales:'Sajjaporn Suwanchai',startEnd:'15/01/2026 - 14/04/2026', headTeam:'Wanchat Damrongsak', assigned:'Wutti Chaiyaporn',   assignDate:'10/04/2026 10:00', progressDate:'10/04/2026 18:00', feedbackSla:'Overdue',   acceptDate:'11/04/2026 08:30',  status:'Done' },
+];
+
+/* KPIs */
+function renderPRKPIs(rows) {
+  /* KPI cards always reflect totals from full dataset so user can see all status counts even when filtering */
+  var total = PR_DATA.length;
+  var counts = {}; PR_STATUSES.forEach(function(s){counts[s]=0;}); PR_DATA.forEach(function(r){counts[r.status]++;});
+  document.getElementById('kpi-total-badge').textContent = total + ' ticket' + (total!==1?'s':'');
+  document.getElementById('kpi-jobs-badge').textContent  = total + ' job'    + (total!==1?'s':'');
+  var bar = document.getElementById('kpi-progress-bar');
+  var bh = '';
+  if (total>0) { PR_STATUSES.forEach(function(s){ var p=(counts[s]/total)*100; if(p>0) bh+='<div style="width:'+p.toFixed(1)+'%;background:'+PR_COLORS[s].hex+';transition:width 0.4s" title="'+s+': '+counts[s]+'"></div>'; }); }
+  bar.innerHTML = bh || '<div style="width:100%;background:#F1F5F9"></div>';
+  var el = document.getElementById('kpi-cards');
+  var curFilter = document.getElementById('pr-status').value;
+  document.getElementById('kpi-clear-btn').classList.toggle('hidden', curFilter === 'all');
+  var h = '';
+  PR_STATUSES.forEach(function(s) {
+    var sc = PR_COLORS[s]; var v = counts[s]||0;
+    var isActive = curFilter === s;
+    var ring = isActive ? ' ring-2 ring-offset-1 shadow-md' : '';
+    var ringStyle = isActive ? ';box-shadow:0 0 0 2px '+sc.hex+'40,0 4px 6px -1px rgba(0,0,0,0.08)' : '';
+    var faded = (!isActive && v === 0) ? ' opacity-40' : '';
+    h += '<div onclick="toggleKpiFilter(\''+s+'\')" class="relative '+sc.bg+' border '+sc.border+' rounded-lg px-3 py-3 cursor-pointer hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 overflow-hidden'+ring+faded+'" style="'+ringStyle+'">' +
+      '<div class="absolute left-0 top-0 bottom-0 w-1" style="background:'+sc.hex+'"></div>' +
+      '<div class="flex items-center justify-between gap-2 mb-1.5 pl-1.5"><span class="text-[10px] font-semibold uppercase tracking-wider '+sc.text+' truncate">'+s+'</span><span class="w-1.5 h-1.5 rounded-full shrink-0" style="background:'+sc.hex+'"></span></div>' +
+      '<div class="pl-1.5 flex items-end justify-between"><div class="text-[24px] font-bold tnum leading-none '+sc.text+'">'+v+'</div><div class="text-[10px] font-medium tnum '+sc.text+' opacity-60 pb-0.5">'+(total>0?Math.round(v/total*100):0)+'%</div></div>' +
+    '</div>';
+  });
+  el.innerHTML = h;
+}
+
+function toggleKpiFilter(status) {
+  var sel = document.getElementById('pr-status');
+  sel.value = (sel.value === status) ? 'all' : status;
+  filterPR();
+}
+
+function clearStatusFilter() {
+  var sel = document.getElementById('pr-status');
+  sel.value = 'all';
+  document.getElementById('kpi-clear-btn').classList.add('hidden');
+  filterPR();
+}
+
+/* Helpers */
+function prStatusBadge(s) { var sc=PR_COLORS[s]||PR_COLORS['To Do']; return '<span class="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-full font-medium border whitespace-nowrap '+sc.bg+' '+sc.text+' '+sc.border+'"><span class="w-1.5 h-1.5 rounded-full '+sc.dot+'"></span>'+s+'</span>'; }
+function parseDateStr(s) {
+  if (!s) return null;
+  var parts = s.split(' '); var d = parts[0].split('/'); var t = parts[1] ? parts[1].split(':') : [0,0];
+  return new Date(parseInt(d[2]),parseInt(d[1])-1,parseInt(d[0]),parseInt(t[0]),parseInt(t[1]));
+}
+function countBusinessDays(startDate, endDate) {
+  var count = 0;
+  var cur = new Date(startDate.getTime());
+  while (cur < endDate) {
+    var day = cur.getDay();
+    if (day !== 0 && day !== 6) count++;
+    cur.setDate(cur.getDate() + 1);
+  }
+  return count;
+}
+function countBusinessHours(startDate, endDate) {
+  if (endDate <= startDate) return 0;
+  var hours = 0;
+  var cur = new Date(startDate.getTime());
+  /* Walk in 1-hour steps, only counting hours where the current day is Mon–Fri */
+  while (cur < endDate) {
+    var day = cur.getDay();
+    if (day !== 0 && day !== 6) {
+      var next = new Date(cur.getTime() + 3600000);
+      var slice = (next > endDate ? endDate : next).getTime() - cur.getTime();
+      hours += slice / 3600000;
+    }
+    cur.setHours(cur.getHours() + 1, 0, 0, 0);
+  }
+  return hours;
+}
+function getProgressSLA(acceptDateStr) {
+  if (!acceptDateStr) return '-';
+  var acceptDt = parseDateStr(acceptDateStr);
+  if (!acceptDt) return '-';
+  /* Fixed "current" date so the prototype shows a deterministic mix of On track / Overdue */
+  var now = new Date(2026, 4, 20, 17, 0); // 20/05/2026 17:00
+  var bizHours = countBusinessHours(acceptDt, now);
+  return bizHours > 72 ? 'Overdue' : 'On track';
+}
+function slaBadge(val) {
+  if (val === '-') return '<span style="color:rgba(30,41,59,0.3)">-</span>';
+  var c = val==='Overdue'?'bg-rose-50 text-rose-700 border-rose-200':'bg-emerald-50 text-emerald-700 border-emerald-200';
+  return '<span class="text-[11px] px-2 py-0.5 rounded-full font-medium border whitespace-nowrap '+c+'">'+val+'</span>';
+}
+
+/* Approve badge — Customer (auto from Final Render onward) + Landlord (free-form, any time) */
+var APPROVE_AUTO_CUSTOMER = ['Final Approve','Final Render','Done'];
+/* Seed landlord approvals on a handful of rows to show that landlord can be approved at any time */
+(function seedLandlordApprovals(){
+  var preApproved = ['JOB-1036','JOB-1033','JOB-1031-F','JOB-1023','JOB-1028'];
+  PR_DATA.forEach(function(r){ if (preApproved.indexOf(r.job) !== -1) r.landlordApproved = true; });
+})();
+var ROLE_TOOLTIPS = { CU: 'Customer', LL: 'Landlord', FB: 'Feedback', PR: 'Progress' };
+function approveRow(role, approved) {
+  var cls = approved
+    ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+    : 'bg-amber-50 text-amber-700 border-amber-200';
+  var dot = approved ? 'bg-emerald-500' : 'bg-amber-500';
+  var label = approved ? 'อนุมัติแล้ว' : 'รออนุมัติ';
+  var tip = ROLE_TOOLTIPS[role] || role;
+  return '<div class="flex items-center gap-1">' +
+    '<span class="text-[9px] uppercase font-semibold tracking-wide shrink-0 cursor-help" style="color:rgba(30,41,59,0.45);width:18px" title="' + tip + '">' + role + '</span>' +
+    '<span class="text-[10px] px-1.5 py-0.5 rounded-full font-medium border ' + cls + ' inline-flex items-center gap-1 whitespace-nowrap cursor-help" title="' + tip + ': ' + label + '">' +
+      '<span class="w-1 h-1 rounded-full ' + dot + '"></span>' + label +
+    '</span>' +
+  '</div>';
+}
+function renderApprovePR(r) {
+  var customerApproved = APPROVE_AUTO_CUSTOMER.indexOf(r.status) !== -1;
+  var landlordApproved = r.landlordApproved === true || r.status === 'Done';
+  /* Final Approve: customer approved, landlord still pending */
+  if (r.status === 'Final Approve') {
+    landlordApproved = false;
+  }
+  return '<div class="space-y-1">' +
+    approveRow('CU', customerApproved) +
+    approveRow('LL', landlordApproved) +
+  '</div>';
+}
+
+/* Filter */
+function getFilteredPR() {
+  var q = document.getElementById('pr-search').value.toLowerCase();
+  var sf = document.getElementById('pr-status').value;
+  var mf = document.getElementById('pr-media').value;
+  return PR_DATA.filter(function(r) {
+    if (q && (r.id+' '+r.job+' '+r.product+' '+r.sales+' '+(r.headTeam||'')+' '+(r.assigned||'')+' '+r.mediaType+' '+r.package).toLowerCase().indexOf(q)===-1) return false;
+    if (sf!=='all' && r.status!==sf) return false;
+    if (mf!=='all' && r.mediaGroup!==mf) return false;
+    return true;
+  });
+}
+function filterPR() { var f=getFilteredPR(); renderPRKPIs(f); renderPRTable(f); renderPRBoard(f); }
+function resetPRFilters() { document.getElementById('pr-search').value=''; document.getElementById('pr-status').value='all'; document.getElementById('pr-media').value='all'; filterPR(); }
+
+/* Table */
+var GROUP_COLOR = { Digital:'#2D56D2', Airport:'#F59E0B', Retail:'#10B981', Transit:'#7C3AED', Classic:'#DB2777' };
+
+function renderPRTable(rows) {
+  var tbody = document.getElementById('pr-tbody');
+  var pag = document.getElementById('pr-pag');
+  if (!rows.length) {
+    tbody.innerHTML = '<tr><td colspan="12" class="px-4 py-16 text-center"><div class="w-16 h-16 rounded-full bg-[#F1F5F9] flex items-center justify-center mx-auto mb-4"><svg class="w-7 h-7" style="color:rgba(30,41,59,0.3)" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.53 16.122a3 3 0 00-5.78 1.128 2.25 2.25 0 01-2.4 2.245 4.5 4.5 0 008.4-2.245c0-.399-.078-.78-.22-1.128z"/></svg></div><div class="text-[15px] font-semibold text-[#0B1430] mb-1">No tickets found</div><div class="text-[13px]" style="color:rgba(30,41,59,0.5)">Try adjusting your filters</div></td></tr>';
+    pag.textContent = '0'; return;
+  }
+  var chev = '<svg class="w-2 h-2 inline-block mx-0.5 opacity-40" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>';
+  var h = '';
+  rows.forEach(function(r) {
+    var jobLink = 'media-detail-management.html?status=' + encodeURIComponent(r.status) + '&job=' + encodeURIComponent(r.job);
+    var gC = GROUP_COLOR[r.mediaGroup] || '#64748B';
+
+    /* Job · Ticket */
+    var jobCell =
+      '<div class="leading-tight">' +
+        '<a href="' + jobLink + '" class="font-mono font-semibold text-[12px] text-[#2D56D2] hover:text-[#213268]">' + r.job + '</a>' +
+        '<div class="font-mono text-[10.5px] mt-0.5" style="color:rgba(30,41,59,0.5)">' + r.id + '</div>' +
+      '</div>';
+
+    /* Version chip */
+    var verCell =
+      '<div class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-pb-50 border border-[#D6ECFF] text-[12px] font-bold text-[#2D56D2] tnum">' + r.version + '</div>';
+
+    /* Mockup chip */
+    var mockCell =
+      '<span class="inline-flex items-center px-2 py-0.5 rounded-md bg-violet-50 border border-violet-200 text-[11px] font-semibold text-violet-700 font-mono">' + r.mockup + '</span>';
+
+    /* Product */
+    var productCell =
+      '<div class="text-[12px] font-medium text-[#0B1430] truncate" title="' + r.product + '">' + r.product + '</div>';
+
+    /* Media: Group › Section › Type + Package badge */
+    var mediaCell =
+      '<div class="leading-tight">' +
+        '<div class="flex items-center gap-1.5 text-[11px]">' +
+          '<span class="inline-flex items-center gap-1 font-semibold shrink-0" style="color:'+gC+'"><span class="w-1.5 h-1.5 rounded-full" style="background:'+gC+'"></span>' + r.mediaGroup + '</span>' + chev +
+          '<span class="truncate" style="color:rgba(30,41,59,0.7)" title="' + r.mediaSection + '">' + r.mediaSection + '</span>' + chev +
+          '<span class="font-medium text-[#0B1430] truncate" title="' + r.mediaType + '">' + r.mediaType + '</span>' +
+        '</div>' +
+        '<div class="mt-1"><span class="text-[10.5px] px-1.5 py-0.5 rounded bg-pb-50 text-[#2D56D2] border border-[#D6ECFF] font-medium">' + r.package + '</span></div>' +
+      '</div>';
+
+    /* Period (compact) */
+    var periodParts = r.startEnd.split(' - ');
+    var periodCell =
+      '<div class="leading-tight font-mono text-[10.5px]" style="color:rgba(30,41,59,0.65)">' +
+        '<div>' + (periodParts[0] || '') + '</div>' +
+        '<div style="color:rgba(30,41,59,0.45)">→ ' + (periodParts[1] || '') + '</div>' +
+      '</div>';
+
+    /* Sales (full name) */
+    var salesCell = '<div class="text-[11.5px] truncate" title="' + r.sales + '">' + r.sales + '</div>';
+
+    /* Head / Assigned — assigned person on top, head: ... below (matches assign-job.html) */
+    var headAssignedCell =
+      '<div class="leading-tight">' +
+        '<div class="text-[11.5px] font-medium truncate" title="' + (r.assigned||'') + '">' + (r.assigned || '<span style="color:rgba(30,41,59,0.3)">— unassigned —</span>') + '</div>' +
+        '<div class="text-[10.5px] truncate mt-0.5" style="color:rgba(30,41,59,0.5)" title="' + (r.headTeam||'') + '">head: ' + (r.headTeam || '<span style="color:rgba(30,41,59,0.3)">—</span>') + '</div>' +
+      '</div>';
+
+    /* SLA: Feedback + Progress stacked */
+    var pSla = getProgressSLA(r.acceptDate);
+    var slaCell =
+      '<div class="space-y-1">' +
+        '<div class="flex items-center gap-1"><span class="text-[9px] uppercase font-semibold tracking-wide cursor-help" style="color:rgba(30,41,59,0.45)" title="Feedback">FB</span><span title="Feedback: ' + r.feedbackSla + '" class="cursor-help">' + slaBadge(r.feedbackSla) + '</span></div>' +
+        '<div class="flex items-center gap-1"><span class="text-[9px] uppercase font-semibold tracking-wide cursor-help" style="color:rgba(30,41,59,0.45)" title="Progress">PR</span><span title="Progress: ' + pSla + '" class="cursor-help">' + slaBadge(pSla) + '</span></div>' +
+      '</div>';
+
+    /* Progress Date — date + time stacked */
+    var prgParts = (r.progressDate || '').split(' ');
+    var progressCell = r.progressDate
+      ? '<div class="leading-tight font-mono text-[10.5px]" style="color:rgba(30,41,59,0.65)">' +
+          '<div>' + (prgParts[0] || '') + '</div>' +
+          '<div style="color:rgba(30,41,59,0.45)">' + (prgParts[1] || '') + '</div>' +
+        '</div>'
+      : '<span class="text-[11px]" style="color:rgba(30,41,59,0.3)">—</span>';
+
+    /* Approve: Customer (auto-approved from Final Render onward) + Landlord (can be approved any time) */
+    var approveCell = renderApprovePR(r);
+
+    h += '<tr class="border-b border-[#F1F5F9] hover:bg-[#F8FAFC]/60">';
+    h += '<td class="px-2 py-2.5 align-top">' + jobCell + '</td>';
+    h += '<td class="px-2 py-2.5 align-top text-center">' + verCell + '</td>';
+    h += '<td class="px-2 py-2.5 align-top text-center">' + mockCell + '</td>';
+    h += '<td class="px-2 py-2.5 align-top">' + productCell + '</td>';
+    h += '<td class="px-2 py-2.5 align-top">' + mediaCell + '</td>';
+    h += '<td class="px-2 py-2.5 align-top">' + periodCell + '</td>';
+    h += '<td class="px-2 py-2.5 align-top">' + salesCell + '</td>';
+    h += '<td class="px-2 py-2.5 align-top">' + headAssignedCell + '</td>';
+    h += '<td class="px-2 py-2.5 align-top">' + slaCell + '</td>';
+    h += '<td class="px-2 py-2.5 align-top">' + progressCell + '</td>';
+    h += '<td class="px-2 py-2.5 align-top">' + prStatusBadge(r.status) + '</td>';
+    h += '<td class="px-2 py-2.5 align-top">' + approveCell + '</td>';
+    h += '</tr>';
+  });
+  tbody.innerHTML = h;
+  pag.textContent = rows.length;
+}
+
+/* Board */
+function renderPRBoard(rows) {
+  var cols = document.getElementById('pr-board-cols');
+  var h = '';
+  PR_STATUSES.forEach(function(st) {
+    var sc = PR_COLORS[st];
+    var cards = rows.filter(function(r){ return r.status===st; });
+    h += '<div class="flex flex-col rounded-xl border '+sc.border+' bg-white overflow-hidden" style="min-height:400px">';
+    h += '<div class="px-3 py-2.5 '+sc.headerBg+' border-b '+sc.border+' flex items-center justify-between"><div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full '+sc.dot+'"></span><span class="text-[12px] font-semibold '+sc.text+'">'+st+'</span></div><span class="text-[11px] px-1.5 py-0.5 rounded-md '+sc.bg+' '+sc.text+' font-semibold border '+sc.border+'">'+cards.length+'</span></div>';
+    h += '<div class="flex-1 p-2 space-y-2 overflow-y-auto" style="max-height:480px">';
+    if (!cards.length) { h += '<div class="py-8 text-center text-[11px]" style="color:rgba(30,41,59,0.25)">No tickets</div>'; }
+    cards.forEach(function(r) {
+      var pSla = getProgressSLA(r.acceptDate);
+      var slaCls = r.feedbackSla==='Overdue'||pSla==='Overdue'?'text-rose-600':'text-emerald-600';
+      var slaLabel = pSla!=='-'?pSla:r.feedbackSla;
+      var boardLink = 'media-detail-management.html?status=' + encodeURIComponent(r.status) + '&job=' + encodeURIComponent(r.job);
+      h += '<a href="' + boardLink + '" class="block bg-white border border-[#E2E8F0] border-l-[3px] rounded-lg p-2.5 hover:shadow-lg transition-all cursor-pointer" style="border-left-color:'+sc.hex+'">';
+      h += '<div class="flex items-center justify-between mb-1.5"><span class="text-[10px] font-mono font-semibold text-[#2D56D2]">'+r.id+'</span><span class="text-[10px] font-semibold '+slaCls+'">'+slaLabel+'</span></div>';
+      h += '<div class="text-[12px] font-semibold text-[#0B1430] mb-0.5 leading-tight">'+r.product+'</div>';
+      h += '<div class="text-[11px] mb-2" style="color:rgba(30,41,59,0.5)">'+r.mediaType+' &middot; '+r.job+' &middot; v'+r.version+'</div>';
+      h += '<div class="flex items-center justify-between"><span class="text-[10px]" style="color:rgba(30,41,59,0.5)">'+(r.assigned||'unassigned')+' · head: '+(r.headTeam||'—')+'</span><span class="text-[10px] font-mono" style="color:rgba(30,41,59,0.35)">'+(r.progressDate||r.assignDate).split(' ')[0]+'</span></div>';
+      h += '</a>';
+    });
+    h += '</div></div>';
+  });
+  cols.innerHTML = h;
+}
+
+/* View Toggle */
+var _prView = 'table';
+function setPRView(v) {
+  _prView = v;
+  document.getElementById('pr-view-table').className = v==='table'?'':'hidden';
+  document.getElementById('pr-view-board').className = v==='board'?'':'hidden';
+  var btns = document.getElementById('pr-view-toggle').querySelectorAll('button');
+  btns.forEach(function(b) {
+    if (b.getAttribute('data-view')===v) { b.className=b.className.replace(/text-\[#0B1430\] hover:bg-\[#F8FAFC\]/g,'').replace(/bg-\[#2D56D2\] text-white/g,''); b.className+=' bg-[#2D56D2] text-white'; }
+    else { b.className=b.className.replace(/bg-\[#2D56D2\] text-white/g,''); b.className+=' text-[#0B1430] hover:bg-[#F8FAFC]'; }
+  });
+  filterPR();
+}
+
+/* Init */
+filterPR();
+</script>
+    </div>
+
+  </main>
+</div>
+
+<!-- AI Panel -->
+<div id="ai-panel" class="fixed right-0 top-0 bottom-0 w-[420px] bg-white border-l border-surface-200 z-40 flex flex-col translate-x-full transition-transform duration-200" style="box-shadow:-8px 0 30px rgba(11,20,48,0.08)">
+  <div class="h-16 px-5 border-b border-surface-200 flex items-center gap-3">
+    <div class="w-8 h-8 rounded-lg flex items-center justify-center text-white" style="background:linear-gradient(135deg,#2D56D2,#5FCBF9)">
+      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"/></svg>
+    </div>
+    <div class="flex-1">
+      <div class="text-[14px] font-semibold">Plan-B Copilot</div>
+      <div class="text-[11px] flex items-center gap-1" style="color:rgba(30,41,59,0.6)"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>Connected to live CRM data</div>
+    </div>
+    <button onclick="toggleAI()" class="w-8 h-8 rounded-md hover:bg-surface-100 flex items-center justify-center">
+      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+    </button>
+  </div>
+
+  <!-- Messages -->
+  <div id="ai-messages" class="flex-1 overflow-y-auto px-5 py-4 space-y-3">
+    <div><div class="text-[10px] font-medium uppercase tracking-wide mb-1" style="color:rgba(30,41,59,0.5)">Copilot</div><div class="inline-block max-w-[90%] text-[13px] leading-relaxed rounded-xl px-3.5 py-2.5 bg-surface-50 border border-surface-200">Hi — I can summarize occupancy, flag anomalies, draft proposals, or forecast revenue. What are we digging into?</div></div>
+  </div>
+
+  <!-- Suggestions -->
+  <div id="ai-suggestions" class="px-5 pb-2 space-y-2">
+    <div class="text-[10px] uppercase tracking-wide font-semibold" style="color:rgba(30,41,59,0.5)">Try asking</div>
+    <button onclick="aiSend(this.textContent)" class="w-full text-left text-[12px] px-3 py-2 border border-surface-200 rounded-lg hover:border-pb-500 hover:bg-blue-50/30 transition-colors">Forecast May occupancy for BTS inventory</button>
+    <button onclick="aiSend(this.textContent)" class="w-full text-left text-[12px] px-3 py-2 border border-surface-200 rounded-lg hover:border-pb-500 hover:bg-blue-50/30 transition-colors">Summarize this week's claims by severity</button>
+    <button onclick="aiSend(this.textContent)" class="w-full text-left text-[12px] px-3 py-2 border border-surface-200 rounded-lg hover:border-pb-500 hover:bg-blue-50/30 transition-colors">Who are my top 3 clients and where are they underspending?</button>
+    <button onclick="aiSend(this.textContent)" class="w-full text-left text-[12px] px-3 py-2 border border-surface-200 rounded-lg hover:border-pb-500 hover:bg-blue-50/30 transition-colors">Draft a proposal: AIS wants 30-day coverage in Bangkok + Chiang Mai</button>
+  </div>
+
+  <!-- Input -->
+  <div class="p-4 border-t border-surface-200">
+    <div class="rounded-xl bg-white border border-surface-200 focus-within:border-pb-500 transition" style="box-shadow:0 0 0 1px rgba(45,86,210,0.1)">
+      <div class="flex items-end gap-2 p-2">
+        <input id="ai-input" type="text" placeholder="Ask about occupancy, pipeline, claims…" class="flex-1 text-[13px] bg-transparent outline-none px-2 py-1.5 placeholder:opacity-40" onkeydown="if(event.key==='Enter'){event.preventDefault();aiSend()}" />
+        <button onclick="aiSend()" class="w-8 h-8 rounded-md bg-ink-900 hover:bg-ink-700 flex items-center justify-center text-white shrink-0">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 18-8-8 18-2-8-8-2Z"/></svg>
+        </button>
+      </div>
+    </div>
+    <p class="text-[10px] text-center mt-2" style="color:rgba(30,41,59,0.4)">Plan-B Copilot — may hallucinate, verify critical actions</p>
+  </div>
+</div>
+
+<script>
+/* === Expand/collapse sub-menus === */
+function toggleMenu(id){
+  const sub=document.getElementById(id+'-sub');
+  const chevron=document.getElementById(id+'-chevron');
+  if(sub.classList.contains('hidden')){
+    sub.classList.remove('hidden');
+    chevron.classList.add('rotate-90');
+  }else{
+    sub.classList.add('hidden');
+    chevron.classList.remove('rotate-90');
+  }
+}
+
+/* === Mobile sidebar overlay === */
+function toggleMobile(){
+  const sidebar=document.getElementById('sidebar');
+  const overlay=document.getElementById('sidebar-overlay');
+  sidebar.classList.toggle('-translate-x-full');
+  overlay.classList.toggle('hidden');
+}
+
+/* === Desktop collapse sidebar === */
+let _sidebarCollapsed = false;
+function collapseSidebar(){
+  // On mobile, toggle mobile drawer instead
+  if(window.innerWidth < 1024){
+    toggleMobile();
+    return;
+  }
+  _sidebarCollapsed = !_sidebarCollapsed;
+  const sb = document.getElementById('sidebar');
+  const main = document.querySelector('main');
+  const labels = sb.querySelectorAll('.sidebar-label');
+  const groups = sb.querySelectorAll('.sidebar-nav-parent');
+  const subs = sb.querySelectorAll('[id$="-sub"]');
+  const brand = document.getElementById('sidebar-brand');
+
+  if(_sidebarCollapsed){
+    sb.classList.remove('w-64');
+    sb.classList.add('w-[68px]');
+    main.classList.remove('lg:ml-64');
+    main.classList.add('lg:ml-[68px]');
+    labels.forEach(el=>el.classList.add('hidden'));
+    groups.forEach(el=>el.classList.add('hidden'));
+    subs.forEach(el=>el.classList.add('hidden'));
+    if(brand) brand.classList.replace('px-4','px-0');
+    if(brand) brand.classList.add('justify-center');
+  } else {
+    sb.classList.remove('w-[68px]');
+    sb.classList.add('w-64');
+    main.classList.remove('lg:ml-[68px]');
+    main.classList.add('lg:ml-64');
+    labels.forEach(el=>el.classList.remove('hidden'));
+    groups.forEach(el=>el.classList.remove('hidden'));
+    // Re-show sub-menus that were explicitly open (have active items)
+    subs.forEach(el=>{
+      if(el.querySelector('.active')) el.classList.remove('hidden');
+    });
+    if(brand) brand.classList.replace('px-0','px-4');
+    if(brand) brand.classList.remove('justify-center');
+  }
+}
+
+/* === AI Panel === */
+let _aiOpen = false;
+function toggleAI(){
+  _aiOpen = !_aiOpen;
+  const panel = document.getElementById('ai-panel');
+  const btn = document.getElementById('ai-toggle');
+  if(_aiOpen){
+    panel.classList.remove('translate-x-full');
+    btn.classList.remove('bg-white','border-surface-300','text-ink-900','hover:bg-surface-50');
+    btn.classList.add('bg-ink-900','text-white','border-ink-900');
+  } else {
+    panel.classList.add('translate-x-full');
+    btn.classList.remove('bg-ink-900','text-white','border-ink-900');
+    btn.classList.add('bg-white','border-surface-300','text-ink-900','hover:bg-surface-50');
+  }
+}
+
+/* AI demo chat */
+const _aiReplies = [
+  "Based on current data, BTS corridor occupancy is trending at 84% — above the 78% network average. If the pattern holds, May could hit 89% with AIS and TrueMove briefs both targeting Silom.",
+  "This week we have 3 open claims: #1284 (high — LED flicker, 2h remaining SLA), #1282 (critical — content not playing, urgent), and #1283 (med — vinyl peel, within SLA). The critical item needs immediate attention.",
+  "Your top 3 clients YTD: AIS Thailand (฿24.8M, 18 campaigns), TrueMove H (฿18.5M, 14 campaigns), and Toyota Motor (฿15.2M, 9 campaigns). Toyota is underspending on digital LED — they only use 2 of your 5 available LED sites.",
+  "Draft proposal ready: AIS 30-day coverage across 8 Bangkok sites (including Silom LED, Rama IX, Asoke) + 2 Chiang Mai sites. Estimated package: ฿4.2M. Occupancy conflicts on TH-SIL-09 for May 5-12 — recommend offering X-CAYA-FY-1 as substitute.",
+];
+let _aiReplyIdx = 0;
+
+function aiSend(text){
+  const input = document.getElementById('ai-input');
+  const msg = text || input.value.trim();
+  if(!msg) return;
+  input.value = '';
+  document.getElementById('ai-suggestions').style.display='none';
+
+  const box = document.getElementById('ai-messages');
+  // User bubble
+  box.innerHTML += '<div class="text-right"><div class="inline-block max-w-[90%] text-[13px] leading-relaxed rounded-xl px-3.5 py-2.5 bg-ink-900 text-white">'+msg.replace(/</g,'&lt;')+'</div></div>';
+  box.scrollTop = box.scrollHeight;
+
+  // Thinking dots
+  const thinkId = 'ai-think-'+Date.now();
+  box.innerHTML += '<div id="'+thinkId+'" class="flex items-center gap-2 text-[12px]" style="color:rgba(30,41,59,0.6)"><div class="flex gap-1"><span class="w-1.5 h-1.5 bg-pb-500 rounded-full pulse-dot"></span><span class="w-1.5 h-1.5 bg-pb-500 rounded-full pulse-dot" style="animation-delay:.2s"></span><span class="w-1.5 h-1.5 bg-pb-500 rounded-full pulse-dot" style="animation-delay:.4s"></span></div>analyzing CRM data…</div>';
+  box.scrollTop = box.scrollHeight;
+
+  setTimeout(()=>{
+    const el = document.getElementById(thinkId);
+    if(el) el.remove();
+    const reply = _aiReplies[_aiReplyIdx % _aiReplies.length];
+    _aiReplyIdx++;
+    box.innerHTML += '<div><div class="text-[10px] font-medium uppercase tracking-wide mb-1" style="color:rgba(30,41,59,0.5)">Copilot</div><div class="inline-block max-w-[90%] text-[13px] leading-relaxed rounded-xl px-3.5 py-2.5 bg-surface-50 border border-surface-200">'+reply+'</div></div>';
+    box.scrollTop = box.scrollHeight;
+  }, 1500);
+}
+</script>
+</body>
+</html>

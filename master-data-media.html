@@ -1,0 +1,916 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Master Data · ประเภทสื่อ — Plan-B CRM</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: { extend: {
+      fontFamily: { kanit:['Kanit','sans-serif'], mono:['JetBrains Mono','monospace'] },
+      colors: {
+        pb:{900:'#213268',700:'#2D56D2',500:'#4790FF',300:'#5FCBF9',100:'#D6ECFF',50:'#EBF5FF'},
+        ink:{900:'#0B1430',800:'#162040',700:'#1E293B'},
+        surface:{0:'#FFFFFF',50:'#F8FAFC',100:'#F1F5F9',200:'#E2E8F0',300:'#CBD5E1'},
+      },
+    }},
+  };
+</script>
+
+<style>
+  *,*::before,*::after{font-family:'Kanit',sans-serif;-webkit-font-smoothing:antialiased}
+  body{background:#F7F9FC;color:#0B1430;margin:0}
+  .font-mono,code,.font-mono *{font-family:'JetBrains Mono',monospace}
+  ::-webkit-scrollbar{width:10px;height:10px}
+  ::-webkit-scrollbar-track{background:transparent}
+  ::-webkit-scrollbar-thumb{background:#CBD5E8;border-radius:10px;border:2px solid #F7F9FC}
+  ::-webkit-scrollbar-thumb:hover{background:#93A4C4}
+  .pane-scroll::-webkit-scrollbar{width:6px}
+  .pane-scroll::-webkit-scrollbar-thumb{background:#CBD5E1;border:1px solid transparent}
+  .row-hover .row-actions{opacity:0;transition:opacity .15s}
+  .row-hover:hover .row-actions{opacity:1}
+  .row-active{background:linear-gradient(90deg,rgba(45,86,210,.18),rgba(71,144,255,.08));color:#213268;font-weight:600;position:relative;box-shadow:inset 0 0 0 1px rgba(45,86,210,.18)}
+  .row-active::before{content:"";position:absolute;left:0;top:4px;bottom:4px;width:4px;border-radius:0 3px 3px 0;background:#2D56D2;box-shadow:0 0 8px rgba(45,86,210,.4)}
+  .row-active .text-ink-700\/50{color:rgba(33,50,104,.7) !important}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:#4790FF;box-shadow:0 0 0 3px rgba(71,144,255,.15)}
+</style>
+
+<!-- Load order: React → ReactDOM → Babel → shared-layout.js (which compiles chrome JSX synchronously) -->
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin="anonymous"></script>
+<script src="shared/shared-layout.js"></script>
+<script src="shared/sidebar.js"></script>
+</head>
+<body>
+<div id="root"></div>
+
+<!-- ========================================================
+     Seed data — embedded from screens/MasterDataMediaData.jsx
+     ======================================================== -->
+<script type="text/babel" data-presets="react">
+const MEDIA_STATUSES = [
+  { id:'active',   label:'พร้อมขาย',   color:'#10B981', text:'#047857', bg:'#ECFDF5', border:'#A7F3D0' },
+  { id:'inactive', label:'ปิดการขาย', color:'#94A3B8', text:'#475569', bg:'#F8FAFC', border:'#E2E8F0' },
+];
+
+const MEDIA_PACKAGES = [
+  // Digital — The Network — Plan B TV
+  { id:'pkg-pbtv-240full',    name:'PlanBTV 240Full',          description:'Plan B TV — 240 วินาที Full Loop' },
+  { id:'pkg-pbtv-80red',      name:'PlanBTV 80Red',            description:'Plan B TV — 80 วินาที (Red Loop)' },
+  { id:'pkg-pbtv-80blue',     name:'PlanBTV 80Blue',           description:'Plan B TV — 80 วินาที (Blue Loop)' },
+  { id:'pkg-pbtv-40red',      name:'PlanBTV 40Red',            description:'Plan B TV — 40 วินาที (Red Loop)' },
+  { id:'pkg-pbtv-40blue',     name:'PlanBTV 40Blue',           description:'Plan B TV — 40 วินาที (Blue Loop)' },
+  // Digital — The Network — Customize
+  { id:'pkg-cust-bkk',        name:'Customize BKK',            description:'Custom package พื้นที่กรุงเทพ' },
+  { id:'pkg-pbtv-nw120',      name:'PlanBTV Nationwide120',    description:'Plan B TV Nationwide — 120 วินาที' },
+  { id:'pkg-pbtv-nw57red',    name:'PlanBTV Nationwide57Red',  description:'Plan B TV Nationwide — 57 วินาที (Red)' },
+  { id:'pkg-pbtv-nw57blue',   name:'PlanBTV Nationwide57Blue', description:'Plan B TV Nationwide — 57 วินาที (Blue)' },
+  { id:'pkg-cust-nationwide', name:'Customize Nationwide',     description:'Custom package ทั่วประเทศ' },
+  // Digital — Signature Screen
+  { id:'pkg-siamparagonfacade',     name:'SiamParagonFacade',                          description:'จอ Facade สยามพารากอน' },
+  { id:'pkg-parcparagon-90dgr',     name:'ParcParagon The90Drgree Interchange21',      description:'ParcParagon 90° Interchange 21' },
+  { id:'pkg-thepanoramix',          name:'ThePanoramix',                               description:'The Panoramix' },
+  { id:'pkg-thedistric-em',         name:'TheDistric Em',                              description:'The District EM' },
+  { id:'pkg-signaturemax',          name:'Signaturemax',                               description:'Signature Max' },
+  { id:'pkg-dusit-central-park',    name:'Dusit Central Park',                         description:'Dusit Central Park' },
+  { id:'pkg-thebigy',               name:'TheBigY',                                    description:'The Big Y' },
+  { id:'pkg-bravobkk',              name:'BravoBKK',                                   description:'Bravo BKK' },
+  { id:'pkg-twintube',              name:'Twintube+',                                  description:'Twin Tube Plus' },
+  { id:'pkg-sobkk',                 name:'So-Bkk',                                     description:'So-BKK' },
+  { id:'pkg-base',                  name:'Base',                                       description:'Base' },
+  { id:'pkg-ploenchit-interchange', name:'Ploenchit Interchange',                      description:'Ploenchit Interchange' },
+  { id:'pkg-atnarong-interchange',  name:'At-narong Interchange',                      description:'At-Narong Interchange' },
+  { id:'pkg-airtraveller-gateway',  name:'Airtraveller Gateway',                       description:'Airtraveller Gateway' },
+  { id:'pkg-lido-connect',          name:'Lido Connect',                               description:'Lido Connect' },
+  { id:'pkg-la-planb',              name:'LA PlanB',                                   description:'LA Plan B' },
+  { id:'pkg-the20',                 name:'The20',                                      description:'The 20' },
+  // Digital — BKK Prime
+  { id:'pkg-bangkok-jams',          name:'Bangkok Jams',                               description:'Bangkok Jams' },
+  { id:'pkg-bangkok-jams-20',       name:'Bangkok Jams2.0',                            description:'Bangkok Jams 2.0' },
+  { id:'pkg-rama9-connect',         name:'Rama9 Connect',                              description:'Rama 9 Connect' },
+  { id:'pkg-digital-gateway-x',     name:'Digital Gateway X',                          description:'Digital Gateway X' },
+  { id:'pkg-citymax',               name:'CityMax',                                    description:'City Max' },
+  // Airport — Fly
+  { id:'pkg-airtraveller-series',   name:'Airtraveller Series',                        description:'Airtraveller Series' },
+  { id:'pkg-thai-airway',           name:'Thai Airway',                                description:'Thai Airway' },
+  { id:'pkg-air-traveller-20',      name:'Air Traveller 2.0',                          description:'Air Traveller 2.0' },
+  { id:'pkg-air-traveller-supreme', name:'Air Traveller Supreme',                      description:'Air Traveller Supreme' },
+  { id:'pkg-dmk',                   name:'DMK',                                        description:'Don Mueang Digital Network — DMK' },
+  { id:'pkg-led-station-dmk',       name:'LED Station (DMK)',                          description:'Don Mueang Digital Network — LED Station' },
+  // Airport — Thai Flight
+  { id:'pkg-led-baggage-claim',     name:'LED Baggage Claim',                          description:'Airport Digital Network — LED Baggage Claim' },
+  { id:'pkg-mobile-charger',        name:'Mobile Charger',                             description:'Airport Digital Network — Mobile Charger' },
+  { id:'pkg-led-station-adn',       name:'LED Station (ADN)',                          description:'Airport Digital Network — LED Station' },
+  { id:'pkg-led-pole',              name:'LED Pole',                                   description:'Airport Digital Network — LED Pole' },
+  // Retail — Luxury
+  { id:'pkg-centralnetwork',        name:'CentralNetwork',                             description:'Central Network' },
+  { id:'pkg-centralnetwork-360',    name:'CentralNetwork 360',                         description:'Central Network 360' },
+  { id:'pkg-centralnetwork-max',    name:'CentralNetwork Max',                         description:'Central Network Max' },
+  { id:'pkg-motionblock',           name:'Motionblock',                                description:'Motion Block' },
+  { id:'pkg-nextopia-siamparagon',  name:'Nextopia SiamParagon',                       description:'Nextopia Siam Paragon' },
+  { id:'pkg-siamparagon-inmall',    name:'SiamParagon Inmall',                         description:'Siam Paragon In-Mall' },
+  // Retail — In-store — 7-Eleven Plus
+  { id:'pkg-7e-multimedia',         name:'Multimedia',                                 description:'7-Eleven Multimedia' },
+  { id:'pkg-7e-metro-led',          name:'Metro LED',                                  description:'7-Eleven Metro LED' },
+  { id:'pkg-7e-pos',                name:'POS',                                        description:'7-Eleven POS Screen' },
+  { id:'pkg-7e-radio',              name:'Radio',                                      description:'7-Eleven Radio' },
+  // Transit — Rail
+  { id:'pkg-digital-mrt',           name:'Digital MRT',                                description:'Digital MRT' },
+  { id:'pkg-pid-mrt',               name:'Pid@MRT',                                    description:'Pid@MRT' },
+  // Transit — BTS
+  { id:'pkg-bts-cityline',          name:'BTS Ciltyline',                              description:'BTS Cityline' },
+  { id:'pkg-bts-cityline-gold',     name:'BTS Cityline [Gold]',                        description:'BTS Cityline Gold' },
+  { id:'pkg-bts-concourse',         name:'BTS Concourse',                              description:'BTS Concourse' },
+  { id:'pkg-bts-max',               name:'BTS Max',                                    description:'BTS Max' },
+  { id:'pkg-bts-skytrain',          name:'BTS Skytrain',                               description:'BTS Skytrain' },
+  { id:'pkg-bts-station',           name:'BTS Station',                                description:'BTS Station' },
+  { id:'pkg-chongnonsri-skywalk',   name:'Chongnonsri Skywalk',                        description:'Chongnonsri Skywalk' },
+  { id:'pkg-mbk',                   name:'MBK',                                        description:'MBK' },
+  { id:'pkg-prime-office',          name:'Prime Offlice',                              description:'Prime Office' },
+  { id:'pkg-station-takeover',      name:'Station Takeover',                           description:'Station Takeover' },
+  { id:'pkg-walkway-balustrade',    name:'Walkway Balustrade',                         description:'Walkway Balustrade' },
+  // Classic
+  { id:'pkg-cream',                 name:'Cream',                                      description:'Cookie & Cream — Cream' },
+];
+
+const MEDIA_GROUPS_SEED = [
+  {
+    id:'DIG', nameTh:'Digital', nameEn:'Digital', color:'#2D56D2',
+    types:[
+      { id:'TN-PBTV',   nameTh:'Plan B TV',            nameEn:'Plan B TV',            status:'active', hasPackage:true,
+        packageIds:['pkg-pbtv-240full','pkg-pbtv-80red','pkg-pbtv-80blue','pkg-pbtv-40red','pkg-pbtv-40blue','pkg-cust-bkk'] },
+      { id:'TN-PBTVNW', nameTh:'Plan B TV Nationwide', nameEn:'Plan B TV Nationwide', status:'active', hasPackage:true,
+        packageIds:['pkg-pbtv-nw120','pkg-pbtv-nw57red','pkg-pbtv-nw57blue','pkg-cust-nationwide'] },
+      { id:'SS-SPF',  nameTh:'Siam Paragon Facade',                  nameEn:'SiamParagonFacade',                   status:'active', hasPackage:true, packageIds:['pkg-siamparagonfacade'] },
+      { id:'SS-PARC', nameTh:'ParcParagon 90° Interchange 21',       nameEn:'ParcParagon The90Drgree Interchange21', status:'active', hasPackage:true, packageIds:['pkg-parcparagon-90dgr'] },
+      { id:'SS-PNX',  nameTh:'The Panoramix',                        nameEn:'ThePanoramix',                        status:'active', hasPackage:true, packageIds:['pkg-thepanoramix'] },
+      { id:'SS-EM',   nameTh:'The District EM',                      nameEn:'TheDistric Em',                       status:'active', hasPackage:true, packageIds:['pkg-thedistric-em'] },
+      { id:'SS-SGM',  nameTh:'Signature Max',                        nameEn:'Signaturemax',                        status:'active', hasPackage:true, packageIds:['pkg-signaturemax'] },
+      { id:'SS-DCP',  nameTh:'Dusit Central Park',                   nameEn:'Dusit Central Park',                  status:'active', hasPackage:true, packageIds:['pkg-dusit-central-park'] },
+      { id:'SS-BIGY', nameTh:'The Big Y',                            nameEn:'TheBigY',                             status:'active', hasPackage:true, packageIds:['pkg-thebigy'] },
+      { id:'SS-BVO',  nameTh:'Bravo BKK',                            nameEn:'BravoBKK',                            status:'active', hasPackage:true, packageIds:['pkg-bravobkk'] },
+      { id:'SS-TT',   nameTh:'Twin Tube+',                           nameEn:'Twintube+',                           status:'active', hasPackage:true, packageIds:['pkg-twintube'] },
+      { id:'SS-SOB',  nameTh:'So-BKK',                               nameEn:'So-Bkk',                              status:'active', hasPackage:true, packageIds:['pkg-sobkk'] },
+      { id:'SS-BS',   nameTh:'Base',                                 nameEn:'Base',                                status:'active', hasPackage:true, packageIds:['pkg-base'] },
+      { id:'SS-PCI',  nameTh:'Ploenchit Interchange',                nameEn:'Ploenchit Interchange',               status:'active', hasPackage:true, packageIds:['pkg-ploenchit-interchange'] },
+      { id:'SS-ATN',  nameTh:'At-Narong Interchange',                nameEn:'At-narong Interchange',               status:'active', hasPackage:true, packageIds:['pkg-atnarong-interchange'] },
+      { id:'SS-ATG',  nameTh:'Airtraveller Gateway',                 nameEn:'Airtraveller Gateway',                status:'active', hasPackage:true, packageIds:['pkg-airtraveller-gateway'] },
+      { id:'SS-LIDO', nameTh:'Lido Connect',                         nameEn:'Lido Connect',                        status:'active', hasPackage:true, packageIds:['pkg-lido-connect'] },
+      { id:'SS-LAP',  nameTh:'LA Plan B',                            nameEn:'LA PlanB',                            status:'active', hasPackage:true, packageIds:['pkg-la-planb'] },
+      { id:'SS-T20',  nameTh:'The 20',                               nameEn:'The20',                               status:'active', hasPackage:true, packageIds:['pkg-the20'] },
+      { id:'BP-BJ',   nameTh:'Bangkok Jams',                         nameEn:'Bangkok Jams',                        status:'active', hasPackage:true, packageIds:['pkg-bangkok-jams'] },
+      { id:'BP-BJ20', nameTh:'Bangkok Jams 2.0',                     nameEn:'Bangkok Jams2.0',                     status:'active', hasPackage:true, packageIds:['pkg-bangkok-jams-20'] },
+      { id:'BP-R9C',  nameTh:'Rama 9 Connect',                       nameEn:'Rama9 Connect',                       status:'active', hasPackage:true, packageIds:['pkg-rama9-connect'] },
+      { id:'BP-DGX',  nameTh:'Digital Gateway X',                    nameEn:'Digital Gateway X',                   status:'active', hasPackage:true, packageIds:['pkg-digital-gateway-x'] },
+      { id:'BP-CMX',  nameTh:'City Max',                             nameEn:'CityMax',                             status:'active', hasPackage:true, packageIds:['pkg-citymax'] },
+    ],
+  },
+  {
+    id:'AIR', nameTh:'Airport', nameEn:'Airport', color:'#F59E0B',
+    types:[
+      { id:'FLY-ATS',  nameTh:'Airtraveller Series',        nameEn:'Airtraveller Series',        status:'active', hasPackage:true, packageIds:['pkg-airtraveller-series'] },
+      { id:'FLY-TA',   nameTh:'Thai Airway',                nameEn:'Thai Airway',                status:'active', hasPackage:true, packageIds:['pkg-thai-airway'] },
+      { id:'FLY-AT20', nameTh:'Air Traveller 2.0',          nameEn:'Air Traveller 2.0',          status:'active', hasPackage:true, packageIds:['pkg-air-traveller-20'] },
+      { id:'FLY-ATSP', nameTh:'Air Traveller Supreme',      nameEn:'Air Traveller Supreme',      status:'active', hasPackage:true, packageIds:['pkg-air-traveller-supreme'] },
+      { id:'FLY-DMK',  nameTh:'Don Mueang Digital Network', nameEn:'Don Mueang Digital Network', status:'active', hasPackage:true, packageIds:['pkg-dmk','pkg-led-station-dmk'] },
+      { id:'TF-ADN',   nameTh:'Airport Digital Network',    nameEn:'Airport Digital Network',    status:'active', hasPackage:true,
+        packageIds:['pkg-led-baggage-claim','pkg-mobile-charger','pkg-led-station-adn','pkg-led-pole'] },
+    ],
+  },
+  {
+    id:'RTL', nameTh:'Retail', nameEn:'Retail', color:'#10B981',
+    types:[
+      { id:'LUX-CN',  nameTh:'Central Network',        nameEn:'CentralNetwork',       status:'active', hasPackage:true,
+        packageIds:['pkg-centralnetwork','pkg-centralnetwork-360','pkg-centralnetwork-max'] },
+      { id:'LUX-MB',  nameTh:'Motion Block',           nameEn:'Motionblock',          status:'active', hasPackage:true, packageIds:['pkg-motionblock'] },
+      { id:'LUX-NXT', nameTh:'Nextopia Siam Paragon',  nameEn:'Nextopia SiamParagon', status:'active', hasPackage:true, packageIds:['pkg-nextopia-siamparagon'] },
+      { id:'LUX-SPI', nameTh:'Siam Paragon In-Mall',   nameEn:'SiamParagon Inmall',   status:'active', hasPackage:true, packageIds:['pkg-siamparagon-inmall'] },
+      { id:'IST-7E',  nameTh:'7-Eleven Plus',          nameEn:'7-Eleven Plus',        status:'active', hasPackage:true,
+        packageIds:['pkg-7e-multimedia','pkg-7e-metro-led','pkg-7e-pos','pkg-7e-radio'] },
+    ],
+  },
+  {
+    id:'TRN', nameTh:'Transit', nameEn:'Transit', color:'#7C3AED',
+    types:[
+      { id:'RAIL-DMRT', nameTh:'Digital MRT',          nameEn:'Digital MRT',          status:'active', hasPackage:true, packageIds:['pkg-digital-mrt'] },
+      { id:'RAIL-PMRT', nameTh:'Pid@MRT',              nameEn:'Pid@MRT',              status:'active', hasPackage:true, packageIds:['pkg-pid-mrt'] },
+      { id:'BTS-CL',    nameTh:'BTS Cityline',         nameEn:'BTS Ciltyline',        status:'active', hasPackage:true, packageIds:['pkg-bts-cityline'] },
+      { id:'BTS-CLG',   nameTh:'BTS Cityline [Gold]',  nameEn:'BTS Cityline [Gold]',  status:'active', hasPackage:true, packageIds:['pkg-bts-cityline-gold'] },
+      { id:'BTS-CON',   nameTh:'BTS Concourse',        nameEn:'BTS Concourse',        status:'active', hasPackage:true, packageIds:['pkg-bts-concourse'] },
+      { id:'BTS-MAX',   nameTh:'BTS Max',              nameEn:'BTS Max',              status:'active', hasPackage:true, packageIds:['pkg-bts-max'] },
+      { id:'BTS-SKY',   nameTh:'BTS Skytrain',         nameEn:'BTS Skytrain',         status:'active', hasPackage:true, packageIds:['pkg-bts-skytrain'] },
+      { id:'BTS-STA',   nameTh:'BTS Station',          nameEn:'BTS Station',          status:'active', hasPackage:true, packageIds:['pkg-bts-station'] },
+      { id:'BTS-CSW',   nameTh:'Chongnonsri Skywalk',  nameEn:'Chongnonsri Skywalk',  status:'active', hasPackage:true, packageIds:['pkg-chongnonsri-skywalk'] },
+      { id:'BTS-MBK',   nameTh:'MBK',                  nameEn:'MBK',                  status:'active', hasPackage:true, packageIds:['pkg-mbk'] },
+      { id:'BTS-PRO',   nameTh:'Prime Office',         nameEn:'Prime Offlice',        status:'active', hasPackage:true, packageIds:['pkg-prime-office'] },
+      { id:'BTS-STK',   nameTh:'Station Takeover',     nameEn:'Station Takeover',     status:'active', hasPackage:true, packageIds:['pkg-station-takeover'] },
+      { id:'BTS-WLB',   nameTh:'Walkway Balustrade',   nameEn:'Walkway Balustrade',   status:'active', hasPackage:true, packageIds:['pkg-walkway-balustrade'] },
+    ],
+  },
+  {
+    id:'CLS', nameTh:'Classic', nameEn:'Classic', color:'#DB2777',
+    types:[
+      { id:'CVC-CC', nameTh:'Cookie & Cream', nameEn:'CookieAndCream', status:'active', hasPackage:true, packageIds:['pkg-cream'] },
+    ],
+  },
+];
+
+function mediaStatus(id) { return MEDIA_STATUSES.find(s => s.id === id); }
+function aggregateMedia(groups) {
+  let types = 0, active = 0;
+  groups.forEach(g => {
+    types += g.types.length;
+    g.types.forEach(t => { if (t.status === undefined || t.status === 'active') active++; });
+  });
+  return { groups: groups.length, types, active, inactive: types - active };
+}
+Object.assign(window, { MEDIA_GROUPS_SEED, MEDIA_STATUSES, MEDIA_PACKAGES, mediaStatus, aggregateMedia });
+</script>
+
+<!-- ========================================================
+     Screen — embedded from screens/MasterDataMedia.jsx
+     ======================================================== -->
+<script type="text/babel" data-presets="react">
+const { useState, useMemo, useRef, useEffect } = React;
+
+function MediaStatusBadge({ id }) {
+  const s = window.mediaStatus(id);
+  if (!s) return null;
+  return (
+    <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full font-medium border text-[11px]"
+      style={{ background: s.bg, color: s.text, borderColor: s.border }}>
+      <span className="w-1.5 h-1.5 rounded-full" style={{ background: s.color }} />
+      {s.label}
+    </span>
+  );
+}
+
+function PaneRow({ item, dot, meta, secondary, active, onSelect, onEdit, onDelete }) {
+  return (
+    <div onClick={onSelect}
+      className={`row-hover group cursor-pointer flex items-center gap-2 px-3 py-2 rounded-md text-[13px] transition-colors ${active ? 'row-active' : 'text-ink-700 hover:bg-[#4790FF]/[0.06] hover:text-ink-900'}`}>
+      {dot && <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: dot }} />}
+      <div className="flex-1 min-w-0">
+        <div className="truncate">{item.nameTh}</div>
+        {secondary && <div className="text-[11px] text-ink-700/50 truncate">{secondary}</div>}
+      </div>
+      {meta !== undefined && <span className="shrink-0 text-[10.5px] font-mono text-ink-700/45 mr-1">{meta}</span>}
+      <div className="flex items-center gap-1 shrink-0">
+        <button onClick={e => { e.stopPropagation(); onEdit(); }} title="Edit"
+          className="w-7 h-7 rounded-md flex items-center justify-center bg-pb-50/60 text-pb-700 hover:bg-pb-100 hover:text-pb-900 transition-colors">
+          <Icon name="pencil" size={13} />
+        </button>
+        <button onClick={e => { e.stopPropagation(); onDelete(); }} title="Delete"
+          className="w-7 h-7 rounded-md flex items-center justify-center bg-rose-50/60 text-rose-600 hover:bg-rose-100 hover:text-rose-700 transition-colors">
+          <Icon name="trash" size={13} />
+        </button>
+      </div>
+      {active && <Icon name="chev-right" size={12} className="shrink-0 text-pb-700" />}
+    </div>
+  );
+}
+
+function Pane({ title, count, subtitle, onAdd, search, onSearch, children, empty }) {
+  return (
+    <div className="flex flex-col bg-white border border-surface-200 rounded-xl overflow-hidden"
+      style={{ boxShadow: '0 1px 3px rgba(11,20,48,.06), 0 1px 2px rgba(11,20,48,.04)' }}>
+      <div className="px-3 py-3 border-b border-surface-200 shrink-0">
+        <div className="flex items-center gap-2 mb-2">
+          <span className="text-[12px] font-semibold text-ink-900">{title}</span>
+          <span className="text-[10.5px] font-mono text-white bg-pb-900 rounded-full px-2 py-0.5">{count}</span>
+          <button onClick={onAdd}
+            className="ml-auto h-7 px-2 rounded-md bg-pb-50 text-pb-700 hover:bg-pb-100 text-[11px] font-semibold flex items-center gap-1">
+            <Icon name="plus" size={12} /> Add
+          </button>
+        </div>
+        {subtitle && <div className="text-[11px] text-ink-700/55 truncate">{subtitle}</div>}
+        {onSearch !== undefined && (
+          <div className="relative mt-2">
+            <Icon name="search" size={13} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-ink-700/35" />
+            <input value={search} onChange={e => onSearch(e.target.value)} placeholder="ค้นหา..."
+              className="w-full h-7 pl-8 pr-2 bg-surface-50 border border-surface-200 rounded-md text-[12px] outline-none focus:border-pb-500 focus:bg-white" />
+          </div>
+        )}
+      </div>
+      <div className="flex-1 overflow-y-auto pane-scroll px-1.5 py-1.5 space-y-0.5" style={{ minHeight: 0 }}>
+        {React.Children.count(children) === 0
+          ? <div className="px-3 py-10 text-center text-[12px] text-ink-700/40">{empty || 'ไม่มีข้อมูล'}</div>
+          : children}
+      </div>
+    </div>
+  );
+}
+
+function MediaDrawer({ open, mode, level, initial, context, onClose, onSave }) {
+  const blank = { id:'', nameTh:'', nameEn:'', color:'#2D56D2', status:'active', hasPackage:false, packageIds:[], panelCount:'' };
+  const [form, setForm] = useState(blank);
+  const [pkgOpen, setPkgOpen] = useState(false);
+  const [pkgSearch, setPkgSearch] = useState('');
+  const pkgRef = useRef(null);
+  const firstRef = useRef(null);
+  useEffect(() => {
+    if (!pkgOpen) return;
+    const onDoc = (e) => { if (pkgRef.current && !pkgRef.current.contains(e.target)) setPkgOpen(false); };
+    document.addEventListener('mousedown', onDoc);
+    return () => document.removeEventListener('mousedown', onDoc);
+  }, [pkgOpen]);
+  useEffect(() => {
+    if (open) {
+      const seed = initial ? { ...initial } : { ...blank };
+      // backward-compat: migrate legacy single packageId → packageIds[]
+      if (seed.packageId && !seed.packageIds) seed.packageIds = [seed.packageId];
+      if (!Array.isArray(seed.packageIds)) seed.packageIds = [];
+      delete seed.packageId;
+      setForm(seed);
+      setPkgOpen(false);
+      setPkgSearch('');
+      setTimeout(() => firstRef.current && firstRef.current.focus(), 60);
+    }
+  }, [open, initial]);
+  const update = (k, v) => setForm(f => ({ ...f, [k]: v }));
+  const togglePackage = (id) => setForm(f => {
+    const cur = Array.isArray(f.packageIds) ? f.packageIds : [];
+    return { ...f, packageIds: cur.includes(id) ? cur.filter(x => x !== id) : [...cur, id] };
+  });
+  const submit = (e) => { e.preventDefault(); if (!form.id || !form.nameTh) return; onSave(form); };
+  const titles = {
+    group: mode === 'create' ? 'เพิ่ม Media Group ใหม่' : 'แก้ไข Media Group',
+    type:  mode === 'create' ? 'เพิ่ม Media Type ใหม่'  : 'แก้ไข Media Type',
+  };
+  const codeHint = {
+    group: '2–4 ตัวอักษร · เช่น DGT, AIR, RTL',
+    type:  'รหัสเฉพาะ · เช่น PBTV, BTS-SKY',
+  };
+  const codePh = {
+    group: 'เช่น DGT',
+    type:  'เช่น PBTV',
+  };
+  const namePh = {
+    group: 'เช่น ดิจิทัล',
+    type:  'เช่น Plan B TV',
+  };
+  const COLORS = ['#2D56D2','#F59E0B','#10B981','#7C3AED','#06B6D4','#EF4444','#0EA5E9'];
+  return (
+    <React.Fragment>
+      <div onClick={onClose}
+        className={`fixed inset-0 bg-black/30 z-30 transition-opacity ${open ? 'opacity-100' : 'pointer-events-none opacity-0'}`} />
+      <aside className={`fixed right-0 top-0 bottom-0 w-[440px] bg-white border-l border-surface-200 z-40 flex flex-col transition-transform duration-200 ${open ? '' : 'translate-x-full'}`}
+        style={{ boxShadow: '-8px 0 30px rgba(11,20,48,.10)' }}>
+        <header className="h-14 px-5 border-b border-surface-200 flex items-center shrink-0">
+          <div>
+            <div className="text-[10px] uppercase tracking-wider font-semibold text-ink-700/45">{mode === 'create' ? 'New' : 'Edit'}</div>
+            <div className="text-[15px] font-semibold text-ink-900 leading-tight">{titles[level]}</div>
+          </div>
+          <button onClick={onClose} className="ml-auto w-8 h-8 rounded-md hover:bg-surface-100 flex items-center justify-center text-ink-700/40">
+            <Icon name="x" size={16} />
+          </button>
+        </header>
+        {context && (level !== 'group') && (
+          <div className="px-5 py-3 bg-pb-50/40 border-b border-surface-200 text-[11px] text-ink-700/65 flex items-center gap-1.5 flex-wrap">
+            <span className="font-medium">{context.groupLabel}</span>
+          </div>
+        )}
+        <form onSubmit={submit} className="flex-1 overflow-y-auto p-5 space-y-4">
+          <Field label={`รหัส (${level === 'group' ? 'Group' : 'Type'} Code)`} hint={codeHint[level]}>
+            <input ref={firstRef} value={form.id}
+              onChange={e => update('id', e.target.value.toUpperCase().slice(0, 8))}
+              disabled={mode === 'edit'} required
+              placeholder={codePh[level]}
+              className="w-full h-9 px-3 bg-surface-50 border border-surface-200 rounded-lg text-[14px] font-mono font-semibold uppercase tracking-wider disabled:bg-surface-100 disabled:text-ink-700/50 placeholder:opacity-40 placeholder:normal-case" />
+          </Field>
+          <Field label={`ชื่อ (${level === 'group' ? 'Group Name' : 'Type Name'})`}>
+            <input value={form.nameTh} onChange={e => update('nameTh', e.target.value)} required
+              placeholder={namePh[level]}
+              className="w-full h-9 px-3 bg-surface-50 border border-surface-200 rounded-lg text-[13px] placeholder:opacity-40" />
+          </Field>
+          {level === 'type' && (
+            <Field label="จำนวน Panel" hint="ระบุเป็นตัวเลขเท่านั้น">
+              <input
+                type="number"
+                min="0"
+                step="1"
+                inputMode="numeric"
+                value={form.panelCount ?? ''}
+                onChange={e => {
+                  const v = e.target.value.replace(/[^0-9]/g, '');
+                  update('panelCount', v);
+                }}
+                onKeyDown={e => {
+                  if (['e','E','+','-','.'].includes(e.key)) e.preventDefault();
+                }}
+                placeholder="เช่น 120"
+                className="w-full h-9 px-3 bg-surface-50 border border-surface-200 rounded-lg text-[13px] font-mono placeholder:opacity-40" />
+            </Field>
+          )}
+          {level === 'group' && (
+            <Field label="สี (สำหรับ tag)">
+              <div className="flex gap-2 flex-wrap">
+                {COLORS.map(c => (
+                  <button key={c} type="button" onClick={() => update('color', c)}
+                    className="w-9 h-9 rounded-lg border-2 transition-transform hover:scale-105"
+                    style={{ background: c, borderColor: form.color === c ? '#0B1430' : 'transparent' }} />
+                ))}
+              </div>
+            </Field>
+          )}
+          {level === 'type' && (
+            <Field label="Package" hint="ถ้าประเภทสื่อนี้ขายเป็นแพ็กเกจ ให้เลือกแพ็กเกจที่ผูกไว้">
+              <div className="space-y-2">
+                <label className="flex items-center gap-2 cursor-pointer p-2 rounded-lg border border-surface-200 hover:bg-surface-50 transition-colors">
+                  <input
+                    type="checkbox"
+                    checked={!!form.hasPackage}
+                    onChange={e => {
+                      update('hasPackage', e.target.checked);
+                      if (!e.target.checked) update('packageIds', []);
+                    }}
+                    className="w-4 h-4 rounded accent-[#2D56D2] shrink-0"
+                  />
+                  <span className="text-[13px] font-medium text-ink-900">มี Package</span>
+                  <span className="text-[11px] text-ink-700/55 ml-auto">เปิดเพื่อเลือกแพ็กเกจ</span>
+                </label>
+
+                {form.hasPackage && (() => {
+                  const selectedIds = form.packageIds || [];
+                  const filtered = window.MEDIA_PACKAGES.filter(p =>
+                    !pkgSearch.trim() ||
+                    p.name.toLowerCase().includes(pkgSearch.toLowerCase()) ||
+                    (p.description || '').toLowerCase().includes(pkgSearch.toLowerCase())
+                  );
+                  return (
+                    <div className="pl-1 pt-1 space-y-1.5">
+                      <label className="text-[11px] font-medium text-ink-700/65 block">
+                        เลือกแพ็กเกจ (เลือกได้หลายรายการ)
+                      </label>
+                      <div ref={pkgRef} className="relative">
+                        <button type="button" onClick={() => setPkgOpen(o => !o)}
+                          className={`w-full min-h-[36px] py-1 pl-2 pr-8 bg-surface-50 border rounded-lg text-left text-[13px] outline-none transition-colors ${pkgOpen ? 'border-pb-500 bg-white' : 'border-surface-200 hover:border-surface-300'}`}>
+                          {selectedIds.length === 0 ? (
+                            <span className="text-ink-700/45 px-1">— เลือกแพ็กเกจ —</span>
+                          ) : (
+                            <span className="flex flex-wrap gap-1">
+                              {selectedIds.map(pid => {
+                                const pkg = window.MEDIA_PACKAGES.find(p => p.id === pid);
+                                if (!pkg) return null;
+                                return (
+                                  <span key={pid}
+                                    className="inline-flex items-center gap-1 h-6 pl-2 pr-1 rounded-md bg-pb-50 border border-pb-100 text-[11px] font-medium text-pb-700">
+                                    {pkg.name}
+                                    <span role="button"
+                                      onClick={(e) => { e.stopPropagation(); togglePackage(pid); }}
+                                      className="w-4 h-4 rounded hover:bg-pb-100 flex items-center justify-center text-pb-700/70 cursor-pointer">
+                                      <Icon name="x" size={10} />
+                                    </span>
+                                  </span>
+                                );
+                              })}
+                            </span>
+                          )}
+                          <Icon name="chev-down" size={12}
+                            className={`absolute right-2.5 top-3 text-ink-700/40 transition-transform ${pkgOpen ? 'rotate-180' : ''}`} />
+                        </button>
+
+                        {pkgOpen && (
+                          <div className="absolute left-0 right-0 top-full mt-1 z-20 bg-white border border-surface-200 rounded-lg overflow-hidden"
+                            style={{ boxShadow:'0 12px 28px rgba(11,20,48,.14)' }}>
+                            <div className="p-2 border-b border-surface-200 bg-surface-50/60">
+                              <div className="relative">
+                                <Icon name="search" size={12} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-ink-700/40" />
+                                <input
+                                  value={pkgSearch}
+                                  onChange={e => setPkgSearch(e.target.value)}
+                                  placeholder="ค้นหาแพ็กเกจ..."
+                                  className="w-full h-7 pl-7 pr-2 bg-white border border-surface-200 rounded-md text-[12px] outline-none focus:border-pb-500"
+                                />
+                              </div>
+                            </div>
+                            <div className="max-h-56 overflow-y-auto pane-scroll divide-y divide-surface-100">
+                              {filtered.length === 0 ? (
+                                <div className="px-3 py-6 text-center text-[12px] text-ink-700/45">ไม่พบแพ็กเกจ</div>
+                              ) : filtered.map(p => {
+                                const checked = selectedIds.includes(p.id);
+                                return (
+                                  <label key={p.id}
+                                    className={`flex items-start gap-2 px-3 py-2 cursor-pointer transition-colors ${checked ? 'bg-pb-50/60' : 'hover:bg-surface-50'}`}>
+                                    <input
+                                      type="checkbox"
+                                      checked={checked}
+                                      onChange={() => togglePackage(p.id)}
+                                      className="w-4 h-4 mt-0.5 rounded accent-[#2D56D2] shrink-0"
+                                    />
+                                    <div className="min-w-0 flex-1">
+                                      <div className="text-[13px] font-medium text-ink-900 leading-tight">{p.name}</div>
+                                      <div className="text-[11px] text-ink-700/60 mt-0.5 leading-snug">{p.description}</div>
+                                    </div>
+                                  </label>
+                                );
+                              })}
+                            </div>
+                            <div className="px-3 py-2 border-t border-surface-200 bg-surface-50/60 flex items-center justify-between">
+                              <span className="text-[11px] text-ink-700/55">
+                                เลือกแล้ว {selectedIds.length} / {window.MEDIA_PACKAGES.length}
+                              </span>
+                              <div className="flex gap-1.5">
+                                {selectedIds.length > 0 && (
+                                  <button type="button" onClick={() => update('packageIds', [])}
+                                    className="h-6 px-2 text-[11px] font-medium text-ink-700/65 hover:text-ink-900 rounded-md hover:bg-surface-100">
+                                    Clear
+                                  </button>
+                                )}
+                                <button type="button" onClick={() => setPkgOpen(false)}
+                                  className="h-6 px-2.5 text-[11px] font-semibold text-white bg-pb-500 hover:bg-pb-600 rounded-md">
+                                  Done
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })()}
+              </div>
+            </Field>
+          )}
+        </form>
+        <footer className="p-4 border-t border-surface-200 flex gap-2 shrink-0">
+          <Button variant="primary" icon="check" className="flex-1" onClick={submit}>
+            {mode === 'create' ? 'บันทึก' : 'บันทึกการแก้ไข'}
+          </Button>
+          <Button variant="secondary" onClick={onClose}>ยกเลิก</Button>
+        </footer>
+      </aside>
+    </React.Fragment>
+  );
+}
+
+function ConfirmDeleteMedia({ open, target, onClose, onConfirm }) {
+  if (!target) return null;
+  return (
+    <React.Fragment>
+      <div onClick={onClose}
+        className={`fixed inset-0 bg-black/40 z-40 transition-opacity ${open ? 'opacity-100' : 'pointer-events-none opacity-0'}`} />
+      <div className={`fixed inset-0 z-50 flex items-center justify-center pointer-events-none p-6 transition-opacity ${open ? 'opacity-100' : 'opacity-0'}`}>
+        <div className="bg-white rounded-2xl border border-surface-200 pointer-events-auto w-full max-w-md"
+          style={{ boxShadow: '0 24px 60px rgba(11,20,48,.18)' }}>
+          <div className="p-6">
+            <div className="w-12 h-12 rounded-full bg-rose-50 flex items-center justify-center mb-4">
+              <Icon name="warning" size={22} className="text-rose-600" />
+            </div>
+            <h3 className="text-[18px] font-semibold text-ink-900 mb-1">ยืนยันการลบ</h3>
+            <p className="text-[13px] text-ink-700/65 leading-relaxed">
+              ต้องการลบ <span className="font-semibold text-ink-900">{target.label}</span> ใช่หรือไม่?
+              {target.warning && <span className="block mt-2 text-rose-600">{target.warning}</span>}
+              <span className="block mt-2 text-ink-700/45">การลบจะไม่สามารถย้อนกลับได้</span>
+            </p>
+          </div>
+          <div className="px-6 py-4 bg-surface-50 border-t border-surface-200 flex gap-2 justify-end rounded-b-2xl">
+            <Button variant="secondary" onClick={onClose}>ยกเลิก</Button>
+            <Button variant="primary" icon="x" onClick={onConfirm} className="!bg-rose-600 hover:!bg-rose-700">Delete Permanently</Button>
+          </div>
+        </div>
+      </div>
+    </React.Fragment>
+  );
+}
+
+const MEDIA_TEMPLATE_COLS = [
+  { key:'group_code',    required:true,  note:'รหัส Media Group — เช่น DGT, AIR, RTL' },
+  { key:'group_name_th', required:true,  note:'ชื่อ Group (ไทย)' },
+  { key:'group_name_en', required:false, note:'Group name (English)' },
+  { key:'type_code',     required:true,  note:'รหัส Type — เช่น PBTV, BTS-SKY' },
+  { key:'type_name_th',  required:true,  note:'ชื่อประเภทสื่อ (ไทย)' },
+  { key:'type_name_en',  required:false, note:'Type name (English)' },
+  { key:'status',        required:false, note:'active / inactive (ค่าเริ่มต้น = active)' },
+];
+
+const MEDIA_SAMPLE = [
+  ['DGT','ดิจิทัล','Digital','PBTV','Plan B TV','Plan B TV','active'],
+  ['DGT','ดิจิทัล','Digital','R9C','Rama 9 Connect','Rama 9 Connect','active'],
+  ['TRN','ทรานสิท','Transit','BTS-SKY','BTS Skytrain','BTS Skytrain','active'],
+  ['RTL','รีเทล','Retail','7E','7-Eleven Plus','7-Eleven Plus','active'],
+];
+
+function MediaImportModal({ open, onClose }) {
+  const [dragOver, setDragOver] = useState(false);
+  if (!open) return null;
+  return (
+    <React.Fragment>
+      <div onClick={onClose} className="fixed inset-0 bg-black/40 z-40" />
+      <div className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none p-6">
+        <div className="bg-white rounded-2xl border border-surface-200 pointer-events-auto w-full max-w-2xl flex flex-col"
+          style={{ boxShadow: '0 24px 60px rgba(11,20,48,.18)', maxHeight: 'calc(100vh - 48px)' }}>
+          <header className="px-6 py-4 border-b border-surface-200 flex items-center gap-3 shrink-0">
+            <div className="w-10 h-10 rounded-lg bg-pb-50 flex items-center justify-center text-pb-700">
+              <Icon name="download" size={20} />
+            </div>
+            <div className="flex-1">
+              <h3 className="text-[16px] font-semibold text-ink-900">นำเข้าประเภทสื่อจาก CSV</h3>
+              <p className="text-[12px] text-ink-700/55 mt-0.5">แต่ละแถวคือ Media Type หนึ่งรายการ พร้อมระบุ Group ที่ผูก</p>
+            </div>
+            <button onClick={onClose} className="w-9 h-9 rounded-md hover:bg-surface-100 flex items-center justify-center text-ink-700/40">
+              <Icon name="x" size={18} />
+            </button>
+          </header>
+
+          <div className="flex-1 overflow-y-auto p-6 space-y-5">
+            <div className="rounded-xl border border-pb-100 bg-gradient-to-br from-pb-50 to-pb-50/40 p-4 flex items-start gap-3">
+              <div className="w-9 h-9 rounded-lg bg-white border border-pb-100 flex items-center justify-center text-pb-700 shrink-0">
+                <Icon name="clipboard" size={18} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="text-[13px] font-semibold text-ink-900">เทมเพลตตัวอย่าง CSV</div>
+                <p className="text-[12px] text-ink-700/60 mt-0.5 leading-relaxed">
+                  ดาวน์โหลดไฟล์ตัวอย่าง ครอบคลุมโครงสร้าง 2 ระดับ (Group → Type)
+                </p>
+                <div className="flex items-center gap-2 mt-3">
+                  <a href="templates/master-data-media-template.csv" download="master-data-media-template.csv"
+                    className="inline-flex items-center gap-2 h-9 px-3.5 rounded-lg bg-pb-700 text-white text-[12.5px] font-semibold hover:bg-pb-900 transition-colors shadow-sm">
+                    <Icon name="download" size={14} />
+                    ดาวน์โหลด CSV
+                  </a>
+                  <span className="text-[11px] font-mono text-ink-700/45">master-data-media-template.csv</span>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div className="text-[11px] uppercase font-semibold text-ink-700/55 tracking-wider mb-2">โครงสร้างคอลัมน์</div>
+              <div className="rounded-lg border border-surface-200 overflow-hidden">
+                <table className="w-full text-[12px]">
+                  <thead className="bg-surface-50 border-b border-surface-200">
+                    <tr className="text-left text-[10.5px] uppercase tracking-wide text-ink-700/55">
+                      <th className="px-3 py-2 font-semibold">Column</th>
+                      <th className="px-3 py-2 font-semibold">Required</th>
+                      <th className="px-3 py-2 font-semibold">คำอธิบาย</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {MEDIA_TEMPLATE_COLS.map(c => (
+                      <tr key={c.key} className="border-b border-surface-100 last:border-0">
+                        <td className="px-3 py-2 font-mono text-pb-700 font-semibold whitespace-nowrap">{c.key}</td>
+                        <td className="px-3 py-2 whitespace-nowrap">
+                          {c.required
+                            ? <span className="inline-flex items-center gap-1 text-[10.5px] px-1.5 py-0.5 rounded bg-rose-50 text-rose-700 font-medium">จำเป็น</span>
+                            : <span className="text-[10.5px] text-ink-700/40">ไม่จำเป็น</span>}
+                        </td>
+                        <td className="px-3 py-2 text-ink-700/70">{c.note}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <p className="text-[11px] text-ink-700/50 mt-2 leading-relaxed">
+                <Icon name="check-circle" size={11} className="inline-block -mt-0.5 mr-1 text-emerald-500" />
+                แถวที่มี <code className="text-pb-700">group_code</code> เดียวกันจะถูกรวมเป็น Group เดียว — ไม่สร้างซ้ำ
+              </p>
+            </div>
+
+            <div>
+              <div className="text-[11px] uppercase font-semibold text-ink-700/55 tracking-wider mb-2">ตัวอย่างข้อมูล</div>
+              <div className="rounded-lg border border-surface-200 overflow-x-auto">
+                <table className="w-full text-[11px]">
+                  <thead className="bg-surface-50 border-b border-surface-200">
+                    <tr className="text-left text-[9.5px] uppercase tracking-wide text-ink-700/55 whitespace-nowrap">
+                      {MEDIA_TEMPLATE_COLS.map(c => (
+                        <th key={c.key} className="px-2 py-1.5 font-semibold font-mono">{c.key.replace(/_/g, ' ')}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {MEDIA_SAMPLE.map((r, i) => (
+                      <tr key={i} className="border-b border-surface-100 last:border-0 hover:bg-pb-50/30">
+                        {r.map((v, j) => {
+                          const k = MEDIA_TEMPLATE_COLS[j].key;
+                          const isCode = k.endsWith('_code');
+                          return (
+                            <td key={j} className={`px-2 py-1.5 whitespace-nowrap ${isCode ? 'font-mono text-pb-700' : ''}`}>{v}</td>
+                          );
+                        })}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div>
+              <div className="text-[11px] uppercase font-semibold text-ink-700/55 tracking-wider mb-2">อัปโหลดไฟล์</div>
+              <div onDragOver={e => { e.preventDefault(); setDragOver(true); }}
+                onDragLeave={() => setDragOver(false)}
+                onDrop={e => { e.preventDefault(); setDragOver(false); }}
+                className={`rounded-xl border-2 border-dashed flex flex-col items-center justify-center py-8 px-6 text-center transition-colors ${dragOver ? 'border-pb-500 bg-pb-50/60' : 'border-surface-300 bg-surface-50'}`}>
+                <div className="w-12 h-12 rounded-full bg-white border border-surface-200 flex items-center justify-center text-pb-700 mb-3">
+                  <Icon name="upload" size={20} />
+                </div>
+                <div className="text-[13px] font-semibold text-ink-900">ลากไฟล์มาวางที่นี่</div>
+                <div className="text-[12px] text-ink-700/55 mt-1">หรือ <button className="text-pb-700 font-semibold hover:underline">Choose from Device</button></div>
+                <div className="text-[11px] text-ink-700/40 mt-2 font-mono">.csv · UTF-8 · สูงสุด 5 MB</div>
+              </div>
+            </div>
+          </div>
+
+          <footer className="px-6 py-4 bg-surface-50 border-t border-surface-200 flex items-center gap-2 rounded-b-2xl shrink-0">
+            <div className="text-[11px] text-ink-700/50 flex-1">ระบบจะตรวจสอบและให้คุณยืนยันก่อนเขียนทับข้อมูล</div>
+            <Button variant="secondary" onClick={onClose}>ยกเลิก</Button>
+            <Button variant="primary" icon="check" disabled>เริ่มนำเข้า</Button>
+          </footer>
+        </div>
+      </div>
+    </React.Fragment>
+  );
+}
+
+function MStatTile({ icon, label, value, tone='#2D56D2' }) {
+  return (
+    <div className="bg-white border border-surface-200 rounded-xl px-4 py-3 flex items-center gap-3"
+      style={{ boxShadow: '0 1px 3px rgba(11,20,48,.06), 0 1px 2px rgba(11,20,48,.04)' }}>
+      <div className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
+        style={{ background: `${tone}14`, color: tone }}><Icon name={icon} size={17} /></div>
+      <div className="min-w-0">
+        <div className="text-[10px] uppercase font-semibold tracking-wider text-ink-700/55">{label}</div>
+        <div className="text-[18px] font-semibold tracking-tight" style={{ fontVariantNumeric: 'tabular-nums' }}>{value}</div>
+      </div>
+    </div>
+  );
+}
+
+function MasterDataMediaScreen() {
+  const [groups, setGroups] = useState(() => JSON.parse(JSON.stringify(window.MEDIA_GROUPS_SEED)));
+  const [collapsed, setCollapsed] = useState(false);
+  const [globalSearch, setGlobalSearch] = useState('');
+  const [gSearch, setGSearch] = useState('');
+  const [tSearch, setTSearch] = useState('');
+  const [selectedGroupId, setSelectedGroupId] = useState('DIG');
+  const [drawerState, setDrawerState] = useState({ open:false, mode:'create', level:'group', initial:null, context:null });
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [aiOpen, setAiOpen] = useState(false);
+  const [importOpen, setImportOpen] = useState(false);
+
+  const filteredGroups = useMemo(() => {
+    return groups.filter(g => {
+      if (gSearch && !(g.nameTh.includes(gSearch) || (g.nameEn||'').toLowerCase().includes(gSearch.toLowerCase()) || g.id.toLowerCase().includes(gSearch.toLowerCase()))) return false;
+      if (globalSearch) {
+        const q = globalSearch.toLowerCase();
+        const hits = g.id.toLowerCase().includes(q) || g.nameTh.includes(globalSearch) || (g.nameEn||'').toLowerCase().includes(q) ||
+          g.types.some(t => t.id.toLowerCase().includes(q) || t.nameTh.includes(globalSearch) || (t.nameEn||'').toLowerCase().includes(q));
+        if (!hits) return false;
+      }
+      return true;
+    });
+  }, [groups, gSearch, globalSearch]);
+
+  const selectedGroup = filteredGroups.find(g => g.id === selectedGroupId) || filteredGroups[0];
+  const types = selectedGroup ? selectedGroup.types : [];
+  const filteredTypes = useMemo(() => {
+    if (!tSearch) return types;
+    return types.filter(t => t.nameTh.includes(tSearch) || (t.nameEn||'').toLowerCase().includes(tSearch.toLowerCase()) || t.id.toLowerCase().includes(tSearch.toLowerCase()));
+  }, [types, tSearch]);
+
+  const stats = useMemo(() => window.aggregateMedia(groups), [groups]);
+  const openCreate = (level, ctx) => setDrawerState({ open:true, mode:'create', level, initial:null, context: ctx });
+  const openEdit = (level, item, ctx) => setDrawerState({ open:true, mode:'edit', level, initial: { ...item }, context: ctx });
+  const closeDrawer = () => setDrawerState(s => ({ ...s, open:false }));
+
+  const saveEntity = (data) => {
+    const { level, mode, initial } = drawerState;
+    setGroups(prev => {
+      const next = prev.map(g => ({ ...g, types: g.types.map(t => ({ ...t })) }));
+      if (level === 'group') {
+        if (mode === 'create') {
+          if (next.find(g => g.id === data.id)) { alert(`รหัส ${data.id} มีอยู่แล้ว`); return prev; }
+          next.push({ id: data.id, nameTh: data.nameTh, nameEn: data.nameEn || '', color: data.color, types: [] });
+          setSelectedGroupId(data.id);
+        } else {
+          const g = next.find(g => g.id === initial.id);
+          if (g) { g.nameTh = data.nameTh; g.nameEn = data.nameEn; g.color = data.color; }
+        }
+      }
+      if (level === 'type') {
+        const parentG = next.find(g => g.id === drawerState.context.groupId);
+        const pCount = data.panelCount === '' || data.panelCount == null ? null : Number(data.panelCount);
+        if (mode === 'create') {
+          if (parentG.types.find(t => t.id === data.id)) { alert(`รหัส ${data.id} มีอยู่แล้ว`); return prev; }
+          parentG.types.push({ id: data.id, nameTh: data.nameTh, nameEn: data.nameEn || '', status:'active', panelCount: pCount, hasPackage: !!data.hasPackage, packageIds: data.packageIds || [] });
+        } else {
+          const t = parentG.types.find(t => t.id === initial.id);
+          if (t) Object.assign(t, { nameTh: data.nameTh, nameEn: data.nameEn, panelCount: pCount, hasPackage: !!data.hasPackage, packageIds: data.packageIds || [] });
+        }
+      }
+      return next;
+    });
+    closeDrawer();
+  };
+
+  const confirmDelete = () => {
+    const t = deleteTarget; if (!t) return;
+    setGroups(prev => {
+      const next = prev.map(g => ({ ...g, types: [...g.types] }));
+      if (t.level === 'group') { const idx = next.findIndex(g => g.id === t.id); if (idx > -1) next.splice(idx, 1); setSelectedGroupId(next[0]?.id); }
+      if (t.level === 'type') { const g = next.find(g => g.id === t.parentGId); const idx = g.types.findIndex(tt => tt.id === t.id); if (idx > -1) g.types.splice(idx, 1); }
+      return next;
+    });
+    setDeleteTarget(null);
+  };
+
+  const leftPad = collapsed ? 68 : 256;
+
+  return (
+    <div className="min-h-screen flex bg-[#F7F9FC]" style={{ color: '#0B1430' }}>
+      <main className="flex-1 min-h-screen flex flex-col transition-[margin-left] duration-200 lg:ml-64">
+        <Topbar
+          crumbs={[
+            { label:'Home',        href:'dashboard.html' },
+            { label:'Setting',     href:'settings-master.html' },
+            { label:'Master Data', href:'settings-master.html' },
+            'ประเภทสื่อ (Media)'
+          ]}
+          onToggleSidebar={() => window.collapseSidebar()}
+          onToggleAi={() => setAiOpen(o => !o)}
+          aiOpen={aiOpen}
+        />
+
+        <div className="flex-1 p-4 sm:p-6">
+          <div className="max-w-[1600px] mx-auto space-y-4 flex flex-col" style={{ minHeight: 'calc(100vh - 96px)' }}>
+            <div className="flex items-start justify-between gap-3 flex-wrap">
+              <div>
+                <h2 className="text-[22px] font-semibold text-ink-900 tracking-tight">ประเภทสื่อ · Master Data</h2>
+                <p className="text-[12px] text-ink-700/55 mt-0.5">
+                  จัดการประเภทสื่อตามโครงสร้าง 2 ระดับ: <b>Media Group → Media Type</b>
+                </p>
+              </div>
+              <div className="flex gap-2">
+                <Button variant="secondary" icon="download" onClick={() => setImportOpen(true)}>นำเข้า CSV</Button>
+                <Button variant="ghost" icon="upload">ส่งออก</Button>
+                <Button variant="primary" icon="plus" onClick={() => openCreate('group', null)}>เพิ่ม Group</Button>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <MStatTile icon="squares-2x2" label="Media Groups" value={stats.groups} tone="#2D56D2" />
+              <MStatTile icon="archive-box" label="Media Types"  value={stats.types}  tone="#7C3AED" />
+            </div>
+
+            <div className="bg-white border border-surface-200 rounded-xl p-3"
+              style={{ boxShadow: '0 1px 3px rgba(11,20,48,.06), 0 1px 2px rgba(11,20,48,.04)' }}>
+              <div className="relative">
+                <Icon name="search" size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-700/35" />
+                <input value={globalSearch} onChange={e => setGlobalSearch(e.target.value)}
+                  placeholder="ค้นหาทุกระดับ — Group / Type / รหัส..."
+                  className="w-full h-9 pl-9 pr-3 bg-surface-50 border border-surface-200 rounded-lg text-[13px]" />
+              </div>
+            </div>
+
+            <div className="grid gap-3 flex-1" style={{ gridTemplateColumns: 'minmax(280px, 1fr) minmax(280px, 1.6fr)', minHeight: 480 }}>
+              <Pane title="Media Group" count={filteredGroups.length} subtitle="หมวดใหญ่ของสื่อ"
+                onAdd={() => openCreate('group', null)} search={gSearch} onSearch={setGSearch} empty="ไม่พบ Group">
+                {filteredGroups.map(g => (
+                  <PaneRow key={g.id} item={g} dot={g.color} meta={g.types.length} secondary={`${g.id} · ${g.nameEn}`}
+                    active={selectedGroup?.id === g.id}
+                    onSelect={() => setSelectedGroupId(g.id)}
+                    onEdit={() => openEdit('group', g, null)}
+                    onDelete={() => setDeleteTarget({ level:'group', id:g.id, label: `Group ${g.nameTh} (${g.id})`,
+                      warning: g.types.length > 0 ? `จะลบ ${g.types.length} Types ใน Group นี้ด้วย` : null })} />
+                ))}
+              </Pane>
+
+              <Pane title="Media Type" count={filteredTypes.length}
+                subtitle={selectedGroup ? `ใน ${selectedGroup.nameTh}` : 'เลือก Group ก่อน'}
+                onAdd={() => selectedGroup && openCreate('type', { groupId: selectedGroup.id, groupLabel: selectedGroup.nameTh })}
+                search={tSearch} onSearch={setTSearch}
+                empty={selectedGroup ? 'ยังไม่มี Type ในกลุ่มนี้ — กด "เพิ่ม"' : 'เลือก Group ก่อน'}>
+                {filteredTypes.map(t => (
+                  <PaneRow key={t.id} item={t}
+                    meta={t.panelCount != null ? `${t.panelCount} panels` : '—'}
+                    secondary={`${t.id} · ${t.nameEn}`}
+                    active={false} onSelect={() => {}}
+                    onEdit={() => openEdit('type', t, { groupId: selectedGroup.id, groupLabel: selectedGroup.nameTh })}
+                    onDelete={() => setDeleteTarget({ level:'type', id:t.id, parentGId: selectedGroup.id, label: `Type ${t.nameTh} (${t.id})` })} />
+                ))}
+              </Pane>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <MediaDrawer open={drawerState.open} mode={drawerState.mode} level={drawerState.level}
+        initial={drawerState.initial} context={drawerState.context} onClose={closeDrawer} onSave={saveEntity} />
+      <ConfirmDeleteMedia open={!!deleteTarget} target={deleteTarget}
+        onClose={() => setDeleteTarget(null)} onConfirm={confirmDelete} />
+      <MediaImportModal open={importOpen} onClose={() => setImportOpen(false)} />
+      <AiPanel open={aiOpen} onClose={() => setAiOpen(false)} />
+    </div>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<MasterDataMediaScreen />);
+</script>
+</body>
+</html>

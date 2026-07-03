@@ -1,0 +1,2637 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ticket Detail — Plan-B CRM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config={theme:{extend:{fontFamily:{kanit:['Kanit','sans-serif']},colors:{pb:{900:'#213268',700:'#2D56D2',500:'#4790FF',300:'#5FCBF9',50:'#EBF5FF',100:'#D6ECFF'},ink:{900:'#0B1430',800:'#162040',700:'#1E293B'},surface:{0:'#FFFFFF',50:'#F8FAFC',100:'#F1F5F9',200:'#E2E8F0',300:'#CBD5E1'}}}}}
+</script>
+<style>
+*{font-family:'Kanit',sans-serif;-webkit-font-smoothing:antialiased}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#CBD5E8;border-radius:10px;border:2px solid #F7F9FC}
+::-webkit-scrollbar-thumb:hover{background:#93A4C4}
+.sidebar-scroll::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.06);border:2px solid transparent}
+.sidebar-scroll::-webkit-scrollbar-track{background:transparent}
+/* Sidebar nav items — White theme */
+.sidebar-nav{color:rgba(30,41,59,0.6);transition:all 0.15s;position:relative;font-size:13px}
+.sidebar-nav:hover{color:#0B1430;background:rgba(71,144,255,0.06)}
+.sidebar-nav.active{color:#2D56D2;font-weight:500;background:linear-gradient(90deg,rgba(71,144,255,0.10),rgba(71,144,255,0))}
+.sidebar-nav.active::before{content:'';position:absolute;left:0;top:8px;bottom:8px;width:3px;border-radius:2px;background:#2D56D2}
+/* Sidebar group headers */
+.sidebar-nav-parent{color:rgba(30,41,59,0.4);transition:all 0.15s;font-size:10.5px;text-transform:uppercase;letter-spacing:0.05em;font-weight:600}
+.sidebar-nav-parent:hover{color:rgba(30,41,59,0.7)}
+.sidebar-nav-parent.active{color:rgba(30,41,59,0.7)}
+/* Sidebar sub-items */
+.sidebar-sub{color:rgba(30,41,59,0.55);transition:all 0.15s;position:relative}
+.sidebar-sub:hover{color:#0B1430;background:rgba(71,144,255,0.06)}
+.sidebar-sub.active{color:#2D56D2;font-weight:500;background:linear-gradient(90deg,rgba(71,144,255,0.10),rgba(71,144,255,0))}
+.sidebar-sub.active::before{content:'';position:absolute;left:0;top:6px;bottom:6px;width:3px;border-radius:2px;background:#2D56D2;box-shadow:0 0 8px rgba(45,86,210,0.4)}
+.sidebar-nav.active::before{box-shadow:0 0 8px rgba(45,86,210,0.4)}
+.sidebar-group-icon{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:8px;background:transparent;transition:all .15s;flex-shrink:0;color:rgba(30,41,59,0.55)}
+.sgi-ma{color:#7C3AED}.sgi-rpt{color:#0EA5E9}.sgi-stg{color:#EF4444}
+.nav-parent{border-radius:8px;transition:all .15s}
+.nav-parent:hover{background:#F1F5F9}
+.nav-parent.active:has(.sgi-ma){background:rgba(124,58,237,0.10);color:#7C3AED}
+.nav-parent.active:has(.sgi-ma) .sidebar-group-icon{background:rgba(124,58,237,0.20)}
+.nav-parent.active:has(.sgi-rpt){background:rgba(14,165,233,0.10);color:#0EA5E9}
+.nav-parent.active:has(.sgi-rpt) .sidebar-group-icon{background:rgba(14,165,233,0.20)}
+.nav-parent.active:has(.sgi-stg){background:rgba(239,68,68,0.10);color:#EF4444}
+.nav-parent.active:has(.sgi-stg) .sidebar-group-icon{background:rgba(239,68,68,0.20)}
+#sidebar{background:linear-gradient(180deg,#fff 0%,#fff 60%,#F8FAFC 100%) !important}
+#sidebar-brand{background:linear-gradient(135deg,rgba(45,86,210,0.04),rgba(95,203,249,0.04))}
+/* nav-item for page content compatibility */
+.nav-item{transition:all 0.2s;border-radius:8px}
+.nav-item:hover,.nav-item.active{background:rgba(71,144,255,0.12);color:#4790FF}
+.nav-parent.active{color:#2D56D2;font-weight:500}
+/* Cards & general UI */
+.card-hover{transition:all 0.2s}
+.card-hover:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(33,50,104,0.12)}
+.badge-pulse{animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.7}}
+.status-dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+input:focus,select:focus,textarea:focus{outline:none;border-color:#4790FF;box-shadow:0 0 0 3px rgba(71,144,255,0.15)}
+.tab-btn{transition:all 0.2s}
+.tab-btn.active{color:#2D56D2;border-bottom:2px solid #2D56D2}
+table th{position:sticky;top:0;z-index:1}
+.progress-bar{transition:width 0.6s ease}
+/* Topbar — White glass */
+.topbar-white{background:rgba(255,255,255,0.9);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid #E2E8F0}
+/* Dashboard extras */
+.tnum{font-variant-numeric:tabular-nums}
+.shine{background:linear-gradient(135deg,#2D56D2,#5FCBF9)}
+.shine-soft{background:linear-gradient(135deg,rgba(71,144,255,0.08),rgba(95,203,249,0.08))}
+.ai-border{box-shadow:0 0 0 1px rgba(45,86,210,0.25),0 2px 8px rgba(45,86,210,0.08)}
+.pulse-dot{animation:pulseDot 2s ease-in-out infinite}
+@keyframes pulseDot{0%,100%{transform:scale(1);opacity:.4}50%{transform:scale(1.5);opacity:0}}
+.map-bg{background:linear-gradient(135deg,#F8FAFC 0%,#EBF5FF 100%)}
+.shadow-pop{box-shadow:0 8px 30px rgba(11,20,48,0.12)}
+.shadow-card{box-shadow:0 1px 3px rgba(11,20,48,0.06),0 1px 2px rgba(11,20,48,0.04)}
+/* Sidebar collapse label */
+.sidebar-label{transition:opacity 0.15s;white-space:nowrap;overflow:hidden}
+/* Standard upload drag-over highlight */
+.upload-drag-over{background:#EBF5FF !important;border-color:#4790FF !important}
+</style>
+<script src="shared/sidebar.js"></script>
+<script src="shared/datepicker.js"></script>
+</head>
+<body class="font-kanit" style="background:#F7F9FC;color:#0B1430">
+
+<div class="min-h-screen flex">
+  <!-- SIDEBAR — Clean White -->
+  <!-- Mobile overlay -->
+  <div id="sidebar-overlay" class="hidden fixed inset-0 bg-black/40 z-20 lg:hidden" onclick="toggleMobile()"></div>
+  <aside id="sidebar" class="w-64 flex flex-col fixed h-full z-30 transition-all duration-200 -translate-x-full lg:translate-x-0 bg-white border-r border-[#E2E8F0]">
+    <!-- Brand -->
+    <div class="px-4 h-16 flex items-center gap-2.5 border-b border-[#E2E8F0]" id="sidebar-brand">
+      <div class="sidebar-label flex items-center gap-2 min-w-0">
+        <img src="logo.jpg" alt="Plan-B Media" class="h-8 w-auto rounded shrink-0" />
+        <span class="text-[11px] font-semibold tracking-wide uppercase border-l border-[#E2E8F0] pl-2 truncate" style="color:rgba(30,41,59,0.55)">Media Flow System</span>
+      </div>
+    </div>
+    <!-- Nav -->
+    <nav class="flex-1 py-3 px-2 overflow-y-auto text-sm sidebar-scroll space-y-0.5">
+
+      <!-- Dashboard -->
+      <a href="dashboard.html" class=" sidebar-nav w-full flex items-center gap-3 h-10 rounded-md px-3 cursor-pointer" data-page="dashboard">
+        <svg class="w-[18px] h-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25a2.25 2.25 0 01-2.25-2.25v-2.25z" /></svg>
+        <span class="flex-1 text-left truncate sidebar-label">Dashboard</span>
+      </a>
+
+      <!-- Inventory -->
+      <a href="inventory.html" class=" sidebar-nav w-full flex items-center gap-3 h-10 rounded-md px-3 cursor-pointer">
+        <svg class="w-[18px] h-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" /></svg>
+        <span class="flex-1 text-left truncate sidebar-label">Inventory</span>
+      </a>
+
+      <!-- Sale -->
+      <a href="sale.html" class=" sidebar-nav w-full flex items-center gap-3 h-10 rounded-md px-3 cursor-pointer">
+        <svg class="w-[18px] h-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z" /></svg>
+        <span class="flex-1 text-left truncate sidebar-label">Sale</span>
+      </a>
+
+      <!-- Media Approval (Expandable) -->
+      <div class="pt-3">
+        <button onclick="toggleMenu('ma')" class="nav-parent active sidebar-nav-parent w-full flex items-center gap-3 h-8 px-3 cursor-pointer text-left">
+          <span class="sidebar-group-icon sgi-ma"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></span><span class="flex-1 text-left">Media Approval</span>
+          <svg id="ma-chevron" class="w-3 h-3 transition-transform duration-200 rotate-90" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" /></svg>
+        </button>
+        <div id="ma-sub" class="space-y-0.5">
+          <a href="ma-dashboard.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Dashboard</span>
+          </a>
+          <a href="job-list.html" class="active sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Media Ticket</span>
+            <span class="text-[10px] bg-pb-500 text-white rounded-full px-1.5 min-w-[18px] text-center">12</span>
+          </a>
+          <a href="assign-job.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Assign Ticket</span>
+            <span class="text-[10px] bg-amber-500 text-white rounded-full px-1.5 min-w-[18px] text-center">5</span>
+          </a>
+          <a href="receive-job.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Verify & Production</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Production -->
+      <a href="production.html" class=" sidebar-nav w-full flex items-center gap-3 h-10 rounded-md px-3 cursor-pointer">
+        <svg class="w-[18px] h-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17l-5.1-5.1a2.25 2.25 0 010-3.182l.71-.71a2.25 2.25 0 013.18 0l2.8 2.8 2.8-2.8a2.25 2.25 0 013.18 0l.71.71a2.25 2.25 0 010 3.182l-5.1 5.1a2.25 2.25 0 01-3.18 0z" /></svg>
+        <span class="flex-1 text-left truncate sidebar-label">Production</span>
+      </a>
+
+      <!-- Claim -->
+      <a href="claim.html" class=" sidebar-nav w-full flex items-center gap-3 h-10 rounded-md px-3 cursor-pointer">
+        <svg class="w-[18px] h-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z" /></svg>
+        <span class="flex-1 text-left truncate sidebar-label">Claim</span>
+      </a>
+
+      <!-- Report (Expandable) -->
+      <div class="pt-3">
+        <button onclick="toggleMenu('rpt')" class="nav-parent sidebar-nav-parent w-full flex items-center gap-3 h-8 px-3 cursor-pointer text-left">
+          <span class="sidebar-group-icon sgi-rpt"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg></span><span class="flex-1 text-left">Report</span>
+          <svg id="rpt-chevron" class="w-3 h-3 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" /></svg>
+        </button>
+        <div id="rpt-sub" class="space-y-0.5 hidden">
+          <a href="kpi-dashboard.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">KPI Dashboard</span>
+          </a>
+          <a href="export-airtime.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Export Airtime</span>
+          </a>
+          <a href="report-monthly.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Monthly Report</span>
+          </a>
+          <a href="report-audit.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Audit Log</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Setting (Expandable) -->
+      <div class="pt-3">
+        <button onclick="toggleMenu('stg')" class="nav-parent sidebar-nav-parent w-full flex items-center gap-3 h-8 px-3 cursor-pointer text-left">
+          <span class="sidebar-group-icon sgi-stg"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75"/></svg></span><span class="flex-1 text-left">Setting</span>
+          <svg id="stg-chevron" class="w-3 h-3 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" /></svg>
+        </button>
+        <div id="stg-sub" class="space-y-0.5 hidden">
+          <a href="settings-user.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">User Management</span>
+          </a>
+          <a href="settings-usergroup.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">User Group Management</span>
+          </a>
+          <a href="settings-email.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Email Setup</span>
+          </a>
+          <a href="settings-master.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Master Data</span>
+          </a>
+        </div>
+      </div>
+
+    </nav>
+
+    <!-- User Footer -->
+    <div class="p-3 border-t border-[#E2E8F0]">
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-full flex items-center justify-center text-white font-semibold text-[13px] shrink-0" style="background:#4790FF">RK</div>
+        <div class="flex-1 min-w-0 sidebar-label">
+          <div class="text-[13px] font-medium text-[#0B1430] truncate">Raveewan Kaewmanee</div>
+          <div class="text-[11px] truncate" style="color:rgba(30,41,59,0.5)">Admin · Plan-B</div>
+        </div>
+        <a href="login.html" class="transition sidebar-label hover:opacity-80" style="color:rgba(30,41,59,0.4)" title="ออกจากระบบ">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" /></svg>
+        </a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="flex-1 lg:ml-64 min-h-screen">
+    <!-- Top Bar — White Glass -->
+    <header class="topbar-white h-16 shrink-0 sticky top-0 z-20 flex items-center gap-4 px-4 sm:px-6">
+      <!-- Collapse / Mobile toggle -->
+      <button onclick="collapseSidebar()" class="w-9 h-9 rounded-md hover:bg-surface-100 flex items-center justify-center text-ink-700">
+        <svg class="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" /></svg>
+      </button>
+
+      <!-- Breadcrumbs -->
+      <div class="flex items-center gap-1.5 text-[13px]" style="color:rgba(30,41,59,0.6)">
+        <span>Home</span>
+        <svg class="w-3 h-3 opacity-30" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
+        <span class="font-medium" style="color:#0B1430">Ticket Detail</span>
+      </div>
+
+      <div class="flex-1"></div>
+
+      <!-- Notification -->
+      <button class="w-9 h-9 rounded-md hover:bg-surface-100 flex items-center justify-center relative" style="color:#1E293B">
+        <svg class="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" /></svg>
+        <span class="absolute top-2 right-2 w-2 h-2 bg-rose-500 rounded-full"></span>
+      </button>
+
+      <!-- Ask AI -->
+      <button id="ai-toggle" onclick="toggleAI()" class="h-9 px-3 rounded-lg border flex items-center gap-2 text-[13px] font-medium transition-colors bg-white border-surface-300 text-ink-900 hover:bg-surface-50">
+        <svg class="w-[15px] h-[15px]" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"/></svg>
+        <span>Ask AI</span>
+      </button>
+    </header>
+
+    <!-- Page Content -->
+    <div class="p-3 sm:p-6">
+    <div class="space-y-5 max-w-[1600px] mx-auto">
+<!-- Header -->
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+<div>
+<div class="flex items-center gap-2 mb-1">
+<a class="text-[12px] font-medium hover:underline" href="job-list.html" style="color:rgba(30,41,59,0.5)">Media Ticket</a>
+<svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" style="color:rgba(30,41,59,0.3)" viewbox="0 0 24 24"><path d="M8.25 4.5l7.5 7.5-7.5 7.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span class="text-[12px] font-medium text-[#2D56D2]">TK-0031</span>
+</div>
+<h1 class="text-[22px] font-semibold text-[#0B1430]">Chang Classic 620ml</h1>
+<p class="text-[13px] mt-0.5" style="color:rgba(30,41,59,0.55)">Chang Beer (Thai Beverage Pcl.) · PB202604521</p>
+</div>
+<div class="flex items-center gap-2">
+<span class="text-[11px] px-2.5 py-1 rounded-full font-medium border bg-amber-50 text-amber-700 border-amber-200 inline-flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>Draft</span>
+<button class="h-9 px-3.5 bg-white text-[#0B1430] rounded-lg border border-[#CBD5E1] text-sm font-medium hover:bg-[#F8FAFC] inline-flex items-center gap-1.5" onclick="toggleHistory()">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24"><path d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span>History</span>
+</button>
+</div>
+</div>
+<!-- Ticket Info -->
+<div class="bg-white border border-[#E2E8F0] rounded-xl shadow-sm overflow-hidden">
+  <div class="px-6 py-4 border-b border-[#E2E8F0] flex items-center justify-between" style="background:linear-gradient(135deg,#F8FAFC,#fff)">
+    <div class="flex items-center gap-2">
+      <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:rgba(45,86,210,0.10);color:#2D56D2">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24"><path d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      </div>
+      <h3 class="text-[15px] font-semibold text-[#0B1430]">Ticket Information</h3>
+    </div>
+    <button onclick="openCancelModal('ticket','TK-0031')" class="h-8 px-3 inline-flex items-center gap-1.5 rounded-lg border border-rose-200 bg-rose-50 text-rose-700 text-[11.5px] font-semibold hover:bg-rose-100 hover:border-rose-300 transition-colors">
+      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      Cancel Ticket
+    </button>
+  </div>
+  <div class="p-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+    <!-- TICKET section -->
+    <div class="space-y-4">
+      <div class="flex items-center gap-1.5">
+        <span class="w-1 h-3 rounded-sm" style="background:#2D56D2"></span>
+        <div class="text-[10px] uppercase font-bold tracking-wider" style="color:#2D56D2">Ticket</div>
+      </div>
+      <div class="space-y-3">
+        <div><div class="text-[10px] uppercase font-medium mb-0.5" style="color:rgba(30,41,59,0.45)">Ticket No</div><div class="text-[13px] font-semibold font-mono text-[#0B1430]">TK-0031</div></div>
+        <div id="ticket-quo-field">
+          <div class="text-[10px] uppercase font-medium mb-0.5" style="color:rgba(30,41,59,0.45)">Quotation No.</div>
+          <div class="text-[13px] font-semibold font-mono text-[#0B1430]" id="ticket-quo-value">PB202604521</div>
+        </div>
+        <!-- Manual-entry Salesforce sync box (hidden when Quotation No exists) -->
+        <div id="ticket-quo-sync" class="hidden rounded-lg border border-dashed border-[#A5B4FC] bg-indigo-50/40 p-3">
+          <div class="flex items-center gap-1.5 mb-1.5">
+            <svg class="w-3.5 h-3.5 text-indigo-600" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182"/></svg>
+            <span class="text-[10.5px] uppercase font-bold tracking-wider text-indigo-700">Manual Entry — ยังไม่มี Quotation</span>
+          </div>
+          <div class="text-[11px] mb-2" style="color:rgba(30,41,59,0.65)">Ticket นี้ถูกสร้างแบบ Manual ค้นหา Quotation จาก Salesforce เพื่อ Sync ข้อมูล</div>
+          <div class="flex gap-1.5">
+            <div class="flex-1 relative">
+              <svg class="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5" style="color:rgba(30,41,59,0.4)" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/></svg>
+              <input id="sf-quo-input" type="text" placeholder="ค้นหา PB202604521" class="w-full h-8 pl-8 pr-2 bg-white border border-[#CBD5E1] rounded-md text-[12px] font-mono focus:outline-none focus:border-indigo-500 placeholder:opacity-40" />
+            </div>
+            <button onclick="syncQuotationFromSF()" class="h-8 px-3 bg-indigo-600 text-white rounded-md text-[11.5px] font-semibold hover:bg-indigo-700 inline-flex items-center gap-1 shadow-sm shrink-0">
+              <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182"/></svg>
+              Sync
+            </button>
+          </div>
+          <div class="text-[10px] mt-1.5" style="color:rgba(30,41,59,0.5)">ระบบจะดึง Client, Product, Period จาก Salesforce อัตโนมัติ</div>
+        </div>
+        <script>
+        (function() {
+          /* Toggle Manual mode via ?manual=1 (or when quotation is empty) */
+          var params = new URLSearchParams(location.search);
+          var quoEl = document.getElementById('ticket-quo-value');
+          var fieldEl = document.getElementById('ticket-quo-field');
+          var syncEl = document.getElementById('ticket-quo-sync');
+          var quoVal = (quoEl.textContent || '').trim();
+          if (params.get('manual') === '1' || !quoVal) {
+            quoEl.innerHTML = '<span class="text-[12px] font-normal italic" style="color:rgba(30,41,59,0.4)">— ไม่มี (Manual Entry)</span>';
+            syncEl.classList.remove('hidden');
+          }
+        })();
+        function syncQuotationFromSF() {
+          var v = (document.getElementById('sf-quo-input').value || '').trim();
+          if (!v) { alert('กรุณากรอกเลข Quotation'); return; }
+          var quoEl = document.getElementById('ticket-quo-value');
+          quoEl.innerHTML = v + ' <span class="text-[10px] px-1.5 py-0.5 rounded font-medium bg-emerald-50 text-emerald-700 border border-emerald-200 align-middle ml-1">Synced</span>';
+          document.getElementById('ticket-quo-sync').classList.add('hidden');
+        }
+        </script>
+        <div><div class="text-[10px] uppercase font-medium mb-0.5" style="color:rgba(30,41,59,0.45)">Sales Person</div><div class="text-[13px] font-semibold">Weera Somboon</div></div>
+      </div>
+    </div>
+
+    <!-- CUSTOMER section -->
+    <div class="space-y-4 lg:border-l lg:border-[#F1F5F9] lg:pl-6">
+      <div class="flex items-center gap-1.5">
+        <span class="w-1 h-3 rounded-sm" style="background:#10B981"></span>
+        <div class="text-[10px] uppercase font-bold tracking-wider" style="color:#10B981">Customer &amp; Media</div>
+      </div>
+      <div class="space-y-3">
+        <div><div class="text-[10px] uppercase font-medium mb-0.5" style="color:rgba(30,41,59,0.45)">Client</div><div class="text-[13px] font-semibold">Chang Beer (Thai Beverage Pcl.)</div></div>
+        <div><div class="text-[10px] uppercase font-medium mb-0.5" style="color:rgba(30,41,59,0.45)">Product</div><div class="text-[13px] font-semibold">Chang Classic 620ml</div></div>
+        <div>
+          <div class="text-[10px] uppercase font-medium mb-1" style="color:rgba(30,41,59,0.45)">Media Group</div>
+          <div class="flex flex-wrap gap-1">
+            <span class="text-[11px] px-2 py-0.5 rounded font-semibold" style="background:#10B98118;color:#10B981;border:1px solid #10B98133">Retail</span>
+            <span class="text-[11px] px-2 py-0.5 rounded font-semibold" style="background:#7C3AED18;color:#7C3AED;border:1px solid #7C3AED33">Transit</span>
+            <span class="text-[11px] px-2 py-0.5 rounded font-semibold" style="background:#2D56D218;color:#2D56D2;border:1px solid #2D56D233">Digital</span>
+          </div>
+        </div>
+        <div>
+          <div class="text-[10px] uppercase font-medium mb-0.5" style="color:rgba(30,41,59,0.45)">Media Section</div>
+          <div class="text-[13px] font-semibold">In-store, BTS, The Network</div>
+        </div>
+        <div>
+          <div class="text-[10px] uppercase font-medium mb-0.5" style="color:rgba(30,41,59,0.45)">Media Type</div>
+          <div class="text-[13px] font-semibold">7-Eleven Plus, BTS Skytrain, Plan B TV</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCHEDULE section -->
+    <div class="space-y-4 lg:border-l lg:border-[#F1F5F9] lg:pl-6">
+      <div class="flex items-center gap-1.5">
+        <span class="w-1 h-3 rounded-sm" style="background:#F59E0B"></span>
+        <div class="text-[10px] uppercase font-bold tracking-wider" style="color:#F59E0B">Schedule</div>
+      </div>
+      <div class="space-y-3">
+        <div><div class="text-[10px] uppercase font-medium mb-0.5" style="color:rgba(30,41,59,0.45)">Contract Start</div><div class="text-[13px] font-semibold font-mono">01/05/2026</div></div>
+        <div><div class="text-[10px] uppercase font-medium mb-0.5" style="color:rgba(30,41,59,0.45)">Contract End</div><div class="text-[13px] font-semibold font-mono">31/07/2026</div></div>
+        <div>
+          <div class="text-[10px] uppercase font-medium mb-1" style="color:rgba(30,41,59,0.45)">Contract Period</div>
+          <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-lg" style="background:#FEF3C7;border:1px solid #FDE68A">
+            <svg class="w-3.5 h-3.5" style="color:#B45309" fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24"><path d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+            <span class="text-[12px] font-semibold" style="color:#92400E">3 เดือน · 92 วัน</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+<!-- Jobs under this Ticket -->
+<div class="bg-white border border-[#E2E8F0] rounded-xl shadow-sm">
+<div class="px-6 py-4 border-b border-[#E2E8F0] flex items-center justify-between">
+<div class="flex items-center gap-3">
+<h3 class="text-[15px] font-semibold text-[#0B1430]">Jobs</h3>
+<span class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-[#213268] text-white tnum" id="job-count">4 jobs</span>
+</div>
+<button onclick="addJobInline()" class="h-9 px-4 bg-[#2D56D2] text-white rounded-lg text-[13px] font-semibold hover:bg-[#213268] inline-flex items-center gap-2 shadow-sm">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+<span>Add Job</span>
+</button>
+
+<!-- Add Job Modal -->
+<div id="add-job-overlay" class="hidden fixed inset-0 bg-black/40 z-40" onclick="closeAddJobModal()"></div>
+<div id="add-job-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
+  <div class="bg-white rounded-xl shadow-2xl w-full max-w-[680px] max-h-[90vh] flex flex-col pointer-events-auto" onclick="event.stopPropagation()">
+    <!-- Modal header -->
+    <div class="px-6 py-4 border-b border-[#E2E8F0] flex items-center justify-between" style="background:linear-gradient(135deg,#F8FAFC,#fff)">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:rgba(45,86,210,0.10);color:#2D56D2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+        </div>
+        <h3 class="text-[15px] font-semibold text-[#0B1430]">Add Job</h3>
+      </div>
+      <button onclick="closeAddJobModal()" class="w-8 h-8 rounded-md hover:bg-[#F1F5F9] flex items-center justify-center" style="color:rgba(30,41,59,0.4)">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+
+    <!-- Modal body -->
+    <div class="flex-1 overflow-y-auto p-6 space-y-5">
+
+      <!-- Package -->
+      <div>
+        <label class="block text-[11px] font-semibold uppercase tracking-wider mb-2" style="color:rgba(30,41,59,0.6)">Package <span class="text-rose-500 normal-case">*</span></label>
+        <select id="aj-pack" class="w-full h-9 px-3 bg-white border border-[#E2E8F0] rounded-md text-[13px] focus:outline-none focus:border-[#4790FF]">
+          <option value="">— เลือก Package —</option>
+          <option value="Metro">Metro</option>
+          <option value="7-Eleven">7-Eleven</option>
+          <option value="POS">POS</option>
+          <option value="Radio">Radio</option>
+        </select>
+      </div>
+
+      <!-- Period -->
+      <div>
+        <label class="block text-[11px] font-semibold uppercase tracking-wider mb-2" style="color:rgba(30,41,59,0.6)">Period <span class="text-rose-500 normal-case">*</span></label>
+        <div class="flex items-center gap-2">
+          <input id="aj-start" type="date" class="flex-1 h-9 px-3 bg-white border border-[#E2E8F0] rounded-md text-[12px] focus:outline-none focus:border-[#4790FF]" />
+          <span class="text-[12px]" style="color:rgba(30,41,59,0.4)">—</span>
+          <input id="aj-end"   type="date" class="flex-1 h-9 px-3 bg-white border border-[#E2E8F0] rounded-md text-[12px] focus:outline-none focus:border-[#4790FF]" />
+        </div>
+      </div>
+
+      <!-- Duration -->
+      <div>
+        <label class="block text-[11px] font-semibold uppercase tracking-wider mb-2" style="color:rgba(30,41,59,0.6)">Duration</label>
+        <select id="aj-duration" class="h-9 px-3 bg-white border border-[#E2E8F0] rounded-md text-[12px] focus:outline-none focus:border-[#4790FF]">
+          <option>10 seconds</option><option>15 seconds</option><option>20 seconds</option><option>30 seconds</option>
+        </select>
+      </div>
+
+      <!-- Material -->
+      <div>
+        <label class="block text-[11px] font-semibold uppercase tracking-wider mb-2 text-emerald-700">Material</label>
+        <div class="space-y-2">
+          <input id="aj-material" type="text" placeholder="วาง Link 1 รายการ..." class="w-full h-9 px-3 bg-white border border-[#E2E8F0] rounded-md text-[12px] focus:outline-none focus:border-[#4790FF]" />
+          <div class="flex items-center gap-2">
+            <label class="h-8 px-3 bg-white border border-[#CBD5E1] rounded-md text-[12px] font-medium hover:bg-[#F8FAFC] inline-flex items-center gap-1.5 cursor-pointer" style="color:rgba(30,41,59,0.6)">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M18.375 12.739l-7.693 7.693a4.5 4.5 0 01-6.364-6.364l10.94-10.94A3 3 0 1119.5 7.372L8.552 18.32"/></svg>
+              Attach Files
+              <input id="aj-material-files" type="file" multiple class="hidden" onchange="ajOnFiles('material')" />
+            </label>
+            <span class="text-[10.5px]" style="color:rgba(30,41,59,0.5)">Multiple files · รวมไม่เกิน 50 MB</span>
+            <span id="aj-material-size" class="text-[10.5px] font-medium ml-auto" style="color:rgba(30,41,59,0.6)">0 / 50 MB</span>
+          </div>
+          <div id="aj-material-list" class="space-y-1"></div>
+        </div>
+      </div>
+
+      <!-- Brief -->
+      <div>
+        <label class="block text-[11px] font-semibold uppercase tracking-wider mb-2 text-blue-700">Brief</label>
+        <div class="space-y-2">
+          <input id="aj-brief" type="text" placeholder="วาง Link 1 รายการ..." class="w-full h-9 px-3 bg-white border border-[#E2E8F0] rounded-md text-[12px] focus:outline-none focus:border-[#4790FF]" />
+          <div class="flex items-center gap-2">
+            <label class="h-8 px-3 bg-white border border-[#CBD5E1] rounded-md text-[12px] font-medium hover:bg-[#F8FAFC] inline-flex items-center gap-1.5 cursor-pointer" style="color:rgba(30,41,59,0.6)">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M18.375 12.739l-7.693 7.693a4.5 4.5 0 01-6.364-6.364l10.94-10.94A3 3 0 1119.5 7.372L8.552 18.32"/></svg>
+              Attach Files
+              <input id="aj-brief-files" type="file" multiple class="hidden" onchange="ajOnFiles('brief')" />
+            </label>
+            <span class="text-[10.5px]" style="color:rgba(30,41,59,0.5)">Multiple files · รวมไม่เกิน 50 MB</span>
+            <span id="aj-brief-size" class="text-[10.5px] font-medium ml-auto" style="color:rgba(30,41,59,0.6)">0 / 50 MB</span>
+          </div>
+          <div id="aj-brief-list" class="space-y-1"></div>
+        </div>
+      </div>
+
+      <!-- Note -->
+      <div>
+        <label class="block text-[11px] font-semibold uppercase tracking-wider mb-2" style="color:rgba(30,41,59,0.6)">Note</label>
+        <textarea id="aj-note" rows="3" placeholder="Add notes for this job..." class="w-full px-3 py-2 bg-white border border-[#E2E8F0] rounded-lg text-[12px] focus:outline-none focus:border-[#4790FF] resize-none"></textarea>
+      </div>
+
+    </div>
+
+    <!-- Modal footer -->
+    <div class="px-6 py-4 border-t border-[#E2E8F0] flex items-center justify-end gap-2 bg-[#F8FAFC]/50">
+      <button onclick="closeAddJobModal()" class="h-9 px-4 bg-white border border-[#CBD5E1] text-[#0B1430] rounded-lg text-[13px] font-medium hover:bg-[#F1F5F9]">Cancel</button>
+      <button onclick="submitAddJob()" class="h-9 px-5 bg-[#2D56D2] text-white rounded-lg text-[13px] font-semibold hover:bg-[#213268] inline-flex items-center gap-2 shadow-sm">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+        Add Job
+      </button>
+    </div>
+  </div>
+</div>
+</div>
+<div class="divide-y divide-[#F1F5F9]" id="job-list"></div>
+</div>
+<!-- History Drawer -->
+<div class="fixed right-0 top-0 bottom-0 w-[420px] bg-white border-l border-[#E2E8F0] z-40 flex flex-col translate-x-full transition-transform duration-200" id="history-drawer" style="box-shadow:-8px 0 30px rgba(11,20,48,0.1)">
+<div class="h-14 px-5 border-b border-[#E2E8F0] flex items-center justify-between shrink-0">
+<div class="flex items-center gap-2"><svg class="w-4 h-4 text-[#2D56D2]" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24"><path d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round"></path></svg><span class="text-[15px] font-semibold text-[#0B1430]">Activity History</span></div>
+<button class="w-8 h-8 rounded-md hover:bg-[#F1F5F9] flex items-center justify-center" onclick="toggleHistory()" style="color:rgba(30,41,59,0.4)"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round"></path></svg></button>
+</div>
+<div class="flex-1 overflow-y-auto px-5 py-4">
+<div class="relative pl-6">
+<div class="absolute left-[11px] top-2 bottom-2 w-px bg-[#E2E8F0]"></div>
+<div class="relative mb-6"><div class="absolute -left-6 w-[22px] h-[22px] rounded-full bg-[#2D56D2] flex items-center justify-center z-10"><span class="text-[8px] font-bold text-white">S</span></div><div class="ml-2"><div class="text-[13px] font-semibold text-[#0B1430]">Ticket created</div><div class="text-[12px] mt-0.5" style="color:rgba(30,41,59,0.6)">Weera Somboon created TK-0031 from PB202604521</div><div class="text-[11px] mt-1 font-mono" style="color:rgba(30,41,59,0.4)">02/05/2026 09:00</div></div></div>
+<div class="relative mb-6"><div class="absolute -left-6 w-[22px] h-[22px] rounded-full bg-[#f59e0b] flex items-center justify-center z-10"><span class="text-[8px] font-bold text-white">H</span></div><div class="ml-2"><div class="text-[13px] font-semibold text-[#0B1430]">Jobs assigned</div><div class="text-[12px] mt-0.5" style="color:rgba(30,41,59,0.6)">Suree Phromma assigned 4 jobs to graphic designers</div><div class="text-[11px] mt-1 font-mono" style="color:rgba(30,41,59,0.4)">02/05/2026 10:30</div></div></div>
+<div class="relative mb-6"><div class="absolute -left-6 w-[22px] h-[22px] rounded-full bg-[#10b981] flex items-center justify-center z-10"><span class="text-[8px] font-bold text-white">G</span></div><div class="ml-2"><div class="text-[13px] font-semibold text-[#0B1430]">Kitti Phutthiphan accepted JOB-1040-M</div><div class="text-[12px] mt-0.5" style="color:rgba(30,41,59,0.6)">Digital MRT version started production</div><div class="text-[11px] mt-1 font-mono" style="color:rgba(30,41,59,0.4)">02/05/2026 11:00</div></div></div>
+<div class="relative"><div class="absolute -left-6 w-[22px] h-[22px] rounded-full bg-[#3b82f6] flex items-center justify-center z-10"><span class="text-[8px] font-bold text-white">G</span></div><div class="ml-2"><div class="text-[13px] font-semibold text-[#0B1430]">Preeya Wongsuwan accepted JOB-1040-7</div><div class="text-[12px] mt-0.5" style="color:rgba(30,41,59,0.6)">7-Eleven Plus version started production</div><div class="text-[11px] mt-1 font-mono" style="color:rgba(30,41,59,0.4)">02/05/2026 11:15</div></div></div>
+</div>
+</div>
+</div>
+<div class="hidden fixed inset-0 bg-black/30 z-30" id="history-overlay" onclick="toggleHistory()"></div>
+
+<!-- Feedback Drawer -->
+<div class="fixed right-0 top-0 bottom-0 w-[460px] bg-white border-l border-[#E2E8F0] z-40 flex flex-col translate-x-full transition-transform duration-200" id="feedback-drawer" style="box-shadow:-8px 0 30px rgba(11,20,48,0.1)">
+  <div class="h-14 px-5 border-b border-[#E2E8F0] flex items-center justify-between shrink-0">
+    <div class="flex items-center gap-2 min-w-0">
+      <div class="w-7 h-7 rounded-md flex items-center justify-center shrink-0" style="background:rgba(245,158,11,0.12);color:#b45309">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z"/></svg>
+      </div>
+      <div class="min-w-0">
+        <div class="text-[15px] font-semibold text-[#0B1430] leading-tight">Feedback Timeline</div>
+        <div id="feedback-drawer-subtitle" class="text-[11px] truncate" style="color:rgba(30,41,59,0.55)">—</div>
+      </div>
+    </div>
+    <button class="w-8 h-8 rounded-md hover:bg-[#F1F5F9] flex items-center justify-center shrink-0" onclick="toggleFeedbackPanel()" style="color:rgba(30,41,59,0.4)"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round"></path></svg></button>
+  </div>
+  <div id="feedback-drawer-body" class="flex-1 overflow-y-auto px-5 py-4 sidebar-scroll"></div>
+</div>
+<div class="hidden fixed inset-0 bg-black/30 z-30" id="feedback-overlay" onclick="toggleFeedbackPanel()"></div>
+
+<!-- Mockup History — Full-screen modal -->
+<div class="fixed inset-0 bg-[#F7F9FC] z-40 flex flex-col opacity-0 pointer-events-none transition-opacity duration-200" id="mockup-drawer">
+  <div class="h-14 px-6 border-b border-[#E2E8F0] flex items-center justify-between shrink-0 bg-white" style="box-shadow:0 1px 0 rgba(11,20,48,.04)">
+    <div class="flex items-center gap-2.5">
+      <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:rgba(16,185,129,0.18);color:#047857">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24"><path d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      </div>
+      <div>
+        <div class="text-[15px] font-semibold text-[#0B1430] leading-tight">Mockup History</div>
+        <div class="text-[11px] font-mono" style="color:rgba(30,41,59,0.55)" id="mockup-job-title">—</div>
+      </div>
+    </div>
+    <button class="h-9 px-3 rounded-md hover:bg-[#F1F5F9] flex items-center gap-1.5 text-[12.5px] font-medium" onclick="closeMockupPanel()" style="color:rgba(30,41,59,0.6)">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      Close
+    </button>
+  </div>
+  <div class="flex-1 overflow-y-auto">
+    <div class="max-w-[1080px] mx-auto px-6 py-6 space-y-4" id="mockup-body"></div>
+  </div>
+</div>
+
+<!-- Re-Edit Modal -->
+<div class="hidden fixed inset-0 bg-black/40 z-40" id="reedit-overlay" onclick="closeReEditModal()"></div>
+<div class="hidden fixed inset-0 z-50 flex items-center justify-center pointer-events-none p-6" id="reedit-modal">
+  <div class="bg-white rounded-2xl border border-[#E2E8F0] pointer-events-auto w-full max-w-[520px] flex flex-col max-h-[90vh] overflow-hidden" style="box-shadow:0 24px 60px rgba(11,20,48,.18)">
+    <header class="h-14 px-5 border-b border-[#E2E8F0] flex items-center gap-3 shrink-0" style="background:linear-gradient(135deg,#FFFBEB,#fff)">
+      <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:rgba(245,158,11,0.18);color:#B45309">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"/></svg>
+      </div>
+      <div class="flex-1 min-w-0">
+        <div class="text-[10px] uppercase tracking-wider font-semibold" style="color:rgba(30,41,59,0.5)">Re-Edit / เพิ่ม Version</div>
+        <div class="text-[14px] font-semibold text-[#0B1430] truncate" id="reedit-title">—</div>
+      </div>
+      <button onclick="closeReEditModal()" class="w-8 h-8 rounded-md hover:bg-[#F1F5F9] flex items-center justify-center" style="color:rgba(30,41,59,0.4)">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </header>
+    <div class="px-5 py-3 border-b border-[#E2E8F0] bg-[#F8FAFC]/60 text-[12px]" style="color:rgba(30,41,59,0.7)">
+      <div class="flex items-start gap-2">
+        <svg class="w-3.5 h-3.5 shrink-0 mt-0.5 text-amber-600" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>
+        <span>การ Re-Edit งานที่ Done ไปแล้ว — ระบบจะส่ง Job กลับไปให้ Graphic เป็นสถานะ <b class="text-orange-700">Revise</b> เพื่อทำ <b>Mockup Version ใหม่</b></span>
+      </div>
+    </div>
+    <form onsubmit="submitReEdit(event)" class="flex-1 overflow-y-auto p-5 space-y-4" id="reedit-form">
+      <input type="hidden" id="reedit-job-no" value="">
+
+      <div class="grid grid-cols-3 gap-3 px-3 py-2.5 rounded-lg bg-[#F8FAFC] border border-[#E2E8F0] text-[12px]">
+        <div><div class="text-[10px] uppercase tracking-wider font-semibold" style="color:rgba(30,41,59,0.45)">Job No.</div><div class="font-mono font-semibold text-[#2D56D2] mt-0.5" id="reedit-jobno-display">—</div></div>
+        <div><div class="text-[10px] uppercase tracking-wider font-semibold" style="color:rgba(30,41,59,0.45)">Media</div><div class="font-medium text-[#0B1430] mt-0.5" id="reedit-media-display">—</div></div>
+        <div><div class="text-[10px] uppercase tracking-wider font-semibold" style="color:rgba(30,41,59,0.45)">เวอร์ชันใหม่</div><div class="font-semibold mt-0.5" style="color:#B45309" id="reedit-newver-display">—</div></div>
+      </div>
+
+      <div>
+        <label class="block text-[11px] font-semibold uppercase tracking-wider mb-1.5" style="color:rgba(30,41,59,0.55)">Note <span class="text-rose-500 normal-case">*</span></label>
+        <textarea id="reedit-note" rows="4" placeholder="ระบุรายละเอียดที่ต้องการให้ Graphic แก้ไข..." class="w-full px-3 py-2 bg-white border border-[#CBD5E1] rounded-lg text-[13px] resize-y focus:outline-none focus:border-amber-500"></textarea>
+      </div>
+
+      <div>
+        <label class="block text-[11px] font-semibold uppercase tracking-wider mb-1.5" style="color:rgba(30,41,59,0.55)">Reference Link <span class="font-normal normal-case text-[10px]" style="color:rgba(30,41,59,0.45)">(ไม่บังคับ · 1 ลิงก์)</span></label>
+        <div class="relative">
+          <svg class="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2" style="color:rgba(30,41,59,0.4)" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244"/></svg>
+          <input id="reedit-link" type="url" placeholder="https://..." class="w-full h-9 pl-8 pr-3 bg-white border border-[#CBD5E1] rounded-lg text-[12.5px] focus:outline-none focus:border-amber-500"/>
+        </div>
+      </div>
+
+      <div>
+        <div class="flex items-center justify-between mb-1.5">
+          <label class="block text-[11px] font-semibold uppercase tracking-wider" style="color:rgba(30,41,59,0.55)">Attach Files <span class="font-normal normal-case text-[10px]" style="color:rgba(30,41,59,0.45)">(ไม่บังคับ · รวมไม่เกิน 50 MB)</span></label>
+          <span id="reedit-size" class="text-[10.5px] font-mono tnum" style="color:rgba(30,41,59,0.55)">0B / 50 MB</span>
+        </div>
+        <label class="flex items-center gap-2 px-3 py-2.5 border border-dashed border-[#CBD5E1] rounded-lg bg-white hover:bg-[#F8FAFC] cursor-pointer transition-colors">
+          <svg class="w-4 h-4 shrink-0" style="color:rgba(30,41,59,0.55)" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/></svg>
+          <span class="text-[12px] font-medium flex-1" style="color:rgba(30,41,59,0.65)">Choose File (เลือกได้หลายไฟล์)</span>
+          <span class="text-[10px] px-2 py-0.5 rounded bg-[#F1F5F9] border border-[#E2E8F0]" style="color:rgba(30,41,59,0.6)">Browse</span>
+          <input id="reedit-files" type="file" multiple class="hidden" onchange="reeditOnFiles(this)">
+        </label>
+        <div id="reedit-files-list" class="mt-2 space-y-1.5"></div>
+      </div>
+
+      <!-- Approval evidence — shown only when new version >= 4 -->
+      <div id="reedit-approval-block" class="hidden p-3.5 rounded-xl border-2 border-rose-200 bg-rose-50/50">
+        <div class="flex items-start gap-2 mb-2">
+          <svg class="w-4 h-4 shrink-0 mt-0.5 text-rose-600" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <div class="flex-1">
+            <div class="text-[12.5px] font-semibold text-rose-700">หลักฐานการอนุมัติเพื่อขอแก้ไข <span class="text-rose-500">*</span></div>
+            <div class="text-[10.5px] mt-0.5" style="color:rgba(30,41,59,0.6)">เนื่องจากมีการแก้ไขมากกว่า 3 ครั้ง — กรุณาแนบเอกสารอนุมัติจากผู้บังคับบัญชา</div>
+          </div>
+        </div>
+        <label class="flex items-center gap-2 px-3 py-2.5 border border-dashed border-rose-300 rounded-lg bg-white hover:bg-rose-50 cursor-pointer transition-colors">
+          <svg class="w-4 h-4 text-rose-600 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25"/></svg>
+          <span class="text-[12px] font-medium flex-1" style="color:rgba(30,41,59,0.7)" id="reedit-approval-label">Choose Fileหลักฐานอนุมัติ...</span>
+          <span class="text-[10px] px-2 py-0.5 rounded bg-rose-100 border border-rose-200 text-rose-700">Browse</span>
+          <input type="file" id="reedit-approval" class="hidden" onchange="reeditPickApproval(this)">
+        </label>
+      </div>
+    </form>
+    <footer class="p-4 border-t border-[#E2E8F0] flex gap-2 shrink-0">
+      <button type="submit" form="reedit-form" class="flex-1 h-10 bg-amber-600 text-white rounded-lg text-[13px] font-semibold hover:bg-amber-700 inline-flex items-center justify-center gap-1.5">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m3 11 18-8-8 18-2-8-8-2Z"/></svg>
+        Send to Graphic
+      </button>
+      <button type="button" onclick="closeReEditModal()" class="h-10 px-4 bg-white border border-[#CBD5E1] text-[#0B1430] rounded-lg text-[13px] font-medium hover:bg-[#F8FAFC]">Cancel</button>
+    </footer>
+  </div>
+</div>
+
+<script>
+var JOBS = [
+  { jobNo:'JOB-1040-M', mediaPack:'Digital MRT',    period:'01/05/2026 - 30/06/2026', versions:2, duration:'15 seconds', material:'material_metro_v2.png', brief:'chang_brief_metro.pdf', note:'Use updated brand guideline for Metro screens', assignedTo:'Kitti Phutthiphan',   assignDate:'02/05/2026 10:30', acceptDate:'02/05/2026 11:00', status:'On Process', feedbackSla:'On track',  progressSla:'In time', color:'#8b5cf6',
+    feedbacks:[
+      { by:'Sirinya Pongchai', role:'Media Operation', date:'06/05/2026 09:45', note:'ขอให้ปรับโทนสีให้ใกล้เคียงกับ Brand Guideline ใหม่ที่อัปเดต และเพิ่ม Safe Area รอบขอบจอ MRT อีก 5% เพื่อไม่ให้โดน Crop', link:'https://drive.google.com/file/d/brand-guideline-mrt-v3', files:[
+        { name:'metro_safe_area_reference.png', size:'1.2 MB', type:'image' },
+        { name:'brand_guideline_v3.pdf', size:'4.6 MB', type:'pdf' }
+      ]}
+    ],
+    mockups:[
+      { ver:1, status:'In Review', date:'05/05/2026 16:20', refLink:'https://drive.google.com/file/d/metro-mockup-v1-review/view', note:'Initial draft for Metro 15s spot.',
+        files:[
+          { name:'metro_mockup_v1.png',     type:'image', size:'2.6 MB', url:'https://placehold.co/800x450/8b5cf6/ffffff?text=Metro+Mockup+v1' }
+        ]}
+    ]},
+  { jobNo:'JOB-1040-7', mediaPack:'7-Eleven Plus',  period:'01/05/2026 - 31/07/2026', versions:3, duration:'10 seconds', material:'material_7eleven_packshot.png', brief:'chang_brief_v2.pdf', note:'Follow 7-Eleven standard pack template', assignedTo:'Preeya Wongsuwan',  assignDate:'02/05/2026 10:30', acceptDate:'02/05/2026 11:15', status:'Review',     feedbackSla:'On track',  progressSla:'In time', color:'#ef4444', landlord:{ approved:true, by:'Wichai Boonyarat', date:'11/05/2026 09:30' },
+    feedbacks:[
+      { by:'Nattapong Srisai', role:'Media Operation', date:'09/05/2026 16:20', note:'Logo placement ยังไม่ตรงตามมาตรฐาน 7-Eleven Plus กรุณาย้ายไปมุมขวาบนตาม Spec ที่แนบ และปรับ Padding ให้พอดี Safe Area', link:'https://7eleven.brand-portal.co.th/specs/logo-placement', files:[
+        { name:'7eleven_logo_spec_v2.png', size:'2.1 MB', type:'image' },
+        { name:'7eleven_safe_area.pdf', size:'890 KB', type:'pdf' }
+      ]},
+      { by:'Sirinya Pongchai', role:'Media Operation', date:'04/05/2026 11:10', note:'Brief แรกสำหรับ 7-Eleven Plus — เน้น Pack Shot ของสินค้าให้ชัดเจน ใช้ฉากหลังโทนเย็น และเพิ่ม Tagline ที่ด้านล่างกลางจอ', link:'', files:[
+        { name:'7eleven_brief_attachment.pdf', size:'3.4 MB', type:'pdf' }
+      ]}
+    ],
+    mockups:[
+      { ver:2, status:'Review', date:'10/05/2026 14:00', refLink:'https://drive.google.com/file/d/7eleven-mockup-v2-final/view', note:'Fixed logo placement per reviewer feedback. Final version.',
+        files:[
+          { name:'7eleven_mockup_v2_final.png', type:'image', size:'3.8 MB', url:'https://placehold.co/800x450/ef4444/ffffff?text=7-Eleven+v2+Final' },
+          { name:'7eleven_mockup_v2_alt.png',   type:'image', size:'2.1 MB', url:'https://placehold.co/800x450/ef4444/ffffff?text=7-Eleven+v2+Alt' },
+          { name:'7eleven_promo_10s.mp4',       type:'video', size:'12.4 MB', url:'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4' }
+        ]},
+      { ver:1, status:'Revised', date:'08/05/2026 11:30', note:'Initial mockup draft for 7-Eleven screens.', reviewer:'Logo placement needs adjustment on top-right corner. Please fix and resubmit.',
+        files:[
+          { name:'7eleven_mockup_v1.png', type:'image', size:'3.2 MB', url:'https://placehold.co/800x450/ef4444/ffffff?text=7-Eleven+v1' }
+        ]}
+    ]},
+  { jobNo:'JOB-1040-P', mediaPack:'POS (7-Eleven Plus)', period:'15/05/2026 - 31/07/2026', versions:1, duration:'10 seconds', material:'material_pos_display.png', brief:'chang_brief_pos.pdf', note:'', assignedTo:'Napha Saetang',   assignDate:'02/05/2026 10:30', acceptDate:'',                 status:'Verify',      feedbackSla:'On track',  progressSla:'', color:'#f59e0b' },
+  { jobNo:'JOB-1040-R', mediaPack:'Radio (7-Eleven Plus)', period:'01/06/2026 - 31/07/2026', versions:2, duration:'30 seconds', material:'', brief:'chang_brief_radio.pdf', note:'Radio spot — voice talent TBD', assignedTo:'',           assignDate:'',                 acceptDate:'',                 status:'Assign', feedbackSla:'',          progressSla:'', color:'#06b6d4' },
+  { jobNo:'JOB-1040-B', mediaPack:'Plan B TV',  period:'15/04/2026 - 15/05/2026', versions:3, duration:'Static',     material:'material_billboard_final.png', brief:'chang_brief_billboard.pdf', note:'อนุมัติเรียบร้อย — ส่งโรงพิมพ์แล้ว', assignedTo:'Somchai Thongdee', assignDate:'10/04/2026 09:00', acceptDate:'10/04/2026 09:30', status:'Done',       feedbackSla:'On track',  progressSla:'In time', color:'#10b981', landlord:{ approved:true, by:'Pongsak Tangjit', date:'23/04/2026 14:10' },
+    feedbacks:[
+      { by:'Wichai Boonyarat', role:'Media Operation', date:'22/04/2026 10:30', note:'รอบสุดท้ายดูดีมาก — เพิ่ม Saturation ของ Logo อีก 10% ตามที่ Brand ขอ แล้วส่งโรงพิมพ์ได้เลย', link:'', files:[] },
+      { by:'Nattapong Srisai', role:'Media Operation', date:'17/04/2026 13:45', note:'Concept ดีแล้ว แต่ Palette ยังเย็นเกินไป ลองปรับให้อบอุ่นขึ้นอีกหน่อย และขยายขนาด Product Shot ให้เด่นกว่านี้ประมาณ 20%', link:'https://pantone.com/color-finder/warm-2026', files:[
+        { name:'palette_reference_warm.png', size:'1.8 MB', type:'image' },
+        { name:'billboard_product_size_guide.pdf', size:'1.1 MB', type:'pdf' }
+      ]},
+      { by:'Sirinya Pongchai', role:'Media Operation', date:'12/04/2026 09:00', note:'Brief เริ่มต้นสำหรับ Plan B TV Billboard ขนาด Static — เน้น Brand Awareness ของ Chang ในช่วง Songkran', link:'', files:[
+        { name:'songkran_campaign_brief.pdf', size:'2.7 MB', type:'pdf' }
+      ]}
+    ],
+    mockups:[
+      { ver:3, status:'Approved', date:'25/04/2026 15:45', refLink:'https://drive.google.com/file/d/billboard-final-v3-approved/view', note:'Final approved version — pass to production.',
+        files:[
+          { name:'billboard_final_v3.png', type:'image', size:'4.5 MB', url:'https://placehold.co/800x450/10b981/ffffff?text=Billboard+Final+v3' }
+        ]},
+      { ver:2, status:'Revised', date:'20/04/2026 11:20', note:'Adjusted color tone per brand team.', reviewer:'Looks good but bump saturation +10% on the logo.',
+        files:[
+          { name:'billboard_v2.png', type:'image', size:'4.1 MB', url:'https://placehold.co/800x450/10b981/ffffff?text=Billboard+v2' }
+        ]},
+      { ver:1, status:'Revised', date:'15/04/2026 14:00', note:'Initial concept draft.', reviewer:'Try a warmer palette and larger product shot.',
+        files:[
+          { name:'billboard_v1.png', type:'image', size:'3.8 MB', url:'https://placehold.co/800x450/10b981/ffffff?text=Billboard+v1' }
+        ]}
+    ]},
+  { jobNo:'JOB-1040-D', mediaPack:'Siam Paragon Facade', period:'01/04/2026 - 30/04/2026', versions:1, duration:'20 seconds', material:'material_digital_loop.mp4', brief:'chang_brief_digital.pdf', note:'แคมเปญจบแล้ว — เก็บไฟล์เข้า archive', assignedTo:'Apinya Ratanakul', assignDate:'25/03/2026 13:00', acceptDate:'25/03/2026 13:20', status:'Done', feedbackSla:'On track', progressSla:'In time', color:'#059669',
+    mockups:[
+      { ver:1, status:'Approved', date:'28/03/2026 10:15', note:'อนุมัติผ่านในรอบแรก — เริ่ม onair ตามแผน',
+        files:[
+          { name:'digital_loop_final.mp4', type:'video', size:'18.2 MB', url:'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4' },
+          { name:'digital_keyframe.png',   type:'image', size:'1.9 MB', url:'https://placehold.co/800x450/059669/ffffff?text=Digital+Keyframe' }
+        ]}
+    ]},
+];
+
+var JOB_STATUS_COLORS = {
+  'Assign':     { bg:'bg-slate-50',   text:'text-slate-600',   border:'border-slate-200',   dot:'bg-slate-400' },
+  'Verify':     { bg:'bg-amber-50',   text:'text-amber-700',   border:'border-amber-200',   dot:'bg-amber-500' },
+  'On Process': { bg:'bg-blue-50',    text:'text-blue-700',    border:'border-blue-200',    dot:'bg-blue-500' },
+  'Review':     { bg:'bg-emerald-50', text:'text-emerald-700', border:'border-emerald-200', dot:'bg-emerald-500' },
+  'Revise':     { bg:'bg-orange-50',  text:'text-orange-700',  border:'border-orange-200',  dot:'bg-orange-500' },
+  'Done':       { bg:'bg-emerald-100',text:'text-emerald-800', border:'border-emerald-300', dot:'bg-emerald-600' },
+};
+
+function renderJobs() {
+  var el = document.getElementById('job-list');
+  document.getElementById('job-count').textContent = JOBS.length + ' job' + (JOBS.length !== 1 ? 's' : '');
+  var html = '';
+  JOBS.forEach(function(j) {
+    var sc = JOB_STATUS_COLORS[j.status] || JOB_STATUS_COLORS['Assign'];
+    var init = j.assignedTo ? j.assignedTo.split(' ').map(function(w){return w[0]}).join('').toUpperCase() : '?';
+    var avColors = ['#2D56D2','#059669','#d97706','#dc2626','#7c3aed','#0891b2'];
+    var ah = 0; var nm = j.assignedTo || 'X'; for(var i=0;i<nm.length;i++) ah=nm.charCodeAt(i)+((ah<<5)-ah);
+    var avBg = avColors[Math.abs(ah)%avColors.length];
+
+    html += '<div class="px-6 py-4 hover:bg-[#F8FAFC]/60 transition-colors">';
+    html += '<div class="flex items-start gap-4">';
+    html += '<div class="w-10 h-10 rounded-lg flex items-center justify-center text-white font-bold text-[13px] shrink-0 mt-0.5" style="background:' + j.color + '">' + j.mediaPack.charAt(0) + '</div>';
+    html += '<div class="flex-1 min-w-0">';
+    html += '<div class="flex items-center gap-2 mb-1">';
+    html += '<span class="text-[13px] font-semibold font-mono text-[#2D56D2]">' + j.jobNo + '</span>';
+    html += '<span class="text-[11px] px-2 py-0.5 rounded bg-[#F1F5F9] font-medium">' + j.mediaPack + '</span>';
+    html += '<span class="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-full font-medium border ' + sc.bg + ' ' + sc.text + ' ' + sc.border + '"><span class="w-1.5 h-1.5 rounded-full ' + sc.dot + '"></span>' + j.status + '</span>';
+    if (j.landlord && j.landlord.approved) {
+      html += '<span class="inline-flex items-center gap-1.5 text-[11px] px-2 py-0.5 rounded-full font-medium border bg-teal-50 text-teal-700 border-teal-200" title="เจ้าของพื้นที่อนุมัติแล้ว · โดย ' + j.landlord.by + ' · ' + j.landlord.date + '">' +
+        '<svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>' +
+        '<span>เจ้าของพื้นที่อนุมัติแล้ว</span>' +
+        '<span class="font-semibold">· ' + j.landlord.by + '</span>' +
+        '<span class="font-mono opacity-70">· ' + j.landlord.date + '</span>' +
+      '</span>';
+    }
+    html += '</div>';
+    // Row 1: Period, Versions, Duration, Assigned To
+    html += '<div class="grid grid-cols-2 sm:grid-cols-4 gap-x-6 gap-y-1.5 text-[12px] mt-2">';
+    html += '<div><span style="color:rgba(30,41,59,0.45)">Period:</span> <span class="font-medium font-mono">' + j.period + '</span></div>';
+    html += '<div><span style="color:rgba(30,41,59,0.45)">Versions:</span> <span class="font-medium">' + j.versions + '</span></div>';
+    html += '<div><span style="color:rgba(30,41,59,0.45)">Duration:</span> <span class="font-medium">' + j.duration + '</span></div>';
+    html += '<div><span style="color:rgba(30,41,59,0.45)">Assigned To:</span> ';
+    if (j.assignedTo) { html += '<span class="inline-flex items-center gap-1"><span class="w-4 h-4 rounded-full flex items-center justify-center text-white font-semibold text-[7px]" style="background:' + avBg + '">' + init + '</span><span class="font-medium">' + j.assignedTo + '</span></span>'; }
+    else { html += '<span style="color:rgba(30,41,59,0.3)">Unassigned</span>'; }
+    html += '</div>';
+    // Row 2: Assign Date → Feedback SLA → Accept Date → Progress SLA (only if In Process / Review)
+    html += '<div><span style="color:rgba(30,41,59,0.45)">Assign Date:</span> <span class="font-medium font-mono">' + (j.assignDate || '<span style="color:rgba(30,41,59,0.3)">-</span>') + '</span></div>';
+    if (j.feedbackSla) {
+      var fbCls = j.feedbackSla==='Overdue'?'bg-rose-50 text-rose-700 border-rose-200':'bg-emerald-50 text-emerald-700 border-emerald-200';
+      html += '<div><span style="color:rgba(30,41,59,0.45)">Feedback SLA:</span> <span class="text-[11px] px-1.5 py-0.5 rounded-full font-medium border ' + fbCls + '">' + j.feedbackSla + '</span></div>';
+    }
+    if (j.acceptDate) { html += '<div><span style="color:rgba(30,41,59,0.45)">Accept Date:</span> <span class="font-medium font-mono">' + j.acceptDate + '</span></div>'; }
+    if ((j.status === 'On Process' || j.status === 'Review') && j.progressSla) {
+      var pgCls = j.progressSla==='Overdue'?'bg-rose-50 text-rose-700 border-rose-200':'bg-emerald-50 text-emerald-700 border-emerald-200';
+      html += '<div><span style="color:rgba(30,41,59,0.45)">Progress SLA:</span> <span class="text-[11px] px-1.5 py-0.5 rounded-full font-medium border ' + pgCls + '">' + j.progressSla + '</span></div>';
+    }
+    html += '</div>';
+    // Material & Brief row
+    html += '<div class="flex flex-wrap gap-2 mt-3">';
+    if (j.material) {
+      html += '<div class="flex items-center gap-2 px-2.5 py-1.5 border border-[#E2E8F0] rounded-lg bg-white hover:bg-[#F8FAFC] cursor-pointer">';
+      html += '<svg class="w-4 h-4 text-emerald-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z"/></svg>';
+      html += '<div><div class="text-[11px] font-medium truncate max-w-[160px]">' + j.material + '</div><div class="text-[10px]" style="color:rgba(30,41,59,0.4)">Material</div></div>';
+      html += '</div>';
+    }
+    if (j.brief) {
+      html += '<div class="flex items-center gap-2 px-2.5 py-1.5 border border-[#E2E8F0] rounded-lg bg-white hover:bg-[#F8FAFC] cursor-pointer">';
+      html += '<svg class="w-4 h-4 text-blue-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg>';
+      html += '<div><div class="text-[11px] font-medium truncate max-w-[160px]">' + j.brief + '</div><div class="text-[10px]" style="color:rgba(30,41,59,0.4)">Brief</div></div>';
+      html += '</div>';
+    }
+    html += '</div>';
+    // Note
+    if (j.note) {
+      html += '<div class="mt-2 px-3 py-2 rounded-lg text-[11px] flex items-start gap-2" style="background:#EBF5FF;border:1px solid #D6ECFF;color:#213268"><svg class="w-3.5 h-3.5 shrink-0 mt-0.5" style="color:#2D56D2" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/></svg><span><span class="font-semibold" style="color:#2D56D2">Note:</span> ' + j.note + '</span></div>';
+    }
+    html += '</div>';
+    // Review button (when status is Review or Done) — opens Mockup panel.
+    // Re-Edit button (only when status is Done) — opens Re-Edit form to add new version.
+    html += '<div class="shrink-0 mt-1 flex flex-col gap-1.5">';
+    if (j.feedbacks && j.feedbacks.length) {
+      html += '<button onclick="openFeedbackPanel(\'' + j.jobNo + '\')" class="h-8 px-3 bg-amber-50 text-amber-700 rounded-lg border border-amber-300 text-[11px] font-semibold hover:bg-amber-100 inline-flex items-center justify-center gap-1.5 transition-colors">'
+            + '<svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z"/></svg>'
+            + 'Landlord Feedback'
+            + '<span class="ml-0.5 inline-flex items-center justify-center min-w-[18px] h-[16px] px-1 rounded-full bg-amber-600 text-white text-[10px] font-bold leading-none">' + j.feedbacks.length + '</span>'
+            + '</button>';
+    }
+    if (j.status === 'Review' || j.status === 'Done') {
+      html += '<button onclick="openMockupPanel(\'' + j.jobNo + '\')" class="h-8 px-3 bg-emerald-50 text-emerald-700 rounded-lg border border-emerald-300 text-[11px] font-semibold hover:bg-emerald-100 inline-flex items-center justify-center gap-1.5 transition-colors">'
+            + '<svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>'
+            + 'Review</button>';
+    }
+    if (j.status === 'Done') {
+      html += '<button onclick="openReEditModal(\'' + j.jobNo + '\')" class="h-8 px-3 bg-amber-50 text-amber-700 rounded-lg border border-amber-300 text-[11px] font-semibold hover:bg-amber-100 inline-flex items-center justify-center gap-1.5 transition-colors">'
+            + '<svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99"/></svg>'
+            + 'Re-Edit</button>';
+    }
+    // Cancel button (every job except those already cancelled)
+    if (j.status !== 'Cancelled') {
+      html += '<button onclick="openCancelModal(\'job\',\'' + j.jobNo + '\')" class="h-8 px-3 bg-rose-50 text-rose-700 rounded-lg border border-rose-200 text-[11px] font-semibold hover:bg-rose-100 hover:border-rose-300 inline-flex items-center justify-center gap-1.5 transition-colors">'
+            + '<svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>'
+            + 'Cancel</button>';
+    }
+    html += '</div></div></div>';
+  });
+  el.innerHTML = html;
+}
+
+var _historyOpen = false;
+function toggleHistory() {
+  _historyOpen = !_historyOpen;
+  document.getElementById('history-drawer').classList.toggle('translate-x-full', !_historyOpen);
+  document.getElementById('history-overlay').classList.toggle('hidden', !_historyOpen);
+}
+
+/* ===== Feedback Drawer ===== */
+var _feedbackOpen = false;
+function toggleFeedbackPanel() {
+  _feedbackOpen = !_feedbackOpen;
+  document.getElementById('feedback-drawer').classList.toggle('translate-x-full', !_feedbackOpen);
+  document.getElementById('feedback-overlay').classList.toggle('hidden', !_feedbackOpen);
+}
+function _fbInitials(name) {
+  if (!name) return '?';
+  return name.split(' ').map(function(w){return w[0]}).join('').slice(0,2).toUpperCase();
+}
+function _fbAvColor(name) {
+  var colors = ['#2D56D2','#059669','#d97706','#dc2626','#7c3aed','#0891b2','#b45309'];
+  var h = 0; for(var i=0;i<name.length;i++) h = name.charCodeAt(i)+((h<<5)-h);
+  return colors[Math.abs(h)%colors.length];
+}
+function _fbFileIcon(type, name) {
+  var t = (type || '').toLowerCase();
+  var n = (name || '').toLowerCase();
+  if (t === 'image' || /\.(png|jpe?g|gif|webp|svg)$/.test(n)) {
+    return { bg:'bg-emerald-50', fg:'text-emerald-600', svg:'<path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z"/>' };
+  }
+  if (t === 'video' || /\.(mp4|webm|mov|m4v)$/.test(n)) {
+    return { bg:'bg-rose-50', fg:'text-rose-600', svg:'<path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z"/>' };
+  }
+  return { bg:'bg-blue-50', fg:'text-blue-600', svg:'<path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/>' };
+}
+function openFeedbackPanel(jobNo) {
+  var job = JOBS.find(function(j){ return j.jobNo === jobNo; });
+  if (!job) return;
+  var fbs = job.feedbacks || [];
+  document.getElementById('feedback-drawer-subtitle').textContent = jobNo + '  ·  ' + job.mediaPack + '  ·  ' + fbs.length + ' รายการ';
+  var body = document.getElementById('feedback-drawer-body');
+  if (!fbs.length) {
+    body.innerHTML = '<div class="flex flex-col items-center justify-center h-full text-center" style="color:rgba(30,41,59,0.5)">'
+      + '<svg class="w-10 h-10 mb-2" fill="none" stroke="currentColor" stroke-width="1.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z"/></svg>'
+      + '<div class="text-[13px]">ยังไม่มี Feedback สำหรับ Job นี้</div>'
+      + '</div>';
+  } else {
+    var html = '<div class="relative pl-6">';
+    html += '<div class="absolute left-[15px] top-2 bottom-2 w-px bg-[#E2E8F0]"></div>';
+    fbs.forEach(function(fb, idx) {
+      var av = _fbAvColor(fb.by);
+      var isLast = idx === fbs.length - 1;
+      html += '<div class="relative ' + (isLast ? '' : 'mb-5') + '">';
+      html += '<div class="absolute -left-6 w-[30px] h-[30px] rounded-full flex items-center justify-center z-10 ring-4 ring-white shadow-sm" style="background:' + av + '"><span class="text-[10px] font-bold text-white">' + _fbInitials(fb.by) + '</span></div>';
+      html += '<div class="ml-3 bg-white border border-[#E2E8F0] rounded-xl p-3.5 shadow-card">';
+      // Header: name + role + date
+      html += '<div class="flex items-start justify-between gap-2 mb-2">';
+      html += '<div class="min-w-0"><div class="text-[13px] font-semibold text-[#0B1430] leading-tight">' + fb.by + '</div>';
+      if (fb.role) html += '<div class="text-[10.5px] mt-0.5 inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200 font-medium">' + fb.role + '</div>';
+      html += '</div>';
+      html += '<div class="text-[10.5px] font-mono shrink-0 text-right" style="color:rgba(30,41,59,0.5)">' + fb.date + '</div>';
+      html += '</div>';
+      // Note
+      if (fb.note) {
+        html += '<div class="px-3 py-2 rounded-lg bg-[#FFFBEB] border border-amber-100 text-[12.5px] leading-relaxed text-[#0B1430] mb-2">' + fb.note + '</div>';
+      }
+      // Reference Link
+      if (fb.link) {
+        html += '<a href="' + fb.link + '" target="_blank" class="flex items-center gap-1.5 px-2.5 py-1.5 mb-2 rounded-md bg-[#F8FAFC] border border-[#E2E8F0] hover:bg-[#EBF5FF] hover:border-[#D6ECFF] transition-colors group">'
+        + '<svg class="w-3.5 h-3.5 shrink-0 text-[#2D56D2]" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244"/></svg>'
+        + '<span class="text-[11.5px] font-medium text-[#2D56D2] truncate flex-1 group-hover:underline">' + fb.link + '</span>'
+        + '<svg class="w-3 h-3 shrink-0" style="color:rgba(30,41,59,0.35)" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/></svg>'
+        + '</a>';
+      }
+      // Attached files
+      if (fb.files && fb.files.length) {
+        html += '<div class="space-y-1.5">';
+        html += '<div class="text-[10.5px] font-semibold uppercase tracking-wider mb-1" style="color:rgba(30,41,59,0.5)">แนบไฟล์ · ' + fb.files.length + '</div>';
+        fb.files.forEach(function(f){
+          var ic = _fbFileIcon(f.type, f.name);
+          html += '<a href="#" class="flex items-center gap-2 px-2.5 py-1.5 rounded-md border border-[#E2E8F0] bg-white hover:bg-[#F8FAFC] transition-colors">'
+            + '<div class="w-7 h-7 rounded-md flex items-center justify-center shrink-0 ' + ic.bg + ' ' + ic.fg + '"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24">' + ic.svg + '</svg></div>'
+            + '<div class="flex-1 min-w-0"><div class="text-[11.5px] font-medium truncate text-[#0B1430]">' + f.name + '</div><div class="text-[10px]" style="color:rgba(30,41,59,0.45)">' + f.size + '</div></div>'
+            + '<svg class="w-3.5 h-3.5 shrink-0" style="color:rgba(30,41,59,0.4)" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>'
+            + '</a>';
+        });
+        html += '</div>';
+      }
+      html += '</div></div>';
+    });
+    html += '</div>';
+    body.innerHTML = html;
+  }
+  if (!_feedbackOpen) toggleFeedbackPanel();
+}
+
+/* ===== Mockup History Panel ===== */
+var MOCKUP_BADGE = {
+  'Review':    { bg:'#ECFDF5', text:'#047857', border:'#A7F3D0' },
+  'Approved':  { bg:'#D1FAE5', text:'#065F46', border:'#6EE7B7' },
+  'Revised':   { bg:'#FFF7ED', text:'#C2410C', border:'#FED7AA' },
+  'In Review': { bg:'#EFF6FF', text:'#1D4ED8', border:'#BFDBFE' }
+};
+
+function _isImage(f) { return f.type === 'image' || /\.(png|jpe?g|gif|webp|svg)$/i.test(f.name); }
+function _isVideo(f) { return f.type === 'video' || /\.(mp4|webm|mov|m4v)$/i.test(f.name); }
+
+function renderMockupFile(f) {
+  var dlBtn = '<a href="' + f.url + '" download="' + f.name + '" target="_blank" class="inline-flex items-center gap-1 h-7 px-2.5 rounded-md bg-white border border-[#CBD5E1] text-[11px] font-semibold text-[#0B1430] hover:bg-[#F8FAFC]">' +
+    '<svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>' +
+    'Download</a>';
+  if (_isImage(f)) {
+    return '<div class="rounded-lg border border-[#E2E8F0] overflow-hidden bg-[#F8FAFC]">' +
+      '<a href="' + f.url + '" target="_blank" class="block group relative">' +
+        '<img src="' + f.url + '" alt="' + f.name + '" class="w-full h-auto block" loading="lazy" />' +
+        '<span class="absolute top-2 right-2 text-[10px] px-1.5 py-0.5 rounded bg-black/60 text-white font-mono">IMG</span>' +
+      '</a>' +
+      '<div class="flex items-center justify-between px-3 py-2 bg-white border-t border-[#E2E8F0]">' +
+        '<div class="min-w-0"><div class="text-[11.5px] font-semibold truncate">' + f.name + '</div><div class="text-[10px]" style="color:rgba(30,41,59,0.45)">' + f.size + '</div></div>' +
+        dlBtn +
+      '</div></div>';
+  }
+  if (_isVideo(f)) {
+    return '<div class="rounded-lg border border-[#E2E8F0] overflow-hidden bg-[#F8FAFC]">' +
+      '<div class="relative bg-black"><video src="' + f.url + '" controls preload="metadata" class="w-full h-auto block max-h-[280px]"></video>' +
+        '<span class="absolute top-2 right-2 text-[10px] px-1.5 py-0.5 rounded bg-black/60 text-white font-mono">VIDEO</span></div>' +
+      '<div class="flex items-center justify-between px-3 py-2 bg-white border-t border-[#E2E8F0]">' +
+        '<div class="min-w-0"><div class="text-[11.5px] font-semibold truncate">' + f.name + '</div><div class="text-[10px]" style="color:rgba(30,41,59,0.45)">' + f.size + '</div></div>' +
+        dlBtn +
+      '</div></div>';
+  }
+  /* Generic file fallback */
+  return '<div class="flex items-center gap-2 px-3 py-2.5 rounded-lg border border-[#E2E8F0] bg-[#F8FAFC]">' +
+    '<div class="w-9 h-9 rounded-md bg-pb-50 flex items-center justify-center text-pb-700"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24"><path d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25" stroke-linecap="round" stroke-linejoin="round"/></svg></div>' +
+    '<div class="flex-1 min-w-0"><div class="text-[12px] font-semibold truncate">' + f.name + '</div><div class="text-[10px]" style="color:rgba(30,41,59,0.45)">' + f.size + '</div></div>' +
+    dlBtn + '</div>';
+}
+
+var _currentReviewJob = null;
+function openMockupPanel(jobNo) {
+  var job = JOBS.find(function (j) { return j.jobNo === jobNo; });
+  if (!job) return;
+  _currentReviewJob = jobNo;
+  document.getElementById('mockup-job-title').textContent = jobNo + '  ·  ' + job.mediaPack;
+  var body = document.getElementById('mockup-body');
+  var mockups = job.mockups || [];
+
+  /* Action card (Approve/Feedback buttons + forms) removed — superseded by the
+     per-format checkbox flow in the Format Name section above. */
+  var actionHtml = '';
+
+  if (!mockups.length) {
+    body.innerHTML = actionHtml + '<div class="text-center py-16 text-[12px]" style="color:rgba(30,41,59,0.5)">ยังไม่มี mockup ในงานนี้</div>';
+    _showMockupModal();
+    return;
+  }
+  var html = actionHtml + '<div class="text-[10.5px] uppercase font-semibold tracking-wider mt-2 mb-1" style="color:rgba(30,41,59,0.5)">ประวัติ Mockup (' + mockups.length + ' versions)</div>';
+    mockups.forEach(function (m) {
+      var bd = MOCKUP_BADGE[m.status] || MOCKUP_BADGE['In Review'];
+      var isFinal = m.status === 'Review';
+      html += '<div class="border rounded-xl overflow-hidden" style="border-color:' + (isFinal ? '#A7F3D0' : '#E2E8F0') + '">';
+      html += '<div class="px-4 py-2.5 flex items-center justify-between" style="background:' + bd.bg + ';border-bottom:1px solid ' + bd.border + '">';
+      html += '<div class="flex items-center gap-2"><span class="text-[13px] font-semibold" style="color:' + bd.text + '">Mockup v' + m.ver + '</span>'
+            + '<span class="text-[10px] px-1.5 py-0.5 rounded font-medium border" style="background:#fff;color:' + bd.text + ';border-color:' + bd.border + '">' + m.status + '</span>';
+      if (m.refLink && m.status === 'Review') {
+        var safeLink = String(m.refLink).replace(/'/g, "\\'");
+        var reviewUrl = 'customer-review.html?job=' + encodeURIComponent(_currentReviewJob || '') + '&ver=' + encodeURIComponent(m.ver);
+        html += '<span class="inline-flex items-center gap-1.5 ml-1">'
+              + '<a href="' + reviewUrl + '" target="_blank" rel="noopener" title="เปิดหน้า Customer Review ในแท็บใหม่" class="inline-flex items-center gap-1 h-6 px-2 rounded-md text-[10.5px] font-semibold text-white shadow-sm transition hover:brightness-110" style="background:#2D56D2">'
+              + '<svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/></svg>'
+              + '<span>Open Review</span>'
+              + '</a>'
+              + '<button type="button" onclick="copyRefLink(event,\'' + safeLink + '\')" title="Copy Link Reference (' + m.refLink + ')" class="inline-flex items-center gap-1 h-6 px-2 rounded-md text-[10.5px] font-semibold text-[#0B1430] bg-white border border-[#CBD5E1] shadow-sm transition hover:bg-[#F1F5F9] hover:border-[#94A3B8]">'
+              + '<svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75"/></svg>'
+              + '<span>Copy Link</span>'
+              + '</button>'
+              + '</span>';
+      }
+      html += '</div>';
+      html += '<span class="text-[11px] font-mono" style="color:rgba(30,41,59,0.55)">' + m.date + '</span>';
+      html += '</div>';
+      html += '<div class="p-3 space-y-2">';
+      m.files.forEach(function (f) { html += renderMockupFile(f); });
+      if (m.note) {
+        html += '<div class="px-3 py-2 rounded-lg text-[11px] flex items-start gap-2" style="background:#EBF5FF;border:1px solid #D6ECFF;color:#213268">'
+              + '<svg class="w-3.5 h-3.5 shrink-0 mt-0.5" style="color:#2D56D2" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/></svg>'
+              + '<span><span class="font-semibold" style="color:#2D56D2">Note:</span> ' + m.note + '</span></div>';
+      }
+      if (m.reviewer) {
+        html += '<div class="px-3 py-2 bg-rose-50 border border-rose-100 rounded-lg text-[11px] text-rose-700 space-y-1.5">'
+              + '<div><span class="font-semibold">Reviewer:</span> ' + m.reviewer + '</div>';
+        if (m.reviewerLink) {
+          html += '<div class="flex items-center gap-1.5"><svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244"/></svg>'
+                + '<a href="' + m.reviewerLink + '" target="_blank" class="underline truncate font-mono text-[10.5px]">' + m.reviewerLink + '</a></div>';
+        }
+        if (m.reviewerFiles && m.reviewerFiles.length) {
+          html += '<div class="flex flex-wrap gap-1.5 pt-0.5">';
+          m.reviewerFiles.forEach(function(rf){
+            html += '<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-white border border-rose-200 text-[10px] font-mono text-rose-700">'
+                  + '<svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25"/></svg>'
+                  + rf.name + ' <span class="opacity-60">·</span> ' + rf.size + '</span>';
+          });
+          html += '</div>';
+        }
+        if (m.approvalEvidence) {
+          html += '<div class="mt-1 pt-1.5 border-t border-rose-200/70 flex items-center gap-1.5 text-[10.5px]">'
+                + '<svg class="w-3 h-3 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>'
+                + '<span class="font-semibold">หลักฐานอนุมัติ:</span>'
+                + '<span class="font-mono">' + m.approvalEvidence.name + '</span>'
+                + '<span class="opacity-60">·</span><span>' + m.approvalEvidence.size + '</span></div>';
+        }
+        html += '</div>';
+      }
+      html += '</div></div>';
+    });
+  body.innerHTML = html;
+  /* Inject render section at top when latest mockup is Approved */
+  if (typeof _rsInjectIfApproved === 'function') _rsInjectIfApproved(mockups);
+  _showMockupModal();
+}
+
+function _hasQuotation() {
+  var el = document.getElementById('ticket-quo-value');
+  if (!el) return true;
+  var txt = (el.textContent || '').trim();
+  /* "PB..." present and not the "— ไม่มี (Manual Entry)" placeholder */
+  return txt.length > 0 && txt.indexOf('ไม่มี') === -1 && /PB\d/i.test(txt);
+}
+
+function reviewAction(action) {
+  var fbForm = document.getElementById('feedback-form');
+  var apForm = document.getElementById('approve-form');
+  var btns = document.getElementById('mockup-action-buttons');
+  if (action === 'approve') {
+    /* Open Media Allocate form — toggle evidence section based on Quotation presence */
+    var hasQuo = _hasQuotation();
+    var warn = document.getElementById('approve-noquo-warn');
+    var evWrap = document.getElementById('approve-evidence-wrap');
+    if (hasQuo) {
+      warn.classList.add('hidden');
+      evWrap.classList.add('hidden');
+    } else {
+      warn.classList.remove('hidden');
+      warn.classList.add('flex');
+      evWrap.classList.remove('hidden');
+    }
+    _apFiles = [];
+    apRenderFiles();
+    apForm.classList.remove('hidden');
+    btns.classList.add('hidden');
+    setTimeout(function(){ var el = document.getElementById('ma-freq'); if (el) el.focus(); }, 80);
+  } else if (action === 'feedback') {
+    fbForm.classList.remove('hidden');
+    btns.classList.add('hidden');
+    setTimeout(function(){ document.getElementById('feedback-note').focus(); }, 80);
+  }
+}
+
+function cancelApprove() {
+  document.getElementById('approve-form').classList.add('hidden');
+  document.getElementById('mockup-action-buttons').classList.remove('hidden');
+  ['ma-freq','ma-dur','ma-special'].forEach(function(id){ var el=document.getElementById(id); if (el) el.value=''; });
+  _apFiles = [];
+  apRenderFiles();
+}
+
+function submitApprove() {
+  var freq = (document.getElementById('ma-freq').value || '').trim();
+  var dur = (document.getElementById('ma-dur').value || '').trim();
+  var ts = (document.getElementById('ma-time-start').value || '').trim();
+  var te = (document.getElementById('ma-time-end').value || '').trim();
+  if (!freq || !dur || !ts || !te) { alert('กรุณากรอกข้อมูล Media Allocate ที่จำเป็น (จำนวนครั้ง, ระยะแสดง, ช่วงเวลา)'); return; }
+  var hasQuo = _hasQuotation();
+  if (!hasQuo && _apFiles.length === 0) { alert('Ticket นี้ยังไม่มี Quotation — กรุณาแนบหลักฐานการอนุมัติอย่างน้อย 1 ไฟล์'); return; }
+  /* mutate data — latest mockup status flips to "Approved" */
+  var job = JOBS.find(function (j) { return j.jobNo === _currentReviewJob; });
+  if (job && job.mockups && job.mockups.length) {
+    job.mockups[0].status = 'Approved';
+    if (!hasQuo && _apFiles[0]) {
+      job.mockups[0].approvalEvidence = { name: _apFiles[0].name, size: _apBytes(_apFiles[0].size) };
+    }
+  }
+  if (job) job.status = 'Done';
+  var btnsEl = document.getElementById('mockup-action-buttons');
+  if (btnsEl && btnsEl.parentElement) btnsEl.parentElement.remove();
+  showReviewToast('Approved · ' + _currentReviewJob, '#047857');
+  renderJobs();
+  openMockupPanel(_currentReviewJob);
+}
+
+/* ===== Approve evidence file upload ===== */
+var AP_MAX_BYTES = 20 * 1024 * 1024;
+var _apFiles = [];
+function _apBytes(n) {
+  if (n < 1024) return n + ' B';
+  if (n < 1024*1024) return (n/1024).toFixed(1) + ' KB';
+  return (n/1024/1024).toFixed(1) + ' MB';
+}
+function apOnFiles(input) {
+  var files = Array.from(input.files || []);
+  var total = _apFiles.reduce(function(s,f){return s+f.size;},0);
+  for (var i=0; i<files.length; i++) {
+    if (total + files[i].size > AP_MAX_BYTES) { alert('ไฟล์รวมเกิน 20 MB'); break; }
+    _apFiles.push(files[i]);
+    total += files[i].size;
+  }
+  input.value = '';
+  apRenderFiles();
+}
+function apRemoveFile(idx) { _apFiles.splice(idx,1); apRenderFiles(); }
+function apRenderFiles() {
+  var list = document.getElementById('approve-evidence-list');
+  var sizeEl = document.getElementById('approve-evidence-size');
+  if (!list) return;
+  var total = _apFiles.reduce(function(s,f){return s+f.size;},0);
+  if (sizeEl) sizeEl.textContent = _apBytes(total) + ' / 20 MB';
+  if (_apFiles.length === 0) { list.innerHTML = ''; return; }
+  list.innerHTML = _apFiles.map(function(f, i){
+    return '<div class="flex items-center gap-2 px-2 py-1.5 bg-white border border-amber-100 rounded-md">' +
+      '<svg class="w-3.5 h-3.5 text-amber-600 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 8.25H7.5a2.25 2.25 0 00-2.25 2.25v9a2.25 2.25 0 002.25 2.25h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25H15"/></svg>' +
+      '<span class="flex-1 truncate font-mono text-[11.5px] text-[#0B1430]">' + f.name + '</span>' +
+      '<span class="text-[10.5px]" style="color:rgba(30,41,59,0.55)">' + _apBytes(f.size) + '</span>' +
+      '<button onclick="apRemoveFile(' + i + ')" class="text-rose-500 hover:text-rose-700"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button>' +
+    '</div>';
+  }).join('');
+}
+function cancelFeedback() {
+  document.getElementById('feedback-form').classList.add('hidden');
+  document.getElementById('mockup-action-buttons').classList.remove('hidden');
+  document.getElementById('feedback-note').value = '';
+  var lnk = document.getElementById('feedback-link'); if (lnk) lnk.value = '';
+  _fbFiles = [];
+  fbRenderFiles();
+}
+
+/* ===== Feedback file upload (multi-file, 50 MB combined) ===== */
+var FB_MAX_BYTES = 50 * 1024 * 1024;
+var _fbFiles = [];
+function _fbBytes(n) {
+  if (n < 1024) return n + ' B';
+  if (n < 1024*1024) return (n/1024).toFixed(1) + ' KB';
+  return (n/1024/1024).toFixed(2) + ' MB';
+}
+function _fbTotal() { return _fbFiles.reduce(function(s,f){return s+f.size;}, 0); }
+function fbOnFiles(input) {
+  if (!input || !input.files || !input.files.length) return;
+  var existing = _fbTotal();
+  for (var i = 0; i < input.files.length; i++) {
+    var f = input.files[i];
+    if (existing + f.size > FB_MAX_BYTES) {
+      alert('ไฟล์ "' + f.name + '" ทำให้ขนาดรวมเกิน 50 MB — ข้ามไฟล์นี้');
+      continue;
+    }
+    existing += f.size;
+    _fbFiles.push(f);
+  }
+  input.value = '';
+  fbRenderFiles();
+}
+function fbRemoveFile(idx) { _fbFiles.splice(idx, 1); fbRenderFiles(); }
+function fbRenderFiles() {
+  var listEl = document.getElementById('feedback-files-list');
+  var sizeEl = document.getElementById('feedback-size');
+  var total = _fbTotal();
+  var over  = total > FB_MAX_BYTES;
+  var pct   = (total / FB_MAX_BYTES) * 100;
+  if (sizeEl) {
+    sizeEl.textContent = _fbBytes(total) + ' / 50 MB';
+    sizeEl.style.color = over ? '#dc2626' : (pct > 80 ? '#d97706' : 'rgba(30,41,59,0.55)');
+  }
+  if (!listEl) return;
+  if (!_fbFiles.length) { listEl.innerHTML = ''; return; }
+  var h = '';
+  _fbFiles.forEach(function(f, i){
+    h += '<div class="flex items-center gap-2 px-2 py-1.5 bg-white border border-[#E2E8F0] rounded-md">' +
+      '<svg class="w-3.5 h-3.5 shrink-0" style="color:rgba(30,41,59,0.5)" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg>' +
+      '<span class="text-[11.5px] font-mono flex-1 truncate" title="' + f.name + '">' + f.name + '</span>' +
+      '<span class="text-[10px] tnum" style="color:rgba(30,41,59,0.55)">' + _fbBytes(f.size) + '</span>' +
+      '<button type="button" onclick="fbRemoveFile(' + i + ')" class="w-5 h-5 rounded hover:bg-rose-50 flex items-center justify-center" style="color:rgba(30,41,59,0.4)">' +
+        '<svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>' +
+      '</button>' +
+    '</div>';
+  });
+  listEl.innerHTML = h;
+}
+
+function submitFeedback() {
+  var note = (document.getElementById('feedback-note').value || '').trim();
+  var link = (document.getElementById('feedback-link').value || '').trim();
+  if (!note) { alert('กรุณากรอก Note ก่อนSend Feedback'); document.getElementById('feedback-note').focus(); return; }
+  if (link && !/^https?:\/\//i.test(link)) { alert('ลิงก์ไม่ถูกต้อง — กรุณาเริ่มต้นด้วย http:// หรือ https://'); document.getElementById('feedback-link').focus(); return; }
+  if (_fbTotal() > FB_MAX_BYTES) { alert('ขนาดไฟล์รวมเกิน 50 MB — กรุณาลบไฟล์บางส่วนออก'); return; }
+  /* Update the LATEST mockup version (mockups[0]) — flip status to Revised, attach reviewer note + link + files */
+  var job = JOBS.find(function (j) { return j.jobNo === _currentReviewJob; });
+  if (job && job.mockups && job.mockups.length) {
+    var latest = job.mockups[0];
+    latest.status = 'Revised';
+    latest.reviewer = note;
+    latest.reviewerLink = link || '';
+    latest.reviewerFiles = _fbFiles.map(function(f){
+      return { name:f.name, size:_fbBytes(f.size), type:(f.type && f.type.indexOf('image')===0?'image':(f.type && f.type.indexOf('video')===0?'video':'file')), url:'#' };
+    });
+    /* stamp the time when feedback was sent (overrides original date) */
+    var d = new Date();
+    var dd = String(d.getDate()).padStart(2,'0'), mm = String(d.getMonth()+1).padStart(2,'0');
+    latest.date = dd + '/' + mm + '/' + d.getFullYear() + ' ' + d.toTimeString().slice(0,5);
+  }
+  _fbFiles = [];
+  showReviewToast('Feedback ส่งแล้ว · ' + _currentReviewJob, '#C2410C');
+  openMockupPanel(_currentReviewJob);
+}
+function showReviewToast(text, color) {
+  var toast = document.createElement('div');
+  toast.className = 'fixed bottom-6 left-1/2 -translate-x-1/2 z-[60] bg-[#0B1430] text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3 text-[13px]';
+  toast.innerHTML = '<span class="w-2 h-2 rounded-full" style="background:' + (color||'#10B981') + '"></span>' + text;
+  document.body.appendChild(toast);
+  setTimeout(function () { toast.style.opacity = '0'; toast.style.transition = 'opacity 0.3s'; setTimeout(function () { toast.remove(); }, 300); }, 2200);
+}
+
+function copyRefLink(ev, link) {
+  if (ev) { ev.preventDefault(); ev.stopPropagation(); }
+  if (!link) return;
+  var done = function(){ showReviewToast('คัดลอก Reference Link แล้ว', '#2D56D2'); };
+  var fail = function(){ showReviewToast('คัดลอกไม่สำเร็จ', '#DC2626'); };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(link).then(done, function(){
+      // fallback
+      try { var ta=document.createElement('textarea'); ta.value=link; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); done(); } catch(e){ fail(); }
+    });
+  } else {
+    try { var ta=document.createElement('textarea'); ta.value=link; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); done(); } catch(e){ fail(); }
+  }
+}
+
+function _showMockupModal() {
+  var el = document.getElementById('mockup-drawer');
+  el.classList.remove('opacity-0','pointer-events-none');
+  el.classList.add('opacity-100');
+  document.body.style.overflow = 'hidden';
+}
+function closeMockupPanel() {
+  var el = document.getElementById('mockup-drawer');
+  el.classList.remove('opacity-100');
+  el.classList.add('opacity-0','pointer-events-none');
+  document.body.style.overflow = '';
+}
+
+/* ===== Re-Edit Modal (Done → request revision, behaves like Feedback) ===== */
+var RE_MAX_BYTES = 50 * 1024 * 1024;
+var _reFiles = [];
+var _reApprovalFile = null;
+
+function _reBytes(n) {
+  if (n < 1024) return n + ' B';
+  if (n < 1024*1024) return (n/1024).toFixed(1) + ' KB';
+  return (n/1024/1024).toFixed(2) + ' MB';
+}
+function _reTotal() { return _reFiles.reduce(function(s,f){return s+f.size;}, 0); }
+
+function openReEditModal(jobNo) {
+  var job = JOBS.find(function(j){ return j.jobNo === jobNo; });
+  if (!job) return;
+  var nextVer = (job.versions || (job.mockups ? job.mockups.length : 0) || 0) + 1;
+  var needApproval = nextVer >= 4;
+
+  document.getElementById('reedit-job-no').value = jobNo;
+  document.getElementById('reedit-title').textContent = jobNo + '  ·  ' + job.mediaPack;
+  document.getElementById('reedit-jobno-display').textContent = jobNo;
+  document.getElementById('reedit-media-display').textContent = job.mediaPack;
+  document.getElementById('reedit-newver-display').textContent = 'v' + nextVer;
+
+  /* reset form */
+  _reFiles = [];
+  _reApprovalFile = null;
+  document.getElementById('reedit-note').value = '';
+  document.getElementById('reedit-link').value = '';
+  document.getElementById('reedit-files').value = '';
+  document.getElementById('reedit-approval').value = '';
+  document.getElementById('reedit-approval-label').textContent = 'Choose Fileหลักฐานอนุมัติ...';
+  reeditRenderFiles();
+
+  /* approval evidence block — show only when next version >= 4 */
+  document.getElementById('reedit-approval-block').classList.toggle('hidden', !needApproval);
+
+  document.getElementById('reedit-overlay').classList.remove('hidden');
+  document.getElementById('reedit-modal').classList.remove('hidden');
+  setTimeout(function(){ document.getElementById('reedit-note').focus(); }, 80);
+}
+
+function closeReEditModal() {
+  document.getElementById('reedit-overlay').classList.add('hidden');
+  document.getElementById('reedit-modal').classList.add('hidden');
+}
+
+function reeditOnFiles(input) {
+  if (!input || !input.files || !input.files.length) return;
+  var existing = _reTotal();
+  for (var i = 0; i < input.files.length; i++) {
+    var f = input.files[i];
+    if (existing + f.size > RE_MAX_BYTES) {
+      alert('ไฟล์ "' + f.name + '" ทำให้ขนาดรวมเกิน 50 MB — ข้ามไฟล์นี้');
+      continue;
+    }
+    existing += f.size;
+    _reFiles.push(f);
+  }
+  input.value = '';
+  reeditRenderFiles();
+}
+function reeditRemoveFile(idx) { _reFiles.splice(idx, 1); reeditRenderFiles(); }
+function reeditRenderFiles() {
+  var listEl = document.getElementById('reedit-files-list');
+  var sizeEl = document.getElementById('reedit-size');
+  var total  = _reTotal();
+  var over   = total > RE_MAX_BYTES;
+  var pct    = (total / RE_MAX_BYTES) * 100;
+  if (sizeEl) {
+    sizeEl.textContent = _reBytes(total) + ' / 50 MB';
+    sizeEl.style.color = over ? '#dc2626' : (pct > 80 ? '#d97706' : 'rgba(30,41,59,0.55)');
+  }
+  if (!listEl) return;
+  if (!_reFiles.length) { listEl.innerHTML = ''; return; }
+  var h = '';
+  _reFiles.forEach(function(f, i){
+    h += '<div class="flex items-center gap-2 px-2 py-1.5 bg-white border border-[#E2E8F0] rounded-md">' +
+      '<svg class="w-3.5 h-3.5 shrink-0" style="color:rgba(30,41,59,0.5)" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg>' +
+      '<span class="text-[11.5px] font-mono flex-1 truncate" title="' + f.name + '">' + f.name + '</span>' +
+      '<span class="text-[10px] tnum" style="color:rgba(30,41,59,0.55)">' + _reBytes(f.size) + '</span>' +
+      '<button type="button" onclick="reeditRemoveFile(' + i + ')" class="w-5 h-5 rounded hover:bg-rose-50 flex items-center justify-center" style="color:rgba(30,41,59,0.4)">' +
+        '<svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>' +
+      '</button>' +
+    '</div>';
+  });
+  listEl.innerHTML = h;
+}
+
+function reeditPickApproval(input) {
+  if (!input.files || !input.files.length) { _reApprovalFile = null; return; }
+  _reApprovalFile = input.files[0];
+  document.getElementById('reedit-approval-label').textContent =
+    _reApprovalFile.name + '  ·  ' + _reBytes(_reApprovalFile.size);
+}
+
+function submitReEdit(e) {
+  if (e && e.preventDefault) e.preventDefault();
+  var jobNo = document.getElementById('reedit-job-no').value;
+  var note  = (document.getElementById('reedit-note').value || '').trim();
+  var link  = (document.getElementById('reedit-link').value || '').trim();
+  if (!note) { alert('กรุณากรอก Note ก่อนส่ง'); document.getElementById('reedit-note').focus(); return; }
+  if (link && !/^https?:\/\//i.test(link)) { alert('ลิงก์ไม่ถูกต้อง — กรุณาเริ่มต้นด้วย http:// หรือ https://'); document.getElementById('reedit-link').focus(); return; }
+  if (_reTotal() > RE_MAX_BYTES) { alert('ขนาดไฟล์รวมเกิน 50 MB — กรุณาลบไฟล์บางส่วนออก'); return; }
+
+  var job = JOBS.find(function(j){ return j.jobNo === jobNo; });
+  if (!job) { closeReEditModal(); return; }
+
+  var newVer = (job.versions || (job.mockups ? job.mockups.length : 0) || 0) + 1;
+  var needApproval = newVer >= 4;
+  if (needApproval && !_reApprovalFile) {
+    alert('การ Re-Edit เวอร์ชัน v' + newVer + ' (v4 ขึ้นไป) ต้องแนบหลักฐานการอนุมัติ');
+    return;
+  }
+
+  /* Equivalent to Feedback: flip latest mockup to Revised, attach reviewer note/link/files */
+  var d = new Date();
+  var dd = String(d.getDate()).padStart(2,'0'), mm = String(d.getMonth()+1).padStart(2,'0');
+  var stamp = dd + '/' + mm + '/' + d.getFullYear() + ' ' + d.toTimeString().slice(0,5);
+
+  if (!job.mockups) job.mockups = [];
+  if (job.mockups.length) {
+    var latest = job.mockups[0];
+    latest.status = 'Revised';
+    latest.reviewer = note;
+    latest.reviewerLink = link || '';
+    latest.reviewerFiles = _reFiles.map(function(f){
+      return { name:f.name, size:_reBytes(f.size), type:(f.type && f.type.indexOf('image')===0?'image':(f.type && f.type.indexOf('video')===0?'video':'file')), url:'#' };
+    });
+    if (_reApprovalFile) {
+      latest.approvalEvidence = { name:_reApprovalFile.name, size:_reBytes(_reApprovalFile.size), url:'#' };
+    }
+    latest.date = stamp;
+  }
+
+  /* bump version counter + send job back to graphic as Revise */
+  job.versions    = newVer;
+  job.note        = note;
+  job.status      = 'Revise';
+  job.feedbackSla = 'On track';
+  job.progressSla = 'In time';
+
+  /* reset state */
+  _reFiles = [];
+  _reApprovalFile = null;
+  closeReEditModal();
+  renderJobs();
+  showReviewToast('ส่ง Re-Edit · ' + jobNo + ' กลับไป Graphic เป็น Revise', '#C2410C');
+}
+
+/* ===== Inline Add Job (no modal) ===== */
+var TD_PACK_COLOR = { 'Metro':'#8b5cf6', '7-Eleven':'#ef4444', 'POS':'#f59e0b', 'Radio':'#06b6d4' };
+var TD_PACK_ICON  = { 'Metro':'M',      '7-Eleven':'7',      'POS':'P',      'Radio':'R'      };
+var TD_MAX_BYTES = 50 * 1024 * 1024;
+var _tdJobSeq = 0;
+var _tdFiles = {}; // key: jobId + '_' + kind  → File[]
+
+function tdKey(jid, kind) { return jid + '_' + kind; }
+function tdBytes(n) {
+  if (n < 1024) return n + ' B';
+  if (n < 1024*1024) return (n/1024).toFixed(1) + ' KB';
+  return (n/1024/1024).toFixed(2) + ' MB';
+}
+function tdTotal(jid, kind) {
+  var arr = _tdFiles[tdKey(jid, kind)] || [];
+  return arr.reduce(function(s,f){return s+f.size;}, 0);
+}
+function tdOnFiles(input, jid, kind) {
+  if (!input || !input.files || !input.files.length) return;
+  var key = tdKey(jid, kind);
+  if (!_tdFiles[key]) _tdFiles[key] = [];
+  var existing = tdTotal(jid, kind);
+  for (var i = 0; i < input.files.length; i++) {
+    var f = input.files[i];
+    if (existing + f.size > TD_MAX_BYTES) {
+      alert('ไฟล์ "' + f.name + '" ทำให้ขนาดรวมเกิน 50 MB — ข้ามไฟล์นี้');
+      continue;
+    }
+    existing += f.size;
+    _tdFiles[key].push(f);
+  }
+  input.value = '';
+  tdRenderFiles(jid, kind);
+}
+function tdRemoveFile(jid, kind, idx) {
+  var arr = _tdFiles[tdKey(jid, kind)];
+  if (!arr) return;
+  arr.splice(idx, 1);
+  tdRenderFiles(jid, kind);
+}
+function tdRenderFiles(jid, kind) {
+  var listEl = document.getElementById('tdj-' + jid + '-' + kind + '-list');
+  var sizeEl = document.getElementById('tdj-' + jid + '-' + kind + '-size');
+  var total = tdTotal(jid, kind);
+  var over = total > TD_MAX_BYTES;
+  var pct = (total / TD_MAX_BYTES) * 100;
+  if (sizeEl) {
+    sizeEl.textContent = tdBytes(total).replace(' B','B') + ' / 50 MB';
+    sizeEl.style.color = over ? '#dc2626' : (pct > 80 ? '#d97706' : 'rgba(30,41,59,0.6)');
+  }
+  if (!listEl) return;
+  var arr = _tdFiles[tdKey(jid, kind)] || [];
+  if (!arr.length) { listEl.innerHTML = ''; return; }
+  var h = '';
+  arr.forEach(function(f, i){
+    h += '<div class="flex items-center gap-2 px-2 py-1 bg-white border border-[#E2E8F0] rounded-md">' +
+      '<svg class="w-3 h-3 shrink-0" style="color:rgba(30,41,59,0.5)" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg>' +
+      '<span class="text-[11.5px] font-mono flex-1 truncate" title="' + f.name + '">' + f.name + '</span>' +
+      '<span class="text-[10px] tnum" style="color:rgba(30,41,59,0.55)">' + tdBytes(f.size) + '</span>' +
+      '<button type="button" onclick="tdRemoveFile(\'' + jid + '\',\'' + kind + '\',' + i + ')" class="w-4 h-4 rounded hover:bg-rose-50 flex items-center justify-center" style="color:rgba(30,41,59,0.4)">' +
+        '<svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>' +
+      '</button>' +
+    '</div>';
+  });
+  listEl.innerHTML = h;
+}
+function tdUpdatePackSel(jid) {
+  var sel = document.getElementById('tdj-' + jid + '-pack');
+  var icon = document.getElementById('tdj-' + jid + '-icon');
+  var label = document.getElementById('tdj-' + jid + '-label');
+  if (!sel || !icon) return;
+  var v = sel.value;
+  if (!v) { icon.style.background = '#94a3b8'; icon.textContent = '?'; if (label) label.textContent = 'New Job'; return; }
+  icon.style.background = TD_PACK_COLOR[v] || '#64748B';
+  icon.textContent = TD_PACK_ICON[v] || v.charAt(0);
+  if (label) label.textContent = v;
+}
+function tdRemoveJob(jid) {
+  var el = document.getElementById('tdj-' + jid);
+  if (el) el.remove();
+  delete _tdFiles[tdKey(jid,'material')];
+  delete _tdFiles[tdKey(jid,'brief')];
+  // Update count
+  var jc = document.getElementById('job-count');
+  if (jc) {
+    var n = document.querySelectorAll('#job-list > div').length;
+    jc.textContent = n + ' job' + (n!==1?'s':'');
+  }
+}
+function addJobInline() {
+  _tdJobSeq++;
+  var jid = 'tdj' + _tdJobSeq;
+  var listEl = document.getElementById('job-list');
+  if (!listEl) return;
+
+  var card = document.createElement('div');
+  card.id = 'tdj-' + jid;
+  card.className = 'p-5 border-2 border-dashed border-[#2D56D2]/40 bg-[#EBF5FF]/30';
+
+  var h = '';
+  // Header
+  h += '<div class="flex items-center gap-3 mb-4 flex-wrap">';
+  h += '<div id="tdj-' + jid + '-icon" class="w-9 h-9 rounded-lg flex items-center justify-center text-white font-bold text-[14px] shrink-0" style="background:#94a3b8">?</div>';
+  h += '<div>';
+  h += '<div class="text-[13px] font-semibold text-[#0B1430]" id="tdj-' + jid + '-label">New Job</div>';
+  h += '<div class="text-[10.5px] uppercase tracking-wider font-semibold" style="color:#2D56D2">New · Draft</div>';
+  h += '</div>';
+  h += '<button onclick="tdRemoveJob(\'' + jid + '\')" class="ml-auto w-8 h-8 rounded hover:bg-rose-50 flex items-center justify-center" style="color:rgba(30,41,59,0.4)" title="ลบ Job"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button>';
+  h += '</div>';
+
+  // Two-column layout: form left, note right
+  h += '<div class="grid grid-cols-1 lg:grid-cols-3 gap-4">';
+
+  // Left form (col-span 2)
+  h += '<div class="lg:col-span-2 space-y-3 bg-white border border-[#E2E8F0] rounded-lg p-4">';
+
+  // Package + Period (row)
+  h += '<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">';
+  h += '<div><label class="block text-[10.5px] font-semibold uppercase tracking-wider mb-1" style="color:rgba(30,41,59,0.6)">Package <span class="text-rose-500 normal-case">*</span></label>';
+  h += '<select id="tdj-' + jid + '-pack" onchange="tdUpdatePackSel(\'' + jid + '\')" class="w-full h-9 px-3 bg-white border border-[#E2E8F0] rounded-md text-[12px] focus:outline-none focus:border-[#4790FF]">';
+  h += '<option value="">— เลือก Package —</option><option value="Metro">Metro</option><option value="7-Eleven">7-Eleven</option><option value="POS">POS</option><option value="Radio">Radio</option>';
+  h += '</select></div>';
+  h += '<div><label class="block text-[10.5px] font-semibold uppercase tracking-wider mb-1" style="color:rgba(30,41,59,0.6)">Duration</label>';
+  h += '<select class="w-full h-9 px-3 bg-white border border-[#E2E8F0] rounded-md text-[12px] focus:outline-none focus:border-[#4790FF]"><option>10 seconds</option><option>15 seconds</option><option>20 seconds</option><option>30 seconds</option></select></div>';
+  h += '</div>';
+
+  // Period
+  h += '<div><label class="block text-[10.5px] font-semibold uppercase tracking-wider mb-1" style="color:rgba(30,41,59,0.6)">Period <span class="text-rose-500 normal-case">*</span></label>';
+  h += '<div class="flex items-center gap-2">';
+  h += '<input type="date" class="flex-1 h-9 px-3 bg-white border border-[#E2E8F0] rounded-md text-[12px] focus:outline-none focus:border-[#4790FF]" />';
+  h += '<span class="text-[12px]" style="color:rgba(30,41,59,0.4)">—</span>';
+  h += '<input type="date" class="flex-1 h-9 px-3 bg-white border border-[#E2E8F0] rounded-md text-[12px] focus:outline-none focus:border-[#4790FF]" />';
+  h += '</div></div>';
+
+  // Material
+  h += '<div>';
+  h += '<label class="block text-[10.5px] font-semibold uppercase tracking-wider mb-1 text-emerald-700">Material</label>';
+  h += '<input type="text" placeholder="วาง Link 1 รายการ..." class="w-full h-9 px-3 mb-1.5 bg-white border border-[#E2E8F0] rounded-md text-[12px] focus:outline-none focus:border-[#4790FF]">';
+  h += '<div class="flex items-center gap-2">';
+  h += '<label class="h-7 px-2.5 bg-white border border-[#CBD5E1] rounded-md text-[11px] font-medium hover:bg-[#F8FAFC] inline-flex items-center gap-1.5 cursor-pointer" style="color:rgba(30,41,59,0.6)"><svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M18.375 12.739l-7.693 7.693a4.5 4.5 0 01-6.364-6.364l10.94-10.94A3 3 0 1119.5 7.372L8.552 18.32"/></svg>Attach Files<input type="file" multiple class="hidden" onchange="tdOnFiles(this,\'' + jid + '\',\'material\')"></label>';
+  h += '<span class="text-[10.5px]" style="color:rgba(30,41,59,0.5)">Multiple · ≤ 50 MB</span>';
+  h += '<span id="tdj-' + jid + '-material-size" class="text-[10.5px] font-medium ml-auto" style="color:rgba(30,41,59,0.6)">0 / 50 MB</span>';
+  h += '</div>';
+  h += '<div id="tdj-' + jid + '-material-list" class="space-y-1 mt-1.5"></div>';
+  h += '</div>';
+
+  // Brief
+  h += '<div>';
+  h += '<label class="block text-[10.5px] font-semibold uppercase tracking-wider mb-1 text-blue-700">Brief</label>';
+  h += '<input type="text" placeholder="วาง Link 1 รายการ..." class="w-full h-9 px-3 mb-1.5 bg-white border border-[#E2E8F0] rounded-md text-[12px] focus:outline-none focus:border-[#4790FF]">';
+  h += '<div class="flex items-center gap-2">';
+  h += '<label class="h-7 px-2.5 bg-white border border-[#CBD5E1] rounded-md text-[11px] font-medium hover:bg-[#F8FAFC] inline-flex items-center gap-1.5 cursor-pointer" style="color:rgba(30,41,59,0.6)"><svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M18.375 12.739l-7.693 7.693a4.5 4.5 0 01-6.364-6.364l10.94-10.94A3 3 0 1119.5 7.372L8.552 18.32"/></svg>Attach Files<input type="file" multiple class="hidden" onchange="tdOnFiles(this,\'' + jid + '\',\'brief\')"></label>';
+  h += '<span class="text-[10.5px]" style="color:rgba(30,41,59,0.5)">Multiple · ≤ 50 MB</span>';
+  h += '<span id="tdj-' + jid + '-brief-size" class="text-[10.5px] font-medium ml-auto" style="color:rgba(30,41,59,0.6)">0 / 50 MB</span>';
+  h += '</div>';
+  h += '<div id="tdj-' + jid + '-brief-list" class="space-y-1 mt-1.5"></div>';
+  h += '</div>';
+
+  h += '</div>'; // end left form
+
+  // Right Note column (full height, PB blue)
+  h += '<div class="lg:col-span-1 rounded-lg p-4 flex flex-col" style="background:#EBF5FF;border:1px solid #D6ECFF">';
+  h += '<div class="flex items-center gap-1.5 mb-1.5"><svg class="w-3.5 h-3.5" style="color:#2D56D2" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/></svg><div class="text-[10.5px] font-semibold uppercase tracking-wider" style="color:#213268">Note</div></div>';
+  h += '<textarea placeholder="Add notes for this job..." class="w-full flex-1 min-h-[160px] px-3 py-2 bg-white border border-[#D6ECFF] rounded-lg text-[12px] focus:outline-none focus:border-[#4790FF] resize-none"></textarea>';
+  h += '</div>';
+
+  h += '</div>'; // end grid
+
+  // Actions
+  h += '<div class="mt-4 flex items-center justify-end gap-2">';
+  h += '<button onclick="tdRemoveJob(\'' + jid + '\')" class="h-9 px-4 bg-white border border-[#CBD5E1] text-[#0B1430] rounded-lg text-[12.5px] font-medium hover:bg-[#F1F5F9]">Cancel</button>';
+  h += '<button onclick="alert(\'บันทึก Job (Demo)\')" class="h-9 px-5 bg-[#2D56D2] text-white rounded-lg text-[12.5px] font-semibold hover:bg-[#213268] inline-flex items-center gap-2 shadow-sm"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>Save Job</button>';
+  h += '</div>';
+
+  card.innerHTML = h;
+  if (listEl.firstChild) listEl.insertBefore(card, listEl.firstChild);
+  else listEl.appendChild(card);
+
+  // Update job count
+  var jc = document.getElementById('job-count');
+  if (jc) {
+    var n = document.querySelectorAll('#job-list > div').length;
+    jc.textContent = n + ' job' + (n!==1?'s':'');
+  }
+  card.scrollIntoView({ behavior:'smooth', block:'center' });
+}
+
+/* ===== Add Job Modal ===== */
+var AJ_MAX_BYTES = 50 * 1024 * 1024; // 50 MB
+var _ajFiles = { material: [], brief: [] };
+
+function openAddJobModal() {
+  document.getElementById('add-job-overlay').classList.remove('hidden');
+  document.getElementById('add-job-modal').classList.remove('hidden');
+  ['aj-pack','aj-start','aj-end','aj-material','aj-brief','aj-note'].forEach(function(id){
+    var el = document.getElementById(id); if (el) el.value = '';
+  });
+  var dur = document.getElementById('aj-duration'); if (dur) dur.selectedIndex = 0;
+  _ajFiles = { material: [], brief: [] };
+  ajRenderFiles('material'); ajRenderFiles('brief');
+  var mf = document.getElementById('aj-material-files'); if (mf) mf.value = '';
+  var bf = document.getElementById('aj-brief-files'); if (bf) bf.value = '';
+}
+function closeAddJobModal() {
+  document.getElementById('add-job-overlay').classList.add('hidden');
+  document.getElementById('add-job-modal').classList.add('hidden');
+}
+
+function ajFmtBytes(n) {
+  if (n < 1024) return n + ' B';
+  if (n < 1024*1024) return (n/1024).toFixed(1) + ' KB';
+  return (n/1024/1024).toFixed(2) + ' MB';
+}
+function ajTotalBytes(kind) { return _ajFiles[kind].reduce(function(s,f){return s+f.size;}, 0); }
+
+function ajOnFiles(kind) {
+  var input = document.getElementById('aj-' + kind + '-files');
+  if (!input || !input.files || !input.files.length) return;
+  var existing = ajTotalBytes(kind);
+  var added = [];
+  for (var i = 0; i < input.files.length; i++) {
+    var f = input.files[i];
+    if (existing + f.size > AJ_MAX_BYTES) {
+      alert('ไฟล์ "' + f.name + '" ทำให้ขนาดรวมเกิน 50 MB — ข้ามไฟล์นี้');
+      continue;
+    }
+    existing += f.size;
+    added.push(f);
+  }
+  _ajFiles[kind] = _ajFiles[kind].concat(added);
+  input.value = '';
+  ajRenderFiles(kind);
+}
+
+function ajRemoveFile(kind, idx) {
+  _ajFiles[kind].splice(idx, 1);
+  ajRenderFiles(kind);
+}
+
+function ajRenderFiles(kind) {
+  var listEl = document.getElementById('aj-' + kind + '-list');
+  var sizeEl = document.getElementById('aj-' + kind + '-size');
+  var total = ajTotalBytes(kind);
+  var pct = Math.min(100, (total / AJ_MAX_BYTES) * 100);
+  var over = total > AJ_MAX_BYTES;
+  if (sizeEl) {
+    sizeEl.textContent = ajFmtBytes(total).replace(' B','B') + ' / 50 MB';
+    sizeEl.style.color = over ? '#dc2626' : (pct > 80 ? '#d97706' : 'rgba(30,41,59,0.6)');
+  }
+  if (!listEl) return;
+  if (!_ajFiles[kind].length) { listEl.innerHTML = ''; return; }
+  var h = '';
+  _ajFiles[kind].forEach(function(f, i){
+    h += '<div class="flex items-center gap-2 px-2.5 py-1.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-md">' +
+      '<svg class="w-3.5 h-3.5 shrink-0" style="color:rgba(30,41,59,0.5)" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg>' +
+      '<span class="text-[12px] font-mono flex-1 truncate" title="' + f.name + '">' + f.name + '</span>' +
+      '<span class="text-[10.5px] tnum" style="color:rgba(30,41,59,0.55)">' + ajFmtBytes(f.size) + '</span>' +
+      '<button type="button" onclick="ajRemoveFile(\'' + kind + '\',' + i + ')" class="w-5 h-5 rounded hover:bg-rose-50 flex items-center justify-center" style="color:rgba(30,41,59,0.4)">' +
+        '<svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>' +
+      '</button>' +
+    '</div>';
+  });
+  listEl.innerHTML = h;
+}
+
+function submitAddJob() {
+  var pack = document.getElementById('aj-pack').value;
+  if (!pack) { alert('กรุณาเลือก Package'); return; }
+  var s = document.getElementById('aj-start').value;
+  var e = document.getElementById('aj-end').value;
+  if (!s || !e) { alert('กรุณากรอก Period'); return; }
+  if (ajTotalBytes('material') > AJ_MAX_BYTES) { alert('ไฟล์ Material รวมเกิน 50 MB'); return; }
+  if (ajTotalBytes('brief')    > AJ_MAX_BYTES) { alert('ไฟล์ Brief รวมเกิน 50 MB'); return; }
+  closeAddJobModal();
+  alert('เพิ่ม Job ใหม่ (' + pack + ') เรียบร้อย — Demo only');
+}
+
+renderJobs();
+</script>
+    </div>
+
+  </main>
+</div>
+
+<!-- AI Panel -->
+<div id="ai-panel" class="fixed right-0 top-0 bottom-0 w-[420px] bg-white border-l border-surface-200 z-40 flex flex-col translate-x-full transition-transform duration-200" style="box-shadow:-8px 0 30px rgba(11,20,48,0.08)">
+  <div class="h-16 px-5 border-b border-surface-200 flex items-center gap-3">
+    <div class="w-8 h-8 rounded-lg flex items-center justify-center text-white" style="background:linear-gradient(135deg,#2D56D2,#5FCBF9)">
+      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"/></svg>
+    </div>
+    <div class="flex-1">
+      <div class="text-[14px] font-semibold">Plan-B Copilot</div>
+      <div class="text-[11px] flex items-center gap-1" style="color:rgba(30,41,59,0.6)"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>Connected to live CRM data</div>
+    </div>
+    <button onclick="toggleAI()" class="w-8 h-8 rounded-md hover:bg-surface-100 flex items-center justify-center">
+      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+    </button>
+  </div>
+
+  <!-- Messages -->
+  <div id="ai-messages" class="flex-1 overflow-y-auto px-5 py-4 space-y-3">
+    <div><div class="text-[10px] font-medium uppercase tracking-wide mb-1" style="color:rgba(30,41,59,0.5)">Copilot</div><div class="inline-block max-w-[90%] text-[13px] leading-relaxed rounded-xl px-3.5 py-2.5 bg-surface-50 border border-surface-200">Hi — I can summarize occupancy, flag anomalies, draft proposals, or forecast revenue. What are we digging into?</div></div>
+  </div>
+
+  <!-- Suggestions -->
+  <div id="ai-suggestions" class="px-5 pb-2 space-y-2">
+    <div class="text-[10px] uppercase tracking-wide font-semibold" style="color:rgba(30,41,59,0.5)">Try asking</div>
+    <button onclick="aiSend(this.textContent)" class="w-full text-left text-[12px] px-3 py-2 border border-surface-200 rounded-lg hover:border-pb-500 hover:bg-blue-50/30 transition-colors">Forecast May occupancy for BTS inventory</button>
+    <button onclick="aiSend(this.textContent)" class="w-full text-left text-[12px] px-3 py-2 border border-surface-200 rounded-lg hover:border-pb-500 hover:bg-blue-50/30 transition-colors">Summarize this week's claims by severity</button>
+    <button onclick="aiSend(this.textContent)" class="w-full text-left text-[12px] px-3 py-2 border border-surface-200 rounded-lg hover:border-pb-500 hover:bg-blue-50/30 transition-colors">Who are my top 3 clients and where are they underspending?</button>
+    <button onclick="aiSend(this.textContent)" class="w-full text-left text-[12px] px-3 py-2 border border-surface-200 rounded-lg hover:border-pb-500 hover:bg-blue-50/30 transition-colors">Draft a proposal: AIS wants 30-day coverage in Bangkok + Chiang Mai</button>
+  </div>
+
+  <!-- Input -->
+  <div class="p-4 border-t border-surface-200">
+    <div class="rounded-xl bg-white border border-surface-200 focus-within:border-pb-500 transition" style="box-shadow:0 0 0 1px rgba(45,86,210,0.1)">
+      <div class="flex items-end gap-2 p-2">
+        <input id="ai-input" type="text" placeholder="Ask about occupancy, pipeline, claims…" class="flex-1 text-[13px] bg-transparent outline-none px-2 py-1.5 placeholder:opacity-40" onkeydown="if(event.key==='Enter'){event.preventDefault();aiSend()}" />
+        <button onclick="aiSend()" class="w-8 h-8 rounded-md bg-ink-900 hover:bg-ink-700 flex items-center justify-center text-white shrink-0">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 18-8-8 18-2-8-8-2Z"/></svg>
+        </button>
+      </div>
+    </div>
+    <p class="text-[10px] text-center mt-2" style="color:rgba(30,41,59,0.4)">Plan-B Copilot — may hallucinate, verify critical actions</p>
+  </div>
+</div>
+
+<script>
+/* === Expand/collapse sub-menus === */
+function toggleMenu(id){
+  const sub=document.getElementById(id+'-sub');
+  const chevron=document.getElementById(id+'-chevron');
+  if(sub.classList.contains('hidden')){
+    sub.classList.remove('hidden');
+    chevron.classList.add('rotate-90');
+  }else{
+    sub.classList.add('hidden');
+    chevron.classList.remove('rotate-90');
+  }
+}
+
+/* === Mobile sidebar overlay === */
+function toggleMobile(){
+  const sidebar=document.getElementById('sidebar');
+  const overlay=document.getElementById('sidebar-overlay');
+  sidebar.classList.toggle('-translate-x-full');
+  overlay.classList.toggle('hidden');
+}
+
+/* === Desktop collapse sidebar === */
+let _sidebarCollapsed = false;
+function collapseSidebar(){
+  // On mobile, toggle mobile drawer instead
+  if(window.innerWidth < 1024){
+    toggleMobile();
+    return;
+  }
+  _sidebarCollapsed = !_sidebarCollapsed;
+  const sb = document.getElementById('sidebar');
+  const main = document.querySelector('main');
+  const labels = sb.querySelectorAll('.sidebar-label');
+  const groups = sb.querySelectorAll('.sidebar-nav-parent');
+  const subs = sb.querySelectorAll('[id$="-sub"]');
+  const brand = document.getElementById('sidebar-brand');
+
+  if(_sidebarCollapsed){
+    sb.classList.remove('w-64');
+    sb.classList.add('w-[68px]');
+    main.classList.remove('lg:ml-64');
+    main.classList.add('lg:ml-[68px]');
+    labels.forEach(el=>el.classList.add('hidden'));
+    groups.forEach(el=>el.classList.add('hidden'));
+    subs.forEach(el=>el.classList.add('hidden'));
+    if(brand) brand.classList.replace('px-4','px-0');
+    if(brand) brand.classList.add('justify-center');
+  } else {
+    sb.classList.remove('w-[68px]');
+    sb.classList.add('w-64');
+    main.classList.remove('lg:ml-[68px]');
+    main.classList.add('lg:ml-64');
+    labels.forEach(el=>el.classList.remove('hidden'));
+    groups.forEach(el=>el.classList.remove('hidden'));
+    // Re-show sub-menus that were explicitly open (have active items)
+    subs.forEach(el=>{
+      if(el.querySelector('.active')) el.classList.remove('hidden');
+    });
+    if(brand) brand.classList.replace('px-0','px-4');
+    if(brand) brand.classList.remove('justify-center');
+  }
+}
+
+/* === AI Panel === */
+let _aiOpen = false;
+function toggleAI(){
+  _aiOpen = !_aiOpen;
+  const panel = document.getElementById('ai-panel');
+  const btn = document.getElementById('ai-toggle');
+  if(_aiOpen){
+    panel.classList.remove('translate-x-full');
+    btn.classList.remove('bg-white','border-surface-300','text-ink-900','hover:bg-surface-50');
+    btn.classList.add('bg-ink-900','text-white','border-ink-900');
+  } else {
+    panel.classList.add('translate-x-full');
+    btn.classList.remove('bg-ink-900','text-white','border-ink-900');
+    btn.classList.add('bg-white','border-surface-300','text-ink-900','hover:bg-surface-50');
+  }
+}
+
+/* AI demo chat */
+const _aiReplies = [
+  "Based on current data, BTS corridor occupancy is trending at 84% — above the 78% network average. If the pattern holds, May could hit 89% with AIS and TrueMove briefs both targeting Silom.",
+  "This week we have 3 open claims: #1284 (high — LED flicker, 2h remaining SLA), #1282 (critical — content not playing, urgent), and #1283 (med — vinyl peel, within SLA). The critical item needs immediate attention.",
+  "Your top 3 clients YTD: AIS Thailand (฿24.8M, 18 campaigns), TrueMove H (฿18.5M, 14 campaigns), and Toyota Motor (฿15.2M, 9 campaigns). Toyota is underspending on digital LED — they only use 2 of your 5 available LED sites.",
+  "Draft proposal ready: AIS 30-day coverage across 8 Bangkok sites (including Silom LED, Rama IX, Asoke) + 2 Chiang Mai sites. Estimated package: ฿4.2M. Occupancy conflicts on TH-SIL-09 for May 5-12 — recommend offering X-CAYA-FY-1 as substitute.",
+];
+let _aiReplyIdx = 0;
+
+function aiSend(text){
+  const input = document.getElementById('ai-input');
+  const msg = text || input.value.trim();
+  if(!msg) return;
+  input.value = '';
+  document.getElementById('ai-suggestions').style.display='none';
+
+  const box = document.getElementById('ai-messages');
+  // User bubble
+  box.innerHTML += '<div class="text-right"><div class="inline-block max-w-[90%] text-[13px] leading-relaxed rounded-xl px-3.5 py-2.5 bg-ink-900 text-white">'+msg.replace(/</g,'&lt;')+'</div></div>';
+  box.scrollTop = box.scrollHeight;
+
+  // Thinking dots
+  const thinkId = 'ai-think-'+Date.now();
+  box.innerHTML += '<div id="'+thinkId+'" class="flex items-center gap-2 text-[12px]" style="color:rgba(30,41,59,0.6)"><div class="flex gap-1"><span class="w-1.5 h-1.5 bg-pb-500 rounded-full pulse-dot"></span><span class="w-1.5 h-1.5 bg-pb-500 rounded-full pulse-dot" style="animation-delay:.2s"></span><span class="w-1.5 h-1.5 bg-pb-500 rounded-full pulse-dot" style="animation-delay:.4s"></span></div>analyzing CRM data…</div>';
+  box.scrollTop = box.scrollHeight;
+
+  setTimeout(()=>{
+    const el = document.getElementById(thinkId);
+    if(el) el.remove();
+    const reply = _aiReplies[_aiReplyIdx % _aiReplies.length];
+    _aiReplyIdx++;
+    box.innerHTML += '<div><div class="text-[10px] font-medium uppercase tracking-wide mb-1" style="color:rgba(30,41,59,0.5)">Copilot</div><div class="inline-block max-w-[90%] text-[13px] leading-relaxed rounded-xl px-3.5 py-2.5 bg-surface-50 border border-surface-200">'+reply+'</div></div>';
+    box.scrollTop = box.scrollHeight;
+  }, 1500);
+}
+</script>
+
+<!-- ===========================================================
+     RENDER SECTION — mirrored from job-detail.html (Final Render)
+     Mounted into #mockup-body when latest mockup status = Approved.
+     All identifiers prefixed `rs` / `_rs` to avoid collisions with
+     the page's existing submitFeedback / feedback flow.
+     =========================================================== -->
+<script>
+/* ===== State ===== */
+var RS_FORMATS = ['16-9','CSQ','ITT','BTS','Silom','Curve','RBS','4-3','SRD','179'];
+var _rsApproved = {};         // committed approved formats: { fmt: { approved, feedback, at, airtime } }
+var _rsApproveOpen = {};      // formats with Approve checkbox ticked (pending Airtime submit)
+var _rsFeedback = {};         // committed feedback per format
+var _rsFeedbackOpen = {};     // formats with Feedback checkbox ticked
+var _rsFeedbackSubmitted = {};// formats that have had Feedback submitted (locked, can't re-Feedback)
+var _rsSharedFeedback = { note:'', refLink:'', files:[] };
+var _rsAirtime = { freq:'', dur:'', startDate:'', endDate:'', special:'' };
+var _rsFileName = '';
+var _rsFmtPos = 'back';
+
+/* ===== Helpers ===== */
+function _rsEsc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function _rsBytes(n){
+  if (n == null) return '';
+  if (n < 1024) return n + ' B';
+  if (n < 1024*1024) return (n/1024).toFixed(1) + ' KB';
+  return (n/1024/1024).toFixed(2) + ' MB';
+}
+function _rsSafeFn(s){ return String(s).replace(/[^A-Za-z0-9_\-]/g, '_'); }
+function _rsDatePrefix(){
+  var d = new Date();
+  var yyyy = d.getFullYear();
+  var mm = String(d.getMonth()+1).padStart(2, '0');
+  var dd = String(d.getDate()).padStart(2, '0');
+  return yyyy + mm + dd;
+}
+function _rsGetFmtPos(){ return _rsFmtPos || 'back'; }
+function _rsComposed(baseName, fmt, runIndex){
+  baseName = (baseName || '').trim();
+  if (!baseName) return '';
+  var safeFmt = _rsSafeFn(fmt);
+  var pos = _rsGetFmtPos();
+  if (runIndex != null) {
+    var dateRun = _rsDatePrefix() + String(runIndex).padStart(6, '0');
+    return pos === 'front' ? (safeFmt + '_' + dateRun + '_' + baseName) : (dateRun + '_' + baseName + '_' + safeFmt);
+  }
+  return pos === 'front' ? (safeFmt + '_' + baseName) : (baseName + '_' + safeFmt);
+}
+function _rsGetFb(fmt){
+  if (!_rsFeedback[fmt]) _rsFeedback[fmt] = { note:'', refLink:'', files:[] };
+  return _rsFeedback[fmt];
+}
+function _rsHasFbContent(fmt){
+  var f = _rsFeedback[fmt];
+  if (!f) return false;
+  return (f.note && f.note.trim()) || (f.refLink && f.refLink.trim()) || (f.files && f.files.length);
+}
+function _rsFbSummary(fmt){
+  var f = _rsFeedback[fmt]; if (!f) return '';
+  var parts = [];
+  if (f.note && f.note.trim()) parts.push(f.note.trim());
+  if (f.refLink && f.refLink.trim()) parts.push('Ref: ' + f.refLink.trim());
+  if (f.files && f.files.length) parts.push(f.files.length + ' file(s)');
+  return parts.join(' · ');
+}
+function _rsSelectedFmts(){
+  return RS_FORMATS.filter(function(fmt){
+    return _rsFeedbackOpen[fmt] && !(_rsApproved[fmt] && _rsApproved[fmt].approved) && !_rsFeedbackSubmitted[fmt];
+  });
+}
+function _rsSelectedApproveFmts(){
+  return RS_FORMATS.filter(function(fmt){
+    return _rsApproveOpen[fmt] && !(_rsApproved[fmt] && _rsApproved[fmt].approved) && !_rsFeedbackSubmitted[fmt];
+  });
+}
+function _rsNonApprovedFmts(){
+  return RS_FORMATS.filter(function(fmt){
+    return !(_rsApproved[fmt] && _rsApproved[fmt].approved);
+  });
+}
+function _rsReapplyNames(){
+  var input = document.getElementById('rs-filename-input');
+  var base = (input && input.value || '').trim();
+  _rsFileName = base;
+  if (!base) return;
+  RS_FORMATS.forEach(function(f, i){
+    var el = document.getElementById('rs-name-' + i);
+    if (el) { el.textContent = _rsComposed(base, f, i + 1); el.removeAttribute('style'); }
+  });
+}
+function _rsUpdateApprovedCount(){
+  var n = Object.keys(_rsApproved).filter(function(k){ return _rsApproved[k] && _rsApproved[k].approved; }).length;
+  var el = document.getElementById('rs-approved-count');
+  if (el) el.textContent = 'Approved ' + n + ' / ' + RS_FORMATS.length;
+}
+
+/* ===== Render rows table ===== */
+function rsBuildRows(){
+  var tbody = document.getElementById('rs-output-tbody');
+  if (!tbody) return;
+  var html = '';
+  RS_FORMATS.forEach(function(fmt, i){
+    var ap = _rsApproved[fmt];
+    var apOpen = !!_rsApproveOpen[fmt];
+    var fbOpen = !!_rsFeedbackOpen[fmt];
+    var hasFb = _rsHasFbContent(fmt);
+    if (ap && ap.approved) {
+      /* Committed Approved: badge spans across Approve + Feedback cells */
+      html +=
+        '<tr id="rs-row-' + i + '" class="border-t border-[#E2E8F0] hover:bg-[#F8FAFC]">' +
+          '<td colspan="2" class="px-3 py-1.5">' +
+            '<span class="inline-flex items-center gap-1 text-[10.5px] font-semibold text-emerald-700 px-2 py-1 rounded-md bg-emerald-50 border border-emerald-200" title="' + (ap.feedback ? ('Feedback: ' + _rsEsc(ap.feedback)) : 'Approved') + '">' +
+              '<svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>Approved' +
+              (ap.airtime ? '<span class="ml-1 text-[10px] font-mono opacity-80">· ' + _rsEsc(ap.airtime.freq) + '×/ชม. ' + _rsEsc(ap.airtime.dur) + 's</span>' : '') +
+              (ap.feedback ? '<svg class="w-3 h-3 ml-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3h6m-9 6l3-3h7.5a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5"/></svg>' : '') +
+            '</span>' +
+          '</td>' +
+          '<td class="px-3 py-1.5"><span class="text-[11.5px] font-mono font-semibold px-2 py-0.5 rounded bg-indigo-50 text-indigo-700 border border-indigo-100">' + fmt + '</span></td>' +
+        '</tr>';
+    } else {
+      /* Pending: Approve checkbox + Feedback checkbox (mutually exclusive)
+         If Feedback was already Submitted → BOTH columns are locked:
+           - Feedback column shows a "Feedback Submitted" badge
+           - Approve checkbox is disabled (cannot Approve after Feedback) */
+      var fbSubmitted = !!_rsFeedbackSubmitted[fmt];
+      var approveDisabled = fbOpen || fbSubmitted;
+      var feedbackDisabled = apOpen || fbSubmitted;
+      var feedbackCell;
+      if (fbSubmitted) {
+        var fbSummary = _rsFbSummary(fmt);
+        feedbackCell =
+          '<span class="inline-flex items-center gap-1 text-[10.5px] font-semibold text-amber-700 px-2 py-1 rounded-md bg-amber-50 border border-amber-200" title="' + _rsEsc(fbSummary || 'Feedback ส่งแล้ว') + '">' +
+            '<svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>Feedback Submitted' +
+          '</span>';
+      } else {
+        feedbackCell =
+          '<label class="inline-flex items-center gap-1.5 text-[11.5px] font-medium select-none ' + (feedbackDisabled ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer text-amber-700') + '" title="' + (feedbackDisabled ? 'ติ๊ก Approve อยู่ — เอา Approve ออกก่อนถึงจะ Feedback ได้' : 'เปิดกล่อง Feedback ด้านล่าง') + '">' +
+            '<input type="checkbox" ' + (fbOpen ? 'checked' : '') + ' ' + (feedbackDisabled ? 'disabled' : '') + ' onchange="rsToggleFb(' + i + ')" class="w-3.5 h-3.5 rounded accent-amber-600"/>' +
+            '<span>Feedback' + (hasFb ? ' <span class="inline-block w-1.5 h-1.5 rounded-full bg-amber-500 align-middle" title="มี Feedback บันทึกอยู่"></span>' : '') + '</span>' +
+          '</label>';
+      }
+      html +=
+        '<tr id="rs-row-' + i + '" class="border-t border-[#E2E8F0] hover:bg-[#F8FAFC]">' +
+          '<td class="px-3 py-1.5">' +
+            '<label class="inline-flex items-center gap-1.5 text-[11.5px] font-medium select-none ' + (approveDisabled ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer text-emerald-700') + '" title="' + (fbSubmitted ? 'Send Feedback ไปแล้ว — ไม่สามารถ Approve ได้' : (approveDisabled ? 'ติ๊ก Feedback อยู่ — เอา Feedback ออกก่อนถึงจะ Approve ได้' : 'เลือกเพื่อ Approve Format นี้')) + '">' +
+              '<input type="checkbox" ' + (apOpen ? 'checked' : '') + ' ' + (approveDisabled ? 'disabled' : '') + ' onchange="rsToggleApprove(' + i + ')" class="w-3.5 h-3.5 rounded accent-emerald-600"/>' +
+              '<span>Approve</span>' +
+            '</label>' +
+          '</td>' +
+          '<td class="px-3 py-1.5">' + feedbackCell + '</td>' +
+          '<td class="px-3 py-1.5"><span class="text-[11.5px] font-mono font-semibold px-2 py-0.5 rounded bg-indigo-50 text-indigo-700 border border-indigo-100">' + fmt + '</span></td>' +
+        '</tr>';
+    }
+  });
+  tbody.innerHTML = html;
+  _rsUpdateApprovedCount();
+  _rsSyncSelectAll();
+  rsRenderApprovePanel();
+  rsRenderFbPanel();
+}
+
+/* Keep the header "Select All" checkboxes in sync (checked / indeterminate / empty) */
+function _rsSyncSelectAll(){
+  var pool = _rsNonApprovedFmts();
+  var apAll = document.getElementById('rs-all-approve');
+  var fbAll = document.getElementById('rs-all-feedback');
+  if (apAll){
+    var pickable = pool.filter(function(f){ return !_rsFeedbackOpen[f] && !_rsFeedbackSubmitted[f]; });
+    var chosen = pickable.filter(function(f){ return _rsApproveOpen[f]; }).length;
+    apAll.checked = pickable.length > 0 && chosen === pickable.length;
+    apAll.indeterminate = chosen > 0 && chosen < pickable.length;
+    apAll.disabled = pickable.length === 0;
+  }
+  if (fbAll){
+    var pickable2 = pool.filter(function(f){ return !_rsApproveOpen[f] && !_rsFeedbackSubmitted[f]; });
+    var chosen2 = pickable2.filter(function(f){ return _rsFeedbackOpen[f]; }).length;
+    fbAll.checked = pickable2.length > 0 && chosen2 === pickable2.length;
+    fbAll.indeterminate = chosen2 > 0 && chosen2 < pickable2.length;
+    fbAll.disabled = pickable2.length === 0;
+  }
+}
+
+/* ===== Run Render ===== */
+function rsRunRender(){
+  var input = document.getElementById('rs-filename-input');
+  var base = (input && input.value || '').trim();
+  if (!base) {
+    alert('กรุณากรอก File Name ก่อนกด Render File');
+    if (input) input.focus();
+    return;
+  }
+  _rsFileName = base;
+  RS_FORMATS.forEach(function(fmt, i){
+    var name = _rsComposed(base, fmt, i + 1);
+    var el = document.getElementById('rs-name-' + i);
+    if (el) { el.textContent = name; el.removeAttribute('style'); }
+  });
+}
+function rsOnPosChange(val){
+  _rsFmtPos = val;
+  if (_rsFileName) {
+    RS_FORMATS.forEach(function(f, i){
+      var el = document.getElementById('rs-name-' + i);
+      if (el && el.textContent && el.textContent.indexOf('— กรอก') === -1) {
+        el.textContent = _rsComposed(_rsFileName, f, i + 1);
+      }
+    });
+  }
+}
+function rsOnNameInput(val){ _rsFileName = val || ''; }
+
+/* ===== Approve / Feedback Checkboxes (mutually exclusive per row) ===== */
+function rsToggleApprove(idx){
+  var fmt = RS_FORMATS[idx];
+  if (!fmt) return;
+  if (_rsApproved[fmt] && _rsApproved[fmt].approved) return;
+  if (_rsFeedbackSubmitted[fmt]) return; // locked — cannot Approve after Feedback was submitted
+  var wasEmpty = _rsSelectedApproveFmts().length === 0;
+  _rsApproveOpen[fmt] = !_rsApproveOpen[fmt];
+  if (_rsApproveOpen[fmt]) _rsFeedbackOpen[fmt] = false; // mutual-exclusive
+  rsBuildRows();
+  if (_rsApproveOpen[fmt] && wasEmpty){
+    setTimeout(function(){
+      var card = document.getElementById('rs-ap-card');
+      if (card){
+        card.scrollIntoView({ behavior:'smooth', block:'nearest' });
+        var first = card.querySelector('input[type=number],input[type=time],input,textarea');
+        if (first) first.focus();
+      }
+    }, 60);
+  }
+}
+function rsToggleFb(idx){
+  var fmt = RS_FORMATS[idx];
+  if (!fmt) return;
+  if (_rsApproved[fmt] && _rsApproved[fmt].approved) return;
+  if (_rsFeedbackSubmitted[fmt]) return; // locked — cannot re-Feedback after submit
+  var wasEmpty = _rsSelectedFmts().length === 0;
+  _rsFeedbackOpen[fmt] = !_rsFeedbackOpen[fmt];
+  if (_rsFeedbackOpen[fmt]) _rsApproveOpen[fmt] = false; // mutual-exclusive
+  rsBuildRows();
+  if (_rsFeedbackOpen[fmt] && wasEmpty){
+    setTimeout(function(){
+      var card = document.getElementById('rs-fb-card');
+      if (card){
+        card.scrollIntoView({ behavior:'smooth', block:'nearest' });
+        var ta = card.querySelector('textarea');
+        if (ta) ta.focus();
+      }
+    }, 60);
+  }
+}
+function rsToggleAllApprove(){
+  var pool = _rsNonApprovedFmts().filter(function(f){ return !_rsFeedbackOpen[f] && !_rsFeedbackSubmitted[f]; });
+  if (!pool.length) return;
+  var allOn = pool.every(function(f){ return _rsApproveOpen[f]; });
+  pool.forEach(function(f){
+    _rsApproveOpen[f] = !allOn;
+    if (!allOn) _rsFeedbackOpen[f] = false;
+  });
+  rsBuildRows();
+}
+function rsToggleAllFeedback(){
+  var pool = _rsNonApprovedFmts().filter(function(f){ return !_rsApproveOpen[f] && !_rsFeedbackSubmitted[f]; });
+  if (!pool.length) return;
+  var allOn = pool.every(function(f){ return _rsFeedbackOpen[f]; });
+  pool.forEach(function(f){
+    _rsFeedbackOpen[f] = !allOn;
+    if (!allOn) _rsApproveOpen[f] = false;
+  });
+  rsBuildRows();
+}
+function rsRemoveChip(idx){
+  var fmt = RS_FORMATS[idx];
+  if (!fmt) return;
+  _rsFeedbackOpen[fmt] = false;
+  rsBuildRows();
+  _rsReapplyNames();
+}
+function rsSaveFbField(field, val){ _rsSharedFeedback[field] = val || ''; }
+function rsOnFbFile(inputEl){
+  if (!inputEl || !inputEl.files || !inputEl.files.length) return;
+  for (var i = 0; i < inputEl.files.length; i++){
+    var f = inputEl.files[i];
+    _rsSharedFeedback.files.push({ name: f.name, size: f.size });
+  }
+  inputEl.value = '';
+  rsRenderFbPanel();
+}
+function rsRemoveFile(fileIdx){
+  _rsSharedFeedback.files.splice(fileIdx, 1);
+  rsRenderFbPanel();
+}
+function rsCancelFb(){
+  _rsSelectedFmts().forEach(function(fmt){ _rsFeedbackOpen[fmt] = false; });
+  _rsSharedFeedback = { note:'', refLink:'', files:[] };
+  rsBuildRows();
+  _rsReapplyNames();
+}
+function rsSubmitFb(){
+  var sel = _rsSelectedFmts();
+  if (!sel.length) return;
+  var note = (_rsSharedFeedback.note || '').trim();
+  if (!note){
+    alert('กรุณากรอก Note ก่อนSend Feedback');
+    var card = document.getElementById('rs-fb-card');
+    var ta = card && card.querySelector('textarea');
+    if (ta){
+      ta.classList.add('border-rose-500','ring-2','ring-rose-200');
+      ta.focus();
+      // Remove the error highlight once the user starts typing
+      var clear = function(){
+        ta.classList.remove('border-rose-500','ring-2','ring-rose-200');
+        ta.removeEventListener('input', clear);
+      };
+      ta.addEventListener('input', clear);
+    }
+    return;
+  }
+  sel.forEach(function(fmt){
+    var fb = _rsGetFb(fmt);
+    fb.note = note;
+    fb.refLink = _rsSharedFeedback.refLink || '';
+    fb.files = _rsSharedFeedback.files.map(function(f){ return { name:f.name, size:f.size }; });
+    _rsFeedbackOpen[fmt] = false;
+    _rsFeedbackSubmitted[fmt] = true;   // lock — cannot Feedback this format again
+  });
+  _rsSharedFeedback = { note:'', refLink:'', files:[] };
+  rsBuildRows();
+  _rsReapplyNames();
+  alert('บันทึก Feedback สำหรับ ' + sel.length + ' Format แล้ว (' + sel.join(', ') + ')');
+}
+function rsRenderFbPanel(){
+  var panel = document.getElementById('rs-fb-panel');
+  if (!panel) return;
+  var sel = _rsSelectedFmts();
+  if (!sel.length){ panel.innerHTML = ''; return; }
+  var chips = sel.map(function(fmt){
+    var idx = RS_FORMATS.indexOf(fmt);
+    return (
+      '<span class="inline-flex items-center gap-1 text-[11px] font-mono font-semibold px-2 py-1 rounded-md bg-white border border-amber-300 text-amber-900">' +
+        _rsEsc(fmt) +
+        '<button type="button" onclick="rsRemoveChip(' + idx + ')" class="ml-0.5 w-4 h-4 rounded-full hover:bg-amber-100 inline-flex items-center justify-center text-amber-700" title="เอา ' + _rsEsc(fmt) + ' ออก">' +
+          '<svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>' +
+        '</button>' +
+      '</span>'
+    );
+  }).join('');
+  var fb = _rsSharedFeedback;
+  var filesHtml = (fb.files||[]).map(function(f, fi){
+    return (
+      '<div class="flex items-center gap-2 px-2.5 py-1.5 bg-white border border-amber-200 rounded-md">' +
+        '<svg class="w-3.5 h-3.5 shrink-0 text-amber-600" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 8.25H7.5a2.25 2.25 0 00-2.25 2.25v9a2.25 2.25 0 002.25 2.25h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25H15M9 12l3 3m0 0l3-3m-3 3V3"/></svg>' +
+        '<span class="flex-1 truncate font-mono text-[11.5px] text-amber-900" title="' + _rsEsc(f.name) + '">' + _rsEsc(f.name) + '</span>' +
+        '<span class="text-[10.5px] tnum text-amber-600">' + _rsBytes(f.size) + '</span>' +
+        '<button type="button" onclick="rsRemoveFile(' + fi + ')" class="w-5 h-5 rounded hover:bg-amber-100 flex items-center justify-center text-amber-700" title="ลบไฟล์">' +
+          '<svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>' +
+        '</button>' +
+      '</div>'
+    );
+  }).join('');
+  panel.innerHTML =
+    '<div id="rs-fb-card" class="rounded-xl border border-amber-200 bg-amber-50/50 p-4">' +
+      '<div class="flex items-center gap-2.5 mb-3 pb-2.5 border-b border-amber-200">' +
+        '<div class="w-9 h-9 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center shrink-0">' +
+          '<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3h6m-9 6l3-3h7.5a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25"/></svg>' +
+        '</div>' +
+        '<div class="flex-1 min-w-0">' +
+          '<div class="text-[10.5px] font-semibold uppercase tracking-wider text-amber-700">Feedback</div>' +
+          '<div class="text-[14px] font-bold text-amber-900">รวม Feedback สำหรับ <span class="tnum">' + sel.length + '</span> Format</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="mb-3">' +
+        '<label class="block text-[10.5px] font-semibold uppercase tracking-wider mb-1.5 text-amber-800">Format ที่จะSend Feedback</label>' +
+        '<div class="flex flex-wrap gap-1.5">' + chips + '</div>' +
+      '</div>' +
+      '<div class="mb-3">' +
+        '<label class="block text-[10.5px] font-semibold uppercase tracking-wider mb-1 text-amber-800">Note <span class="text-rose-500 normal-case">*</span></label>' +
+        '<textarea oninput="rsSaveFbField(\'note\', this.value)" rows="3" placeholder="ระบุข้อเสนอแนะ หรือคำอธิบายเพิ่มเติม (ใช้ร่วมทุก Format ที่เลือกด้านบน)..." class="w-full px-3 py-2 bg-white border border-amber-200 rounded-md text-[12.5px] focus:outline-none focus:border-amber-500 placeholder:opacity-40 resize-none">' + _rsEsc(fb.note) + '</textarea>' +
+      '</div>' +
+      '<div class="mb-3">' +
+        '<label class="block text-[10.5px] font-semibold uppercase tracking-wider mb-1 text-amber-800">Reference Link</label>' +
+        '<div class="relative">' +
+          '<svg class="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-amber-600" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244"/></svg>' +
+          '<input type="url" value="' + _rsEsc(fb.refLink) + '" oninput="rsSaveFbField(\'refLink\', this.value)" placeholder="https://..." class="w-full h-9 pl-8 pr-3 bg-white border border-amber-200 rounded-md text-[12.5px] font-mono focus:outline-none focus:border-amber-500 placeholder:opacity-40"/>' +
+        '</div>' +
+      '</div>' +
+      '<div class="mb-3">' +
+        '<label class="block text-[10.5px] font-semibold uppercase tracking-wider mb-1 text-amber-800">Attach Files</label>' +
+        '<label class="upload-box block cursor-pointer border-2 border-dashed border-amber-300 rounded-lg p-5 text-center bg-amber-50/30 hover:bg-amber-50 hover:border-amber-500 transition-colors" ondragover="event.preventDefault(); this.classList.add(\'upload-drag-over\')" ondragleave="this.classList.remove(\'upload-drag-over\')" ondrop="event.preventDefault(); this.classList.remove(\'upload-drag-over\'); var inp=this.querySelector(\'input[type=file]\'); inp.files=event.dataTransfer.files; inp.dispatchEvent(new Event(\'change\'));">' +
+          '<input type="file" multiple onchange="rsOnFbFile(this)" class="hidden"/>' +
+          '<svg class="w-10 h-10 mx-auto mb-2 text-amber-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 8.25H7.5a2.25 2.25 0 00-2.25 2.25v9a2.25 2.25 0 002.25 2.25h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25H15M9 12l3-3m0 0l3 3m-3-3v12"/></svg>' +
+          '<div class="text-[13px] font-semibold text-amber-900">ลากไฟล์มาวางที่นี่</div>' +
+          '<div class="text-[11px] mt-1 text-amber-700/65">Multiple files · รวมไม่เกิน 50 MB</div>' +
+          '<span class="inline-flex mt-3 h-8 px-3 bg-white border border-amber-300 text-amber-900 rounded-md text-[12px] font-medium items-center hover:bg-amber-50">Choose File</span>' +
+        '</label>' +
+        (filesHtml ? '<div class="mt-2 space-y-1.5">' + filesHtml + '</div>' : '') +
+      '</div>' +
+      '<div class="flex items-center justify-end gap-2 pt-2 border-t border-amber-200">' +
+        '<button type="button" onclick="rsCancelFb()" class="h-9 px-3.5 bg-white border border-amber-300 text-amber-800 rounded-lg text-[12.5px] font-medium hover:bg-amber-50">Cancel</button>' +
+        '<button type="button" onclick="rsSubmitFb()" class="h-9 px-4 bg-amber-600 text-white rounded-lg text-[12.5px] font-semibold hover:bg-amber-700 inline-flex items-center gap-1.5 shadow-sm">' +
+          '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5"/></svg>' +
+          'Feedback' +
+        '</button>' +
+      '</div>' +
+    '</div>';
+}
+
+/* ===== Collapsible Format Name (Mockup History) ===== */
+function rsToggleFormatName(){
+  var body = document.getElementById('rs-collapse-body');
+  var chev = document.getElementById('rs-collapse-chevron');
+  if (!body || !chev) return;
+  var hidden = body.classList.toggle('hidden');
+  chev.classList.toggle('rotate-180', !hidden);
+}
+
+/* ===== Airtime Allocate Panel (Approve flow — no popup) ===== */
+function rsSaveAtField(field, val){ _rsAirtime[field] = val || ''; }
+function rsCancelAirtime(){
+  _rsSelectedApproveFmts().forEach(function(fmt){ _rsApproveOpen[fmt] = false; });
+  _rsAirtime = { freq:'', dur:'', startDate:'', endDate:'', special:'' };
+  rsBuildRows();
+}
+function rsSubmitAirtime(){
+  var sel = _rsSelectedApproveFmts();
+  if (!sel.length) return;
+  var at = _rsAirtime || {};
+  if (!at.freq || !at.dur || !at.startDate || !at.endDate){
+    alert('กรุณากรอกข้อมูล Airtime Allocate ที่จำเป็น (Durations, Number Spot/Loop, Start/End On-Air)');
+    return;
+  }
+  if (at.endDate < at.startDate){
+    alert('End On-Air ต้องอยู่หลัง Start On-Air');
+    return;
+  }
+  var snap = {
+    freq: String(at.freq).trim(),
+    dur: String(at.dur).trim(),
+    startDate: at.startDate, endDate: at.endDate,
+    special: (at.special || '').trim()
+  };
+  var d = new Date();
+  var dd = String(d.getDate()).padStart(2,'0'), mm = String(d.getMonth()+1).padStart(2,'0');
+  var stamp = dd + '/' + mm + '/' + d.getFullYear() + ' ' + d.toTimeString().slice(0,5);
+  sel.forEach(function(fmt){
+    _rsApproved[fmt] = {
+      approved: true,
+      at: stamp,
+      airtime: snap,
+      feedback: '',
+      feedbackData: null
+    };
+    _rsApproveOpen[fmt] = false;
+  });
+  _rsAirtime = { freq:'', dur:'', startDate:'', endDate:'', special:'' };
+  rsBuildRows();
+  alert('Approve สำเร็จ ' + sel.length + ' Format (' + sel.join(', ') + ')\nAirtime: ' + snap.dur + ' วินาที · ' + snap.freq + ' ครั้ง · On-Air ' + snap.startDate + ' → ' + snap.endDate);
+}
+function rsRenderApprovePanel(){
+  var panel = document.getElementById('rs-ap-panel');
+  if (!panel) return;
+  var sel = _rsSelectedApproveFmts();
+  if (!sel.length){ panel.innerHTML = ''; return; }
+  var at = _rsAirtime;
+  var chips = sel.map(function(fmt){
+    var idx = RS_FORMATS.indexOf(fmt);
+    return (
+      '<span class="inline-flex items-center gap-1 text-[11px] font-mono font-semibold px-2 py-1 rounded-md bg-white border border-emerald-300 text-emerald-900">' +
+        _rsEsc(fmt) +
+        '<button type="button" onclick="rsToggleApprove(' + idx + ')" class="ml-0.5 w-4 h-4 rounded-full hover:bg-emerald-100 inline-flex items-center justify-center text-emerald-700" title="เอา ' + _rsEsc(fmt) + ' ออก">' +
+          '<svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>' +
+        '</button>' +
+      '</span>'
+    );
+  }).join('');
+  panel.innerHTML =
+    '<div id="rs-ap-card" class="rounded-xl border border-emerald-200 bg-emerald-50/50 p-4">' +
+      /* Header */
+      '<div class="flex items-center gap-2.5 mb-3 pb-2.5 border-b border-emerald-200">' +
+        '<div class="w-9 h-9 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">' +
+          '<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>' +
+        '</div>' +
+        '<div class="flex-1 min-w-0">' +
+          '<div class="text-[10.5px] font-semibold uppercase tracking-wider text-emerald-700">Airtime Allocate</div>' +
+          '<div class="text-[14px] font-bold text-emerald-900">รวม Approve สำหรับ <span class="tnum">' + sel.length + '</span> Format</div>' +
+        '</div>' +
+      '</div>' +
+      /* Selected chips */
+      '<div class="mb-3">' +
+        '<label class="block text-[10.5px] font-semibold uppercase tracking-wider mb-1.5 text-emerald-800">Format ที่จะ Approve</label>' +
+        '<div class="flex flex-wrap gap-1.5">' + chips + '</div>' +
+      '</div>' +
+      /* Fields: Durations + Number Spot/Loop (Time) — Durations first */
+      '<div class="grid grid-cols-2 gap-2 mb-3">' +
+        '<div>' +
+          '<label class="block text-[10.5px] font-semibold uppercase tracking-wider mb-1 text-emerald-800">Durations <span class="text-rose-500 normal-case">*</span></label>' +
+          '<div class="relative">' +
+            '<input type="number" min="1" value="' + _rsEsc(at.dur) + '" oninput="rsSaveAtField(\'dur\', this.value)" placeholder="เช่น 15" class="w-full h-9 pl-3 pr-12 bg-white border border-emerald-200 rounded-md text-[12.5px] font-mono tnum focus:outline-none focus:border-emerald-500"/>' +
+            '<span class="absolute right-3 top-1/2 -translate-y-1/2 text-[10.5px]" style="color:rgba(30,41,59,0.5)">วินาที</span>' +
+          '</div>' +
+        '</div>' +
+        '<div>' +
+          '<label class="block text-[10.5px] font-semibold uppercase tracking-wider mb-1 text-emerald-800">Number Spot/Loop (Time) <span class="text-rose-500 normal-case">*</span></label>' +
+          '<div class="relative">' +
+            '<input type="number" min="1" value="' + _rsEsc(at.freq) + '" oninput="rsSaveAtField(\'freq\', this.value)" placeholder="เช่น 4" class="w-full h-9 pl-3 pr-12 bg-white border border-emerald-200 rounded-md text-[12.5px] font-mono tnum focus:outline-none focus:border-emerald-500"/>' +
+            '<span class="absolute right-3 top-1/2 -translate-y-1/2 text-[10.5px]" style="color:rgba(30,41,59,0.5)">ครั้ง</span>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+      /* Start On-Air + End On-Air — calendar */
+      '<div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-3">' +
+        '<div>' +
+          '<label class="block text-[10.5px] font-semibold uppercase tracking-wider mb-1 text-emerald-800">Start On-Air <span class="text-rose-500 normal-case">*</span></label>' +
+          '<div class="relative">' +
+            '<svg class="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-emerald-600 pointer-events-none" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>' +
+            '<input type="date" value="' + _rsEsc(at.startDate) + '" oninput="rsSaveAtField(\'startDate\', this.value)" class="w-full h-9 pl-9 pr-3 bg-white border border-emerald-200 rounded-md text-[12.5px] font-mono focus:outline-none focus:border-emerald-500"/>' +
+          '</div>' +
+        '</div>' +
+        '<div>' +
+          '<label class="block text-[10.5px] font-semibold uppercase tracking-wider mb-1 text-emerald-800">End On-Air <span class="text-rose-500 normal-case">*</span></label>' +
+          '<div class="relative">' +
+            '<svg class="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-emerald-600 pointer-events-none" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>' +
+            '<input type="date" value="' + _rsEsc(at.endDate) + '" oninput="rsSaveAtField(\'endDate\', this.value)" class="w-full h-9 pl-9 pr-3 bg-white border border-emerald-200 rounded-md text-[12.5px] font-mono focus:outline-none focus:border-emerald-500"/>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+      /* คำสั่งพิเศษ */
+      '<div class="mb-3">' +
+        '<label class="block text-[10.5px] font-semibold uppercase tracking-wider mb-1 text-emerald-800">คำสั่งพิเศษ <span class="font-normal normal-case text-[10px]" style="color:rgba(30,41,59,0.45)">(ไม่บังคับ)</span></label>' +
+        '<textarea rows="3" oninput="rsSaveAtField(\'special\', this.value)" placeholder="เช่น เน้น Prime Time 18:00–22:00, หลีกเลี่ยงโฆษณาคู่แข่ง..." class="w-full px-3 py-2 bg-white border border-emerald-200 rounded-md text-[12.5px] focus:outline-none focus:border-emerald-500 resize-none">' + _rsEsc(at.special) + '</textarea>' +
+      '</div>' +
+      /* Footer */
+      '<div class="flex items-center justify-end gap-2 pt-2 border-t border-emerald-200">' +
+        '<button type="button" onclick="rsCancelAirtime()" class="h-9 px-3.5 bg-white border border-emerald-300 text-emerald-800 rounded-lg text-[12.5px] font-medium hover:bg-emerald-50">Cancel</button>' +
+        '<button type="button" onclick="rsSubmitAirtime()" class="h-9 px-4 bg-emerald-600 text-white rounded-lg text-[12.5px] font-semibold hover:bg-emerald-700 inline-flex items-center gap-1.5 shadow-sm">' +
+          '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>' +
+          'Confirm Approve' +
+        '</button>' +
+      '</div>' +
+    '</div>';
+}
+
+/* ===== Section HTML + injection hook ===== */
+function _rsSectionHTML(){
+  return (
+    '<div id="render-output-wrap" class="rounded-xl border border-[#E2E8F0] bg-white p-4 mb-4">' +
+      /* Top brand line so it visually marks the new section */
+      '<div class="flex items-center gap-2 mb-3">' +
+        '<div class="w-7 h-7 rounded-md flex items-center justify-center shrink-0" style="background:rgba(67,56,202,0.10);color:#4338CA">' +
+          '<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L10.16 3.66A2.25 2.25 0 008.568 3z"/><path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6z"/></svg>' +
+        '</div>' +
+        '<div class="flex-1">' +
+          '<div class="text-[13px] font-semibold text-[#0B1430]">ข้อมูล Format Name</div>' +
+          '<div class="text-[11px]" style="color:rgba(30,41,59,0.55)">เลือก Approve รายตัว / Approve ทุก Format Name · ใส่ Feedback รวมหลาย Format ได้</div>' +
+        '</div>' +
+      '</div>' +
+      /* Collapsible Format Name section — clickable header */
+      '<button type="button" id="rs-collapse-toggle" onclick="rsToggleFormatName()" class="w-full px-3 py-2.5 bg-emerald-50 border border-emerald-200 rounded-t-lg flex items-center gap-2 hover:bg-emerald-100/70 transition-colors text-left">' +
+        '<svg class="w-4 h-4 text-emerald-700 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12.76c0 1.6 1.123 2.994 2.707 3.227 1.068.157 2.148.279 3.238.364.466.037.893.281 1.153.671L12 21l2.652-3.978c.26-.39.687-.634 1.153-.67 1.09-.086 2.17-.208 3.238-.365 1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z"/></svg>' +
+        '<span class="flex-1 text-[12.5px] font-semibold text-emerald-900">Format Name <span class="font-mono opacity-70">(10 formats)</span></span>' +
+        '<span id="rs-approved-count" class="text-[10.5px] font-mono text-emerald-700 bg-white px-2 py-0.5 rounded-md border border-emerald-200">Approved 0 / 10</span>' +
+        '<svg id="rs-collapse-chevron" class="w-4 h-4 text-emerald-700 shrink-0 transition-transform duration-200" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>' +
+      '</button>' +
+      '<div id="rs-collapse-body" class="hidden overflow-hidden transition-all duration-300">' +
+        '<table class="w-full text-[12px] border border-t-0 border-[#E2E8F0] rounded-b-lg overflow-hidden">' +
+          '<thead class="bg-[#F8FAFC]"><tr>' +
+            '<th class="text-left px-3 py-2 font-semibold text-[10.5px] uppercase tracking-wider w-44" style="color:rgba(30,41,59,0.55)">' +
+              '<div class="text-emerald-700">Approve</div>' +
+              '<label class="inline-flex items-center gap-1 cursor-pointer normal-case font-normal text-[10px] mt-0.5 select-none" style="color:rgba(30,41,59,0.65)">' +
+                '<input type="checkbox" id="rs-all-approve" onchange="rsToggleAllApprove()" class="w-3 h-3 rounded accent-emerald-600"/>' +
+                '<span>Select All</span>' +
+              '</label>' +
+            '</th>' +
+            '<th class="text-left px-3 py-2 font-semibold text-[10.5px] uppercase tracking-wider w-44" style="color:rgba(30,41,59,0.55)">' +
+              '<div class="text-amber-700">Feedback</div>' +
+              '<label class="inline-flex items-center gap-1 cursor-pointer normal-case font-normal text-[10px] mt-0.5 select-none" style="color:rgba(30,41,59,0.65)">' +
+                '<input type="checkbox" id="rs-all-feedback" onchange="rsToggleAllFeedback()" class="w-3 h-3 rounded accent-amber-600"/>' +
+                '<span>Select All</span>' +
+              '</label>' +
+            '</th>' +
+            '<th class="text-left px-3 py-2 font-semibold text-[10.5px] uppercase tracking-wider" style="color:rgba(30,41,59,0.55)">Format Name</th>' +
+          '</tr></thead>' +
+          '<tbody id="rs-output-tbody"></tbody>' +
+        '</table>' +
+        /* Airtime Allocate panel — shown when any Approve checkbox is ticked */
+        '<div id="rs-ap-panel" class="mt-3 space-y-3"></div>' +
+        /* Feedback panel — shown when any Feedback checkbox is ticked */
+        '<div id="rs-fb-panel" class="mt-3 space-y-3"></div>' +
+      '</div>' +
+    '</div>'
+  );
+}
+
+/* Always inject the render section when the mockup panel opens with any mockup,
+   so the user can Approve formats individually before (or instead of) using the
+   whole-mockup "Confirm Approve" flow. */
+function _rsInjectIfApproved(mockups){
+  if (!mockups || !mockups.length) return;
+  var body = document.getElementById('mockup-body');
+  if (!body) return;
+  body.insertAdjacentHTML('afterbegin', _rsSectionHTML());
+  rsBuildRows();
+  _rsReapplyNames();
+}
+
+/* ============================================================
+ * CANCEL TICKET / CANCEL JOB MODAL
+ * ============================================================ */
+var _cancelCtx = { type:'ticket', refNo:'' };  // type: 'ticket' | 'job'
+
+var CANCEL_REASONS = {
+  ticket: [
+    'Customer cancelled order',
+    'Quotation not approved',
+    'Budget rejected',
+    'Duplicate ticket',
+    'Campaign postponed',
+    'Replaced by new ticket',
+    'Other'
+  ],
+  job: [
+    'Customer changed material spec',
+    'Media not available in period',
+    'Production timeline missed',
+    'Landlord rejected',
+    'Replaced by new job',
+    'Wrong job created',
+    'Other'
+  ]
+};
+
+function openCancelModal(type, refNo){
+  _cancelCtx.type = type;
+  _cancelCtx.refNo = refNo;
+  var isTicket = (type === 'ticket');
+  // Title / subtitle
+  document.getElementById('cancel-modal-title').textContent = isTicket ? 'Cancel Ticket' : 'Cancel Job';
+  document.getElementById('cancel-modal-kind').textContent  = isTicket ? 'TICKET' : 'JOB';
+  document.getElementById('cancel-modal-kind').className =
+    'inline-flex items-center text-[10px] font-bold tracking-wider px-2 py-0.5 rounded ' +
+    (isTicket ? 'bg-rose-600 text-white' : 'bg-amber-600 text-white');
+  document.getElementById('cancel-modal-ref').textContent = refNo;
+  document.getElementById('cancel-modal-desc').textContent =
+    isTicket
+      ? 'การยกเลิก Ticket จะส่งผลต่อ Job ทั้งหมดที่อยู่ภายใต้ Ticket นี้'
+      : 'ยกเลิกเฉพาะ Job นี้ Ticket และ Job อื่นจะยังคงสถานะเดิม';
+  // Reset & populate reasons
+  var $sel = document.getElementById('cancel-modal-reason');
+  $sel.innerHTML = '<option value="">— เลือกเหตุผล —</option>' +
+    CANCEL_REASONS[type].map(function(r){ return '<option value="' + r + '">' + r + '</option>'; }).join('');
+  $sel.value = '';
+  document.getElementById('cancel-modal-remark').value = '';
+  // Show
+  var ov = document.getElementById('cancel-modal');
+  ov.classList.remove('hidden');
+  ov.classList.add('flex');
+  document.body.style.overflow = 'hidden';
+  setTimeout(function(){ document.getElementById('cancel-modal-card').classList.remove('opacity-0','translate-y-2'); }, 10);
+}
+function closeCancelModal(){
+  var ov = document.getElementById('cancel-modal');
+  var card = document.getElementById('cancel-modal-card');
+  if(card) card.classList.add('opacity-0','translate-y-2');
+  setTimeout(function(){
+    ov.classList.add('hidden');
+    ov.classList.remove('flex');
+    document.body.style.overflow = '';
+  }, 150);
+}
+function confirmCancel(){
+  var reason = document.getElementById('cancel-modal-reason').value;
+  var remark = document.getElementById('cancel-modal-remark').value.trim();
+  if(!reason){ alert('กรุณาเลือกเหตุผลในการยกเลิก'); return; }
+  var isTicket = _cancelCtx.type === 'ticket';
+  if(!isTicket){
+    // Update the job status
+    var job = JOBS.find(function(j){ return j.jobNo === _cancelCtx.refNo; });
+    if(job){
+      job.status = 'Cancelled';
+      job.cancelReason = reason;
+      job.cancelRemark = remark;
+      // Inject 'Cancelled' status color if missing
+      if(!JOB_STATUS_COLORS['Cancelled']){
+        JOB_STATUS_COLORS['Cancelled'] = { bg:'bg-rose-50', text:'text-rose-700', border:'border-rose-200', dot:'bg-rose-500' };
+      }
+      renderJobs();
+    }
+  }
+  closeCancelModal();
+  showCancelToast((isTicket ? 'ยกเลิก Ticket ' : 'ยกเลิก Job ') + _cancelCtx.refNo + ' เรียบร้อย');
+}
+function showCancelToast(msg){
+  var t = document.getElementById('cancel-toast');
+  if(!t){
+    t = document.createElement('div');
+    t.id = 'cancel-toast';
+    t.className = 'fixed bottom-6 left-1/2 -translate-x-1/2 bg-[#0B1430] text-white text-[13px] px-4 py-2.5 rounded-lg shadow-lg z-[60] transition-opacity duration-200 opacity-0';
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.classList.remove('opacity-0');
+  clearTimeout(t._h);
+  t._h = setTimeout(function(){ t.classList.add('opacity-0'); }, 2400);
+}
+// Close on Escape
+document.addEventListener('keydown', function(e){
+  if(e.key === 'Escape'){
+    var ov = document.getElementById('cancel-modal');
+    if(ov && !ov.classList.contains('hidden')) closeCancelModal();
+  }
+});
+</script>
+
+<!-- Cancel Ticket / Cancel Job Modal -->
+<div id="cancel-modal" class="hidden fixed inset-0 z-[55] items-center justify-center bg-[#0B1430]/55 backdrop-blur-sm p-4" onclick="if(event.target===this)closeCancelModal()">
+  <div id="cancel-modal-card" class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden opacity-0 translate-y-2 transition-all duration-200">
+    <!-- Header -->
+    <div class="px-5 pt-5 pb-4 border-b border-[#F1F5F9]" style="background:linear-gradient(135deg,#FEF2F2 0%,#FFFFFF 60%)">
+      <div class="flex items-start gap-3">
+        <div class="w-11 h-11 rounded-xl flex items-center justify-center shrink-0" style="background:rgba(220,38,38,0.10);color:#DC2626">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>
+        </div>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2 mb-1.5">
+            <span id="cancel-modal-kind" class="inline-flex items-center text-[10px] font-bold tracking-wider px-2 py-0.5 rounded bg-rose-600 text-white">TICKET</span>
+            <span id="cancel-modal-ref" class="text-[12px] font-mono font-semibold text-[#0B1430]">TK-0031</span>
+          </div>
+          <h2 id="cancel-modal-title" class="text-[17px] font-semibold text-[#0B1430] leading-tight">Cancel Ticket</h2>
+          <p id="cancel-modal-desc" class="text-[12px] mt-1" style="color:rgba(30,41,59,0.6)">การยกเลิก Ticket จะส่งผลต่อ Job ทั้งหมดที่อยู่ภายใต้ Ticket นี้</p>
+        </div>
+        <button onclick="closeCancelModal()" class="w-8 h-8 rounded-lg hover:bg-[#F1F5F9] flex items-center justify-center shrink-0" style="color:rgba(30,41,59,0.55)" title="ปิด">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+    </div>
+    <!-- Body -->
+    <div class="p-5 space-y-4">
+      <div>
+        <label class="block text-[12px] font-medium text-[#0B1430] mb-1.5">Cancel Reason <span class="text-rose-500">*</span></label>
+        <select id="cancel-modal-reason" class="w-full h-10 px-3 bg-white border border-[#E2E8F0] rounded-lg text-[13px] focus:outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100">
+          <option value="">— เลือกเหตุผล —</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-[12px] font-medium text-[#0B1430] mb-1.5">Remark</label>
+        <textarea id="cancel-modal-remark" rows="3" placeholder="ระบุรายละเอียดเพิ่มเติม (ถ้ามี)" class="w-full px-3 py-2 bg-white border border-[#E2E8F0] rounded-lg text-[13px] resize-vertical focus:outline-none focus:border-rose-400 focus:ring-2 focus:ring-rose-100"></textarea>
+      </div>
+    </div>
+    <!-- Footer -->
+    <div class="px-5 py-4 bg-[#F8FAFC] border-t border-[#F1F5F9] flex items-center justify-end gap-2">
+      <button onclick="closeCancelModal()" class="h-9 px-4 rounded-lg border border-[#E2E8F0] bg-white text-[#0B1430] text-[12.5px] font-medium hover:bg-[#F1F5F9] transition-colors">
+        ปิด
+      </button>
+      <button onclick="confirmCancel()" class="h-9 px-4 rounded-lg text-white text-[12.5px] font-semibold inline-flex items-center gap-1.5 transition-all" style="background:linear-gradient(135deg,#E11D48,#DC2626);box-shadow:0 4px 14px rgba(220,38,38,0.30)">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+        ยืนยันยกเลิก
+      </button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

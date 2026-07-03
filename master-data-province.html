@@ -1,0 +1,1044 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Master Data · จังหวัด — Plan-B CRM</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: { extend: {
+      fontFamily: { kanit:['Kanit','sans-serif'], mono:['JetBrains Mono','monospace'] },
+      colors: {
+        pb:{900:'#213268',700:'#2D56D2',500:'#4790FF',300:'#5FCBF9',100:'#D6ECFF',50:'#EBF5FF'},
+        ink:{900:'#0B1430',800:'#162040',700:'#1E293B'},
+        surface:{0:'#FFFFFF',50:'#F8FAFC',100:'#F1F5F9',200:'#E2E8F0',300:'#CBD5E1'},
+      },
+    }},
+  };
+</script>
+
+<style>
+  *,*::before,*::after{font-family:'Kanit',sans-serif;-webkit-font-smoothing:antialiased}
+  body{background:#F7F9FC;color:#0B1430;margin:0}
+  .font-mono,code,.font-mono *{font-family:'JetBrains Mono',monospace}
+  ::-webkit-scrollbar{width:10px;height:10px}
+  ::-webkit-scrollbar-track{background:transparent}
+  ::-webkit-scrollbar-thumb{background:#CBD5E8;border-radius:10px;border:2px solid #F7F9FC}
+  ::-webkit-scrollbar-thumb:hover{background:#93A4C4}
+  .pane-scroll::-webkit-scrollbar{width:6px}
+  .pane-scroll::-webkit-scrollbar-thumb{background:#CBD5E1;border:1px solid transparent}
+  .row-hover .row-actions{opacity:0;transition:opacity .15s}
+  .row-hover:hover .row-actions{opacity:1}
+  .row-active{background:linear-gradient(90deg,rgba(45,86,210,.18),rgba(71,144,255,.08));color:#213268;font-weight:600;position:relative;box-shadow:inset 0 0 0 1px rgba(45,86,210,.18)}
+  .row-active::before{content:"";position:absolute;left:0;top:4px;bottom:4px;width:4px;border-radius:0 3px 3px 0;background:#2D56D2;box-shadow:0 0 8px rgba(45,86,210,.4)}
+  .row-active .text-ink-700\/50{color:rgba(33,50,104,.7) !important}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:#4790FF;box-shadow:0 0 0 3px rgba(71,144,255,.15)}
+</style>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin="anonymous"></script>
+<script src="shared/shared-layout.js"></script>
+<script src="shared/sidebar.js"></script>
+</head>
+<body>
+<div id="root"></div>
+
+<!-- ========================================================
+     Seed data — embedded from screens/MasterDataProvinceData.jsx
+     ======================================================== -->
+<script type="text/babel" data-presets="react">
+const REGIONS = [
+  { id:'central',   nameTh:'ภาคกลาง',                  nameEn:'Central'   },
+  { id:'north',     nameTh:'ภาคเหนือ',                 nameEn:'North'     },
+  { id:'northeast', nameTh:'ภาคตะวันออกเฉียงเหนือ',  nameEn:'Northeast' },
+  { id:'east',      nameTh:'ภาคตะวันออก',             nameEn:'East'      },
+  { id:'west',      nameTh:'ภาคตะวันตก',              nameEn:'West'      },
+  { id:'south',     nameTh:'ภาคใต้',                   nameEn:'South'     },
+];
+
+const PROVINCES_SEED = [
+  { id:'10', region:'central', nameTh:'กรุงเทพมหานคร', nameEn:'Bangkok', code:'BKK',
+    districts:[
+      { id:'1001', nameTh:'พระนคร',  nameEn:'Phra Nakhon', subdistricts:[
+        { id:'100101', nameTh:'พระบรมมหาราชวัง', nameEn:'Phra Borom Maha Ratchawang', postal:'10200' },
+        { id:'100102', nameTh:'วังบูรพาภิรมย์',    nameEn:'Wang Burapha Phirom',        postal:'10200' },
+        { id:'100103', nameTh:'วัดราชบพิธ',         nameEn:'Wat Ratchabophit',           postal:'10200' },
+      ]},
+      { id:'1007', nameTh:'ปทุมวัน', nameEn:'Pathum Wan', subdistricts:[
+        { id:'100701', nameTh:'รองเมือง', nameEn:'Rong Mueang', postal:'10330' },
+        { id:'100702', nameTh:'วังใหม่',   nameEn:'Wang Mai',     postal:'10330' },
+        { id:'100703', nameTh:'ปทุมวัน',   nameEn:'Pathum Wan',   postal:'10330' },
+        { id:'100704', nameTh:'ลุมพินี',    nameEn:'Lumphini',     postal:'10330' },
+      ]},
+      { id:'1011', nameTh:'บางรัก', nameEn:'Bang Rak', subdistricts:[
+        { id:'101101', nameTh:'มหาพฤฒาราม', nameEn:'Maha Phruettharam', postal:'10500' },
+        { id:'101102', nameTh:'สีลม',         nameEn:'Silom',              postal:'10500' },
+        { id:'101103', nameTh:'สุริยวงศ์',    nameEn:'Suriyawong',         postal:'10500' },
+        { id:'101104', nameTh:'บางรัก',       nameEn:'Bang Rak',           postal:'10500' },
+        { id:'101105', nameTh:'สี่พระยา',     nameEn:'Si Phraya',          postal:'10500' },
+      ]},
+      { id:'1026', nameTh:'วัฒนา', nameEn:'Watthana', subdistricts:[
+        { id:'102601', nameTh:'คลองเตยเหนือ',  nameEn:'Khlong Toei Nuea',   postal:'10110' },
+        { id:'102602', nameTh:'คลองตันเหนือ', nameEn:'Khlong Tan Nuea',     postal:'10110' },
+        { id:'102603', nameTh:'พระโขนงเหนือ', nameEn:'Phra Khanong Nuea',   postal:'10110' },
+      ]},
+      { id:'1022', nameTh:'สาทร', nameEn:'Sathon', subdistricts:[
+        { id:'102201', nameTh:'ทุ่งวัดดอน',  nameEn:'Thung Wat Don', postal:'10120' },
+        { id:'102202', nameTh:'ยานนาวา',     nameEn:'Yan Nawa',       postal:'10120' },
+        { id:'102203', nameTh:'ทุ่งมหาเมฆ', nameEn:'Thung Maha Mek',  postal:'10120' },
+      ]},
+    ]},
+  { id:'12', region:'central', nameTh:'นนทบุรี', nameEn:'Nonthaburi', code:'NBI',
+    districts:[
+      { id:'1201', nameTh:'เมืองนนทบุรี', nameEn:'Mueang Nonthaburi', subdistricts:[
+        { id:'120101', nameTh:'สวนใหญ่',    nameEn:'Suan Yai',    postal:'11000' },
+        { id:'120102', nameTh:'ตลาดขวัญ',   nameEn:'Talat Khwan', postal:'11000' },
+        { id:'120103', nameTh:'บางเขน',      nameEn:'Bang Khen',   postal:'11000' },
+        { id:'120104', nameTh:'บางกระสอ',   nameEn:'Bang Kraso',  postal:'11000' },
+      ]},
+      { id:'1206', nameTh:'ปากเกร็ด', nameEn:'Pak Kret', subdistricts:[
+        { id:'120601', nameTh:'ปากเกร็ด', nameEn:'Pak Kret',  postal:'11120' },
+        { id:'120602', nameTh:'บางตลาด',  nameEn:'Bang Talat', postal:'11120' },
+        { id:'120603', nameTh:'บางพูด',   nameEn:'Bang Phut',  postal:'11120' },
+      ]},
+    ]},
+  { id:'14', region:'central', nameTh:'พระนครศรีอยุธยา', nameEn:'Phra Nakhon Si Ayutthaya', code:'AYA',
+    districts:[
+      { id:'1401', nameTh:'พระนครศรีอยุธยา', nameEn:'Phra Nakhon Si Ayutthaya', subdistricts:[
+        { id:'140101', nameTh:'ประตูชัย', nameEn:'Pratu Chai', postal:'13000' },
+        { id:'140102', nameTh:'หอรัตนไชย', nameEn:'Ho Rattanachai', postal:'13000' },
+        { id:'140103', nameTh:'หัวรอ',     nameEn:'Hua Ro',     postal:'13000' },
+      ]},
+    ]},
+  { id:'50', region:'north', nameTh:'เชียงใหม่', nameEn:'Chiang Mai', code:'CNX',
+    districts:[
+      { id:'5001', nameTh:'เมืองเชียงใหม่', nameEn:'Mueang Chiang Mai', subdistricts:[
+        { id:'500101', nameTh:'ศรีภูมิ',      nameEn:'Si Phum',        postal:'50200' },
+        { id:'500102', nameTh:'พระสิงห์',     nameEn:'Phra Sing',      postal:'50200' },
+        { id:'500103', nameTh:'หายยา',         nameEn:'Hai Ya',         postal:'50100' },
+        { id:'500104', nameTh:'ช้างคลาน',      nameEn:'Chang Khlan',    postal:'50100' },
+        { id:'500105', nameTh:'สุเทพ',         nameEn:'Suthep',         postal:'50200' },
+      ]},
+      { id:'5009', nameTh:'สันทราย', nameEn:'San Sai', subdistricts:[
+        { id:'500901', nameTh:'สันทรายหลวง', nameEn:'San Sai Luang', postal:'50210' },
+        { id:'500902', nameTh:'สันทรายน้อย', nameEn:'San Sai Noi',   postal:'50210' },
+      ]},
+    ]},
+  { id:'57', region:'north', nameTh:'เชียงราย', nameEn:'Chiang Rai', code:'CEI',
+    districts:[
+      { id:'5701', nameTh:'เมืองเชียงราย', nameEn:'Mueang Chiang Rai', subdistricts:[
+        { id:'570101', nameTh:'เวียง',     nameEn:'Wiang',    postal:'57000' },
+        { id:'570102', nameTh:'รอบเวียง',  nameEn:'Rop Wiang', postal:'57000' },
+        { id:'570103', nameTh:'บ้านดู่',    nameEn:'Ban Du',    postal:'57100' },
+      ]},
+    ]},
+  { id:'30', region:'northeast', nameTh:'นครราชสีมา', nameEn:'Nakhon Ratchasima', code:'NMA',
+    districts:[
+      { id:'3001', nameTh:'เมืองนครราชสีมา', nameEn:'Mueang Nakhon Ratchasima', subdistricts:[
+        { id:'300101', nameTh:'ในเมือง',    nameEn:'Nai Mueang',  postal:'30000' },
+        { id:'300102', nameTh:'หนองไผ่ล้อม', nameEn:'Nong Phai Lom', postal:'30000' },
+        { id:'300103', nameTh:'หัวทะเล',     nameEn:'Hua Thale',    postal:'30000' },
+      ]},
+      { id:'3019', nameTh:'ปากช่อง', nameEn:'Pak Chong', subdistricts:[
+        { id:'301901', nameTh:'ปากช่อง',  nameEn:'Pak Chong',  postal:'30130' },
+        { id:'301902', nameTh:'กลางดง',   nameEn:'Klang Dong', postal:'30320' },
+        { id:'301903', nameTh:'หมูสี',     nameEn:'Mu Si',      postal:'30130' },
+      ]},
+    ]},
+  { id:'40', region:'northeast', nameTh:'ขอนแก่น', nameEn:'Khon Kaen', code:'KKC',
+    districts:[
+      { id:'4001', nameTh:'เมืองขอนแก่น', nameEn:'Mueang Khon Kaen', subdistricts:[
+        { id:'400101', nameTh:'ในเมือง',  nameEn:'Nai Mueang', postal:'40000' },
+        { id:'400102', nameTh:'ศิลา',      nameEn:'Sila',       postal:'40000' },
+        { id:'400103', nameTh:'บ้านเป็ด', nameEn:'Ban Pet',     postal:'40000' },
+      ]},
+    ]},
+  { id:'20', region:'east', nameTh:'ชลบุรี', nameEn:'Chonburi', code:'CBI',
+    districts:[
+      { id:'2001', nameTh:'เมืองชลบุรี', nameEn:'Mueang Chonburi', subdistricts:[
+        { id:'200101', nameTh:'บางปลาสร้อย', nameEn:'Bang Pla Soi', postal:'20000' },
+        { id:'200102', nameTh:'มะขามหย่ง',     nameEn:'Makham Yong',  postal:'20000' },
+        { id:'200103', nameTh:'แสนสุข',          nameEn:'Saen Suk',     postal:'20130' },
+      ]},
+      { id:'2009', nameTh:'บางละมุง', nameEn:'Bang Lamung', subdistricts:[
+        { id:'200901', nameTh:'นาเกลือ',  nameEn:'Na Kluea',  postal:'20150' },
+        { id:'200902', nameTh:'หนองปรือ', nameEn:'Nong Prue', postal:'20150' },
+        { id:'200903', nameTh:'หนองปลาไหล', nameEn:'Nong Pla Lai', postal:'20150' },
+      ]},
+    ]},
+  { id:'21', region:'east', nameTh:'ระยอง', nameEn:'Rayong', code:'RYG',
+    districts:[
+      { id:'2101', nameTh:'เมืองระยอง', nameEn:'Mueang Rayong', subdistricts:[
+        { id:'210101', nameTh:'ท่าประดู่',  nameEn:'Tha Pradu', postal:'21000' },
+        { id:'210102', nameTh:'เนินพระ',    nameEn:'Noen Phra',  postal:'21000' },
+      ]},
+    ]},
+  { id:'71', region:'west', nameTh:'กาญจนบุรี', nameEn:'Kanchanaburi', code:'KRI',
+    districts:[
+      { id:'7101', nameTh:'เมืองกาญจนบุรี', nameEn:'Mueang Kanchanaburi', subdistricts:[
+        { id:'710101', nameTh:'บ้านเหนือ', nameEn:'Ban Nuea', postal:'71000' },
+        { id:'710102', nameTh:'บ้านใต้',    nameEn:'Ban Tai',  postal:'71000' },
+        { id:'710103', nameTh:'ปากแพรก',    nameEn:'Pak Phraek', postal:'71000' },
+      ]},
+    ]},
+  { id:'83', region:'south', nameTh:'ภูเก็ต', nameEn:'Phuket', code:'HKT',
+    districts:[
+      { id:'8301', nameTh:'เมืองภูเก็ต', nameEn:'Mueang Phuket', subdistricts:[
+        { id:'830101', nameTh:'ตลาดใหญ่', nameEn:'Talat Yai',  postal:'83000' },
+        { id:'830102', nameTh:'ตลาดเหนือ', nameEn:'Talat Nuea', postal:'83000' },
+        { id:'830103', nameTh:'ฉลอง',       nameEn:'Chalong',     postal:'83130' },
+        { id:'830104', nameTh:'ราไวย์',      nameEn:'Rawai',       postal:'83130' },
+      ]},
+      { id:'8302', nameTh:'กะทู้', nameEn:'Kathu', subdistricts:[
+        { id:'830201', nameTh:'กะทู้',     nameEn:'Kathu',  postal:'83120' },
+        { id:'830202', nameTh:'ป่าตอง',    nameEn:'Patong', postal:'83150' },
+        { id:'830203', nameTh:'กมลา',       nameEn:'Kamala', postal:'83150' },
+      ]},
+    ]},
+  { id:'90', region:'south', nameTh:'สงขลา', nameEn:'Songkhla', code:'SKA',
+    districts:[
+      { id:'9001', nameTh:'เมืองสงขลา', nameEn:'Mueang Songkhla', subdistricts:[
+        { id:'900101', nameTh:'บ่อยาง',  nameEn:'Bo Yang',  postal:'90000' },
+        { id:'900102', nameTh:'เขารูปช้าง', nameEn:'Khao Rup Chang', postal:'90000' },
+      ]},
+      { id:'9011', nameTh:'หาดใหญ่', nameEn:'Hat Yai', subdistricts:[
+        { id:'901101', nameTh:'หาดใหญ่', nameEn:'Hat Yai',  postal:'90110' },
+        { id:'901102', nameTh:'คอหงส์',   nameEn:'Kho Hong', postal:'90110' },
+      ]},
+    ]},
+];
+
+function aggregateCounts(provinces) {
+  let p = provinces.length, d = 0, s = 0;
+  provinces.forEach(pv => { d += pv.districts.length; pv.districts.forEach(dt => { s += dt.subdistricts.length; }); });
+  return { provinces: p, districts: d, subdistricts: s };
+}
+Object.assign(window, { REGIONS, PROVINCES_SEED, aggregateCounts });
+</script>
+
+<!-- ========================================================
+     Screen — embedded from screens/MasterDataProvince.jsx
+     ======================================================== -->
+<script type="text/babel" data-presets="react">
+const { useState, useMemo, useEffect, useRef } = React;
+
+function regionOf(id) { return window.REGIONS.find(r => r.id === id); }
+function uid(prefix='x') { return prefix + '-' + Math.random().toString(36).slice(2, 9); }
+
+function PaneRow({ item, meta, active, onSelect, onEdit, onDelete, secondary }) {
+  return (
+    <div onClick={onSelect}
+      className={`row-hover group cursor-pointer flex items-center gap-2 px-3 py-2 rounded-md text-[13px] transition-colors ${active ? 'row-active' : 'text-ink-700 hover:bg-[#4790FF]/[0.06] hover:text-ink-900'}`}>
+      <div className="flex-1 min-w-0">
+        <div className="truncate">{item.nameTh}</div>
+        {secondary && <div className="text-[11px] text-ink-700/50 truncate">{secondary}</div>}
+      </div>
+      {meta !== undefined && <span className="shrink-0 text-[10.5px] font-mono text-ink-700/45 mr-1">{meta}</span>}
+      <div className="flex items-center gap-1 shrink-0">
+        <button onClick={e => { e.stopPropagation(); onEdit(); }} title="Edit"
+          className="w-7 h-7 rounded-md flex items-center justify-center bg-pb-50/60 text-pb-700 hover:bg-pb-100 hover:text-pb-900 transition-colors">
+          <Icon name="pencil" size={13} />
+        </button>
+        <button onClick={e => { e.stopPropagation(); onDelete(); }} title="Delete"
+          className="w-7 h-7 rounded-md flex items-center justify-center bg-rose-50/60 text-rose-600 hover:bg-rose-100 hover:text-rose-700 transition-colors">
+          <Icon name="trash" size={13} />
+        </button>
+      </div>
+      {active && <Icon name="chev-right" size={12} className="shrink-0 text-pb-700" />}
+    </div>
+  );
+}
+
+function Pane({ title, count, subtitle, onAdd, search, onSearch, children, empty }) {
+  return (
+    <div className="flex flex-col bg-white border border-surface-200 rounded-xl overflow-hidden"
+      style={{ boxShadow: '0 1px 3px rgba(11,20,48,.06), 0 1px 2px rgba(11,20,48,.04)' }}>
+      <div className="px-3 py-3 border-b border-surface-200 shrink-0">
+        <div className="flex items-center gap-2 mb-2">
+          <span className="text-[12px] font-semibold text-ink-900">{title}</span>
+          <span className="text-[10.5px] font-mono text-white bg-pb-900 rounded-full px-2 py-0.5">{count}</span>
+          <button onClick={onAdd}
+            className="ml-auto h-7 px-2 rounded-md bg-pb-50 text-pb-700 hover:bg-pb-100 text-[11px] font-semibold flex items-center gap-1">
+            <Icon name="plus" size={12} /> Add
+          </button>
+        </div>
+        {subtitle && <div className="text-[11px] text-ink-700/55 truncate">{subtitle}</div>}
+        {onSearch !== undefined && (
+          <div className="relative mt-2">
+            <Icon name="search" size={13} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-ink-700/35" />
+            <input value={search} onChange={e => onSearch(e.target.value)} placeholder="ค้นหา..."
+              className="w-full h-7 pl-8 pr-2 bg-surface-50 border border-surface-200 rounded-md text-[12px] outline-none focus:border-pb-500 focus:bg-white" />
+          </div>
+        )}
+      </div>
+      <div className="flex-1 overflow-y-auto pane-scroll px-1.5 py-1.5 space-y-0.5" style={{ minHeight: 0 }}>
+        {React.Children.count(children) === 0
+          ? <div className="px-3 py-10 text-center text-[12px] text-ink-700/40">{empty || 'ไม่มีข้อมูล'}</div>
+          : children}
+      </div>
+    </div>
+  );
+}
+
+function DetailCard({ region, province, district, subdistrict, onEdit, onDelete }) {
+  if (!subdistrict) {
+    return (
+      <div className="bg-white border border-surface-200 rounded-xl p-6 flex flex-col items-center justify-center text-center min-h-[320px]"
+        style={{ boxShadow: '0 1px 3px rgba(11,20,48,.06), 0 1px 2px rgba(11,20,48,.04)' }}>
+        <div className="w-14 h-14 rounded-full bg-pb-50 flex items-center justify-center mb-3">
+          <Icon name="chart-bar" size={24} className="text-pb-500" />
+        </div>
+        <div className="text-[14px] font-semibold text-ink-900 mb-1">เลือกตำบล/แขวง เพื่อดูรายละเอียด</div>
+        <div className="text-[12px] text-ink-700/55 max-w-xs leading-relaxed">
+          ไล่ดูจากซ้ายไปขวา: จังหวัด → เขต/อำเภอ → ตำบล/แขวง — แล้วรายละเอียดและรหัสไปรษณีย์จะแสดงที่นี่
+        </div>
+      </div>
+    );
+  }
+  return (
+    <div className="bg-white border border-surface-200 rounded-xl overflow-hidden"
+      style={{ boxShadow: '0 1px 3px rgba(11,20,48,.06), 0 1px 2px rgba(11,20,48,.04)' }}>
+      <div className="px-5 py-4 border-b border-surface-200 flex items-center gap-3">
+        <div>
+          <div className="text-[11px] text-ink-700/45 uppercase tracking-wider font-semibold">ตำบล/แขวง</div>
+          <div className="text-[18px] font-semibold text-ink-900">{subdistrict.nameTh}</div>
+          <div className="text-[12px] text-ink-700/55">{subdistrict.nameEn}</div>
+        </div>
+        <div className="ml-auto flex gap-2">
+          <Button variant="secondary" size="sm" icon="clipboard" onClick={onEdit}>แก้ไข</Button>
+          <Button variant="ghost" size="sm" icon="x" onClick={onDelete} className="!text-rose-600 hover:!bg-rose-50">ลบ</Button>
+        </div>
+      </div>
+      <div className="p-5 space-y-4">
+        <div className="bg-pb-50/60 border border-pb-100 rounded-lg p-4 flex items-center gap-4">
+          <div>
+            <div className="text-[10px] uppercase font-semibold text-pb-700/70 tracking-wider mb-0.5">รหัสไปรษณีย์</div>
+            <div className="text-[28px] font-bold font-mono text-pb-900 tracking-wider">{subdistrict.postal}</div>
+          </div>
+          <div className="ml-auto text-right">
+            <div className="text-[10px] uppercase font-semibold text-pb-700/70 tracking-wider mb-0.5">ID</div>
+            <div className="text-[13px] font-mono text-ink-700/70">{subdistrict.id}</div>
+          </div>
+        </div>
+        <div>
+          <div className="text-[10px] uppercase font-semibold text-ink-700/45 tracking-wider mb-2">ที่อยู่เต็มรูปแบบ</div>
+          <div className="text-[13px] leading-relaxed text-ink-900">
+            ตำบล{subdistrict.nameTh} อำเภอ{district.nameTh}<br/>
+            จังหวัด{province.nameTh} {subdistrict.postal}
+          </div>
+          <div className="text-[11px] text-ink-700/50 mt-1.5 font-mono">
+            {subdistrict.nameEn}, {district.nameEn}, {province.nameEn} {subdistrict.postal}
+          </div>
+        </div>
+        <div className="grid grid-cols-3 gap-3 pt-2 border-t border-surface-100">
+          <div>
+            <div className="text-[10px] uppercase font-semibold text-ink-700/45 tracking-wider mb-1">ภาค</div>
+            <div className="text-[13px] font-medium">{region.nameTh}</div>
+          </div>
+          <div>
+            <div className="text-[10px] uppercase font-semibold text-ink-700/45 tracking-wider mb-1">จังหวัด</div>
+            <div className="text-[13px] font-medium">{province.nameTh}</div>
+          </div>
+          <div>
+            <div className="text-[10px] uppercase font-semibold text-ink-700/45 tracking-wider mb-1">รหัสจังหวัด</div>
+            <div className="text-[13px] font-mono text-pb-700">{province.code} · {province.id}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function EntityDrawer({ open, mode, level, initial, context, onClose, onSave }) {
+  const [form, setForm] = useState({ nameTh:'', nameEn:'', region:'central', code:'', postal:'' });
+  const firstInput = useRef(null);
+  useEffect(() => {
+    if (open) {
+      setForm(initial || { nameTh:'', nameEn:'', region: context?.region || 'central', code:'', postal:'' });
+      setTimeout(() => firstInput.current && firstInput.current.focus(), 60);
+    }
+  }, [open, initial, context]);
+  if (!open && !initial && !context) return null;
+  const titles = {
+    province: mode === 'create' ? 'เพิ่มจังหวัดใหม่' : 'แก้ไขจังหวัด',
+    district: mode === 'create' ? 'เพิ่มเขต/อำเภอ' : 'แก้ไขเขต/อำเภอ',
+    subdistrict: mode === 'create' ? 'เพิ่มตำบล/แขวง' : 'แก้ไขตำบล/แขวง',
+  };
+  const submit = (e) => { e.preventDefault(); if (!form.nameTh.trim()) return; onSave({ ...form, id: initial?.id }); };
+  return (
+    <React.Fragment>
+      <div onClick={onClose} className={`fixed inset-0 bg-black/30 z-30 transition-opacity ${open ? 'opacity-100' : 'pointer-events-none opacity-0'}`} />
+      <aside className={`fixed right-0 top-0 bottom-0 w-[440px] bg-white border-l border-surface-200 z-40 flex flex-col transition-transform duration-200 ${open ? '' : 'translate-x-full'}`}
+        style={{ boxShadow: '-8px 0 30px rgba(11,20,48,.10)' }}>
+        <header className="h-14 px-5 border-b border-surface-200 flex items-center shrink-0">
+          <div>
+            <div className="text-[10px] uppercase tracking-wider font-semibold text-ink-700/45">{mode === 'create' ? 'New' : 'Edit'}</div>
+            <div className="text-[15px] font-semibold text-ink-900 leading-tight">{titles[level]}</div>
+          </div>
+          <button onClick={onClose} className="ml-auto w-8 h-8 rounded-md hover:bg-surface-100 flex items-center justify-center text-ink-700/40">
+            <Icon name="x" size={16} />
+          </button>
+        </header>
+        {context && (level !== 'province') && (
+          <div className="px-5 py-3 bg-pb-50/40 border-b border-surface-200 text-[11px] text-ink-700/65 flex items-center gap-1.5 flex-wrap">
+            <span className="font-medium">{context.regionLabel}</span>
+            <Icon name="chev-right" size={10} className="opacity-40" />
+            <span className="font-medium">{context.provinceLabel}</span>
+            {context.districtLabel && (
+              <React.Fragment>
+                <Icon name="chev-right" size={10} className="opacity-40" />
+                <span className="font-medium">{context.districtLabel}</span>
+              </React.Fragment>
+            )}
+          </div>
+        )}
+        <form onSubmit={submit} className="flex-1 overflow-y-auto p-5 space-y-4">
+          {level === 'province' && (
+            <Field label="ภาค">
+              <Select value={form.region} onChange={e => setForm(f => ({ ...f, region: e.target.value }))}
+                options={window.REGIONS.map(r => ({ value: r.id, label: r.nameTh + ' (' + r.nameEn + ')' }))} />
+            </Field>
+          )}
+          <Field label={level === 'province' ? 'ชื่อจังหวัด (ไทย)' : level === 'district' ? 'ชื่อเขต/อำเภอ (ไทย)' : 'ชื่อตำบล/แขวง (ไทย)'}>
+            <input ref={firstInput} type="text" value={form.nameTh} required
+              onChange={e => setForm(f => ({ ...f, nameTh: e.target.value }))}
+              placeholder={level === 'province' ? 'เช่น เชียงใหม่' : level === 'district' ? 'เช่น เมืองเชียงใหม่' : 'เช่น ศรีภูมิ'}
+              className="w-full h-9 px-3 bg-surface-50 border border-surface-200 rounded-lg text-[13px] placeholder:opacity-40"/>
+          </Field>
+          <Field label={level === 'province' ? 'ชื่อจังหวัด (อังกฤษ)' : level === 'district' ? 'ชื่อเขต/อำเภอ (อังกฤษ)' : 'ชื่อตำบล/แขวง (อังกฤษ)'}>
+            <input type="text" value={form.nameEn}
+              onChange={e => setForm(f => ({ ...f, nameEn: e.target.value }))}
+              placeholder="English name"
+              className="w-full h-9 px-3 bg-surface-50 border border-surface-200 rounded-lg text-[13px] font-mono placeholder:opacity-40"/>
+          </Field>
+          {level === 'province' && (
+            <Field label="รหัส (IATA-style, ทางเลือก)" hint="ใช้สำหรับรายงานและการกรองข้อมูล">
+              <input type="text" value={form.code} maxLength={4}
+                onChange={e => setForm(f => ({ ...f, code: e.target.value.toUpperCase() }))}
+                placeholder="เช่น CNX"
+                className="w-full h-9 px-3 bg-surface-50 border border-surface-200 rounded-lg text-[13px] font-mono uppercase tracking-wider placeholder:opacity-40 placeholder:normal-case"/>
+            </Field>
+          )}
+          {level === 'subdistrict' && (
+            <Field label="รหัสไปรษณีย์" hint="5 หลัก ตามมาตรฐานไปรษณีย์ไทย">
+              <input type="text" value={form.postal} required pattern="[0-9]{5}" maxLength={5}
+                onChange={e => setForm(f => ({ ...f, postal: e.target.value.replace(/[^0-9]/g, '') }))}
+                placeholder="50200"
+                className="w-full h-10 px-3 bg-surface-50 border border-surface-200 rounded-lg text-[18px] font-mono font-semibold tracking-widest placeholder:opacity-40"/>
+            </Field>
+          )}
+        </form>
+        <footer className="p-4 border-t border-surface-200 flex gap-2 shrink-0">
+          <Button variant="primary" icon="check" className="flex-1" onClick={submit}>{mode === 'create' ? 'บันทึก' : 'บันทึกการแก้ไข'}</Button>
+          <Button variant="secondary" onClick={onClose}>ยกเลิก</Button>
+        </footer>
+      </aside>
+    </React.Fragment>
+  );
+}
+
+function ConfirmDelete({ open, target, onClose, onConfirm }) {
+  if (!target) return null;
+  return (
+    <React.Fragment>
+      <div onClick={onClose} className={`fixed inset-0 bg-black/40 z-40 transition-opacity ${open ? 'opacity-100' : 'pointer-events-none opacity-0'}`} />
+      <div className={`fixed inset-0 z-50 flex items-center justify-center pointer-events-none p-6 transition-opacity ${open ? 'opacity-100' : 'opacity-0'}`}>
+        <div className="bg-white rounded-2xl border border-surface-200 pointer-events-auto w-full max-w-md"
+          style={{ boxShadow: '0 24px 60px rgba(11,20,48,.18)' }}>
+          <div className="p-6">
+            <div className="w-12 h-12 rounded-full bg-rose-50 flex items-center justify-center mb-4">
+              <Icon name="warning" size={22} className="text-rose-600" />
+            </div>
+            <h3 className="text-[18px] font-semibold text-ink-900 mb-1">ยืนยันการลบ</h3>
+            <p className="text-[13px] text-ink-700/65 leading-relaxed">
+              ต้องการลบ <span className="font-semibold text-ink-900">{target.label}</span> ใช่หรือไม่?
+              {target.warning && <span className="block mt-2 text-rose-600">{target.warning}</span>}
+              <span className="block mt-2 text-ink-700/45">การลบจะไม่สามารถย้อนกลับได้</span>
+            </p>
+          </div>
+          <div className="px-6 py-4 bg-surface-50 border-t border-surface-200 flex gap-2 justify-end rounded-b-2xl">
+            <Button variant="secondary" onClick={onClose}>ยกเลิก</Button>
+            <Button variant="primary" icon="x" onClick={onConfirm} className="!bg-rose-600 hover:!bg-rose-700">Delete Permanently</Button>
+          </div>
+        </div>
+      </div>
+    </React.Fragment>
+  );
+}
+
+const PROV_TEMPLATE_COLS = [
+  { key:'region',              required:true,  note:'central, north, northeast, east, west, south' },
+  { key:'province_name_th',    required:true,  note:'ชื่อจังหวัด (ไทย) — เช่น เชียงใหม่' },
+  { key:'province_name_en',    required:false, note:'Chiang Mai' },
+  { key:'province_code',       required:false, note:'IATA-style — เช่น CNX (≤4 ตัวอักษร)' },
+  { key:'district_name_th',    required:true,  note:'ชื่อเขต/อำเภอ (ไทย)' },
+  { key:'district_name_en',    required:false, note:'English name' },
+  { key:'subdistrict_name_th', required:true,  note:'ชื่อตำบล/แขวง (ไทย)' },
+  { key:'subdistrict_name_en', required:false, note:'English name' },
+  { key:'postal_code',         required:true,  note:'5 หลัก — เช่น 50200' },
+];
+
+const PROV_SAMPLE = [
+  ['central', 'กรุงเทพมหานคร', 'Bangkok',    'BKK', 'ปทุมวัน',         'Pathum Wan',         'รองเมือง',     'Rong Mueang',      '10330'],
+  ['central', 'กรุงเทพมหานคร', 'Bangkok',    'BKK', 'บางรัก',           'Bang Rak',           'สีลม',          'Silom',            '10500'],
+  ['north',   'เชียงใหม่',       'Chiang Mai', 'CNX', 'เมืองเชียงใหม่', 'Mueang Chiang Mai', 'ศรีภูมิ',       'Si Phum',          '50200'],
+  ['south',   'ภูเก็ต',          'Phuket',     'HKT', 'กะทู้',            'Kathu',              'ป่าตอง',        'Patong',           '83150'],
+];
+
+function ImportCsvModal({ open, onClose }) {
+  const [dragOver, setDragOver] = useState(false);
+  if (!open) return null;
+  return (
+    <React.Fragment>
+      <div onClick={onClose} className="fixed inset-0 bg-black/40 z-40" />
+      <div className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none p-6">
+        <div className="bg-white rounded-2xl border border-surface-200 pointer-events-auto w-full max-w-2xl flex flex-col"
+          style={{ boxShadow: '0 24px 60px rgba(11,20,48,.18)', maxHeight: 'calc(100vh - 48px)' }}>
+          <header className="px-6 py-4 border-b border-surface-200 flex items-center gap-3 shrink-0">
+            <div className="w-10 h-10 rounded-lg bg-pb-50 flex items-center justify-center text-pb-700">
+              <Icon name="download" size={20} />
+            </div>
+            <div className="flex-1">
+              <h3 className="text-[16px] font-semibold text-ink-900">นำเข้าข้อมูลจาก CSV</h3>
+              <p className="text-[12px] text-ink-700/55 mt-0.5">อัปโหลดไฟล์ CSV ตามรูปแบบเทมเพลตด้านล่าง — แต่ละแถวคือหนึ่ง ตำบล/แขวง</p>
+            </div>
+            <button onClick={onClose} className="w-9 h-9 rounded-md hover:bg-surface-100 flex items-center justify-center text-ink-700/40">
+              <Icon name="x" size={18} />
+            </button>
+          </header>
+
+          <div className="flex-1 overflow-y-auto p-6 space-y-5">
+            <div className="rounded-xl border border-pb-100 bg-gradient-to-br from-pb-50 to-pb-50/40 p-4 flex items-start gap-3">
+              <div className="w-9 h-9 rounded-lg bg-white border border-pb-100 flex items-center justify-center text-pb-700 shrink-0">
+                <Icon name="clipboard" size={18} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="text-[13px] font-semibold text-ink-900">เทมเพลตตัวอย่าง CSV</div>
+                <p className="text-[12px] text-ink-700/60 mt-0.5 leading-relaxed">
+                  ดาวน์โหลดไฟล์ตัวอย่าง 24 แถวจากทั่วประเทศ ไว้แก้ไขก่อนนำเข้าจริง (UTF-8, รองรับภาษาไทย)
+                </p>
+                <div className="flex items-center gap-2 mt-3">
+                  <a href="templates/master-data-province-template.csv" download="master-data-province-template.csv"
+                    className="inline-flex items-center gap-2 h-9 px-3.5 rounded-lg bg-pb-700 text-white text-[12.5px] font-semibold hover:bg-pb-900 transition-colors shadow-sm">
+                    <Icon name="download" size={14} />
+                    ดาวน์โหลด CSV
+                  </a>
+                  <span className="text-[11px] font-mono text-ink-700/45">master-data-province-template.csv</span>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <div className="text-[11px] uppercase font-semibold text-ink-700/55 tracking-wider mb-2">โครงสร้างคอลัมน์</div>
+              <div className="rounded-lg border border-surface-200 overflow-hidden">
+                <table className="w-full text-[12px]">
+                  <thead className="bg-surface-50 border-b border-surface-200">
+                    <tr className="text-left text-[10.5px] uppercase tracking-wide text-ink-700/55">
+                      <th className="px-3 py-2 font-semibold">Column</th>
+                      <th className="px-3 py-2 font-semibold">Required</th>
+                      <th className="px-3 py-2 font-semibold">คำอธิบาย</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {PROV_TEMPLATE_COLS.map(c => (
+                      <tr key={c.key} className="border-b border-surface-100 last:border-0">
+                        <td className="px-3 py-2 font-mono text-pb-700 font-semibold whitespace-nowrap">{c.key}</td>
+                        <td className="px-3 py-2 whitespace-nowrap">
+                          {c.required
+                            ? <span className="inline-flex items-center gap-1 text-[10.5px] px-1.5 py-0.5 rounded bg-rose-50 text-rose-700 font-medium">จำเป็น</span>
+                            : <span className="text-[10.5px] text-ink-700/40">ไม่จำเป็น</span>}
+                        </td>
+                        <td className="px-3 py-2 text-ink-700/70">{c.note}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <p className="text-[11px] text-ink-700/50 mt-2 leading-relaxed">
+                <Icon name="check-circle" size={11} className="inline-block -mt-0.5 mr-1 text-emerald-500" />
+                แถวที่มี <code className="text-pb-700">province_name_th</code> เดียวกันจะถูกรวมเป็นจังหวัดเดียว — ระบบจะไม่ลบของเดิม
+              </p>
+            </div>
+
+            <div>
+              <div className="text-[11px] uppercase font-semibold text-ink-700/55 tracking-wider mb-2">ตัวอย่างข้อมูล</div>
+              <div className="rounded-lg border border-surface-200 overflow-x-auto">
+                <table className="w-full text-[11.5px]">
+                  <thead className="bg-surface-50 border-b border-surface-200">
+                    <tr className="text-left text-[10px] uppercase tracking-wide text-ink-700/55 whitespace-nowrap">
+                      {PROV_TEMPLATE_COLS.map(c => (
+                        <th key={c.key} className="px-2 py-1.5 font-semibold font-mono">{c.key.replace(/_/g, ' ')}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {PROV_SAMPLE.map((r, i) => (
+                      <tr key={i} className="border-b border-surface-100 last:border-0 hover:bg-pb-50/30">
+                        {r.map((v, j) => (
+                          <td key={j} className="px-2 py-1.5 whitespace-nowrap">
+                            {PROV_TEMPLATE_COLS[j].key === 'postal_code'
+                              ? <span className="font-mono font-semibold text-pb-700">{v}</span>
+                              : PROV_TEMPLATE_COLS[j].key.endsWith('_en') || PROV_TEMPLATE_COLS[j].key === 'province_code'
+                                ? <span className="font-mono text-ink-700/65">{v}</span>
+                                : v}
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div>
+              <div className="text-[11px] uppercase font-semibold text-ink-700/55 tracking-wider mb-2">อัปโหลดไฟล์</div>
+              <div onDragOver={e => { e.preventDefault(); setDragOver(true); }}
+                onDragLeave={() => setDragOver(false)}
+                onDrop={e => { e.preventDefault(); setDragOver(false); }}
+                className={`rounded-xl border-2 border-dashed flex flex-col items-center justify-center py-8 px-6 text-center transition-colors ${dragOver ? 'border-pb-500 bg-pb-50/60' : 'border-surface-300 bg-surface-50'}`}>
+                <div className="w-12 h-12 rounded-full bg-white border border-surface-200 flex items-center justify-center text-pb-700 mb-3">
+                  <Icon name="upload" size={20} />
+                </div>
+                <div className="text-[13px] font-semibold text-ink-900">ลากไฟล์มาวางที่นี่</div>
+                <div className="text-[12px] text-ink-700/55 mt-1">หรือ <button className="text-pb-700 font-semibold hover:underline">Choose from Device</button></div>
+                <div className="text-[11px] text-ink-700/40 mt-2 font-mono">.csv · UTF-8 · สูงสุด 5 MB</div>
+              </div>
+            </div>
+          </div>
+
+          <footer className="px-6 py-4 bg-surface-50 border-t border-surface-200 flex items-center gap-2 rounded-b-2xl shrink-0">
+            <div className="text-[11px] text-ink-700/50 flex-1">ระบบจะตรวจสอบและให้คุณยืนยันก่อนเขียนทับข้อมูล</div>
+            <Button variant="secondary" onClick={onClose}>ยกเลิก</Button>
+            <Button variant="primary" icon="check" disabled>เริ่มนำเข้า</Button>
+          </footer>
+        </div>
+      </div>
+    </React.Fragment>
+  );
+}
+
+function ProvinceSortModal({ open, onClose, provinces, regions, onSave }) {
+  const [regionId, setRegionId] = useState('');
+  const [list, setList] = useState([]);
+  const dragIdx = useRef(null);
+  const [hoverIdx, setHoverIdx] = useState(null);
+
+  useEffect(() => {
+    if (!open) return;
+    setRegionId('');
+    setList([]);
+    setHoverIdx(null);
+  }, [open]);
+
+  useEffect(() => {
+    if (regionId) setList(provinces.filter(p => p.region === regionId));
+    else setList([]);
+  }, [regionId, provinces]);
+
+  if (!open) return null;
+
+  const onDragStart = (i) => (e) => {
+    dragIdx.current = i;
+    e.dataTransfer.effectAllowed = 'move';
+    try { e.dataTransfer.setData('text/plain', String(i)); } catch(_) {}
+  };
+  const onDragOver = (i) => (e) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    if (hoverIdx !== i) setHoverIdx(i);
+  };
+  const onDrop = (i) => (e) => {
+    e.preventDefault();
+    const from = dragIdx.current;
+    setHoverIdx(null);
+    dragIdx.current = null;
+    if (from == null || from === i) return;
+    setList(arr => {
+      const next = arr.slice();
+      const [m] = next.splice(from, 1);
+      next.splice(i, 0, m);
+      return next;
+    });
+  };
+  const onDragEnd = () => { dragIdx.current = null; setHoverIdx(null); };
+
+  const onChangeNum = (i, raw) => {
+    const n = parseInt(String(raw).replace(/[^0-9]/g, '') || '1', 10);
+    const ni = Math.max(0, Math.min(list.length - 1, n - 1));
+    if (ni === i) return;
+    setList(arr => {
+      const next = arr.slice();
+      const [m] = next.splice(i, 1);
+      next.splice(ni, 0, m);
+      return next;
+    });
+  };
+
+  const reset = () => {
+    if (regionId) setList(provinces.filter(p => p.region === regionId));
+  };
+
+  const handleSave = () => {
+    if (regionId && list.length) onSave(regionId, list.map(p => p.id));
+    onClose();
+  };
+
+  return (
+    <div className="fixed inset-0 z-50">
+      <div className="absolute inset-0 bg-black/40" onClick={onClose}></div>
+      <div className="relative w-full max-w-lg mx-auto mt-16 bg-white rounded-2xl flex flex-col"
+        style={{ maxHeight: 'calc(100vh - 8rem)', boxShadow: '0 20px 60px rgba(11,20,48,.30)' }}>
+        <header className="px-6 py-4 border-b border-surface-200 flex items-center gap-3 shrink-0">
+          <span className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background:'rgba(45,86,210,.10)', color:'#2D56D2' }}>
+            <Icon name="bars" size={18} />
+          </span>
+          <div className="flex-1 min-w-0">
+            <div className="text-[15px] font-semibold text-ink-900 leading-tight">เรียงลำดับจังหวัด</div>
+            <div className="text-[11.5px] text-ink-700/55">เลือกภาค แล้วลากหรือแก้ไขเลขลำดับเพื่อจัดเรียงจังหวัด</div>
+          </div>
+          <button onClick={onClose} className="w-8 h-8 rounded-md hover:bg-surface-100 flex items-center justify-center text-ink-700/45"><Icon name="x" size={16} /></button>
+        </header>
+
+        <div className="px-6 py-4 border-b border-surface-100 shrink-0">
+          <label className="text-[12px] font-medium block mb-1.5">ภาค <span className="text-rose-500">*</span></label>
+          <select value={regionId} onChange={e => setRegionId(e.target.value)}
+            className="w-full h-10 px-3 bg-white border border-surface-300 rounded-lg text-[13px]">
+            <option value="">— เลือกภาค —</option>
+            {regions.map(r => <option key={r.id} value={r.id}>{r.nameTh} ({r.nameEn})</option>)}
+          </select>
+        </div>
+
+        <div className="flex-1 overflow-y-auto px-6 py-4">
+          {!regionId && (
+            <div className="py-12 text-center text-[13px] text-ink-700/45">เลือกภาคเพื่อแสดงรายชื่อจังหวัด</div>
+          )}
+          {regionId && list.length === 0 && (
+            <div className="py-12 text-center text-[13px] text-ink-700/45">ไม่มีจังหวัดในภาคนี้</div>
+          )}
+          {regionId && list.length > 0 && (
+            <div className="border border-surface-200 rounded-lg overflow-hidden">
+              <div className="grid bg-surface-50 px-3 py-2 border-b border-surface-200 text-[10.5px] font-semibold uppercase tracking-wider text-ink-700/55" style={{ gridTemplateColumns:'88px 1fr' }}>
+                <div>เลขลำดับ</div>
+                <div>ชื่อจังหวัด</div>
+              </div>
+              {list.map((p, i) => (
+                <div key={p.id}
+                  draggable
+                  onDragStart={onDragStart(i)}
+                  onDragOver={onDragOver(i)}
+                  onDrop={onDrop(i)}
+                  onDragEnd={onDragEnd}
+                  className={`grid items-center gap-2 px-3 py-2 border-b border-[#F1F5F9] last:border-b-0 transition-colors ${hoverIdx === i ? 'bg-pb-50' : 'hover:bg-surface-50'}`}
+                  style={{ gridTemplateColumns:'88px 1fr', cursor:'grab' }}>
+                  <input type="number" min={1} max={list.length}
+                    value={i + 1}
+                    onChange={e => onChangeNum(i, e.target.value)}
+                    onClick={e => e.stopPropagation()}
+                    onMouseDown={e => e.stopPropagation()}
+                    className="w-16 h-8 px-2 bg-white border border-surface-200 rounded-md text-[13px] font-mono text-center" />
+                  <div className="flex items-center gap-2">
+                    <svg className="w-4 h-4 text-ink-700/30" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 9h16.5M3.75 15h16.5"/></svg>
+                    <span className="text-[13px] font-medium text-ink-900">{p.nameTh}</span>
+                    <span className="text-[11px] text-ink-700/50">· {p.nameEn}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <footer className="px-6 py-3 border-t border-surface-200 flex items-center justify-between gap-3 shrink-0">
+          <button onClick={reset} disabled={!regionId}
+            className="h-9 px-3 rounded-lg border border-surface-300 text-[12.5px] text-ink-700 hover:bg-surface-50 disabled:opacity-40 disabled:cursor-not-allowed inline-flex items-center gap-1.5">
+            <Icon name="refresh" size={13} />Reset
+          </button>
+          <div className="flex gap-2">
+            <button onClick={onClose} className="h-9 px-4 rounded-lg border border-surface-300 text-[13px] hover:bg-surface-50">Cancel</button>
+            <button onClick={handleSave} disabled={!regionId || !list.length}
+              className="h-9 px-5 rounded-lg bg-pb-700 text-white text-[13px] font-medium hover:bg-pb-900 disabled:opacity-50 disabled:cursor-not-allowed">Save Order</button>
+          </div>
+        </footer>
+      </div>
+    </div>
+  );
+}
+
+function StatTile({ icon, label, value, tone='#2D56D2' }) {
+  return (
+    <div className="bg-white border border-surface-200 rounded-xl px-4 py-3 flex items-center gap-3"
+      style={{ boxShadow: '0 1px 3px rgba(11,20,48,.06), 0 1px 2px rgba(11,20,48,.04)' }}>
+      <div className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0" style={{ background: `${tone}14`, color: tone }}>
+        <Icon name={icon} size={17} />
+      </div>
+      <div>
+        <div className="text-[10px] uppercase font-semibold tracking-wider text-ink-700/55">{label}</div>
+        <div className="text-[18px] font-semibold tracking-tight" style={{ fontVariantNumeric: 'tabular-nums' }}>{value}</div>
+      </div>
+    </div>
+  );
+}
+
+function MasterDataProvinceScreen() {
+  const [provinces, setProvinces] = useState(() => JSON.parse(JSON.stringify(window.PROVINCES_SEED)));
+  const [collapsed, setCollapsed] = useState(false);
+  const [region, setRegion] = useState('all');
+  const [globalSearch, setGlobalSearch] = useState('');
+  const [pSearch, setPSearch] = useState('');
+  const [dSearch, setDSearch] = useState('');
+  const [sSearch, setSSearch] = useState('');
+  const [selectedProvinceId, setSelectedProvinceId] = useState('10');
+  const [selectedDistrictId, setSelectedDistrictId] = useState('1007');
+  const [selectedSubdistrictId, setSelectedSubdistrictId] = useState('100703');
+  const [drawerState, setDrawerState] = useState({ open:false, mode:'create', level:'province', initial:null, context:null });
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [aiOpen, setAiOpen] = useState(false);
+  const [importOpen, setImportOpen] = useState(false);
+  const [sortOpen, setSortOpen] = useState(false);
+
+  const reorderRegion = (regionId, newIds) => {
+    setProvinces(prev => {
+      const slots = [];
+      prev.forEach((p, i) => { if (p.region === regionId) slots.push(i); });
+      const byId = Object.fromEntries(prev.map(p => [p.id, p]));
+      const next = prev.slice();
+      newIds.forEach((id, i) => { if (slots[i] != null && byId[id]) next[slots[i]] = byId[id]; });
+      return next;
+    });
+  };
+
+  const filteredProvinces = useMemo(() => {
+    return provinces.filter(p => {
+      if (region !== 'all' && p.region !== region) return false;
+      if (pSearch && !(p.nameTh.includes(pSearch) || (p.nameEn||'').toLowerCase().includes(pSearch.toLowerCase()))) return false;
+      if (globalSearch) {
+        const q = globalSearch.toLowerCase();
+        const hits = p.nameTh.includes(globalSearch) || (p.nameEn||'').toLowerCase().includes(q) ||
+          p.districts.some(d => d.nameTh.includes(globalSearch) || (d.nameEn||'').toLowerCase().includes(q) ||
+            d.subdistricts.some(s => s.nameTh.includes(globalSearch) || (s.nameEn||'').toLowerCase().includes(q) || (s.postal||'').includes(globalSearch)));
+        if (!hits) return false;
+      }
+      return true;
+    });
+  }, [provinces, region, pSearch, globalSearch]);
+
+  const selectedProvince = filteredProvinces.find(p => p.id === selectedProvinceId) || filteredProvinces[0];
+  const districts = selectedProvince ? selectedProvince.districts : [];
+  const filteredDistricts = useMemo(() => {
+    if (!dSearch) return districts;
+    return districts.filter(d => d.nameTh.includes(dSearch) || (d.nameEn||'').toLowerCase().includes(dSearch.toLowerCase()));
+  }, [districts, dSearch]);
+  const selectedDistrict = filteredDistricts.find(d => d.id === selectedDistrictId) || filteredDistricts[0];
+  const subdistricts = selectedDistrict ? selectedDistrict.subdistricts : [];
+  const filteredSubdistricts = useMemo(() => {
+    if (!sSearch) return subdistricts;
+    return subdistricts.filter(s => s.nameTh.includes(sSearch) || (s.nameEn||'').toLowerCase().includes(sSearch.toLowerCase()) || (s.postal||'').includes(sSearch));
+  }, [subdistricts, sSearch]);
+  const selectedSubdistrict = filteredSubdistricts.find(s => s.id === selectedSubdistrictId) || filteredSubdistricts[0];
+
+  const stats = useMemo(() => window.aggregateCounts(provinces), [provinces]);
+  const regionCounts = useMemo(() => {
+    const m = {}; window.REGIONS.forEach(r => m[r.id] = 0);
+    provinces.forEach(p => { m[p.region] = (m[p.region] || 0) + 1; });
+    return m;
+  }, [provinces]);
+
+  const openCreate = (level, ctx) => setDrawerState({ open:true, mode:'create', level, initial:null, context: ctx });
+  const openEdit = (level, item, ctx) => setDrawerState({ open:true, mode:'edit', level, initial: { ...item }, context: ctx });
+  const closeDrawer = () => setDrawerState(s => ({ ...s, open:false }));
+
+  const saveEntity = (data) => {
+    const { level, mode, initial } = drawerState;
+    setProvinces(prev => {
+      const next = prev.map(p => ({ ...p, districts: p.districts.map(d => ({ ...d, subdistricts: d.subdistricts.map(s => ({ ...s })) })) }));
+      if (level === 'province') {
+        if (mode === 'create') {
+          const newP = { id: uid('p'), region: data.region, nameTh: data.nameTh, nameEn: data.nameEn || '', code: data.code || '', districts: [] };
+          next.push(newP); setSelectedProvinceId(newP.id);
+        } else {
+          const p = next.find(p => p.id === initial.id);
+          if (p) { p.region = data.region; p.nameTh = data.nameTh; p.nameEn = data.nameEn; p.code = data.code; }
+        }
+      }
+      if (level === 'district') {
+        const parent = next.find(p => p.id === drawerState.context.provinceId);
+        if (mode === 'create') {
+          const newD = { id: uid('d'), nameTh: data.nameTh, nameEn: data.nameEn || '', subdistricts: [] };
+          parent.districts.push(newD); setSelectedDistrictId(newD.id);
+        } else {
+          const d = parent.districts.find(d => d.id === initial.id);
+          if (d) { d.nameTh = data.nameTh; d.nameEn = data.nameEn; }
+        }
+      }
+      if (level === 'subdistrict') {
+        const parentP = next.find(p => p.id === drawerState.context.provinceId);
+        const parentD = parentP.districts.find(d => d.id === drawerState.context.districtId);
+        if (mode === 'create') {
+          const newS = { id: uid('s'), nameTh: data.nameTh, nameEn: data.nameEn || '', postal: data.postal };
+          parentD.subdistricts.push(newS); setSelectedSubdistrictId(newS.id);
+        } else {
+          const s = parentD.subdistricts.find(s => s.id === initial.id);
+          if (s) { s.nameTh = data.nameTh; s.nameEn = data.nameEn; s.postal = data.postal; }
+        }
+      }
+      return next;
+    });
+    closeDrawer();
+  };
+
+  const confirmDelete = () => {
+    const t = deleteTarget; if (!t) return;
+    setProvinces(prev => {
+      const next = prev.map(p => ({ ...p, districts: p.districts.map(d => ({ ...d, subdistricts: [...d.subdistricts] })) }));
+      if (t.level === 'province') { const idx = next.findIndex(p => p.id === t.id); if (idx > -1) next.splice(idx, 1); setSelectedProvinceId(next[0]?.id); }
+      if (t.level === 'district') { const p = next.find(p => p.id === t.parentPId); const idx = p.districts.findIndex(d => d.id === t.id); if (idx > -1) p.districts.splice(idx, 1); setSelectedDistrictId(p.districts[0]?.id); }
+      if (t.level === 'subdistrict') { const p = next.find(p => p.id === t.parentPId); const d = p.districts.find(d => d.id === t.parentDId); const idx = d.subdistricts.findIndex(s => s.id === t.id); if (idx > -1) d.subdistricts.splice(idx, 1); setSelectedSubdistrictId(d.subdistricts[0]?.id); }
+      return next;
+    });
+    setDeleteTarget(null);
+  };
+
+  const leftPad = collapsed ? 68 : 256;
+
+  return (
+    <div className="min-h-screen flex bg-[#F7F9FC]" style={{ color: '#0B1430' }}>
+      <main className="flex-1 min-h-screen flex flex-col transition-[margin-left] duration-200 lg:ml-64">
+        <Topbar crumbs={[
+            { label:'Home',        href:'dashboard.html' },
+            { label:'Setting',     href:'settings-master.html' },
+            { label:'Master Data', href:'settings-master.html' },
+            'ข้อมูลจังหวัด'
+          ]}
+          onToggleSidebar={() => window.collapseSidebar()}
+          onToggleAi={() => setAiOpen(o => !o)} aiOpen={aiOpen} />
+
+        <div className="flex-1 p-4 sm:p-6">
+          <div className="max-w-[1600px] mx-auto space-y-4 flex flex-col" style={{ minHeight: 'calc(100vh - 96px)' }}>
+            <div className="flex items-start justify-between gap-3 flex-wrap">
+              <div>
+                <h2 className="text-[22px] font-semibold text-ink-900 tracking-tight">ข้อมูลจังหวัด · Master Data</h2>
+                <p className="text-[12px] text-ink-700/55 mt-0.5">
+                  จัดการข้อมูลที่อยู่ตามมาตรฐานไทย: ภาค → จังหวัด → เขต/อำเภอ → ตำบล/แขวง พร้อมรหัสไปรษณีย์
+                </p>
+              </div>
+              <div className="flex gap-2">
+                <Button variant="secondary" icon="bars" onClick={() => setSortOpen(true)}>เรียงลำดับจังหวัด</Button>
+                <Button variant="secondary" icon="download" onClick={() => setImportOpen(true)}>นำเข้า CSV</Button>
+                <Button variant="ghost" icon="upload">ส่งออก</Button>
+                <Button variant="primary" icon="plus" onClick={() => openCreate('province', null)}>เพิ่มจังหวัด</Button>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <StatTile icon="chart-bar" label="ภาค" value={window.REGIONS.length} tone="#2D56D2" />
+              <StatTile icon="archive-box" label="จังหวัด" value={stats.provinces} tone="#4790FF" />
+              <StatTile icon="clipboard" label="เขต / อำเภอ" value={stats.districts} tone="#06B6D4" />
+              <StatTile icon="banknotes" label="ตำบล / แขวง" value={stats.subdistricts} tone="#10B981" />
+            </div>
+
+            <div className="bg-white border border-surface-200 rounded-xl p-3"
+              style={{ boxShadow: '0 1px 3px rgba(11,20,48,.06), 0 1px 2px rgba(11,20,48,.04)' }}>
+              <div className="flex items-center gap-2 flex-wrap">
+                <div className="relative flex-1 min-w-[220px]">
+                  <Icon name="search" size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-700/35" />
+                  <input value={globalSearch} onChange={e => setGlobalSearch(e.target.value)}
+                    placeholder="ค้นหาทุกระดับ — ชื่อจังหวัด/อำเภอ/ตำบล/รหัสไปรษณีย์..."
+                    className="w-full h-9 pl-9 pr-3 bg-surface-50 border border-surface-200 rounded-lg text-[13px]" />
+                </div>
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  <button onClick={() => setRegion('all')}
+                    className={`h-8 px-3 rounded-full text-[12px] font-medium border transition-colors ${region === 'all' ? 'bg-pb-700 text-white border-pb-700' : 'bg-white text-ink-700/70 border-surface-200 hover:bg-pb-50 hover:border-pb-100'}`}>
+                    ทั้งหมด · {provinces.length}
+                  </button>
+                  {window.REGIONS.map(r => (
+                    <button key={r.id} onClick={() => setRegion(r.id)}
+                      className={`h-8 px-3 rounded-full text-[12px] font-medium border transition-colors ${region === r.id ? 'bg-pb-700 text-white border-pb-700' : 'bg-white text-ink-700/70 border-surface-200 hover:bg-pb-50 hover:border-pb-100'}`}>
+                      {r.nameTh} · {regionCounts[r.id]}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="grid gap-3 flex-1" style={{ gridTemplateColumns: 'minmax(220px, 1fr) minmax(220px, 1fr) minmax(220px, 1fr) minmax(280px, 1.3fr)', minHeight: 480 }}>
+              <Pane title="จังหวัด" count={filteredProvinces.length}
+                subtitle={region === 'all' ? 'ทั้งหมด' : regionOf(region).nameTh}
+                onAdd={() => openCreate('province', null)}
+                search={pSearch} onSearch={setPSearch} empty="ไม่พบจังหวัดในเงื่อนไขที่เลือก">
+                {filteredProvinces.map(p => (
+                  <PaneRow key={p.id} item={p} meta={p.districts.length} secondary={`${regionOf(p.region).nameTh} · ${p.nameEn}`}
+                    active={selectedProvince?.id === p.id}
+                    onSelect={() => { setSelectedProvinceId(p.id); setSelectedDistrictId(null); setSelectedSubdistrictId(null); }}
+                    onEdit={() => openEdit('province', p, { regionLabel: regionOf(p.region).nameTh })}
+                    onDelete={() => setDeleteTarget({ level:'province', id:p.id, label: `จังหวัด ${p.nameTh}`,
+                      warning: p.districts.length > 0 ? `จะลบ ${p.districts.length} เขต และตำบลทั้งหมดด้วย` : null })} />
+                ))}
+              </Pane>
+
+              <Pane title="เขต / อำเภอ" count={filteredDistricts.length}
+                subtitle={selectedProvince ? `ในจังหวัด${selectedProvince.nameTh}` : 'เลือกจังหวัดก่อน'}
+                onAdd={() => selectedProvince && openCreate('district', {
+                  provinceId: selectedProvince.id, regionLabel: regionOf(selectedProvince.region).nameTh,
+                  provinceLabel: selectedProvince.nameTh, region: selectedProvince.region,
+                })}
+                search={dSearch} onSearch={setDSearch}
+                empty={selectedProvince ? 'ไม่มีเขต/อำเภอ — กด "เพิ่ม"' : 'เลือกจังหวัดก่อน'}>
+                {filteredDistricts.map(d => (
+                  <PaneRow key={d.id} item={d} meta={d.subdistricts.length} secondary={d.nameEn}
+                    active={selectedDistrict?.id === d.id}
+                    onSelect={() => { setSelectedDistrictId(d.id); setSelectedSubdistrictId(null); }}
+                    onEdit={() => openEdit('district', d, { provinceId: selectedProvince.id, regionLabel: regionOf(selectedProvince.region).nameTh, provinceLabel: selectedProvince.nameTh })}
+                    onDelete={() => setDeleteTarget({ level:'district', id:d.id, parentPId: selectedProvince.id, label: `เขต ${d.nameTh}`,
+                      warning: d.subdistricts.length > 0 ? `จะลบ ${d.subdistricts.length} ตำบล/แขวง ด้วย` : null })} />
+                ))}
+              </Pane>
+
+              <Pane title="ตำบล / แขวง" count={filteredSubdistricts.length}
+                subtitle={selectedDistrict ? `ใน ${selectedDistrict.nameTh}` : 'เลือกเขต/อำเภอก่อน'}
+                onAdd={() => selectedDistrict && openCreate('subdistrict', {
+                  provinceId: selectedProvince.id, districtId: selectedDistrict.id,
+                  regionLabel: regionOf(selectedProvince.region).nameTh,
+                  provinceLabel: selectedProvince.nameTh, districtLabel: selectedDistrict.nameTh, region: selectedProvince.region,
+                })}
+                search={sSearch} onSearch={setSSearch}
+                empty={selectedDistrict ? 'ไม่มีตำบล/แขวง — กด "เพิ่ม"' : 'เลือกเขต/อำเภอก่อน'}>
+                {filteredSubdistricts.map(s => (
+                  <PaneRow key={s.id} item={s} meta={s.postal} secondary={s.nameEn}
+                    active={selectedSubdistrict?.id === s.id}
+                    onSelect={() => setSelectedSubdistrictId(s.id)}
+                    onEdit={() => openEdit('subdistrict', s, { provinceId: selectedProvince.id, districtId: selectedDistrict.id, regionLabel: regionOf(selectedProvince.region).nameTh, provinceLabel: selectedProvince.nameTh, districtLabel: selectedDistrict.nameTh })}
+                    onDelete={() => setDeleteTarget({ level:'subdistrict', id:s.id, parentPId: selectedProvince.id, parentDId: selectedDistrict.id, label: `ตำบล ${s.nameTh} (${s.postal})` })} />
+                ))}
+              </Pane>
+
+              <DetailCard region={selectedProvince ? regionOf(selectedProvince.region) : null}
+                province={selectedProvince} district={selectedDistrict} subdistrict={selectedSubdistrict}
+                onEdit={() => selectedSubdistrict && openEdit('subdistrict', selectedSubdistrict, { provinceId: selectedProvince.id, districtId: selectedDistrict.id, regionLabel: regionOf(selectedProvince.region).nameTh, provinceLabel: selectedProvince.nameTh, districtLabel: selectedDistrict.nameTh })}
+                onDelete={() => selectedSubdistrict && setDeleteTarget({ level:'subdistrict', id:selectedSubdistrict.id, parentPId: selectedProvince.id, parentDId: selectedDistrict.id, label: `ตำบล ${selectedSubdistrict.nameTh} (${selectedSubdistrict.postal})` })} />
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <EntityDrawer open={drawerState.open} mode={drawerState.mode} level={drawerState.level}
+        initial={drawerState.initial} context={drawerState.context} onClose={closeDrawer} onSave={saveEntity} />
+      <ConfirmDelete open={!!deleteTarget} target={deleteTarget}
+        onClose={() => setDeleteTarget(null)} onConfirm={confirmDelete} />
+      <ImportCsvModal open={importOpen} onClose={() => setImportOpen(false)} />
+      <ProvinceSortModal open={sortOpen} onClose={() => setSortOpen(false)}
+        provinces={provinces} regions={window.REGIONS} onSave={reorderRegion} />
+      <AiPanel open={aiOpen} onClose={() => setAiOpen(false)} />
+    </div>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<MasterDataProvinceScreen />);
+</script>
+</body>
+</html>

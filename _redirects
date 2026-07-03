@@ -1,0 +1,43 @@
+# Netlify _redirects — pretty URLs for the prototype
+# Format:  from   to   status
+# 200 = rewrite (URL bar stays clean), 301/302 = redirect
+
+# Pretty URLs — /dashboard → /dashboard.html
+/login                /login.html                200
+/dashboard            /dashboard.html            200
+/inventory            /inventory.html            200
+/inventory/create     /inventory-create.html     200
+/inventory/edit       /inventory-edit.html       200
+/inventory/import     /inventory-import.html     200
+/sale                 /sale.html                 200
+/production           /production.html           200
+/claim                /claim.html                200
+/favorite             /favorite.html             200
+
+# Media Approval
+/ma                   /ma-dashboard.html         200
+/ma/dashboard         /ma-dashboard.html         200
+/ma/tickets           /job-list.html             200
+/ma/create            /create-job.html           200
+/ma/assign            /assign-job.html           200
+/ma/receive           /receive-job.html          200
+/ma/detail            /job-detail.html           200
+/ma/preview           /job-preview.html          200
+/ma/media             /media-management.html     200
+
+# Reports
+/reports              /kpi-dashboard.html        200
+/reports/kpi          /kpi-dashboard.html        200
+/reports/monthly      /report-monthly.html       200
+/reports/audit        /report-audit.html         200
+/reports/airtime      /export-airtime.html       200
+
+# Settings
+/settings             /settings-user.html        200
+/settings/users       /settings-user.html        200
+/settings/groups      /settings-usergroup.html   200
+/settings/email       /settings-email.html       200
+/settings/master      /settings-master.html      200
+
+# 404 fallback — send unknown paths to the landing page
+/*                    /index.html                404

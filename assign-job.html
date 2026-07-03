@@ -1,0 +1,1161 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Assign Ticket — Plan-B CRM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config={theme:{extend:{fontFamily:{kanit:['Kanit','sans-serif']},colors:{pb:{900:'#213268',700:'#2D56D2',500:'#4790FF',300:'#5FCBF9',50:'#EBF5FF',100:'#D6ECFF'},ink:{900:'#0B1430',800:'#162040',700:'#1E293B'},surface:{0:'#FFFFFF',50:'#F8FAFC',100:'#F1F5F9',200:'#E2E8F0',300:'#CBD5E1'}}}}}
+</script>
+<style>
+*{font-family:'Kanit',sans-serif;-webkit-font-smoothing:antialiased}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#CBD5E8;border-radius:10px;border:2px solid #F7F9FC}
+::-webkit-scrollbar-thumb:hover{background:#93A4C4}
+.sidebar-scroll::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.06);border:2px solid transparent}
+.sidebar-scroll::-webkit-scrollbar-track{background:transparent}
+/* Sidebar nav items — White theme */
+.sidebar-nav{color:rgba(30,41,59,0.6);transition:all 0.15s;position:relative;font-size:13px}
+.sidebar-nav:hover{color:#0B1430;background:rgba(71,144,255,0.06)}
+.sidebar-nav.active{color:#2D56D2;font-weight:500;background:linear-gradient(90deg,rgba(71,144,255,0.10),rgba(71,144,255,0))}
+.sidebar-nav.active::before{content:'';position:absolute;left:0;top:8px;bottom:8px;width:3px;border-radius:2px;background:#2D56D2}
+/* Sidebar group headers */
+.sidebar-nav-parent{color:rgba(30,41,59,0.4);transition:all 0.15s;font-size:10.5px;text-transform:uppercase;letter-spacing:0.05em;font-weight:600}
+.sidebar-nav-parent:hover{color:rgba(30,41,59,0.7)}
+.sidebar-nav-parent.active{color:rgba(30,41,59,0.7)}
+/* Sidebar sub-items */
+.sidebar-sub{color:rgba(30,41,59,0.55);transition:all 0.15s;position:relative}
+.sidebar-sub:hover{color:#0B1430;background:rgba(71,144,255,0.06)}
+.sidebar-sub.active{color:#2D56D2;font-weight:500;background:linear-gradient(90deg,rgba(71,144,255,0.10),rgba(71,144,255,0))}
+.sidebar-sub.active::before{content:'';position:absolute;left:0;top:6px;bottom:6px;width:3px;border-radius:2px;background:#2D56D2;box-shadow:0 0 8px rgba(45,86,210,0.4)}
+.sidebar-nav.active::before{box-shadow:0 0 8px rgba(45,86,210,0.4)}
+.sidebar-group-icon{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:8px;background:transparent;transition:all .15s;flex-shrink:0;color:rgba(30,41,59,0.55)}
+.sgi-ma{color:#7C3AED}.sgi-rpt{color:#0EA5E9}.sgi-stg{color:#EF4444}
+.nav-parent{border-radius:8px;transition:all .15s}
+.nav-parent:hover{background:#F1F5F9}
+.nav-parent.active:has(.sgi-ma){background:rgba(124,58,237,0.10);color:#7C3AED}
+.nav-parent.active:has(.sgi-ma) .sidebar-group-icon{background:rgba(124,58,237,0.20)}
+.nav-parent.active:has(.sgi-rpt){background:rgba(14,165,233,0.10);color:#0EA5E9}
+.nav-parent.active:has(.sgi-rpt) .sidebar-group-icon{background:rgba(14,165,233,0.20)}
+.nav-parent.active:has(.sgi-stg){background:rgba(239,68,68,0.10);color:#EF4444}
+.nav-parent.active:has(.sgi-stg) .sidebar-group-icon{background:rgba(239,68,68,0.20)}
+#sidebar{background:linear-gradient(180deg,#fff 0%,#fff 60%,#F8FAFC 100%) !important}
+#sidebar-brand{background:linear-gradient(135deg,rgba(45,86,210,0.04),rgba(95,203,249,0.04))}
+/* nav-item for page content compatibility */
+.nav-item{transition:all 0.2s;border-radius:8px}
+.nav-item:hover,.nav-item.active{background:rgba(71,144,255,0.12);color:#4790FF}
+.nav-parent.active{color:#2D56D2;font-weight:500}
+/* Cards & general UI */
+.card-hover{transition:all 0.2s}
+.card-hover:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(33,50,104,0.12)}
+.badge-pulse{animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.7}}
+.status-dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+input:focus,select:focus,textarea:focus{outline:none;border-color:#4790FF;box-shadow:0 0 0 3px rgba(71,144,255,0.15)}
+.tab-btn{transition:all 0.2s}
+.tab-btn.active{color:#2D56D2;border-bottom:2px solid #2D56D2}
+table th{position:sticky;top:0;z-index:1}
+.progress-bar{transition:width 0.6s ease}
+/* Topbar — White glass */
+.topbar-white{background:rgba(255,255,255,0.9);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid #E2E8F0}
+/* Dashboard extras */
+.tnum{font-variant-numeric:tabular-nums}
+.shine{background:linear-gradient(135deg,#2D56D2,#5FCBF9)}
+.shine-soft{background:linear-gradient(135deg,rgba(71,144,255,0.08),rgba(95,203,249,0.08))}
+.ai-border{box-shadow:0 0 0 1px rgba(45,86,210,0.25),0 2px 8px rgba(45,86,210,0.08)}
+.pulse-dot{animation:pulseDot 2s ease-in-out infinite}
+@keyframes pulseDot{0%,100%{transform:scale(1);opacity:.4}50%{transform:scale(1.5);opacity:0}}
+.map-bg{background:linear-gradient(135deg,#F8FAFC 0%,#EBF5FF 100%)}
+.shadow-pop{box-shadow:0 8px 30px rgba(11,20,48,0.12)}
+.shadow-card{box-shadow:0 1px 3px rgba(11,20,48,0.06),0 1px 2px rgba(11,20,48,0.04)}
+/* Sidebar collapse label */
+.sidebar-label{transition:opacity 0.15s;white-space:nowrap;overflow:hidden}
+</style>
+<script src="shared/sidebar.js"></script>
+</head>
+<body class="font-kanit" style="background:#F7F9FC;color:#0B1430">
+
+<div class="min-h-screen flex">
+  <!-- SIDEBAR — Clean White -->
+  <!-- Mobile overlay -->
+  <div id="sidebar-overlay" class="hidden fixed inset-0 bg-black/40 z-20 lg:hidden" onclick="toggleMobile()"></div>
+  <aside id="sidebar" class="w-64 flex flex-col fixed h-full z-30 transition-all duration-200 -translate-x-full lg:translate-x-0 bg-white border-r border-[#E2E8F0]">
+    <!-- Brand -->
+    <div class="px-4 h-16 flex items-center gap-2.5 border-b border-[#E2E8F0]" id="sidebar-brand">
+      <div class="sidebar-label flex items-center gap-2 min-w-0">
+        <img src="logo.jpg" alt="Plan-B Media" class="h-8 w-auto rounded shrink-0" />
+        <span class="text-[11px] font-semibold tracking-wide uppercase border-l border-[#E2E8F0] pl-2 truncate" style="color:rgba(30,41,59,0.55)">Media Flow System</span>
+      </div>
+    </div>
+    <!-- Nav -->
+    <nav class="flex-1 py-3 px-2 overflow-y-auto text-sm sidebar-scroll space-y-0.5">
+
+      <!-- Dashboard -->
+      <a href="dashboard.html" class=" sidebar-nav w-full flex items-center gap-3 h-10 rounded-md px-3 cursor-pointer" data-page="dashboard">
+        <svg class="w-[18px] h-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25a2.25 2.25 0 01-2.25-2.25v-2.25z" /></svg>
+        <span class="flex-1 text-left truncate sidebar-label">Dashboard</span>
+      </a>
+
+      <!-- Inventory -->
+      <a href="inventory.html" class=" sidebar-nav w-full flex items-center gap-3 h-10 rounded-md px-3 cursor-pointer">
+        <svg class="w-[18px] h-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" /></svg>
+        <span class="flex-1 text-left truncate sidebar-label">Inventory</span>
+      </a>
+
+      <!-- Sale -->
+      <a href="sale.html" class=" sidebar-nav w-full flex items-center gap-3 h-10 rounded-md px-3 cursor-pointer">
+        <svg class="w-[18px] h-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z" /></svg>
+        <span class="flex-1 text-left truncate sidebar-label">Sale</span>
+      </a>
+
+      <!-- Media Approval (Expandable) -->
+      <div class="pt-3">
+        <button onclick="toggleMenu('ma')" class="nav-parent active sidebar-nav-parent w-full flex items-center gap-3 h-8 px-3 cursor-pointer text-left">
+          <span class="sidebar-group-icon sgi-ma"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></span><span class="flex-1 text-left">Media Approval</span>
+          <svg id="ma-chevron" class="w-3 h-3 transition-transform duration-200 rotate-90" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" /></svg>
+        </button>
+        <div id="ma-sub" class="space-y-0.5">
+          <a href="ma-dashboard.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Dashboard</span>
+          </a>
+          <a href="job-list.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Media Ticket</span>
+            <span class="text-[10px] bg-pb-500 text-white rounded-full px-1.5 min-w-[18px] text-center">12</span>
+          </a>
+          <a href="assign-job.html" class="active sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Assign Ticket</span>
+            <span class="text-[10px] bg-amber-500 text-white rounded-full px-1.5 min-w-[18px] text-center">5</span>
+          </a>
+          <a href="receive-job.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Verify & Production</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Production -->
+      <a href="production.html" class=" sidebar-nav w-full flex items-center gap-3 h-10 rounded-md px-3 cursor-pointer">
+        <svg class="w-[18px] h-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17l-5.1-5.1a2.25 2.25 0 010-3.182l.71-.71a2.25 2.25 0 013.18 0l2.8 2.8 2.8-2.8a2.25 2.25 0 013.18 0l.71.71a2.25 2.25 0 010 3.182l-5.1 5.1a2.25 2.25 0 01-3.18 0z" /></svg>
+        <span class="flex-1 text-left truncate sidebar-label">Production</span>
+      </a>
+
+      <!-- Claim -->
+      <a href="claim.html" class=" sidebar-nav w-full flex items-center gap-3 h-10 rounded-md px-3 cursor-pointer">
+        <svg class="w-[18px] h-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z" /></svg>
+        <span class="flex-1 text-left truncate sidebar-label">Claim</span>
+      </a>
+
+      <!-- Report (Expandable) -->
+      <div class="pt-3">
+        <button onclick="toggleMenu('rpt')" class="nav-parent sidebar-nav-parent w-full flex items-center gap-3 h-8 px-3 cursor-pointer text-left">
+          <span class="sidebar-group-icon sgi-rpt"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg></span><span class="flex-1 text-left">Report</span>
+          <svg id="rpt-chevron" class="w-3 h-3 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" /></svg>
+        </button>
+        <div id="rpt-sub" class="space-y-0.5 hidden">
+          <a href="kpi-dashboard.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">KPI Dashboard</span>
+          </a>
+          <a href="export-airtime.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Export Airtime</span>
+          </a>
+          <a href="report-monthly.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Monthly Report</span>
+          </a>
+          <a href="report-audit.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Audit Log</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Setting (Expandable) -->
+      <div class="pt-3">
+        <button onclick="toggleMenu('stg')" class="nav-parent sidebar-nav-parent w-full flex items-center gap-3 h-8 px-3 cursor-pointer text-left">
+          <span class="sidebar-group-icon sgi-stg"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75"/></svg></span><span class="flex-1 text-left">Setting</span>
+          <svg id="stg-chevron" class="w-3 h-3 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" /></svg>
+        </button>
+        <div id="stg-sub" class="space-y-0.5 hidden">
+          <a href="settings-user.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">User Management</span>
+          </a>
+          <a href="settings-usergroup.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">User Group Management</span>
+          </a>
+          <a href="settings-email.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Email Setup</span>
+          </a>
+          <a href="settings-master.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Master Data</span>
+          </a>
+        </div>
+      </div>
+
+    </nav>
+
+    <!-- User Footer -->
+    <div class="p-3 border-t border-[#E2E8F0]">
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-full flex items-center justify-center text-white font-semibold text-[13px] shrink-0" style="background:#4790FF">RK</div>
+        <div class="flex-1 min-w-0 sidebar-label">
+          <div class="text-[13px] font-medium text-[#0B1430] truncate">Raveewan Kaewmanee</div>
+          <div class="text-[11px] truncate" style="color:rgba(30,41,59,0.5)">Admin · Plan-B</div>
+        </div>
+        <a href="login.html" class="transition sidebar-label hover:opacity-80" style="color:rgba(30,41,59,0.4)" title="ออกจากระบบ">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" /></svg>
+        </a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="flex-1 lg:ml-64 min-h-screen">
+    <!-- Top Bar — White Glass -->
+    <header class="topbar-white h-16 shrink-0 sticky top-0 z-20 flex items-center gap-4 px-4 sm:px-6">
+      <!-- Collapse / Mobile toggle -->
+      <button onclick="collapseSidebar()" class="w-9 h-9 rounded-md hover:bg-surface-100 flex items-center justify-center text-ink-700">
+        <svg class="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" /></svg>
+      </button>
+
+      <!-- Breadcrumbs -->
+      <div class="flex items-center gap-1.5 text-[13px]" style="color:rgba(30,41,59,0.6)">
+        <span>Home</span>
+        <svg class="w-3 h-3 opacity-30" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
+        <span class="font-medium" style="color:#0B1430">Assign Ticket</span>
+      </div>
+
+      <div class="flex-1"></div>
+
+      <!-- Notification -->
+      <button class="w-9 h-9 rounded-md hover:bg-surface-100 flex items-center justify-center relative" style="color:#1E293B">
+        <svg class="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" /></svg>
+        <span class="absolute top-2 right-2 w-2 h-2 bg-rose-500 rounded-full"></span>
+      </button>
+
+      <!-- Ask AI -->
+      <button id="ai-toggle" onclick="toggleAI()" class="h-9 px-3 rounded-lg border flex items-center gap-2 text-[13px] font-medium transition-colors bg-white border-surface-300 text-ink-900 hover:bg-surface-50">
+        <svg class="w-[15px] h-[15px]" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"/></svg>
+        <span>Ask AI</span>
+      </button>
+    </header>
+
+    <!-- Page Content -->
+    <div class="p-3 sm:p-6">
+    <div class="space-y-5 max-w-[1600px] mx-auto">
+<!-- Header -->
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-xl flex items-center justify-center shadow-lg" style="background:linear-gradient(135deg,#F59E0B,#FBBF24)">
+<svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM3 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 12.318 0 019.374 21c-2.331 0-4.512-.645-6.374-1.766z"/></svg>
+</div>
+<div>
+<h1 class="text-[22px] font-semibold text-[#0B1430]">Assign Ticket</h1>
+<p class="text-[13px]" style="color:rgba(30,41,59,0.55)">Manage and assign jobs to operators</p>
+</div>
+</div>
+</div>
+<!-- KPI Cards -->
+<div class="grid grid-cols-3 md:grid-cols-6 gap-3" id="assign-kpis"></div>
+<!-- Filter Bar -->
+<div class="bg-white border border-[#E2E8F0] rounded-xl shadow-sm p-3">
+<div class="flex items-center gap-2 flex-wrap">
+<div class="relative flex-1 min-w-[180px]">
+<svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" style="color:rgba(30,41,59,0.35)" viewbox="0 0 24 24"><path d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<input class="w-full h-9 pl-9 pr-3 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[13px] focus:outline-none focus:border-[#4790FF] focus:bg-white" id="at-search" oninput="filterAssign()" placeholder="Search..."/>
+</div>
+<input class="h-9 px-3 bg-white border border-[#E2E8F0] rounded-lg text-[12px] focus:outline-none focus:border-[#4790FF] w-[130px]" id="at-date" onblur="formatDateField(this)" onfocus="this.type='date'" placeholder="dd/mm/yyyy" type="text"/>
+
+<!-- Graphic — multi-select dropdown -->
+<div class="relative" id="graphic-dd-wrap">
+  <button type="button" id="graphic-dd-btn" onclick="toggleGraphicDD()" class="h-9 min-w-[180px] max-w-[260px] pl-3 pr-8 bg-white border border-[#E2E8F0] rounded-lg text-[12px] text-left inline-flex items-center hover:border-[#CBD5E1] focus:outline-none focus:border-[#4790FF] relative">
+    <svg class="w-3.5 h-3.5 mr-1.5 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" style="color:rgba(30,41,59,0.45)" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128H5.228A9.3 9.3 0 011.5 17.372a4.125 4.125 0 017.533-2.493M8.625 9.75a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM21.75 9.75a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0z"/></svg>
+    <span id="graphic-dd-label" class="truncate flex-1" style="color:rgba(30,41,59,0.55)">Select Graphic</span>
+    <svg id="graphic-dd-chev" class="w-3 h-3 absolute right-2.5 top-1/2 -translate-y-1/2 transition-transform" fill="none" stroke="currentColor" stroke-width="2" style="color:rgba(30,41,59,0.4)" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
+  </button>
+  <div id="graphic-dd-panel" class="hidden absolute left-0 top-full mt-1 z-20 w-[240px] bg-white border border-[#E2E8F0] rounded-lg overflow-hidden" style="box-shadow:0 12px 28px rgba(11,20,48,.14)">
+    <div class="max-h-56 overflow-y-auto divide-y divide-[#F1F5F9]" id="graphic-dd-list"></div>
+    <div class="px-3 py-2 border-t border-[#E2E8F0] bg-[#F8FAFC]/60 flex items-center justify-between">
+      <span id="graphic-dd-count" class="text-[11px]" style="color:rgba(30,41,59,0.55)">0 selected</span>
+      <div class="flex gap-1.5">
+        <button type="button" onclick="clearGraphicSel()" class="h-6 px-2 text-[11px] font-medium rounded-md hover:bg-[#F1F5F9]" style="color:rgba(30,41,59,0.65)">Clear</button>
+        <button type="button" onclick="toggleGraphicDD()" class="h-6 px-2.5 text-[11px] font-semibold bg-[#2D56D2] text-white rounded-md hover:bg-[#213268]">Done</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<button class="h-9 px-4 bg-[#7c3aed] text-white rounded-lg text-[12px] font-semibold hover:bg-[#6d28d9] inline-flex items-center gap-1.5 shrink-0" onclick="filterAssign()">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M12 3c2.755 0 5.455.232 8.083.678.533.09.917.556.917 1.096v1.044a2.25 2.25 0 01-.659 1.591l-5.432 5.432a2.25 2.25 0 00-.659 1.591v2.927a2.25 2.25 0 01-1.244 2.013L9.75 21v-6.568a2.25 2.25 0 00-.659-1.591L3.659 7.409A2.25 2.25 0 013 5.818V4.774c0-.54.384-1.006.917-1.096A48.32 48.32 0 0112 3z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</button>
+</div>
+</div>
+<!-- Bulk Actions -->
+<div class="flex items-center justify-end gap-2">
+<span class="text-[12px]" id="bulk-count" style="color:rgba(30,41,59,0.5)">0 selected</span>
+<button class="h-8 px-4 bg-[#2D56D2] text-white rounded-lg text-[12px] font-semibold hover:bg-[#213268] inline-flex items-center gap-1.5 disabled:opacity-40 disabled:cursor-not-allowed transition-colors" disabled="" id="bulk-assign-btn" onclick="bulkAssign()">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM3 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 12.318 0 019.374 21c-2.331 0-4.512-.645-6.374-1.766z"/></svg>
+<span>Bulk Assign</span>
+</button>
+</div>
+<!-- Ticket Table -->
+<div class="bg-white border border-[#E2E8F0] rounded-xl shadow-sm overflow-hidden">
+<div>
+<table class="w-full text-[12.5px] table-fixed">
+<colgroup>
+  <col style="width:36px">
+  <col style="width:78px">
+  <col style="width:130px">
+  <col style="width:120px">
+  <col style="width:180px">
+  <col style="width:auto">
+  <col style="width:120px">
+  <col style="width:115px">
+  <col style="width:115px">
+  <col style="width:100px">
+</colgroup>
+<thead class="border-b border-[#E2E8F0]" style="background:rgba(248,250,252,0.8)">
+<tr class="text-left text-[10.5px] uppercase tracking-wide" style="color:rgba(30,41,59,0.55)">
+<th class="px-2 py-3 font-semibold text-center"><input class="w-3.5 h-3.5 rounded border-[#CBD5E1] accent-[#2D56D2]" onclick="toggleAllAssign(this)" type="checkbox"/></th>
+<th class="px-2 py-3 font-semibold">Actions</th>
+<th class="px-2 py-3 font-semibold">Job · Ticket</th>
+<th class="px-2 py-3 font-semibold">Quotation</th>
+<th class="px-2 py-3 font-semibold">Client / Product</th>
+<th class="px-2 py-3 font-semibold">Media · Package</th>
+<th class="px-2 py-3 font-semibold">Period</th>
+<th class="px-2 py-3 font-semibold">Sales Person</th>
+<th class="px-2 py-3 font-semibold">Head / Assigned</th>
+<th class="px-2 py-3 font-semibold">Status</th>
+</tr>
+</thead>
+<tbody id="assign-tbody"></tbody>
+</table>
+</div>
+<!-- Pagination -->
+<div class="px-4 py-3 border-t border-[#E2E8F0] flex items-center justify-between" style="background:rgba(248,250,252,0.5)">
+<div class="flex items-center gap-2 text-[12px]" style="color:rgba(30,41,59,0.6)">
+      Show <select class="h-7 px-1.5 bg-white border border-[#E2E8F0] rounded text-[12px]"><option>15</option><option>25</option><option>50</option></select> entries
+      <span class="ml-2" style="color:rgba(30,41,59,0.45)">· Showing <b id="at-pag-range" style="color:rgba(30,41,59,0.7)">0</b> of <b id="at-pag-total" style="color:rgba(30,41,59,0.7)">0</b></span>
+</div>
+<div class="flex gap-1" id="at-pagination"></div>
+</div>
+</div>
+<script>
+var AT_DATA = [
+  /* — Same Ticket, same Package (BTS Skytrain), 3 Versions — */
+  { id:'TK-2026040006', quo:'PB202604530', job:'JOB-1043-01', client:'AIS',            product:'AIS 5G Pro Max',      mediaGroup:'Transit', mediaSection:'BTS',              mediaType:'BTS Skytrain',            package:'BTS Skytrain',          sales:'Prapat Thanakit',    startEnd:'15/05/2026 - 14/08/2026', reqDate:'30/04/2026 10:00', headTeam:'',                    assigned:'',                  status:'Pending',     hasActions:false, assignStatus:'Pending' },
+  { id:'TK-2026040006', quo:'PB202604530', job:'JOB-1043-02', client:'AIS',            product:'AIS 5G Pro Max',      mediaGroup:'Transit', mediaSection:'BTS',              mediaType:'BTS Skytrain',            package:'BTS Skytrain',          sales:'Prapat Thanakit',    startEnd:'15/05/2026 - 14/08/2026', reqDate:'30/04/2026 10:00', headTeam:'',                    assigned:'',                  status:'Pending',     hasActions:false, assignStatus:'Pending' },
+  { id:'TK-2026040006', quo:'PB202604530', job:'JOB-1043-03', client:'AIS',            product:'AIS 5G Pro Max',      mediaGroup:'Transit', mediaSection:'BTS',              mediaType:'BTS Skytrain',            package:'BTS Skytrain',          sales:'Prapat Thanakit',    startEnd:'15/05/2026 - 14/08/2026', reqDate:'30/04/2026 10:00', headTeam:'',                    assigned:'',                  status:'Pending',     hasActions:false, assignStatus:'Pending' },
+  /* — Same Ticket, same Package (PlanBTV 240Full), 2 Versions — */
+  { id:'TK-2026040005', quo:'PB202604525', job:'JOB-1042-01', client:'Coca-Cola',      product:'Coke Zero Summer',    mediaGroup:'Digital', mediaSection:'The Network',      mediaType:'Plan B TV',               package:'PlanBTV 240Full',       sales:'Sajjaporn Suwanchai', startEnd:'10/05/2026 - 09/08/2026', reqDate:'29/04/2026 13:45', headTeam:'',                    assigned:'',                  status:'Pending',     hasActions:false, assignStatus:'Pending' },
+  { id:'TK-2026040005', quo:'PB202604525', job:'JOB-1042-02', client:'Coca-Cola',      product:'Coke Zero Summer',    mediaGroup:'Digital', mediaSection:'The Network',      mediaType:'Plan B TV',               package:'PlanBTV 240Full',       sales:'Sajjaporn Suwanchai', startEnd:'10/05/2026 - 09/08/2026', reqDate:'29/04/2026 13:45', headTeam:'',                    assigned:'',                  status:'Pending',     hasActions:false, assignStatus:'Pending' },
+  { id:'TK-2026040004', quo:'PB202604521', job:'JOB-1040', client:'Chang Beer',     product:'Chang Classic 620ml', mediaGroup:'Digital', mediaSection:'The Network',      mediaType:'Plan B TV',               package:'PlanBTV 240Full',       sales:'Prapat Thanakit',    startEnd:'01/05/2026 - 31/07/2026', reqDate:'28/04/2026 09:30', headTeam:'',                    assigned:'',                  status:'Pending',     hasActions:false, assignStatus:'Pending' },
+  { id:'TK-2026040003', quo:'PB202604518', job:'JOB-1039', client:'Pepsi',          product:'Pepsi Max Zero',      mediaGroup:'Digital', mediaSection:'Signature Screen', mediaType:'Siam Paragon Facade',     package:'SiamParagonFacade',     sales:'Sajjaporn Suwanchai', startEnd:'01/05/2026 - 30/06/2026', reqDate:'27/04/2026 14:15', headTeam:'',                    assigned:'',                  status:'Pending',     hasActions:false, assignStatus:'Pending' },
+  { id:'TK-2026040002', quo:'',                job:'JOB-1038', client:'Unilever',       product:'Dove Shampoo',        mediaGroup:'Retail',  mediaSection:'In-store',         mediaType:'7-Eleven Plus',           package:'Multimedia',            sales:'Sajjaporn Suwanchai', startEnd:'15/04/2026 - 14/07/2026', reqDate:'25/04/2026 10:00', headTeam:'',                    assigned:'',                  status:'Pending',     hasActions:false, assignStatus:'Pending' },
+  { id:'TK-2026040001', quo:'PB202604490', job:'JOB-1037', client:'Nestle',         product:'Nescafe Latte',       mediaGroup:'Digital', mediaSection:'BKK Prime',        mediaType:'Rama 9 Connect',          package:'Rama9 Connect',         sales:'Sajjaporn Suwanchai', startEnd:'01/04/2026 - 30/06/2026', reqDate:'22/04/2026 16:45', headTeam:'',                    assigned:'',                  status:'Pending',     hasActions:false, assignStatus:'Pending' },
+  { id:'TK-2026030016', quo:'PB202604472', job:'JOB-1036', client:'SCB',            product:'SCB Easy 4.0',        mediaGroup:'Transit', mediaSection:'BTS',              mediaType:'BTS Skytrain',            package:'BTS Skytrain',          sales:'Sajjaporn Suwanchai', startEnd:'01/04/2026 - 30/09/2026', reqDate:'20/03/2026 11:20', headTeam:'Wanchat Damrongsak', assigned:'Sajjaporn Suwanchai', status:'On Process',  hasActions:false, assignStatus:'Assigned' },
+  { id:'TK-2026030015', quo:'PB202604460', job:'JOB-1035', client:'TrueMove H',     product:'True 5G',             mediaGroup:'Digital', mediaSection:'The Network',      mediaType:'Plan B TV Nationwide',    package:'PlanBTV Nationwide120', sales:'Sajjaporn Suwanchai', startEnd:'15/03/2026 - 14/06/2026', reqDate:'18/03/2026 08:50', headTeam:'Wanchat Damrongsak', assigned:'Preeya Wongsa',     status:'Verify',      hasActions:true,  assignStatus:'Assigned' },
+  { id:'TK-2026030014', quo:'',                job:'JOB-1034', client:'P&G',            product:'Pantene Pro-V',       mediaGroup:'Retail',  mediaSection:'Luxury',           mediaType:'Central Network',         package:'CentralNetwork 360',    sales:'Sajjaporn Suwanchai', startEnd:'01/03/2026 - 31/05/2026', reqDate:'15/03/2026 13:30', headTeam:'Wanchat Damrongsak', assigned:'Kitti Pongtep',     status:'Verify',      hasActions:true,  assignStatus:'Assigned' },
+  { id:'TK-2026030013', quo:'PB202604455', job:'JOB-1033', client:'Honda',          product:'Honda City e:HEV',    mediaGroup:'Digital', mediaSection:'BKK Prime',        mediaType:'Rama 9 Connect',          package:'Rama9 Connect',         sales:'Prapat Thanakit',    startEnd:'10/03/2026 - 09/06/2026', reqDate:'12/03/2026 14:20', headTeam:'Wanchat Damrongsak', assigned:'Napha Saengthong',  status:'Revise',      hasActions:false, assignStatus:'Assigned' },
+  { id:'TK-2026020010', quo:'PB202604432', job:'JOB-1030', client:'Toyota',         product:'Yaris Ativ 2026',     mediaGroup:'Transit', mediaSection:'Rail',             mediaType:'Digital MRT',             package:'Digital MRT',           sales:'Prapat Thanakit',    startEnd:'15/02/2026 - 14/08/2026', reqDate:'10/02/2026 09:00', headTeam:'Wanchat Damrongsak', assigned:'Kitti Pongtep',     status:'Final Render',hasActions:false, assignStatus:'Assigned' },
+  { id:'TK-2026020008', quo:'PB202604421', job:'JOB-1028', client:'AIS',            product:'5G Pro Max',          mediaGroup:'Airport', mediaSection:'Thai Flight',      mediaType:'Airport Digital Network', package:'LED Baggage Claim',     sales:'Sajjaporn Suwanchai', startEnd:'01/02/2026 - 31/01/2027', reqDate:'05/02/2026 15:10', headTeam:'Wanchat Damrongsak', assigned:'Preeya Wongsa',     status:'Done',        hasActions:false, assignStatus:'Assigned' },
+  { id:'TK-2026010005', quo:'PB202604410', job:'JOB-1025', client:'Singha',         product:'LEO Beer Summer',     mediaGroup:'Retail',  mediaSection:'In-store',         mediaType:'7-Eleven Plus',           package:'Metro LED',             sales:'Prapat Thanakit',    startEnd:'01/01/2026 - 31/03/2026', reqDate:'28/12/2025 10:30', headTeam:'Wanchat Damrongsak', assigned:'Napha Saengthong',  status:'On Process',  hasActions:false, assignStatus:'Assigned' },
+  { id:'TK-2026010003', quo:'PB202604401', job:'JOB-1023', client:'Central Retail', product:'Central Mid-Year',    mediaGroup:'Transit', mediaSection:'BTS',              mediaType:'BTS Concourse',           package:'BTS Concourse',         sales:'Sajjaporn Suwanchai', startEnd:'15/01/2026 - 14/04/2026', reqDate:'10/01/2026 11:00', headTeam:'Wanchat Damrongsak', assigned:'Wutti Chaiyaporn',  status:'Done',        hasActions:false, assignStatus:'Assigned' },
+];
+
+var AT_KPI = [
+  { label:'Pending',      key:'Pending',       bg:'bg-[#FFFBEB]',  border:'border-amber-200',   text:'text-amber-600',   iconBg:'bg-amber-400',   iconColor:'text-white' },
+  { label:'Verify',       key:'Verify',        bg:'bg-violet-50',  border:'border-violet-200',  text:'text-violet-600',  iconBg:'bg-violet-500',  iconColor:'text-white' },
+  { label:'On Process',   key:'On Process',    bg:'bg-[#EBF5FF]',  border:'border-blue-200',    text:'text-blue-600',    iconBg:'bg-blue-500',    iconColor:'text-white' },
+  { label:'Revise',       key:'Revise',        bg:'bg-rose-50',    border:'border-rose-200',    text:'text-rose-600',    iconBg:'bg-rose-500',    iconColor:'text-white' },
+  { label:'Final Render', key:'Final Render',  bg:'bg-indigo-50',  border:'border-indigo-200',  text:'text-indigo-600',  iconBg:'bg-indigo-500',  iconColor:'text-white' },
+  { label:'Done',         key:'Done',          bg:'bg-teal-50',    border:'border-teal-200',    text:'text-teal-600',    iconBg:'bg-teal-500',    iconColor:'text-white' },
+];
+
+function renderKPIs(rows) {
+  var counts = { 'Pending':0, 'Verify':0, 'On Process':0, 'Revise':0, 'Final Render':0, 'Done':0 };
+  rows.forEach(function(r){ if(counts[r.status]!==undefined) counts[r.status]++; });
+  var el = document.getElementById('assign-kpis');
+  var kpiIcons = {
+    'Pending':     '<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
+    'Verify':      '<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z"/></svg>',
+    'On Process':  '<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182"/></svg>',
+    'Revise':      '<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"/></svg>',
+    'Final Render':'<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z"/></svg>',
+    'Done':        '<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
+  };
+  var html = '';
+  AT_KPI.forEach(function(k) {
+    var v = counts[k.key] || 0;
+    var isActive = _statusFilter === k.key;
+    var ring = isActive ? 'ring-2 ring-offset-1 ring-[#2D56D2] shadow-md scale-[1.015]' : 'hover:shadow-md hover:-translate-y-px';
+    var dim  = (!isActive && _statusFilter) ? 'opacity-55' : '';
+    html += '<button type="button" onclick="toggleStatusFilter(\''+k.key+'\')" class="'+k.bg+' border '+k.border+' rounded-xl shadow-sm p-4 flex items-center justify-between text-left transition-all duration-150 cursor-pointer '+ring+' '+dim+'">' +
+              '<div><div class="text-[12px] font-medium '+k.text+'">'+k.label+'</div><div class="text-[26px] font-bold mt-0.5 tnum '+k.text+'">'+v+'</div></div>' +
+              '<div class="w-10 h-10 rounded-xl '+k.iconBg+' '+k.iconColor+' flex items-center justify-center">'+kpiIcons[k.key]+'</div>' +
+            '</button>';
+  });
+  el.innerHTML = html;
+}
+
+var _statusFilter = null;
+function toggleStatusFilter(key) {
+  _statusFilter = (_statusFilter === key) ? null : key;
+  filterAssign();
+}
+
+function prioBadge(p) {
+  if (!p) return '<span style="color:rgba(30,41,59,0.3)">-</span>';
+  var c = p==='High'?'bg-rose-50 text-rose-700 border-rose-200':p==='Medium'?'bg-amber-50 text-amber-700 border-amber-200':'bg-blue-50 text-blue-700 border-blue-200';
+  return '<span class="text-[11px] px-2 py-0.5 rounded-full font-medium border '+c+'">'+p+'</span>';
+}
+
+function actionButtons(row) {
+  /* View — eye icon (heroicons) */
+  var viewBtn =
+    '<a href="job-detail.html" class="w-7 h-7 rounded-md inline-flex items-center justify-center bg-blue-50 text-blue-600 hover:bg-blue-100 hover:text-blue-700 transition-colors" title="ดูรายละเอียด">' +
+      '<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>' +
+    '</a>';
+
+  /* Assign — user-plus icon (clear "add assignee" meaning) */
+  var assignBtn =
+    '<button onclick="singleAssign(\'' + row.id + '\')" class="w-7 h-7 rounded-md inline-flex items-center justify-center bg-orange-50 text-orange-600 hover:bg-orange-100 hover:text-orange-700 transition-colors" title="Assign">' +
+      '<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM3 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 12.318 0 019.374 21c-2.331 0-4.512-.645-6.374-1.766z"/></svg>' +
+    '</button>';
+
+  /* Reassign — arrow-path-rounded-square icon (clear "swap assignee" meaning) */
+  var reassignBtn =
+    '<button onclick="singleAssign(\'' + row.id + '\')" class="w-7 h-7 rounded-md inline-flex items-center justify-center bg-violet-50 text-violet-600 hover:bg-violet-100 hover:text-violet-700 transition-colors" title="Reassign">' +
+      '<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 00-3.7-3.7 48.678 48.678 0 00-7.324 0 4.006 4.006 0 00-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3l-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 003.7 3.7 48.656 48.656 0 007.324 0 4.006 4.006 0 003.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3l-3 3"/></svg>' +
+    '</button>';
+
+  /* Pending → Assign only (not yet assigned) */
+  if (row.status === 'Pending') {
+    return viewBtn + assignBtn;
+  }
+  /* Done → no reassign */
+  if (row.status === 'Done') {
+    return viewBtn;
+  }
+  /* All other statuses (Assign / Verify / On Process / Revise / Final Render) → Reassign */
+  return viewBtn + reassignBtn;
+}
+
+function renderTable(rows) {
+  var tbody = document.getElementById('assign-tbody');
+  var pr = document.getElementById('at-pag-range');
+  var pt = document.getElementById('at-pag-total');
+  if (!rows.length) {
+    tbody.innerHTML = '<tr><td colspan="10" class="px-4 py-12 text-center text-[13px]" style="color:rgba(30,41,59,0.4)">No jobs found</td></tr>';
+    pr.textContent = '0'; pt.textContent = '0';
+    renderPagination(0); return;
+  }
+  var html = '';
+  var STATUS_BADGE = {
+    'Pending':      { cls:'bg-amber-50 text-amber-700 border-amber-200',     dot:'bg-amber-500' },
+    'Verify':       { cls:'bg-violet-50 text-violet-700 border-violet-200',  dot:'bg-violet-500' },
+    'On Process':   { cls:'bg-blue-50 text-blue-700 border-blue-200',        dot:'bg-blue-500' },
+    'Revise':       { cls:'bg-rose-50 text-rose-700 border-rose-200',        dot:'bg-rose-500' },
+    'Final Render': { cls:'bg-indigo-50 text-indigo-700 border-indigo-200',  dot:'bg-indigo-500' },
+    'Done':         { cls:'bg-teal-50 text-teal-700 border-teal-200',        dot:'bg-teal-500' }
+  };
+  rows.forEach(function(r) {
+    var isPending = r.status === 'Pending';
+    var rowBg = isPending ? 'bg-amber-50/30' : '';
+    var sb = STATUS_BADGE[r.status] || { cls:'bg-slate-50 text-slate-600 border-slate-200', dot:'bg-slate-400' };
+    var cbCell = isPending ? '<td class="px-2 py-2.5 text-center"><input type="checkbox" class="w-3.5 h-3.5 rounded border-[#CBD5E1] accent-[#2D56D2]" data-package="' + (r.package||'').replace(/"/g,'&quot;') + '" onchange="onRowCheck(this)"></td>' : '<td class="px-2 py-2.5"></td>';
+    var chev = '<svg class="w-2 h-2 inline-block mx-0.5 opacity-40" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>';
+    var jobTicketCell =
+      '<div class="leading-tight">' +
+        '<div class="font-mono font-semibold text-[12px] text-[#0B1430]">' + r.job + '</div>' +
+        '<div class="font-mono text-[10.5px] mt-0.5" style="color:rgba(30,41,59,0.5)">' + r.id + '</div>' +
+      '</div>';
+    var clientProductCell =
+      '<div class="leading-tight">' +
+        '<div class="font-semibold text-[12px] text-[#0B1430] truncate" title="' + r.client + '">' + r.client + '</div>' +
+        '<div class="text-[11px] truncate mt-0.5" style="color:rgba(30,41,59,0.6)" title="' + r.product + '">' + r.product + '</div>' +
+      '</div>';
+    var mediaPackCell =
+      '<div class="leading-tight">' +
+        '<div class="text-[11px] truncate" style="color:rgba(30,41,59,0.7)" title="' + (r.mediaSection||'') + ' › ' + (r.mediaType||'') + '">' +
+          '<span>' + (r.mediaSection || '-') + '</span>' + chev +
+          '<span class="font-medium text-[#0B1430]">' + (r.mediaType || '-') + '</span>' +
+        '</div>' +
+        '<div class="mt-1"><span class="text-[10.5px] px-1.5 py-0.5 rounded bg-pb-50 text-[#2D56D2] border border-[#D6ECFF] font-medium">' + (r.package || '-') + '</span></div>' +
+      '</div>';
+    var periodCell =
+      '<div class="leading-tight font-mono" style="color:rgba(30,41,59,0.65)">' +
+        '<div class="text-[10.5px]">' + r.startEnd + '</div>' +
+        '<div class="text-[10px] mt-0.5" style="color:rgba(30,41,59,0.45)">req: ' + r.reqDate.split(' ')[0] + '</div>' +
+      '</div>';
+    var salesCell =
+      '<div class="text-[11.5px] truncate" title="' + r.sales + '">' + r.sales + '</div>';
+    var headAssignedCell =
+      '<div class="leading-tight">' +
+        '<div class="text-[11.5px] font-medium truncate" title="' + (r.assigned||'') + '">' + (r.assigned || '<span style="color:rgba(30,41,59,0.3)">— unassigned —</span>') + '</div>' +
+        '<div class="text-[10.5px] truncate mt-0.5" style="color:rgba(30,41,59,0.5)" title="' + (r.headTeam||'') + '">head: ' + (r.headTeam || '<span style="color:rgba(30,41,59,0.3)">—</span>') + '</div>' +
+      '</div>';
+    html += '<tr class="border-b border-[#F1F5F9] hover:bg-[#F8FAFC]/60 ' + rowBg + '">' +
+      cbCell +
+      '<td class="px-2 py-2.5"><div class="flex items-center gap-1">' + actionButtons(r) + '</div></td>' +
+      '<td class="px-2 py-2.5">' + jobTicketCell + '</td>' +
+      '<td class="px-2 py-2.5 font-mono text-[11px]" style="color:rgba(30,41,59,0.6)">' + (r.quo || '<span style="color:rgba(30,41,59,0.3)">-</span>') + '</td>' +
+      '<td class="px-2 py-2.5">' + clientProductCell + '</td>' +
+      '<td class="px-2 py-2.5">' + mediaPackCell + '</td>' +
+      '<td class="px-2 py-2.5">' + periodCell + '</td>' +
+      '<td class="px-2 py-2.5">' + salesCell + '</td>' +
+      '<td class="px-2 py-2.5">' + headAssignedCell + '</td>' +
+      '<td class="px-2 py-2.5"><span class="inline-flex items-center gap-1 text-[10.5px] px-1.5 py-0.5 rounded-full font-medium border whitespace-nowrap ' + sb.cls + '"><span class="w-1.5 h-1.5 rounded-full ' + sb.dot + '"></span>' + r.status + '</span></td>' +
+    '</tr>';
+  });
+  tbody.innerHTML = html;
+  pr.textContent = '1 to ' + rows.length;
+  pt.textContent = '' + rows.length;
+  renderPagination(rows.length);
+}
+
+function renderPagination(total) {
+  var el = document.getElementById('at-pagination');
+  if (total <= 15) { el.innerHTML = '<button class="px-3 py-1 border border-[#CBD5E1] rounded-md text-[12px] font-medium disabled:opacity-40" disabled>&lsaquo;</button><button class="px-3 py-1 bg-[#2D56D2] text-white rounded-md text-[12px] font-medium">1</button><button class="px-3 py-1 border border-[#CBD5E1] rounded-md text-[12px] font-medium disabled:opacity-40" disabled>&rsaquo;</button>'; return; }
+  var pages = Math.ceil(total / 15);
+  var html = '<button class="px-3 py-1 border border-[#CBD5E1] rounded-md text-[12px] font-medium disabled:opacity-40" disabled>&lsaquo;</button>';
+  for (var i=1; i<=Math.min(pages,5); i++) {
+    html += '<button class="px-3 py-1 '+(i===1?'bg-[#2D56D2] text-white':'border border-[#CBD5E1] hover:bg-[#F8FAFC]')+' rounded-md text-[12px] font-medium">'+i+'</button>';
+  }
+  html += '<button class="px-3 py-1 border border-[#CBD5E1] rounded-md text-[12px] font-medium hover:bg-[#F8FAFC]">&rsaquo;</button>';
+  el.innerHTML = html;
+}
+
+function formatDateField(el) {
+  if (el.value) {
+    var parts = el.value.split('-');
+    if (parts.length === 3) {
+      el.type = 'text';
+      el.value = parts[2] + '/' + parts[1] + '/' + parts[0];
+    }
+  } else {
+    el.type = 'text';
+  }
+}
+
+function showPackageWarning(pkg) {
+  var t = document.getElementById('pkg-warn-toast');
+  if (!t) {
+    t = document.createElement('div');
+    t.id = 'pkg-warn-toast';
+    t.style.cssText = 'position:fixed;top:80px;left:50%;transform:translateX(-50%);background:#7f1d1d;color:#fff;padding:10px 16px;border-radius:10px;font-size:13px;font-weight:500;z-index:9999;box-shadow:0 12px 32px rgba(127,29,29,.35);display:flex;align-items:center;gap:8px;max-width:520px;';
+    document.body.appendChild(t);
+  }
+  t.innerHTML = '<svg style="width:16px;height:16px;flex-shrink:0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg><span>เลือกได้เฉพาะ Job ที่อยู่ใน <b>Package เดียวกัน</b>เท่านั้น' + (pkg?' (กำลังเลือก: '+pkg+')':'') + '</span>';
+  t.style.opacity = '1';
+  clearTimeout(window._pkgWarnT);
+  window._pkgWarnT = setTimeout(function(){ t.style.transition='opacity .4s'; t.style.opacity='0'; }, 2400);
+}
+
+function currentSelectedPackage() {
+  var checked = document.querySelectorAll('#assign-tbody input[type=checkbox]:checked');
+  for (var i=0;i<checked.length;i++) {
+    var p = checked[i].getAttribute('data-package');
+    if (p) return p;
+  }
+  return null;
+}
+
+function toggleAllAssign(el) {
+  var cbs = document.querySelectorAll('#assign-tbody input[type=checkbox]');
+  if (!el.checked) {
+    cbs.forEach(function(c){ c.checked=false; });
+    updateBulkCount();
+    return;
+  }
+  // Find the first package and only check rows that match it
+  var firstPkg = null;
+  cbs.forEach(function(c){
+    var p = c.getAttribute('data-package') || '';
+    if (!firstPkg && p) firstPkg = p;
+    c.checked = (p === firstPkg);
+  });
+  var skipped = 0;
+  cbs.forEach(function(c){ if (!c.checked) skipped++; });
+  if (skipped > 0) showPackageWarning(firstPkg);
+  updateBulkCount();
+}
+
+function onRowCheck(el) {
+  if (el && el.checked) {
+    var myPkg = el.getAttribute('data-package') || '';
+    var others = document.querySelectorAll('#assign-tbody input[type=checkbox]:checked');
+    for (var i=0;i<others.length;i++) {
+      if (others[i] === el) continue;
+      var p = others[i].getAttribute('data-package') || '';
+      if (p !== myPkg) {
+        el.checked = false;
+        showPackageWarning(p || myPkg);
+        return;
+      }
+    }
+  }
+  updateBulkCount();
+}
+
+function updateBulkCount() {
+  var cbs=document.querySelectorAll('#assign-tbody input[type=checkbox]:checked');
+  var cnt=cbs.length;
+  var pkg = currentSelectedPackage();
+  document.getElementById('bulk-count').textContent = cnt + ' selected' + (cnt>0 && pkg ? ' · ' + pkg : '');
+  document.getElementById('bulk-assign-btn').disabled=cnt===0;
+}
+var GRAPHICS = [
+  { name:'Kitti Pongtep',        todo:3, onprocess:2, revise:1, finalrender:1 },
+  { name:'Preeya Wongsa',        todo:4, onprocess:3, revise:2, finalrender:1 },
+  { name:'Napha Saengthong',     todo:6, onprocess:5, revise:1, finalrender:2 },
+  { name:'Wutti Chaiyaporn',     todo:1, onprocess:1, revise:0, finalrender:1 },
+  { name:'Pim Kanchanawong',     todo:3, onprocess:2, revise:1, finalrender:1 },
+  { name:'Somsak Rattanakul',    todo:2, onprocess:1, revise:0, finalrender:1 },
+  { name:'Anong Thanaphong',     todo:4, onprocess:4, revise:2, finalrender:0 },
+  { name:'Chaiyo Phuwanart',     todo:5, onprocess:3, revise:1, finalrender:2 },
+  { name:'Duangjai Phromsri',    todo:2, onprocess:2, revise:0, finalrender:1 },
+  { name:'Ekkapong Limlaem',     todo:7, onprocess:4, revise:3, finalrender:1 },
+  { name:'Fuangfa Suthawan',     todo:1, onprocess:0, revise:0, finalrender:0 },
+  { name:'Ganchana Worachat',    todo:3, onprocess:3, revise:1, finalrender:2 },
+  { name:'Hatairat Phongchai',   todo:2, onprocess:1, revise:1, finalrender:0 },
+  { name:'Inthira Boonmark',     todo:4, onprocess:2, revise:2, finalrender:1 },
+  { name:'Jirayut Saetang',      todo:5, onprocess:4, revise:1, finalrender:3 },
+  { name:'Kanya Ruangrit',       todo:2, onprocess:2, revise:0, finalrender:1 },
+  { name:'Lalita Jindawong',     todo:6, onprocess:3, revise:2, finalrender:2 },
+  { name:'Manop Theeraphan',     todo:3, onprocess:2, revise:1, finalrender:1 },
+  { name:'Nattaya Kornchart',    todo:1, onprocess:1, revise:0, finalrender:0 },
+  { name:'Orawan Singhsri',      todo:4, onprocess:3, revise:1, finalrender:2 },
+];
+
+var _assignMode = 'bulk';
+var _assignTicketId = null;
+
+function singleAssign(ticketId) {
+  _assignMode = 'single';
+  _assignTicketId = ticketId;
+  openAssignModal(1, ticketId);
+}
+
+function bulkAssign() {
+  var cbs = document.querySelectorAll('#assign-tbody input[type=checkbox]:checked');
+  if (!cbs.length) return;
+  _assignMode = 'bulk';
+  _assignTicketId = null;
+  var count = cbs.length;
+  openAssignModal(count, null);
+}
+
+var _bulkSelected = null;
+
+function getAssignContext(ticketId) {
+  /* Collect selected jobs (single or bulk) and dedupe pkg/media */
+  var rows = [];
+  if (ticketId) {
+    AT_DATA.forEach(function(r){ if (r.id === ticketId) rows.push(r); });
+  } else {
+    var cbs = document.querySelectorAll('#assign-tbody input[type=checkbox]:checked');
+    cbs.forEach(function(c){
+      var tr = c.closest('tr');
+      var jobNo = tr ? (tr.querySelector('.font-mono.font-semibold') || {}).textContent : '';
+      AT_DATA.forEach(function(r){ if (r.job === jobNo) rows.push(r); });
+    });
+  }
+  if (!rows.length) return null;
+  var pkgs = {}, sections = {}, types = {}, groups = {}, assignees = {}, heads = {};
+  rows.forEach(function(r){
+    if (r.package) pkgs[r.package]=1;
+    if (r.mediaSection) sections[r.mediaSection]=1;
+    if (r.mediaType) types[r.mediaType]=1;
+    if (r.mediaGroup) groups[r.mediaGroup]=1;
+    if (r.assigned) assignees[r.assigned]=1;
+    if (r.headTeam) heads[r.headTeam]=1;
+  });
+  var assigneeList = Object.keys(assignees);
+  var headList = Object.keys(heads);
+  return {
+    rows: rows,
+    count: rows.length,
+    client: rows[0].client,
+    product: rows[0].product,
+    package: Object.keys(pkgs).join(', '),
+    mediaGroup: Object.keys(groups).join(', '),
+    mediaSection: Object.keys(sections).join(', '),
+    mediaType: Object.keys(types).join(', '),
+    currentAssignees: assigneeList,
+    currentHeads: headList,
+    isReassign: assigneeList.length > 0
+  };
+}
+
+function openAssignModal(count, ticketId) {
+  _bulkSelected = null;
+
+  /* Remove old modal if exists */
+  var old = document.getElementById('bulk-modal');
+  if (old) old.remove();
+
+  var ctx = getAssignContext(ticketId);
+
+  var modal = document.createElement('div');
+  modal.id = 'bulk-modal';
+  modal.className = 'fixed inset-0 z-50 flex items-center justify-center p-4';
+
+  var html = '<div class="absolute inset-0 bg-black/40" onclick="closeBulkModal()"></div>';
+  html += '<div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-4xl flex flex-col" style="max-height:90vh;animation:modalIn 0.2s ease-out">';
+
+  /* Header */
+  html += '<div class="px-6 py-4 border-b border-[#E2E8F0] flex items-center justify-between gap-3 shrink-0">';
+  html += '<div class="flex items-center gap-3 min-w-0">';
+  html +=   '<div class="w-9 h-9 rounded-lg flex items-center justify-center shrink-0" style="background:rgba(45,86,210,0.12);color:#2D56D2"><svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM3 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 12.318 0 019.374 21c-2.331 0-4.512-.645-6.374-1.766z"/></svg></div>';
+  var isReassign = ctx && ctx.isReassign;
+  var modalTitle = isReassign ? 'Reassign Graphic Designer' : 'Assign Graphic Designer';
+  var modalHint = isReassign ? 'เลือก Graphic คนใหม่ เพื่อมอบหมายงานต่อ' : 'เลือก Graphic ที่ต้องการมอบหมาย';
+  html +=   '<div class="min-w-0"><div class="text-[16px] font-semibold text-[#0B1430] leading-tight">' + modalTitle + '</div>';
+  var subtitle = ticketId ? ticketId + ' &mdash; ' + modalHint : count + ' job' + (count !== 1 ? 's' : '') + ' selected &mdash; ' + modalHint;
+  html +=   '<div class="text-[12px] mt-0.5 truncate" style="color:rgba(30,41,59,0.55)">' + subtitle + '</div></div>';
+  html += '</div>';
+  html += '<button onclick="closeBulkModal()" class="w-8 h-8 rounded-md hover:bg-[#F1F5F9] flex items-center justify-center shrink-0" style="color:rgba(30,41,59,0.4)"><svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button>';
+  html += '</div>';
+
+  /* Selected jobs context — Media / Package summary */
+  if (ctx) {
+    var GROUP_COLOR = { Digital:'#2D56D2', Airport:'#F59E0B', Retail:'#10B981', Transit:'#7C3AED', Classic:'#DB2777' };
+    var firstGroup = (ctx.mediaGroup||'').split(',')[0].trim();
+    var gC = GROUP_COLOR[firstGroup] || '#64748B';
+    html += '<div class="px-6 py-4 border-b border-[#E2E8F0] bg-gradient-to-br from-[#F8FAFC] to-white shrink-0">';
+    html +=   '<div class="grid grid-cols-1 sm:grid-cols-4 gap-3 text-[12px]">';
+    html +=     '<div><div class="text-[10px] uppercase font-semibold tracking-wider mb-1" style="color:rgba(30,41,59,0.45)">Jobs</div><div class="text-[14px] font-bold tnum text-[#0B1430]">' + ctx.count + ' <span class="text-[11px] font-medium" style="color:rgba(30,41,59,0.5)">job' + (ctx.count!==1?'s':'') + '</span></div></div>';
+    html +=     '<div><div class="text-[10px] uppercase font-semibold tracking-wider mb-1" style="color:rgba(30,41,59,0.45)">Package</div><div class="inline-flex items-center"><span class="text-[12px] px-2 py-0.5 rounded font-semibold" style="background:rgba(45,86,210,0.10);color:#2D56D2;border:1px solid rgba(45,86,210,0.25)">' + (ctx.package || '—') + '</span></div></div>';
+    html +=     '<div><div class="text-[10px] uppercase font-semibold tracking-wider mb-1" style="color:rgba(30,41,59,0.45)">Media Group</div><div class="inline-flex items-center gap-1.5"><span class="w-2 h-2 rounded-full" style="background:'+gC+'"></span><span class="text-[12px] font-semibold" style="color:'+gC+'">' + (ctx.mediaGroup || '—') + '</span></div></div>';
+    html +=     '<div><div class="text-[10px] uppercase font-semibold tracking-wider mb-1" style="color:rgba(30,41,59,0.45)">Section › Type</div><div class="text-[12px] font-medium text-[#0B1430] leading-tight">' + (ctx.mediaSection || '—') + ' <span style="color:rgba(30,41,59,0.3)">›</span> ' + (ctx.mediaType || '—') + '</div></div>';
+    html +=   '</div>';
+    html += '</div>';
+
+    /* Currently Assigned To — only show on reassign */
+    if (ctx.isReassign) {
+      var assigneeChips = ctx.currentAssignees.map(function(n){
+        return '<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[12px] font-semibold bg-white border border-[#FCA5A5] text-[#B91C1C]">' +
+                 '<svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>' +
+                 n +
+               '</span>';
+      }).join(' ');
+      var headLine = ctx.currentHeads.length
+        ? '<div class="text-[11px] mt-1.5" style="color:rgba(30,41,59,0.55)">Head: <span class="font-semibold text-[#0B1430]">' + ctx.currentHeads.join(', ') + '</span></div>'
+        : '';
+      html += '<div class="px-6 py-3 border-b border-[#E2E8F0] bg-rose-50/40 shrink-0">';
+      html +=   '<div class="flex items-start gap-3">';
+      html +=     '<div class="w-8 h-8 rounded-lg bg-rose-100 text-rose-600 flex items-center justify-center shrink-0">' +
+                    '<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182"/></svg>' +
+                  '</div>';
+      html +=     '<div class="flex-1 min-w-0">';
+      html +=       '<div class="text-[10px] uppercase font-semibold tracking-wider mb-1.5" style="color:rgba(30,41,59,0.55)">Currently Assigned To</div>';
+      html +=       '<div class="flex flex-wrap gap-1.5 items-center">' + assigneeChips + '</div>';
+      html +=       headLine;
+      html +=     '</div>';
+      html +=   '</div>';
+      html += '</div>';
+    }
+  }
+
+  /* Search */
+  html += '<div class="px-6 py-3 border-b border-[#E2E8F0] bg-[#F8FAFC]/60 shrink-0"><div class="relative"><svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style="color:rgba(30,41,59,0.35)" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/></svg><input id="bulk-search" oninput="filterBulkGraphics()" placeholder="ค้นหา Graphic Designer..." class="w-full h-9 pl-9 pr-3 bg-white border border-[#E2E8F0] rounded-lg text-[13px] focus:outline-none focus:border-[#4790FF]"></div></div>';
+
+  /* Section label */
+  html += '<div class="px-6 pt-3 pb-1 shrink-0 flex items-center justify-between">';
+  html +=   '<div class="text-[11px] uppercase tracking-wider font-semibold" style="color:rgba(30,41,59,0.55)">Graphic Designer</div>';
+  html +=   '<div class="text-[10.5px]" style="color:rgba(30,41,59,0.45)">เรียงจากภาระงานน้อย → มาก</div>';
+  html += '</div>';
+
+  /* List — 2-col card grid */
+  html += '<div class="flex-1 overflow-y-auto px-6 py-3" id="bulk-graphic-list" style="min-height:240px"></div>';
+
+  /* Footer */
+  html += '<div class="px-6 py-3 border-t border-[#E2E8F0] flex items-center justify-between gap-2 shrink-0 bg-white rounded-b-2xl">';
+  html += '<div class="text-[12px]" id="bulk-selected-label" style="color:rgba(30,41,59,0.55)">ยังไม่ได้เลือก Graphic</div>';
+  html += '<div class="flex gap-2">';
+  html +=   '<button onclick="closeBulkModal()" class="h-9 px-4 bg-white text-[#0B1430] rounded-lg border border-[#CBD5E1] text-[13px] font-medium hover:bg-[#F8FAFC]">Cancel</button>';
+  var ctaLabel = isReassign ? 'Reassign' : 'Assign All';
+  html +=   '<button id="bulk-assign-all-btn" onclick="submitBulkAssign()" disabled class="h-9 px-5 bg-[#2D56D2] text-white rounded-lg text-[13px] font-semibold hover:bg-[#213268] inline-flex items-center gap-1.5 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">' +
+              '<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>' +
+              ctaLabel +
+            '</button>';
+  html += '</div>';
+  html += '</div>';
+
+  html += '</div>';
+  modal.innerHTML = html;
+  document.body.appendChild(modal);
+  filterBulkGraphics();
+}
+
+function closeBulkModal() {
+  var m = document.getElementById('bulk-modal');
+  if (m) m.remove();
+  _bulkSelected = null;
+}
+
+function selectBulkGraphic(name) {
+  _bulkSelected = name;
+  /* visually mark selected row */
+  document.querySelectorAll('#bulk-graphic-list [data-graphic-row]').forEach(function(row){
+    var on = row.getAttribute('data-graphic-row') === name;
+    row.classList.toggle('bg-[#EBF5FF]/60', on);
+    row.classList.toggle('ring-2', on);
+    row.classList.toggle('ring-[#2D56D2]', on);
+    row.classList.toggle('ring-inset', on);
+    var radio = row.querySelector('input[type=radio]');
+    if (radio) radio.checked = on;
+  });
+  var lbl = document.getElementById('bulk-selected-label');
+  if (lbl) {
+    lbl.innerHTML = 'เลือก: <b class="text-[#0B1430]">' + name + '</b>';
+    lbl.style.color = 'rgba(30,41,59,0.7)';
+  }
+  var btn = document.getElementById('bulk-assign-all-btn');
+  if (btn) btn.disabled = false;
+}
+
+function submitBulkAssign() {
+  if (!_bulkSelected) return;
+  confirmBulkAssign(_bulkSelected);
+}
+
+function filterBulkGraphics() {
+  var q = (document.getElementById('bulk-search') || {}).value || '';
+  q = q.toLowerCase();
+  var filtered = GRAPHICS.filter(function(g) {
+    return !q || g.name.toLowerCase().indexOf(q) !== -1;
+  });
+  var el = document.getElementById('bulk-graphic-list');
+  if (!filtered.length) {
+    el.innerHTML = '<div class="py-10 text-center text-[13px]" style="color:rgba(30,41,59,0.4)">No matching designers</div>';
+    return;
+  }
+  /* sort by least total workload first */
+  filtered.sort(function(a, b) {
+    var ta = a.todo + a.onprocess + a.revise + a.finalrender;
+    var tb = b.todo + b.onprocess + b.revise + b.finalrender;
+    return ta - tb;
+  });
+
+  /* compact single-row stat chip */
+  function chip(label, count, bg, text) {
+    return '<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded" style="background:'+bg+';color:'+text+'">' +
+             '<span class="text-[9px] uppercase font-semibold tracking-wide">' + label + '</span>' +
+             '<span class="text-[10px] font-bold tnum">' + count + '</span>' +
+           '</span>';
+  }
+
+  /* Recommend the top 1 (lightest workload) */
+  var minTotal = filtered[0].todo + filtered[0].onprocess + filtered[0].revise + filtered[0].finalrender;
+
+  var html = '<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">';
+  filtered.forEach(function(g, idx) {
+    var total = g.todo + g.onprocess + g.revise + g.finalrender;
+    var safeName = g.name.replace(/'/g, "\\'");
+    var recommended = (total === minTotal && idx < 2);
+    var loadLabel = total <= 3 ? 'Light' : total <= 7 ? 'Moderate' : 'Heavy';
+    var loadColor = total <= 3 ? '#10B981' : total <= 7 ? '#F59E0B' : '#EF4444';
+    var loadBg = total <= 3 ? 'rgba(16,185,129,0.10)' : total <= 7 ? 'rgba(245,158,11,0.10)' : 'rgba(239,68,68,0.10)';
+
+    html += '<label data-graphic-row="' + g.name + '" onclick="selectBulkGraphic(\'' + safeName + '\')" ' +
+            'class="relative block p-3 bg-white rounded-xl border border-[#E2E8F0] hover:border-[#4790FF] hover:shadow-md cursor-pointer transition-all">';
+    if (recommended) {
+      html += '<span class="absolute -top-2 left-3 text-[9.5px] px-1.5 py-0.5 rounded-full font-bold text-white inline-flex items-center gap-1" style="background:linear-gradient(135deg,#10B981,#059669)">' +
+                '<svg class="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8l-6.2 4.5 2.4-7.4L2 9.4h7.6z"/></svg>' +
+                'Recommended' +
+              '</span>';
+    }
+    /* Top row: name + radio */
+    html += '<div class="flex items-center gap-2 mb-2">';
+    html +=   '<div class="flex-1 min-w-0">';
+    html +=     '<div class="text-[13px] font-semibold text-[#0B1430] truncate leading-tight">' + g.name + '</div>';
+    html +=     '<div class="inline-flex items-center gap-1 mt-1 px-1.5 py-0.5 rounded text-[10px] font-semibold" style="background:'+loadBg+';color:'+loadColor+'">' +
+                  '<span class="w-1.5 h-1.5 rounded-full" style="background:'+loadColor+'"></span>' + loadLabel + ' · ' + total + ' active' +
+                '</div>';
+    html +=   '</div>';
+    html +=   '<input type="radio" name="bulk-graphic" class="w-4 h-4 accent-[#2D56D2] shrink-0">';
+    html += '</div>';
+    /* Workload chips — single row */
+    html += '<div class="flex flex-wrap items-center gap-1">';
+    html +=   chip('To Do',  g.todo,        '#FFFBEB', '#B45309');
+    html +=   chip('On Process',  g.onprocess,   '#EFF6FF', '#1D4ED8');
+    html +=   chip('Revise',       g.revise,      '#FFF1F2', '#BE123C');
+    html +=   chip('Final Render', g.finalrender, '#EEF2FF', '#4338CA');
+    html += '</div>';
+    html += '</label>';
+  });
+  html += '</div>';
+  el.innerHTML = html;
+}
+
+function confirmBulkAssign(name) {
+  closeBulkModal();
+  var msg = '';
+  if (_assignMode === 'single' && _assignTicketId) {
+    msg = _assignTicketId + ' assigned to <b>' + name + '</b>';
+  } else {
+    var cbs = document.querySelectorAll('#assign-tbody input[type=checkbox]:checked');
+    var count = cbs.length;
+    msg = count + ' job' + (count !== 1 ? 's' : '') + ' assigned to <b>' + name + '</b>';
+    cbs.forEach(function(c) { c.checked = false; });
+    var hdr = document.querySelector('thead input[type=checkbox]');
+    if (hdr) hdr.checked = false;
+    updateBulkCount();
+  }
+
+  // Show success toast
+  var toast = document.createElement('div');
+  toast.className = 'fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-[#0B1430] text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3 text-[13px]';
+  toast.style.animation = 'fadeIn 0.2s ease-out';
+  toast.innerHTML = '<svg class="w-5 h-5 text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>' +
+    '<span>' + msg + '</span>';
+  document.body.appendChild(toast);
+
+  // Remove toast after 3s
+  setTimeout(function() { toast.style.opacity = '0'; toast.style.transition = 'opacity 0.3s'; setTimeout(function() { toast.remove(); }, 300); }, 3000);
+}
+
+/* ===== Graphic multi-select dropdown ===== */
+var GRAPHIC_OPTIONS = ['Kitti Phutthiphan', 'Preeya Wongsuwan', 'Napha Saetang', 'Wutti Chaiyaphum', 'Pim Kongchai'];
+var _graphicSel = [];
+
+function renderGraphicDD() {
+  var listEl = document.getElementById('graphic-dd-list');
+  var html = '';
+  GRAPHIC_OPTIONS.forEach(function(name) {
+    var checked = _graphicSel.indexOf(name) !== -1;
+    html += '<label class="flex items-center gap-2 px-3 py-2 cursor-pointer transition-colors '+(checked?'bg-[#EBF5FF]/60':'hover:bg-[#F8FAFC]')+'">' +
+              '<input type="checkbox" '+(checked?'checked':'')+' onchange="toggleGraphic(\''+name+'\')" class="w-3.5 h-3.5 rounded accent-[#2D56D2] shrink-0">' +
+              '<span class="text-[12.5px] font-medium text-[#0B1430]">'+name+'</span>' +
+            '</label>';
+  });
+  listEl.innerHTML = html;
+  document.getElementById('graphic-dd-count').textContent = _graphicSel.length + ' selected';
+
+  var lbl = document.getElementById('graphic-dd-label');
+  if (_graphicSel.length === 0) {
+    lbl.textContent = 'Select Graphic';
+    lbl.style.color = 'rgba(30,41,59,0.55)';
+  } else if (_graphicSel.length <= 2) {
+    lbl.textContent = _graphicSel.join(', ');
+    lbl.style.color = '#0B1430';
+  } else {
+    lbl.textContent = _graphicSel.slice(0,1).join(', ') + ' +' + (_graphicSel.length - 1) + ' more';
+    lbl.style.color = '#0B1430';
+  }
+}
+function toggleGraphic(name) {
+  var i = _graphicSel.indexOf(name);
+  if (i === -1) _graphicSel.push(name);
+  else _graphicSel.splice(i, 1);
+  renderGraphicDD();
+  filterAssign();
+}
+function clearGraphicSel() {
+  _graphicSel = [];
+  renderGraphicDD();
+  filterAssign();
+}
+function toggleGraphicDD() {
+  var panel = document.getElementById('graphic-dd-panel');
+  var chev  = document.getElementById('graphic-dd-chev');
+  var open  = panel.classList.toggle('hidden');
+  chev.style.transform = open ? '' : 'rotate(180deg)';
+}
+/* close on outside click */
+document.addEventListener('mousedown', function(e) {
+  var wrap = document.getElementById('graphic-dd-wrap');
+  if (!wrap || wrap.contains(e.target)) return;
+  var panel = document.getElementById('graphic-dd-panel');
+  if (panel && !panel.classList.contains('hidden')) {
+    panel.classList.add('hidden');
+    document.getElementById('graphic-dd-chev').style.transform = '';
+  }
+});
+
+function filterAssign() {
+  var q = document.getElementById('at-search').value.toLowerCase();
+  var filtered = AT_DATA.filter(function(r) {
+    if (q && (r.id+' '+r.desc+' '+r.sales+' '+r.assigned+' '+r.headTeam).toLowerCase().indexOf(q)===-1) return false;
+    if (_statusFilter && r.status !== _statusFilter) return false;
+    if (_graphicSel.length && _graphicSel.indexOf(r.assigned) === -1) return false;
+    return true;
+  });
+  /* KPI counts always reflect full dataset so users can navigate freely */
+  renderKPIs(AT_DATA);
+  renderTable(filtered);
+}
+
+/* Init */
+renderGraphicDD();
+filterAssign();
+</script>
+    </div>
+
+  </main>
+</div>
+
+<!-- AI Panel -->
+<div id="ai-panel" class="fixed right-0 top-0 bottom-0 w-[420px] bg-white border-l border-surface-200 z-40 flex flex-col translate-x-full transition-transform duration-200" style="box-shadow:-8px 0 30px rgba(11,20,48,0.08)">
+  <div class="h-16 px-5 border-b border-surface-200 flex items-center gap-3">
+    <div class="w-8 h-8 rounded-lg flex items-center justify-center text-white" style="background:linear-gradient(135deg,#2D56D2,#5FCBF9)">
+      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"/></svg>
+    </div>
+    <div class="flex-1">
+      <div class="text-[14px] font-semibold">Plan-B Copilot</div>
+      <div class="text-[11px] flex items-center gap-1" style="color:rgba(30,41,59,0.6)"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>Connected to live CRM data</div>
+    </div>
+    <button onclick="toggleAI()" class="w-8 h-8 rounded-md hover:bg-surface-100 flex items-center justify-center">
+      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+    </button>
+  </div>
+
+  <!-- Messages -->
+  <div id="ai-messages" class="flex-1 overflow-y-auto px-5 py-4 space-y-3">
+    <div><div class="text-[10px] font-medium uppercase tracking-wide mb-1" style="color:rgba(30,41,59,0.5)">Copilot</div><div class="inline-block max-w-[90%] text-[13px] leading-relaxed rounded-xl px-3.5 py-2.5 bg-surface-50 border border-surface-200">Hi — I can summarize occupancy, flag anomalies, draft proposals, or forecast revenue. What are we digging into?</div></div>
+  </div>
+
+  <!-- Suggestions -->
+  <div id="ai-suggestions" class="px-5 pb-2 space-y-2">
+    <div class="text-[10px] uppercase tracking-wide font-semibold" style="color:rgba(30,41,59,0.5)">Try asking</div>
+    <button onclick="aiSend(this.textContent)" class="w-full text-left text-[12px] px-3 py-2 border border-surface-200 rounded-lg hover:border-pb-500 hover:bg-blue-50/30 transition-colors">Forecast May occupancy for BTS inventory</button>
+    <button onclick="aiSend(this.textContent)" class="w-full text-left text-[12px] px-3 py-2 border border-surface-200 rounded-lg hover:border-pb-500 hover:bg-blue-50/30 transition-colors">Summarize this week's claims by severity</button>
+    <button onclick="aiSend(this.textContent)" class="w-full text-left text-[12px] px-3 py-2 border border-surface-200 rounded-lg hover:border-pb-500 hover:bg-blue-50/30 transition-colors">Who are my top 3 clients and where are they underspending?</button>
+    <button onclick="aiSend(this.textContent)" class="w-full text-left text-[12px] px-3 py-2 border border-surface-200 rounded-lg hover:border-pb-500 hover:bg-blue-50/30 transition-colors">Draft a proposal: AIS wants 30-day coverage in Bangkok + Chiang Mai</button>
+  </div>
+
+  <!-- Input -->
+  <div class="p-4 border-t border-surface-200">
+    <div class="rounded-xl bg-white border border-surface-200 focus-within:border-pb-500 transition" style="box-shadow:0 0 0 1px rgba(45,86,210,0.1)">
+      <div class="flex items-end gap-2 p-2">
+        <input id="ai-input" type="text" placeholder="Ask about occupancy, pipeline, claims…" class="flex-1 text-[13px] bg-transparent outline-none px-2 py-1.5 placeholder:opacity-40" onkeydown="if(event.key==='Enter'){event.preventDefault();aiSend()}" />
+        <button onclick="aiSend()" class="w-8 h-8 rounded-md bg-ink-900 hover:bg-ink-700 flex items-center justify-center text-white shrink-0">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 18-8-8 18-2-8-8-2Z"/></svg>
+        </button>
+      </div>
+    </div>
+    <p class="text-[10px] text-center mt-2" style="color:rgba(30,41,59,0.4)">Plan-B Copilot — may hallucinate, verify critical actions</p>
+  </div>
+</div>
+
+<script>
+/* === Expand/collapse sub-menus === */
+function toggleMenu(id){
+  const sub=document.getElementById(id+'-sub');
+  const chevron=document.getElementById(id+'-chevron');
+  if(sub.classList.contains('hidden')){
+    sub.classList.remove('hidden');
+    chevron.classList.add('rotate-90');
+  }else{
+    sub.classList.add('hidden');
+    chevron.classList.remove('rotate-90');
+  }
+}
+
+/* === Mobile sidebar overlay === */
+function toggleMobile(){
+  const sidebar=document.getElementById('sidebar');
+  const overlay=document.getElementById('sidebar-overlay');
+  sidebar.classList.toggle('-translate-x-full');
+  overlay.classList.toggle('hidden');
+}
+
+/* === Desktop collapse sidebar === */
+let _sidebarCollapsed = false;
+function collapseSidebar(){
+  // On mobile, toggle mobile drawer instead
+  if(window.innerWidth < 1024){
+    toggleMobile();
+    return;
+  }
+  _sidebarCollapsed = !_sidebarCollapsed;
+  const sb = document.getElementById('sidebar');
+  const main = document.querySelector('main');
+  const labels = sb.querySelectorAll('.sidebar-label');
+  const groups = sb.querySelectorAll('.sidebar-nav-parent');
+  const subs = sb.querySelectorAll('[id$="-sub"]');
+  const brand = document.getElementById('sidebar-brand');
+
+  if(_sidebarCollapsed){
+    sb.classList.remove('w-64');
+    sb.classList.add('w-[68px]');
+    main.classList.remove('lg:ml-64');
+    main.classList.add('lg:ml-[68px]');
+    labels.forEach(el=>el.classList.add('hidden'));
+    groups.forEach(el=>el.classList.add('hidden'));
+    subs.forEach(el=>el.classList.add('hidden'));
+    if(brand) brand.classList.replace('px-4','px-0');
+    if(brand) brand.classList.add('justify-center');
+  } else {
+    sb.classList.remove('w-[68px]');
+    sb.classList.add('w-64');
+    main.classList.remove('lg:ml-[68px]');
+    main.classList.add('lg:ml-64');
+    labels.forEach(el=>el.classList.remove('hidden'));
+    groups.forEach(el=>el.classList.remove('hidden'));
+    // Re-show sub-menus that were explicitly open (have active items)
+    subs.forEach(el=>{
+      if(el.querySelector('.active')) el.classList.remove('hidden');
+    });
+    if(brand) brand.classList.replace('px-0','px-4');
+    if(brand) brand.classList.remove('justify-center');
+  }
+}
+
+/* === AI Panel === */
+let _aiOpen = false;
+function toggleAI(){
+  _aiOpen = !_aiOpen;
+  const panel = document.getElementById('ai-panel');
+  const btn = document.getElementById('ai-toggle');
+  if(_aiOpen){
+    panel.classList.remove('translate-x-full');
+    btn.classList.remove('bg-white','border-surface-300','text-ink-900','hover:bg-surface-50');
+    btn.classList.add('bg-ink-900','text-white','border-ink-900');
+  } else {
+    panel.classList.add('translate-x-full');
+    btn.classList.remove('bg-ink-900','text-white','border-ink-900');
+    btn.classList.add('bg-white','border-surface-300','text-ink-900','hover:bg-surface-50');
+  }
+}
+
+/* AI demo chat */
+const _aiReplies = [
+  "Based on current data, BTS corridor occupancy is trending at 84% — above the 78% network average. If the pattern holds, May could hit 89% with AIS and TrueMove briefs both targeting Silom.",
+  "This week we have 3 open claims: #1284 (high — LED flicker, 2h remaining SLA), #1282 (critical — content not playing, urgent), and #1283 (med — vinyl peel, within SLA). The critical item needs immediate attention.",
+  "Your top 3 clients YTD: AIS Thailand (฿24.8M, 18 campaigns), TrueMove H (฿18.5M, 14 campaigns), and Toyota Motor (฿15.2M, 9 campaigns). Toyota is underspending on digital LED — they only use 2 of your 5 available LED sites.",
+  "Draft proposal ready: AIS 30-day coverage across 8 Bangkok sites (including Silom LED, Rama IX, Asoke) + 2 Chiang Mai sites. Estimated package: ฿4.2M. Occupancy conflicts on TH-SIL-09 for May 5-12 — recommend offering X-CAYA-FY-1 as substitute.",
+];
+let _aiReplyIdx = 0;
+
+function aiSend(text){
+  const input = document.getElementById('ai-input');
+  const msg = text || input.value.trim();
+  if(!msg) return;
+  input.value = '';
+  document.getElementById('ai-suggestions').style.display='none';
+
+  const box = document.getElementById('ai-messages');
+  // User bubble
+  box.innerHTML += '<div class="text-right"><div class="inline-block max-w-[90%] text-[13px] leading-relaxed rounded-xl px-3.5 py-2.5 bg-ink-900 text-white">'+msg.replace(/</g,'&lt;')+'</div></div>';
+  box.scrollTop = box.scrollHeight;
+
+  // Thinking dots
+  const thinkId = 'ai-think-'+Date.now();
+  box.innerHTML += '<div id="'+thinkId+'" class="flex items-center gap-2 text-[12px]" style="color:rgba(30,41,59,0.6)"><div class="flex gap-1"><span class="w-1.5 h-1.5 bg-pb-500 rounded-full pulse-dot"></span><span class="w-1.5 h-1.5 bg-pb-500 rounded-full pulse-dot" style="animation-delay:.2s"></span><span class="w-1.5 h-1.5 bg-pb-500 rounded-full pulse-dot" style="animation-delay:.4s"></span></div>analyzing CRM data…</div>';
+  box.scrollTop = box.scrollHeight;
+
+  setTimeout(()=>{
+    const el = document.getElementById(thinkId);
+    if(el) el.remove();
+    const reply = _aiReplies[_aiReplyIdx % _aiReplies.length];
+    _aiReplyIdx++;
+    box.innerHTML += '<div><div class="text-[10px] font-medium uppercase tracking-wide mb-1" style="color:rgba(30,41,59,0.5)">Copilot</div><div class="inline-block max-w-[90%] text-[13px] leading-relaxed rounded-xl px-3.5 py-2.5 bg-surface-50 border border-surface-200">'+reply+'</div></div>';
+    box.scrollTop = box.scrollHeight;
+  }, 1500);
+}
+</script>
+</body>
+</html>

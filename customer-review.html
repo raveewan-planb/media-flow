@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Customer Review — Plan-B Media</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config={theme:{extend:{fontFamily:{kanit:['Kanit','sans-serif']},colors:{pb:{900:'#213268',700:'#2D56D2',500:'#4790FF',300:'#5FCBF9',50:'#EBF5FF',100:'#D6ECFF'},ink:{900:'#0B1430',800:'#162040',700:'#1E293B'},surface:{0:'#FFFFFF',50:'#F8FAFC',100:'#F1F5F9',200:'#E2E8F0',300:'#CBD5E1'}}}}}
+</script>
+<style>
+*{font-family:'Kanit',sans-serif;-webkit-font-smoothing:antialiased}
+body{background:#F7F9FC;color:#0B1430}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-thumb{background:#CBD5E8;border-radius:10px;border:2px solid #F7F9FC}
+::-webkit-scrollbar-thumb:hover{background:#93A4C4}
+input:focus,select:focus,textarea:focus{outline:none;border-color:#4790FF;box-shadow:0 0 0 3px rgba(71,144,255,0.15)}
+.tool-btn{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:8px;font-size:12px;font-weight:500;border:1px solid #E2E8F0;background:#fff;color:#1E293B;transition:all .15s;cursor:pointer}
+.tool-btn:hover{background:#F1F5F9;border-color:#CBD5E1}
+.tool-btn.is-active{background:#2D56D2;border-color:#2D56D2;color:#fff;box-shadow:0 2px 8px rgba(45,86,210,.25)}
+.tool-btn.is-active svg{color:#fff}
+.tool-btn.is-danger:hover{background:#FEF2F2;border-color:#FCA5A5;color:#B91C1C}
+.tnum{font-variant-numeric:tabular-nums}
+.annot-stage{position:relative;display:inline-block;max-width:100%;line-height:0;background:#0B1430;border-radius:12px;overflow:hidden}
+.annot-stage img,.annot-stage video,.annot-stage canvas{display:block;max-width:100%;height:auto}
+.annot-canvas{position:absolute;inset:0;width:100%;height:100%;cursor:crosshair;touch-action:none}
+.annot-pin{position:absolute;width:26px;height:26px;border-radius:50%;background:#DC2626;color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;transform:translate(-50%,-50%);box-shadow:0 4px 10px rgba(220,38,38,.4),0 0 0 3px rgba(255,255,255,.85);cursor:pointer;z-index:5}
+.annot-pin:hover{transform:translate(-50%,-50%) scale(1.1)}
+.cmt-row{transition:all .15s}
+.cmt-row.is-focus{background:#FEF3F2;border-color:#FECACA}
+.frame-thumb{position:relative;border-radius:10px;overflow:hidden;border:2px solid #E2E8F0;transition:all .15s;cursor:pointer}
+.frame-thumb:hover{border-color:#4790FF;transform:translateY(-2px)}
+.frame-thumb.is-active{border-color:#2D56D2;box-shadow:0 4px 12px rgba(45,86,210,.25)}
+.frame-thumb .ft-label{position:absolute;top:4px;left:4px;background:rgba(11,20,48,.8);color:#fff;font-size:10px;padding:2px 6px;border-radius:4px;font-weight:600}
+.frame-thumb .ft-time{position:absolute;bottom:4px;right:4px;background:rgba(11,20,48,.8);color:#fff;font-size:9px;padding:2px 5px;border-radius:4px;font-family:monospace}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#0B1430;color:#fff;padding:12px 20px;border-radius:12px;box-shadow:0 8px 25px rgba(0,0,0,.2);display:flex;align-items:center;gap:10px;font-size:13px;z-index:100;animation:slideUp .25s ease;}
+@keyframes slideUp{from{transform:translate(-50%,20px);opacity:0}to{transform:translate(-50%,0);opacity:1}}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="bg-white border-b border-surface-200 sticky top-0 z-30">
+<div class="max-w-[1280px] mx-auto px-4 sm:px-6 h-16 flex items-center gap-4">
+<div class="flex items-center gap-2.5">
+<img src="logo.jpg" alt="Plan-B" class="h-9 w-auto rounded">
+<span class="text-[11px] font-semibold tracking-wide uppercase border-l border-surface-200 pl-2.5" style="color:rgba(30,41,59,0.55)">Customer Review Portal</span>
+</div>
+<div class="flex-1"></div>
+<div class="text-[12px] flex items-center gap-2" style="color:rgba(30,41,59,0.55)">
+<span class="hidden sm:inline">Reference:</span>
+<span id="hdr-job" class="font-mono font-semibold text-[#0B1430]">—</span>
+<span class="hidden sm:inline">·</span>
+<span id="hdr-ver" class="hidden sm:inline">v—</span>
+<span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[11px] font-semibold">Review</span>
+</div>
+</div>
+</header>
+
+<main class="max-w-[1280px] mx-auto px-4 sm:px-6 py-6 space-y-6">
+
+<!-- Job summary -->
+<div class="bg-gradient-to-br from-[#EBF5FF] to-white border border-[#D6ECFF] rounded-xl p-5">
+<div class="flex flex-col sm:flex-row sm:items-center gap-4">
+<div class="w-12 h-12 rounded-xl flex items-center justify-center shrink-0 text-white shadow-md" style="background:linear-gradient(135deg,#2D56D2,#5FCBF9)">
+<svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/></svg>
+</div>
+<div class="flex-1">
+<div class="text-[11px] uppercase tracking-wide font-semibold" style="color:rgba(30,41,59,0.5)">Mockup Review</div>
+<div class="text-[18px] font-bold text-[#0B1430] mt-0.5" id="mk-title">7-Eleven Plus — Pack Shot Promo</div>
+<div class="text-[12px] mt-0.5" style="color:rgba(30,41,59,0.6)" id="mk-meta">Chang Beer · TK-0031 · Period: 01/05/2026 - 31/07/2026</div>
+</div>
+<div class="text-[11px] text-right" style="color:rgba(30,41,59,0.55)">
+<div>Submitted by</div>
+<div class="font-semibold text-[#0B1430]">Preeya Wongsuwan <span class="opacity-60 font-normal">· Graphic Designer</span></div>
+<div class="text-[10.5px] mt-0.5 font-mono">10/05/2026 14:00</div>
+</div>
+</div>
+</div>
+
+<!-- Feedback Form -->
+<section class="bg-white border border-surface-200 rounded-xl shadow-sm">
+<div class="px-5 py-4 border-b border-surface-200 flex items-center gap-2">
+<div class="w-8 h-8 rounded-lg flex items-center justify-center text-white" style="background:linear-gradient(135deg,#F59E0B,#FBBF24)">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z"/></svg>
+</div>
+<div>
+<h2 class="text-[15px] font-semibold text-[#0B1430]">Feedback Form</h2>
+<p class="text-[11.5px]" style="color:rgba(30,41,59,0.55)">กรอกข้อมูล Reviewer และ comment ของคุณ ก่อนส่งกลับให้ Graphic</p>
+</div>
+</div>
+<div class="p-5 grid grid-cols-1 md:grid-cols-2 gap-4">
+<div>
+<label class="block text-[12px] font-medium mb-1.5">ชื่อ Reviewer <span class="text-rose-500">*</span></label>
+<input id="f-name" type="text" placeholder="เช่น สมชาย ใจดี" class="w-full h-10 px-3 border border-surface-200 rounded-lg text-[13px] bg-white">
+</div>
+<div>
+<label class="block text-[12px] font-medium mb-1.5">บริษัท / ตำแหน่ง</label>
+<input id="f-role" type="text" placeholder="เช่น Chang Beer / Brand Manager" class="w-full h-10 px-3 border border-surface-200 rounded-lg text-[13px] bg-white">
+</div>
+<div class="md:col-span-2">
+<label class="block text-[12px] font-medium mb-1.5">Email / เบอร์ติดต่อ</label>
+<input id="f-contact" type="text" placeholder="email@company.com" class="w-full h-10 px-3 border border-surface-200 rounded-lg text-[13px] bg-white">
+</div>
+<div class="md:col-span-2">
+<label class="block text-[12px] font-medium mb-1.5">Feedback / Comment สรุปภาพรวม <span class="text-rose-500">*</span></label>
+<textarea id="f-note" rows="4" placeholder="บอกความเห็นโดยรวม เช่น ภาพรวมโอเค แต่ขอแก้ logo, สี, ฯลฯ — คุณสามารถ comment เฉพาะจุดบนรูปด้านล่างได้ด้วย" class="w-full px-3 py-2.5 border border-surface-200 rounded-lg text-[13px] bg-white resize-y"></textarea>
+</div>
+</div>
+<div class="px-5 py-4 border-t border-surface-200 bg-[#F8FAFC] rounded-b-xl flex items-center justify-between flex-wrap gap-3">
+<div class="text-[11.5px]" style="color:rgba(30,41,59,0.55)">
+<span class="font-semibold text-[#0B1430]" id="annot-count">0</span> comment(s) on artwork ·
+<span class="font-semibold text-[#0B1430]" id="frame-count">0</span> captured frame(s)
+</div>
+<div class="flex items-center gap-2">
+<button onclick="onReject()" class="h-10 px-4 bg-white border border-rose-300 text-rose-700 hover:bg-rose-50 rounded-lg text-[13px] font-semibold inline-flex items-center gap-1.5">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z"/></svg>
+Request Re-Edit
+</button>
+<button onclick="onSubmit()" class="h-10 px-5 rounded-lg text-[13px] font-semibold text-white inline-flex items-center gap-1.5 shadow-md hover:brightness-110 transition" style="background:linear-gradient(135deg,#10B981,#34D399)">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+Send Feedback / Approve
+</button>
+</div>
+</div>
+</section>
+
+<!-- Mockup Files -->
+<section>
+<div class="flex items-center gap-2 mb-3">
+<div class="w-8 h-8 rounded-lg flex items-center justify-center text-white" style="background:linear-gradient(135deg,#7C3AED,#A78BFA)">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M2.25 18h19.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12z"/></svg>
+</div>
+<h2 class="text-[15px] font-semibold text-[#0B1430]">Mockup Files</h2>
+<span class="text-[11px] px-2 py-0.5 rounded-full bg-surface-100 ml-auto" style="color:rgba(30,41,59,0.55)" id="files-count">— files</span>
+</div>
+<div id="files-container" class="space-y-6"></div>
+</section>
+
+</main>
+
+<!-- Comment input modal -->
+<div id="cmt-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/40">
+<div class="bg-white rounded-xl shadow-2xl w-[400px] max-w-[90vw] p-5">
+<div class="flex items-center gap-2 mb-3">
+<div class="w-8 h-8 rounded-full bg-rose-100 text-rose-700 flex items-center justify-center font-bold" id="cmt-modal-num">#</div>
+<div class="text-[14px] font-semibold">เพิ่ม Comment บนจุดที่เลือก</div>
+</div>
+<textarea id="cmt-modal-text" rows="3" placeholder="เช่น ขยับ logo ไปทางขวา 20px" class="w-full px-3 py-2 border border-surface-200 rounded-lg text-[13px] resize-y"></textarea>
+<div class="flex justify-end gap-2 mt-3">
+<button onclick="closeCmtModal()" class="h-9 px-4 bg-white border border-surface-300 hover:bg-surface-50 rounded-lg text-[12.5px] font-medium">Cancel</button>
+<button onclick="saveCmtModal()" class="h-9 px-4 bg-pb-700 hover:bg-pb-900 text-white rounded-lg text-[12.5px] font-semibold">Save Comment</button>
+</div>
+</div>
+</div>
+
+<script>
+/* ===== Mock data (matches Mockup History v2 of JOB-1040-7) ===== */
+var MOCKUP = {
+  jobNo: 'JOB-1040-7',
+  ver: 2,
+  files: [
+    { name:'7eleven_mockup_v2_final.png', type:'image', url:'https://placehold.co/1280x720/ef4444/ffffff?text=7-Eleven+Pack+Shot+v2+Final' },
+    { name:'7eleven_mockup_v2_alt.png',   type:'image', url:'https://placehold.co/1280x720/dc2626/ffffff?text=7-Eleven+Alt+Layout' },
+    { name:'7eleven_promo_10s.mp4',       type:'video', url:'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4' }
+  ]
+};
+
+/* Read URL params for display */
+(function(){
+  var qs = new URLSearchParams(window.location.search);
+  var job = qs.get('job') || MOCKUP.jobNo;
+  var ver = qs.get('ver') || MOCKUP.ver;
+  MOCKUP.jobNo = job; MOCKUP.ver = ver;
+  document.getElementById('hdr-job').textContent = job;
+  document.getElementById('hdr-ver').textContent = 'v' + ver;
+})();
+
+/* ===== State ===== */
+var STATIONS = []; // one per artwork (image or captured frame)
+var _capturedCount = 0;
+var _pendingPin = null;
+
+/* ===== Render ===== */
+function renderFiles(){
+  var container = document.getElementById('files-container');
+  document.getElementById('files-count').textContent = MOCKUP.files.length + ' file(s)';
+  var html = '';
+  MOCKUP.files.forEach(function(f, idx){
+    var sid = 'st-' + idx;
+    html += '<div class="bg-white border border-surface-200 rounded-xl shadow-sm overflow-hidden">';
+    html += '  <div class="px-4 py-3 border-b border-surface-200 flex items-center justify-between flex-wrap gap-2">';
+    html += '    <div class="flex items-center gap-2 min-w-0">';
+    html += '      <span class="inline-flex items-center justify-center w-7 h-7 rounded-md text-white" style="background:' + (f.type==='video' ? '#8B5CF6':'#0EA5E9') + '">';
+    html += '        ' + (f.type==='video' ?
+                          '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.348a1.125 1.125 0 010 1.971l-11.54 6.347a1.125 1.125 0 01-1.667-.985V5.653z"/></svg>'
+                          :
+                          '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M2.25 18h19.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12z"/></svg>');
+    html += '      </span>';
+    html += '      <span class="font-mono text-[12px] truncate" style="color:rgba(30,41,59,0.7)">' + f.name + '</span>';
+    html += '      <span class="text-[10px] px-1.5 py-0.5 rounded font-semibold uppercase tracking-wide ' + (f.type==='video' ? 'bg-violet-50 text-violet-700':'bg-sky-50 text-sky-700') + '">' + f.type + '</span>';
+    html += '    </div>';
+    html += '  </div>';
+    if(f.type === 'video'){
+      html += '  <div class="p-4">';
+      html += '    <div class="bg-[#0B1430] rounded-xl overflow-hidden">';
+      html += '      <video id="v-' + sid + '" src="' + f.url + '" controls playsinline class="w-full h-auto" style="max-height:520px;display:block;margin:0 auto"></video>';
+      html += '    </div>';
+      html += '    <div class="mt-3 flex flex-wrap items-center gap-2">';
+      html += '      <button onclick="captureFrame(\'' + sid + '\',\'' + f.name + '\')" class="h-10 px-4 rounded-lg text-[12.5px] font-semibold text-white inline-flex items-center gap-1.5 shadow hover:brightness-110" style="background:linear-gradient(135deg,#7C3AED,#A78BFA)">';
+      html += '        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.822 1.316zM16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zm-1.5 0a3 3 0 11-6 0 3 3 0 016 0z"/></svg>';
+      html += '        Capture Frame เพื่อ Comment';
+      html += '      </button>';
+      html += '      <span class="text-[11px]" style="color:rgba(30,41,59,0.55)">Pause วีดีโอที่ตำแหน่งที่ต้องการ แล้วกด Capture เพื่อ comment บนภาพนิ่ง</span>';
+      html += '    </div>';
+      html += '    <div id="frames-' + sid + '" class="mt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3"></div>';
+      html += '  </div>';
+    } else {
+      html += renderStationMarkup(sid, f.name, f.url);
+    }
+    html += '</div>';
+  });
+  container.innerHTML = html;
+  // init image stations
+  MOCKUP.files.forEach(function(f, idx){
+    if(f.type === 'image'){ initStation('st-' + idx, f.url); }
+  });
+}
+
+function renderStationMarkup(sid, name, imgUrl){
+  var h = '';
+  h += '<div class="p-4 space-y-3" id="wrap-' + sid + '">';
+  h += '  <div class="flex flex-wrap items-center gap-1.5" id="tools-' + sid + '">';
+  h += '    <button class="tool-btn is-active" data-tool="pen" onclick="setTool(\'' + sid + '\',\'pen\')"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg>Pen</button>';
+  h += '    <button class="tool-btn" data-tool="highlight" onclick="setTool(\'' + sid + '\',\'highlight\')"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z"/></svg>Highlight</button>';
+  h += '    <button class="tool-btn" data-tool="comment" onclick="setTool(\'' + sid + '\',\'comment\')"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm6 0c0 7.142-9 12.75-9 12.75S3 17.642 3 10.5a9 9 0 1118 0z"/></svg>Pin Comment</button>';
+  h += '    <div class="w-px h-6 bg-surface-200 mx-1"></div>';
+  h += '    <button class="tool-btn" onclick="undoStroke(\'' + sid + '\')"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3"/></svg>Undo</button>';
+  h += '    <button class="tool-btn is-danger" onclick="clearStation(\'' + sid + '\')"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>Clear All</button>';
+  h += '  </div>';
+  h += '  <div class="flex flex-col lg:flex-row gap-4">';
+  h += '    <div class="flex-1 min-w-0">';
+  h += '      <div class="annot-stage" id="stage-' + sid + '">';
+  h += '        <img id="img-' + sid + '" src="' + imgUrl + '" alt="' + name + '" crossorigin="anonymous">';
+  h += '        <canvas id="cv-' + sid + '" class="annot-canvas"></canvas>';
+  h += '        <div id="pins-' + sid + '" style="position:absolute;inset:0;pointer-events:none"></div>';
+  h += '      </div>';
+  h += '    </div>';
+  h += '    <div class="lg:w-[300px] shrink-0">';
+  h += '      <div class="text-[11px] uppercase font-semibold tracking-wide mb-2" style="color:rgba(30,41,59,0.5)">Comments บนรูปนี้</div>';
+  h += '      <div id="cmts-' + sid + '" class="space-y-2 max-h-[460px] overflow-y-auto"></div>';
+  h += '    </div>';
+  h += '  </div>';
+  h += '</div>';
+  return h;
+}
+
+function initStation(sid, imgUrl){
+  var station = {
+    sid: sid,
+    tool: 'pen',
+    strokes: [],   // {tool, color, width, points:[{x,y}]}
+    pins: [],      // {x,y,text}
+    drawing: false,
+    current: null
+  };
+  STATIONS.push(station);
+
+  var img = document.getElementById('img-' + sid);
+  var cv  = document.getElementById('cv-' + sid);
+  var stage = document.getElementById('stage-' + sid);
+
+  function fitCanvas(){
+    var w = img.clientWidth, h = img.clientHeight;
+    if(!w || !h) return;
+    cv.width = w; cv.height = h;
+    redraw(station);
+    repositionPins(station);
+  }
+  if(img.complete){ fitCanvas(); } else { img.onload = fitCanvas; }
+  window.addEventListener('resize', fitCanvas);
+
+  // pointer handlers
+  function getPos(ev){
+    var rect = cv.getBoundingClientRect();
+    var t = ev.touches ? ev.touches[0] : ev;
+    return { x: t.clientX - rect.left, y: t.clientY - rect.top };
+  }
+  cv.addEventListener('pointerdown', function(ev){
+    ev.preventDefault();
+    cv.setPointerCapture(ev.pointerId);
+    var p = getPos(ev);
+    if(station.tool === 'comment'){
+      _openPinModal(station, p);
+      return;
+    }
+    var style = station.tool === 'highlight'
+      ? { color:'rgba(255,235,59,0.45)', width:18, lineCap:'round' }
+      : { color:'#DC2626', width:3, lineCap:'round' };
+    station.current = { tool: station.tool, points:[p], style:style };
+    station.drawing = true;
+  });
+  cv.addEventListener('pointermove', function(ev){
+    if(!station.drawing) return;
+    var p = getPos(ev);
+    station.current.points.push(p);
+    drawCurrent(station);
+  });
+  function endStroke(){
+    if(!station.drawing) return;
+    station.drawing = false;
+    if(station.current && station.current.points.length > 1){
+      station.strokes.push(station.current);
+    }
+    station.current = null;
+    redraw(station);
+  }
+  cv.addEventListener('pointerup', endStroke);
+  cv.addEventListener('pointercancel', endStroke);
+  cv.addEventListener('pointerleave', endStroke);
+}
+
+function setTool(sid, tool){
+  var station = _station(sid); if(!station) return;
+  station.tool = tool;
+  var bar = document.getElementById('tools-' + sid);
+  bar.querySelectorAll('.tool-btn[data-tool]').forEach(function(b){
+    b.classList.toggle('is-active', b.getAttribute('data-tool') === tool);
+  });
+  var cv = document.getElementById('cv-' + sid);
+  cv.style.cursor = (tool === 'comment') ? 'crosshair' : 'crosshair';
+}
+
+function _station(sid){ return STATIONS.find(function(s){return s.sid===sid;}); }
+
+function drawCurrent(s){
+  var cv = document.getElementById('cv-' + s.sid);
+  var ctx = cv.getContext('2d');
+  // redraw last segment efficiently — for simplicity, redraw all
+  redraw(s);
+}
+
+function redraw(s){
+  var cv = document.getElementById('cv-' + s.sid);
+  if(!cv) return;
+  var ctx = cv.getContext('2d');
+  ctx.clearRect(0,0,cv.width,cv.height);
+  function drawStroke(st){
+    if(!st.points.length) return;
+    ctx.strokeStyle = st.style.color;
+    ctx.lineWidth = st.style.width;
+    ctx.lineCap = st.style.lineCap || 'round';
+    ctx.lineJoin = 'round';
+    ctx.beginPath();
+    ctx.moveTo(st.points[0].x, st.points[0].y);
+    for(var i=1;i<st.points.length;i++){ ctx.lineTo(st.points[i].x, st.points[i].y); }
+    ctx.stroke();
+  }
+  s.strokes.forEach(drawStroke);
+  if(s.current) drawStroke(s.current);
+}
+
+function undoStroke(sid){
+  var s = _station(sid); if(!s) return;
+  if(s.strokes.length){ s.strokes.pop(); redraw(s); }
+  else if(s.pins.length){ s.pins.pop(); repositionPins(s); renderComments(s); updateCounts(); }
+}
+
+function clearStation(sid){
+  var s = _station(sid); if(!s) return;
+  if(!confirm('ล้าง annotations และ comments ทั้งหมดบนรูปนี้?')) return;
+  s.strokes = []; s.pins = [];
+  redraw(s); repositionPins(s); renderComments(s); updateCounts();
+}
+
+/* ===== Pins / Comments ===== */
+function _openPinModal(station, point){
+  _pendingPin = { station: station, point: point };
+  var num = _totalPins() + 1;
+  document.getElementById('cmt-modal-num').textContent = num;
+  document.getElementById('cmt-modal-text').value = '';
+  var m = document.getElementById('cmt-modal');
+  m.classList.remove('hidden');
+  m.classList.add('flex');
+  setTimeout(function(){ document.getElementById('cmt-modal-text').focus(); }, 50);
+}
+function closeCmtModal(){
+  _pendingPin = null;
+  var m = document.getElementById('cmt-modal');
+  m.classList.add('hidden');
+  m.classList.remove('flex');
+}
+function saveCmtModal(){
+  var txt = (document.getElementById('cmt-modal-text').value || '').trim();
+  if(!txt){ document.getElementById('cmt-modal-text').focus(); return; }
+  if(!_pendingPin) return;
+  var s = _pendingPin.station;
+  // store as ratio so it scales on resize
+  var cv = document.getElementById('cv-' + s.sid);
+  var ratio = { rx: _pendingPin.point.x / cv.width, ry: _pendingPin.point.y / cv.height, text: txt };
+  s.pins.push(ratio);
+  closeCmtModal();
+  repositionPins(s); renderComments(s); updateCounts();
+}
+function repositionPins(s){
+  var pinsEl = document.getElementById('pins-' + s.sid);
+  if(!pinsEl) return;
+  var cv = document.getElementById('cv-' + s.sid);
+  var w = cv.width, h = cv.height;
+  var html = '';
+  var startNum = _pinStartNumber(s);
+  s.pins.forEach(function(p, i){
+    var n = startNum + i;
+    var x = p.rx * w, y = p.ry * h;
+    html += '<div class="annot-pin" style="left:' + x + 'px;top:' + y + 'px;pointer-events:auto" onclick="focusComment(\'' + s.sid + '\',' + i + ')">' + n + '</div>';
+  });
+  pinsEl.innerHTML = html;
+}
+function _pinStartNumber(target){
+  var n = 1;
+  for(var i=0;i<STATIONS.length;i++){
+    if(STATIONS[i] === target) break;
+    n += STATIONS[i].pins.length;
+  }
+  return n;
+}
+function _totalPins(){
+  return STATIONS.reduce(function(a, s){ return a + s.pins.length; }, 0);
+}
+function renderComments(s){
+  var el = document.getElementById('cmts-' + s.sid);
+  if(!el) return;
+  if(!s.pins.length){ el.innerHTML = '<div class="text-[11.5px] py-3 text-center rounded-lg border border-dashed border-surface-200" style="color:rgba(30,41,59,0.4)">ยังไม่มี comment — เลือกเครื่องมือ <b>Pin Comment</b> แล้วคลิกบนรูป</div>'; return; }
+  var startNum = _pinStartNumber(s);
+  var h = '';
+  s.pins.forEach(function(p, i){
+    var n = startNum + i;
+    h += '<div class="cmt-row border border-surface-200 rounded-lg p-2.5 flex gap-2" id="cmt-' + s.sid + '-' + i + '">';
+    h += '  <div class="w-6 h-6 rounded-full bg-rose-600 text-white text-[11px] font-bold flex items-center justify-center shrink-0">' + n + '</div>';
+    h += '  <div class="flex-1 min-w-0">';
+    h += '    <div class="text-[12px] whitespace-pre-wrap break-words">' + _esc(p.text) + '</div>';
+    h += '  </div>';
+    h += '  <button onclick="deletePin(\'' + s.sid + '\',' + i + ')" title="Delete" class="text-slate-400 hover:text-rose-600 shrink-0"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button>';
+    h += '</div>';
+  });
+  el.innerHTML = h;
+}
+function focusComment(sid, i){
+  var row = document.getElementById('cmt-' + sid + '-' + i);
+  if(!row) return;
+  row.scrollIntoView({behavior:'smooth', block:'nearest'});
+  row.classList.add('is-focus');
+  setTimeout(function(){ row.classList.remove('is-focus'); }, 1200);
+}
+function deletePin(sid, i){
+  var s = _station(sid); if(!s) return;
+  s.pins.splice(i, 1);
+  // renumber all stations since pin numbering is global
+  STATIONS.forEach(function(st){ repositionPins(st); renderComments(st); });
+  updateCounts();
+}
+function _esc(s){ return String(s).replace(/[&<>"']/g, function(c){return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c];}); }
+
+/* ===== Video capture ===== */
+function captureFrame(videoSid, srcName){
+  var vid = document.getElementById('v-' + videoSid);
+  if(!vid){ return; }
+  if(!vid.videoWidth){ toast('ยังโหลดวีดีโอไม่เสร็จ — กรุณารอสักครู่', '#DC2626'); return; }
+  var c = document.createElement('canvas');
+  c.width = vid.videoWidth; c.height = vid.videoHeight;
+  c.getContext('2d').drawImage(vid, 0, 0, c.width, c.height);
+  var dataUrl;
+  try{ dataUrl = c.toDataURL('image/png'); }
+  catch(e){ toast('Capture ไม่สำเร็จ — วีดีโออาจมี CORS', '#DC2626'); return; }
+
+  _capturedCount++;
+  var capId = 'cap-' + videoSid + '-' + _capturedCount;
+  var t = vid.currentTime || 0;
+  var tStr = _fmtTime(t);
+  // Append a new station card
+  var container = document.getElementById('files-container');
+  var card = document.createElement('div');
+  card.className = 'bg-white border border-violet-200 rounded-xl shadow-sm overflow-hidden';
+  card.id = 'card-' + capId;
+  var headerHtml = '<div class="px-4 py-3 border-b border-violet-100 bg-violet-50/50 flex items-center justify-between flex-wrap gap-2">'
+    + '<div class="flex items-center gap-2 min-w-0">'
+    + '  <span class="inline-flex items-center justify-center w-7 h-7 rounded-md text-white" style="background:#7C3AED"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.827 6.175A2.31 2.31 0 015.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 00-1.134-.175 2.31 2.31 0 01-1.64-1.055l-.822-1.316a2.192 2.192 0 00-1.736-1.039 48.774 48.774 0 00-5.232 0 2.192 2.192 0 00-1.736 1.039l-.822 1.316zM16.5 12.75a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0z"/></svg></span>'
+    + '  <span class="font-mono text-[12px] truncate" style="color:rgba(30,41,59,0.7)">' + srcName + ' · frame @' + tStr + '</span>'
+    + '  <span class="text-[10px] px-1.5 py-0.5 rounded font-semibold uppercase tracking-wide bg-violet-100 text-violet-700">Captured</span>'
+    + '</div>'
+    + '<button onclick="removeStation(\'' + capId + '\',\'card-' + capId + '\')" class="text-slate-400 hover:text-rose-600" title="ลบ frame นี้"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button>'
+    + '</div>';
+  card.innerHTML = headerHtml + renderStationMarkup(capId, srcName + ' frame', dataUrl);
+  container.appendChild(card);
+  initStation(capId, dataUrl);
+  // Append thumbnail under video
+  var thumbsEl = document.getElementById('frames-' + videoSid);
+  if(thumbsEl){
+    var th = document.createElement('div');
+    th.className = 'frame-thumb';
+    th.innerHTML = '<span class="ft-label">#' + _capturedCount + '</span>'
+      + '<span class="ft-time">' + tStr + '</span>'
+      + '<img src="' + dataUrl + '" alt="frame" class="w-full h-auto block">';
+    th.onclick = function(){ document.getElementById('card-' + capId).scrollIntoView({behavior:'smooth', block:'start'}); };
+    thumbsEl.appendChild(th);
+  }
+  updateCounts();
+  toast('Captured frame @' + tStr + ' — เริ่ม comment บนภาพได้เลย', '#7C3AED');
+}
+
+function removeStation(sid, cardId){
+  var idx = STATIONS.findIndex(function(s){return s.sid===sid;});
+  if(idx >= 0) STATIONS.splice(idx, 1);
+  var card = document.getElementById(cardId);
+  if(card) card.remove();
+  STATIONS.forEach(function(st){ repositionPins(st); renderComments(st); });
+  updateCounts();
+}
+
+function _fmtTime(s){
+  var m = Math.floor(s/60), sec = Math.floor(s % 60).toString().padStart(2,'0');
+  var ms = Math.floor((s - Math.floor(s)) * 100).toString().padStart(2,'0');
+  return m + ':' + sec + '.' + ms;
+}
+
+/* ===== Counts ===== */
+function updateCounts(){
+  document.getElementById('annot-count').textContent = _totalPins();
+  // Captured frames = stations whose sid starts with 'cap-'
+  var cap = STATIONS.filter(function(s){return s.sid.indexOf('cap-')===0;}).length;
+  document.getElementById('frame-count').textContent = cap;
+}
+
+/* ===== Toast & submit ===== */
+function toast(msg, color){
+  var t = document.createElement('div');
+  t.className = 'toast';
+  t.innerHTML = '<span class="w-2 h-2 rounded-full" style="background:' + (color||'#10B981') + '"></span>' + msg;
+  document.body.appendChild(t);
+  setTimeout(function(){ t.style.opacity = '0'; t.style.transition = 'opacity .25s'; setTimeout(function(){ t.remove(); }, 250); }, 2400);
+}
+function onSubmit(){
+  var name = (document.getElementById('f-name').value || '').trim();
+  var note = (document.getElementById('f-note').value || '').trim();
+  if(!name){ toast('กรุณากรอกชื่อ Reviewer', '#DC2626'); document.getElementById('f-name').focus(); return; }
+  if(!note){ toast('กรุณากรอก Feedback', '#DC2626'); document.getElementById('f-note').focus(); return; }
+  var pins = _totalPins();
+  toast('Send Feedback แล้ว — ' + pins + ' comment(s) บน artwork', '#10B981');
+}
+function onReject(){
+  var note = (document.getElementById('f-note').value || '').trim();
+  if(!note){ toast('กรุณากรอก Feedback อธิบายสิ่งที่ต้องแก้', '#DC2626'); document.getElementById('f-note').focus(); return; }
+  toast('ส่งกลับให้แก้ไข (Re-Edit) แล้ว', '#F59E0B');
+}
+
+renderFiles();
+</script>
+
+</body>
+</html>

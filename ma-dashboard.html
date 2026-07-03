@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Media Approval Dashboard — Plan-B CRM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config={theme:{extend:{fontFamily:{kanit:['Kanit','sans-serif']},colors:{pb:{900:'#213268',700:'#2D56D2',500:'#4790FF',300:'#5FCBF9',50:'#EBF5FF',100:'#D6ECFF'},ink:{900:'#0B1430',800:'#162040',700:'#1E293B'},surface:{0:'#FFFFFF',50:'#F8FAFC',100:'#F1F5F9',200:'#E2E8F0',300:'#CBD5E1'}}}}}
+</script>
+<style>
+*{font-family:'Kanit',sans-serif;-webkit-font-smoothing:antialiased}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#CBD5E8;border-radius:10px;border:2px solid #F7F9FC}
+::-webkit-scrollbar-thumb:hover{background:#93A4C4}
+.sidebar-scroll::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.06);border:2px solid transparent}
+.sidebar-scroll::-webkit-scrollbar-track{background:transparent}
+/* Sidebar nav items — White theme */
+.sidebar-nav{color:rgba(30,41,59,0.6);transition:all 0.15s;position:relative;font-size:13px}
+.sidebar-nav:hover{color:#0B1430;background:rgba(71,144,255,0.06)}
+.sidebar-nav.active{color:#2D56D2;font-weight:500;background:linear-gradient(90deg,rgba(71,144,255,0.10),rgba(71,144,255,0))}
+.sidebar-nav.active::before{content:'';position:absolute;left:0;top:8px;bottom:8px;width:3px;border-radius:2px;background:#2D56D2}
+/* Sidebar group headers */
+.sidebar-nav-parent{color:rgba(30,41,59,0.4);transition:all 0.15s;font-size:10.5px;text-transform:uppercase;letter-spacing:0.05em;font-weight:600}
+.sidebar-nav-parent:hover{color:rgba(30,41,59,0.7)}
+.sidebar-nav-parent.active{color:rgba(30,41,59,0.7)}
+/* Sidebar sub-items */
+.sidebar-sub{color:rgba(30,41,59,0.55);transition:all 0.15s;position:relative}
+.sidebar-sub:hover{color:#0B1430;background:rgba(71,144,255,0.06)}
+.sidebar-sub.active{color:#2D56D2;font-weight:500;background:linear-gradient(90deg,rgba(71,144,255,0.10),rgba(71,144,255,0))}
+.sidebar-sub.active::before{content:'';position:absolute;left:0;top:6px;bottom:6px;width:3px;border-radius:2px;background:#2D56D2;box-shadow:0 0 8px rgba(45,86,210,0.4)}
+.sidebar-nav.active::before{box-shadow:0 0 8px rgba(45,86,210,0.4)}
+.sidebar-group-icon{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:8px;background:transparent;transition:all .15s;flex-shrink:0;color:rgba(30,41,59,0.55)}
+.sgi-ma{color:#7C3AED}.sgi-rpt{color:#0EA5E9}.sgi-stg{color:#EF4444}
+.nav-parent{border-radius:8px;transition:all .15s}
+.nav-parent:hover{background:#F1F5F9}
+.nav-parent.active:has(.sgi-ma){background:rgba(124,58,237,0.10);color:#7C3AED}
+.nav-parent.active:has(.sgi-ma) .sidebar-group-icon{background:rgba(124,58,237,0.20)}
+.nav-parent.active:has(.sgi-rpt){background:rgba(14,165,233,0.10);color:#0EA5E9}
+.nav-parent.active:has(.sgi-rpt) .sidebar-group-icon{background:rgba(14,165,233,0.20)}
+.nav-parent.active:has(.sgi-stg){background:rgba(239,68,68,0.10);color:#EF4444}
+.nav-parent.active:has(.sgi-stg) .sidebar-group-icon{background:rgba(239,68,68,0.20)}
+#sidebar{background:linear-gradient(180deg,#fff 0%,#fff 60%,#F8FAFC 100%) !important}
+#sidebar-brand{background:linear-gradient(135deg,rgba(45,86,210,0.04),rgba(95,203,249,0.04))}
+/* nav-item for page content compatibility */
+.nav-item{transition:all 0.2s;border-radius:8px}
+.nav-item:hover,.nav-item.active{background:rgba(71,144,255,0.12);color:#4790FF}
+.nav-parent.active{color:#2D56D2;font-weight:500}
+/* Cards & general UI */
+.card-hover{transition:all 0.2s}
+.card-hover:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(33,50,104,0.12)}
+.badge-pulse{animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.7}}
+.status-dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+input:focus,select:focus,textarea:focus{outline:none;border-color:#4790FF;box-shadow:0 0 0 3px rgba(71,144,255,0.15)}
+.tab-btn{transition:all 0.2s}
+.tab-btn.active{color:#2D56D2;border-bottom:2px solid #2D56D2}
+table th{position:sticky;top:0;z-index:1}
+.progress-bar{transition:width 0.6s ease}
+/* Topbar — White glass */
+.topbar-white{background:rgba(255,255,255,0.9);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid #E2E8F0}
+/* Dashboard extras */
+.tnum{font-variant-numeric:tabular-nums}
+.shine{background:linear-gradient(135deg,#2D56D2,#5FCBF9)}
+.shine-soft{background:linear-gradient(135deg,rgba(71,144,255,0.08),rgba(95,203,249,0.08))}
+.ai-border{box-shadow:0 0 0 1px rgba(45,86,210,0.25),0 2px 8px rgba(45,86,210,0.08)}
+.pulse-dot{animation:pulseDot 2s ease-in-out infinite}
+@keyframes pulseDot{0%,100%{transform:scale(1);opacity:.4}50%{transform:scale(1.5);opacity:0}}
+.map-bg{background:linear-gradient(135deg,#F8FAFC 0%,#EBF5FF 100%)}
+.shadow-pop{box-shadow:0 8px 30px rgba(11,20,48,0.12)}
+.shadow-card{box-shadow:0 1px 3px rgba(11,20,48,0.06),0 1px 2px rgba(11,20,48,0.04)}
+/* Sidebar collapse label */
+.sidebar-label{transition:opacity 0.15s;white-space:nowrap;overflow:hidden}
+/* Dashboard interactive */
+.kpi-card{position:relative;overflow:hidden;transition:all .25s;cursor:pointer}
+.kpi-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent 0%,rgba(255,255,255,.4) 50%,transparent 100%);transform:translateX(-100%);transition:transform .6s}
+.kpi-card:hover{transform:translateY(-3px);box-shadow:0 12px 28px rgba(11,20,48,.12)}
+.kpi-card:hover::before{transform:translateX(100%)}
+.status-chip{transition:all .2s;cursor:pointer;position:relative}
+.status-chip:hover{transform:translateY(-1px)}
+.status-chip.is-active{box-shadow:0 0 0 2px currentColor,0 6px 14px rgba(11,20,48,.08);transform:translateY(-1px)}
+.status-chip.is-dim{opacity:.35;filter:grayscale(.4)}
+.period-chip{transition:all .2s;cursor:pointer}
+.period-chip.is-active{background:linear-gradient(135deg,#2D56D2,#5FCBF9) !important;border-color:transparent !important;color:#fff !important}
+.period-chip.is-active .period-num,.period-chip.is-active .period-lbl{color:#fff !important}
+.gw-row{transition:all .2s}
+.gw-row.is-active{background:linear-gradient(90deg,rgba(45,86,210,.07),transparent) !important;box-shadow:inset 3px 0 0 #2D56D2}
+.gw-row.is-dim{opacity:.4}
+.gw-cell.is-dim{opacity:.25}
+.gw-cell.is-hot{box-shadow:0 0 0 2px currentColor;transform:scale(1.06)}
+.sla-row{transition:all .25s;cursor:pointer;padding:6px 8px;margin:-6px -8px;border-radius:8px}
+.sla-row:hover{background:rgba(45,86,210,.04)}
+.sla-row.is-active{background:rgba(45,86,210,.08);box-shadow:inset 3px 0 0 #2D56D2}
+.sla-row.is-dim{opacity:.4}
+.pkg-row{transition:all .25s;cursor:pointer;padding:10px 12px;margin:-10px -12px;border-radius:10px}
+.pkg-row:hover{background:rgba(124,58,237,.05)}
+.pkg-row.is-active{background:rgba(124,58,237,.07);padding:14px 20px 16px;margin:-4px -20px;box-shadow:inset 0 0 0 1px rgba(124,58,237,.10)}
+.pkg-detail{max-height:0;overflow:hidden;transition:max-height .35s ease,opacity .25s,padding .25s;opacity:0}
+.pkg-row.is-active .pkg-detail{max-height:240px;opacity:1;margin-top:14px;padding-left:8px;padding-right:8px}
+.sla-card{transition:all .2s;cursor:pointer;position:relative;text-align:left}
+.sla-card:hover{transform:translateY(-1px);box-shadow:0 4px 10px rgba(11,20,48,.06)}
+.sla-card:not(.is-active){opacity:.45;filter:grayscale(.25)}
+.sla-card[data-type="fb"].is-active{box-shadow:0 0 0 2px #0EA5E9,0 4px 10px rgba(14,165,233,.15)}
+.sla-card[data-type="prog"].is-active{box-shadow:0 0 0 2px #8B5CF6,0 4px 10px rgba(139,92,246,.15)}
+.sla-period-chip{transition:all .2s;cursor:pointer;background:#F8FAFC;border:1px solid #E2E8F0;color:rgba(30,41,59,.6);border-radius:8px}
+.sla-period-chip:hover{background:#F1F5F9;color:#0B1430}
+.sla-period-chip.is-active{background:linear-gradient(135deg,#10B981,#34D399) !important;border-color:transparent !important;color:#fff !important}
+.collapse-btn{transition:transform .25s;cursor:pointer}
+.collapse-btn.is-collapsed{transform:rotate(-90deg)}
+.collapse-body{overflow:hidden;transition:max-height .35s ease,opacity .25s;max-height:1200px;opacity:1}
+.collapse-body.is-collapsed{max-height:0 !important;opacity:0;margin-top:0 !important}
+.bar-anim{animation:barGrow .8s cubic-bezier(.22,.61,.36,1) both}
+@keyframes barGrow{from{width:0 !important}}
+.spark{display:inline-block;height:24px;vertical-align:middle}
+.filter-pill{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:600;background:linear-gradient(135deg,#2D56D2,#5FCBF9);color:#fff;cursor:pointer;box-shadow:0 4px 12px rgba(45,86,210,.25)}
+.filter-pill:hover{filter:brightness(1.05)}
+.sla-toggle{color:rgba(30,41,59,.55)}
+.sla-toggle:hover{color:#0B1430}
+.sla-toggle.is-active{background:#fff;color:#0B1430;box-shadow:0 2px 6px rgba(11,20,48,.08)}
+.sla-line{fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;transition:opacity .25s}
+.sla-area{transition:opacity .25s}
+.sla-dot{cursor:pointer;transition:r .15s,opacity .25s}
+.sla-dot:hover{r:6}
+.sla-hidden{opacity:0 !important;pointer-events:none}
+.sla-svg .grid-line{stroke:#E2E8F0;stroke-width:1;stroke-dasharray:2 3}
+.sla-svg text{font-family:'Kanit',sans-serif;font-size:9.5px;fill:rgba(30,41,59,.55)}
+.sla-tooltip{position:absolute;pointer-events:none;background:#0B1430;color:#fff;padding:6px 9px;border-radius:6px;font-size:11px;font-weight:500;white-space:nowrap;transform:translate(-50%,calc(-100% - 8px));opacity:0;transition:opacity .15s;z-index:10;box-shadow:0 4px 12px rgba(0,0,0,.2)}
+.sla-tooltip::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:4px solid transparent;border-top-color:#0B1430}
+.sla-tooltip.is-show{opacity:1}
+@keyframes drawLine{from{stroke-dasharray:1000;stroke-dashoffset:1000}to{stroke-dasharray:1000;stroke-dashoffset:0}}
+.sla-line.is-drawing{animation:drawLine 1s ease-out forwards}
+</style>
+<script src="shared/sidebar.js"></script>
+</head>
+<body class="font-kanit" style="background:#F7F9FC;color:#0B1430">
+
+<div class="min-h-screen flex">
+  <!-- SIDEBAR — Clean White -->
+  <!-- Mobile overlay -->
+  <div id="sidebar-overlay" class="hidden fixed inset-0 bg-black/40 z-20 lg:hidden" onclick="toggleMobile()"></div>
+  <aside id="sidebar" class="w-64 flex flex-col fixed h-full z-30 transition-all duration-200 -translate-x-full lg:translate-x-0 bg-white border-r border-[#E2E8F0]">
+    <!-- Brand -->
+    <div class="px-4 h-16 flex items-center gap-2.5 border-b border-[#E2E8F0]" id="sidebar-brand">
+      <div class="sidebar-label flex items-center gap-2 min-w-0">
+        <img src="logo.jpg" alt="Plan-B Media" class="h-8 w-auto rounded shrink-0" />
+        <span class="text-[11px] font-semibold tracking-wide uppercase border-l border-[#E2E8F0] pl-2 truncate" style="color:rgba(30,41,59,0.55)">Media Flow System</span>
+      </div>
+    </div>
+    <!-- Nav -->
+    <nav class="flex-1 py-3 px-2 overflow-y-auto text-sm sidebar-scroll space-y-0.5">
+
+      <!-- Dashboard -->
+      <a href="dashboard.html" class=" sidebar-nav w-full flex items-center gap-3 h-10 rounded-md px-3 cursor-pointer" data-page="dashboard">
+        <svg class="w-[18px] h-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25a2.25 2.25 0 01-2.25-2.25v-2.25z" /></svg>
+        <span class="flex-1 text-left truncate sidebar-label">Dashboard</span>
+      </a>
+
+      <!-- Inventory -->
+      <a href="inventory.html" class=" sidebar-nav w-full flex items-center gap-3 h-10 rounded-md px-3 cursor-pointer">
+        <svg class="w-[18px] h-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" /></svg>
+        <span class="flex-1 text-left truncate sidebar-label">Inventory</span>
+      </a>
+
+      <!-- Sale -->
+      <a href="sale.html" class=" sidebar-nav w-full flex items-center gap-3 h-10 rounded-md px-3 cursor-pointer">
+        <svg class="w-[18px] h-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z" /></svg>
+        <span class="flex-1 text-left truncate sidebar-label">Sale</span>
+      </a>
+
+      <!-- Media Approval (Expandable) -->
+      <div class="pt-3">
+        <button onclick="toggleMenu('ma')" class="nav-parent active sidebar-nav-parent w-full flex items-center gap-3 h-8 px-3 cursor-pointer text-left">
+          <span class="sidebar-group-icon sgi-ma"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></span><span class="flex-1 text-left">Media Approval</span>
+          <svg id="ma-chevron" class="w-3 h-3 transition-transform duration-200 rotate-90" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" /></svg>
+        </button>
+        <div id="ma-sub" class="space-y-0.5">
+          <a href="ma-dashboard.html" class="active sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Dashboard</span>
+          </a>
+          <a href="job-list.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Media Ticket</span>
+            <span class="text-[10px] bg-pb-500 text-white rounded-full px-1.5 min-w-[18px] text-center">12</span>
+          </a>
+          <a href="assign-job.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Assign Ticket</span>
+            <span class="text-[10px] bg-amber-500 text-white rounded-full px-1.5 min-w-[18px] text-center">5</span>
+          </a>
+          <a href="receive-job.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Verify & Production</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Production -->
+      <a href="production.html" class=" sidebar-nav w-full flex items-center gap-3 h-10 rounded-md px-3 cursor-pointer">
+        <svg class="w-[18px] h-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17l-5.1-5.1a2.25 2.25 0 010-3.182l.71-.71a2.25 2.25 0 013.18 0l2.8 2.8 2.8-2.8a2.25 2.25 0 013.18 0l.71.71a2.25 2.25 0 010 3.182l-5.1 5.1a2.25 2.25 0 01-3.18 0z" /></svg>
+        <span class="flex-1 text-left truncate sidebar-label">Production</span>
+      </a>
+
+      <!-- Claim -->
+      <a href="claim.html" class=" sidebar-nav w-full flex items-center gap-3 h-10 rounded-md px-3 cursor-pointer">
+        <svg class="w-[18px] h-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z" /></svg>
+        <span class="flex-1 text-left truncate sidebar-label">Claim</span>
+      </a>
+
+      <!-- Report (Expandable) -->
+      <div class="pt-3">
+        <button onclick="toggleMenu('rpt')" class="nav-parent sidebar-nav-parent w-full flex items-center gap-3 h-8 px-3 cursor-pointer text-left">
+          <span class="sidebar-group-icon sgi-rpt"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg></span><span class="flex-1 text-left">Report</span>
+          <svg id="rpt-chevron" class="w-3 h-3 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" /></svg>
+        </button>
+        <div id="rpt-sub" class="space-y-0.5 hidden">
+          <a href="kpi-dashboard.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">KPI Dashboard</span>
+          </a>
+          <a href="export-airtime.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Export Airtime</span>
+          </a>
+          <a href="report-monthly.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Monthly Report</span>
+          </a>
+          <a href="report-audit.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Audit Log</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Setting (Expandable) -->
+      <div class="pt-3">
+        <button onclick="toggleMenu('stg')" class="nav-parent sidebar-nav-parent w-full flex items-center gap-3 h-8 px-3 cursor-pointer text-left">
+          <span class="sidebar-group-icon sgi-stg"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.93.398.164.855.142 1.205-.108l.737-.527a1.125 1.125 0 011.45.12l.773.774c.39.389.44 1.002.12 1.45l-.527.737c-.25.35-.272.806-.107 1.204.165.397.505.71.93.78l.893.15c.543.09.94.56.94 1.109v1.094c0 .55-.397 1.02-.94 1.11l-.893.149c-.425.07-.765.383-.93.78-.165.398-.143.854.107 1.204l.527.738c.32.447.269 1.06-.12 1.45l-.774.773a1.125 1.125 0 01-1.449.12l-.738-.527c-.35-.25-.806-.272-1.203-.107-.398.165-.71.505-.781.929l-.149.894c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.019-.398-1.11-.94l-.148-.894c-.071-.424-.384-.764-.781-.93-.398-.164-.854-.142-1.204.108l-.738.527c-.447.32-1.06.269-1.45-.12l-.773-.774a1.125 1.125 0 01-.12-1.45l.527-.737c.25-.35.273-.806.108-1.204-.165-.397-.505-.71-.93-.78l-.894-.15c-.542-.09-.94-.56-.94-1.109v-1.094c0-.55.398-1.02.94-1.11l.894-.149c.424-.07.765-.383.93-.78.165-.398.143-.854-.107-1.204l-.527-.738a1.125 1.125 0 01.12-1.45l.773-.773a1.125 1.125 0 011.45-.12l.737.527c.35.25.807.272 1.204.107.397-.165.71-.505.78-.929l.15-.894zM15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg></span><span class="flex-1 text-left">Setting</span>
+          <svg id="stg-chevron" class="w-3 h-3 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" /></svg>
+        </button>
+        <div id="stg-sub" class="space-y-0.5 hidden">
+          <a href="settings-user.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">User Management</span>
+          </a>
+          <a href="settings-usergroup.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">User Group Management</span>
+          </a>
+          <a href="settings-email.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Email Setup</span>
+          </a>
+          <a href="settings-master.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Master Data</span>
+          </a>
+        </div>
+      </div>
+
+    </nav>
+
+    <!-- User Footer -->
+    <div class="p-3 border-t border-[#E2E8F0]">
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-full flex items-center justify-center text-white font-semibold text-[13px] shrink-0" style="background:#4790FF">RK</div>
+        <div class="flex-1 min-w-0 sidebar-label">
+          <div class="text-[13px] font-medium text-[#0B1430] truncate">Raveewan Kaewmanee</div>
+          <div class="text-[11px] truncate" style="color:rgba(30,41,59,0.5)">Admin · Plan-B</div>
+        </div>
+        <a href="login.html" class="transition sidebar-label hover:opacity-80" style="color:rgba(30,41,59,0.4)" title="ออกจากระบบ">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" /></svg>
+        </a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="flex-1 lg:ml-64 min-h-screen">
+    <!-- Top Bar — White Glass -->
+    <header class="topbar-white h-16 shrink-0 sticky top-0 z-20 flex items-center gap-4 px-4 sm:px-6">
+      <!-- Collapse / Mobile toggle -->
+      <button onclick="collapseSidebar()" class="w-9 h-9 rounded-md hover:bg-surface-100 flex items-center justify-center text-ink-700">
+        <svg class="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" /></svg>
+      </button>
+
+      <!-- Breadcrumbs -->
+      <div class="flex items-center gap-1.5 text-[13px]" style="color:rgba(30,41,59,0.6)">
+        <span>Home</span>
+        <svg class="w-3 h-3 opacity-30" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
+        <span class="font-medium" style="color:#0B1430">Media Approval Dashboard</span>
+      </div>
+
+      <div class="flex-1"></div>
+
+      <!-- Notification -->
+      <button class="w-9 h-9 rounded-md hover:bg-surface-100 flex items-center justify-center relative" style="color:#1E293B">
+        <svg class="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" /></svg>
+        <span class="absolute top-2 right-2 w-2 h-2 bg-rose-500 rounded-full"></span>
+      </button>
+
+      <!-- Ask AI -->
+      <button id="ai-toggle" onclick="toggleAI()" class="h-9 px-3 rounded-lg border flex items-center gap-2 text-[13px] font-medium transition-colors bg-white border-surface-300 text-ink-900 hover:bg-surface-50">
+        <svg class="w-[15px] h-[15px]" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"/></svg>
+        <span>Ask AI</span>
+      </button>
+    </header>
+
+    <!-- Page Content -->
+    <div class="p-3 sm:p-6">
+    <div class="space-y-5 max-w-[1600px] mx-auto">
+<!-- Header -->
+<div class="flex items-center gap-3 mb-1">
+<div class="w-12 h-12 rounded-xl flex items-center justify-center shadow-lg" style="background:linear-gradient(135deg,#7C3AED,#A78BFA)">
+<svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24"><path d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</div>
+<div>
+<h1 class="text-[22px] font-semibold text-[#0B1430]">Media Approval Dashboard</h1>
+<p class="text-[13px]" style="color:rgba(30,41,59,0.55)">Overview of tickets, jobs, and SLA</p>
+</div>
+</div>
+<!-- Row 1: Total KPIs (colorful, interactive) -->
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+<div class="kpi-card rounded-xl p-4 text-white shadow-sm" style="background:linear-gradient(135deg,#7C3AED 0%,#A78BFA 100%)" onclick="flashCard(this)">
+  <div class="flex items-start justify-between">
+    <div>
+      <div class="text-[11px] uppercase font-semibold tracking-wide opacity-90">Total Tickets</div>
+      <div class="text-[28px] font-bold tnum mt-1 leading-none" id="kpi-tk">48</div>
+      <div class="text-[10.5px] mt-1 opacity-90 flex items-center gap-1"><svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941"/></svg>+12% MoM</div>
+    </div>
+    <div class="w-10 h-10 rounded-lg bg-white/20 flex items-center justify-center"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 6v.75m0 3v.75m0 3v.75m0 3V18m-9-5.25h5.25M7.5 15h3M3.375 5.25c-.621 0-1.125.504-1.125 1.125v3.026a2.999 2.999 0 010 5.198v3.026c0 .621.504 1.125 1.125 1.125h17.25c.621 0 1.125-.504 1.125-1.125v-3.026a2.999 2.999 0 010-5.198V6.375c0-.621-.504-1.125-1.125-1.125H3.375z"/></svg></div>
+  </div>
+</div>
+<div class="kpi-card rounded-xl p-4 text-white shadow-sm" style="background:linear-gradient(135deg,#2D56D2 0%,#5FCBF9 100%)" onclick="flashCard(this)">
+  <div class="flex items-start justify-between">
+    <div>
+      <div class="text-[11px] uppercase font-semibold tracking-wide opacity-90">Total Jobs</div>
+      <div class="text-[28px] font-bold tnum mt-1 leading-none" id="kpi-jb">142</div>
+      <div class="text-[10.5px] mt-1 opacity-90 flex items-center gap-1"><svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941"/></svg>+8% WoW</div>
+    </div>
+    <div class="w-10 h-10 rounded-lg bg-white/20 flex items-center justify-center"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z"/></svg></div>
+  </div>
+</div>
+<div class="kpi-card rounded-xl p-4 text-white shadow-sm" style="background:linear-gradient(135deg,#F59E0B 0%,#FBBF24 100%)" onclick="flashCard(this)">
+  <div class="flex items-start justify-between">
+    <div>
+      <div class="text-[11px] uppercase font-semibold tracking-wide opacity-90">Avg Jobs/Ticket</div>
+      <div class="text-[28px] font-bold tnum mt-1 leading-none" id="kpi-avg">3.0</div>
+      <div class="text-[10.5px] mt-1 opacity-90 flex items-center gap-1"><svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12h-15"/></svg>stable</div>
+    </div>
+    <div class="w-10 h-10 rounded-lg bg-white/20 flex items-center justify-center"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg></div>
+  </div>
+</div>
+<div class="kpi-card rounded-xl p-4 text-white shadow-sm" style="background:linear-gradient(135deg,#10B981 0%,#34D399 100%)" onclick="flashCard(this)">
+  <div class="flex items-start justify-between">
+    <div>
+      <div class="text-[11px] uppercase font-semibold tracking-wide opacity-90">Active Graphics</div>
+      <div class="text-[28px] font-bold tnum mt-1 leading-none" id="kpi-gr">7</div>
+      <div class="text-[10.5px] mt-1 opacity-90 flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>all online</div>
+    </div>
+    <div class="w-10 h-10 rounded-lg bg-white/20 flex items-center justify-center"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"/></svg></div>
+  </div>
+</div>
+</div>
+<!-- Row 2: Tickets & Jobs by Package + Jobs by Status -->
+<div class="grid grid-cols-1 lg:grid-cols-5 gap-4">
+<!-- Tickets & Jobs by Package -->
+<div class="lg:col-span-3 bg-white border border-[#E2E8F0] rounded-xl shadow-sm p-5">
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:linear-gradient(135deg,rgba(124,58,237,0.10),rgba(167,139,250,0.10));color:#7C3AED"><svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.375 19.5h17.25m-17.25 0a1.125 1.125 0 01-1.125-1.125M3.375 19.5h7.5c.621 0 1.125-.504 1.125-1.125m-9.75 0V5.625m0 12.75v-1.5c0-.621.504-1.125 1.125-1.125m18.375 2.625V5.625m0 12.75c0 .621-.504 1.125-1.125 1.125m1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125m0 3.75h-7.5A1.125 1.125 0 0112 18.375m9.75-12.75c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125m19.5 0v1.5c0 .621-.504 1.125-1.125 1.125M2.25 5.625v1.5c0 .621.504 1.125 1.125 1.125m0 0h17.25m-17.25 0h7.5c.621 0 1.125.504 1.125 1.125M3.375 8.25c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125m17.25-3.75h-7.5c-.621 0-1.125.504-1.125 1.125m8.625-1.125c.621 0 1.125.504 1.125 1.125v1.5c0 .621-.504 1.125-1.125 1.125m-17.25 0h7.5m-7.5 0c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125M12 10.875v-1.5m0 1.5c0 .621-.504 1.125-1.125 1.125M12 10.875c0 .621.504 1.125 1.125 1.125m-2.25 0c.621 0 1.125.504 1.125 1.125M13.125 12h7.5m-7.5 0c-.621 0-1.125.504-1.125 1.125M20.625 12c.621 0 1.125.504 1.125 1.125v1.5c0 .621-.504 1.125-1.125 1.125m-17.25 0h7.5M12 14.625v-1.5m0 1.5c0 .621-.504 1.125-1.125 1.125M12 14.625c0 .621.504 1.125 1.125 1.125m-2.25 0c.621 0 1.125.504 1.125 1.125m0 1.5v-1.5m0 0c0-.621.504-1.125 1.125-1.125m0 0h7.5"/></svg></div>
+<h3 class="text-[14px] font-semibold text-[#0B1430]">Tickets &amp; Jobs by Package</h3>
+</div>
+<div class="flex items-center gap-2">
+<span class="text-[11px] px-2 py-0.5 rounded-full bg-[#F1F5F9]" style="color:rgba(30,41,59,0.55)">Top 6 · คลิกเพื่อดู breakdown</span>
+</div>
+</div>
+<div class="collapse-body" id="pkg-body">
+<div class="space-y-2" id="pkg-list"></div>
+</div>
+</div>
+<!-- Jobs by Status -->
+<div class="lg:col-span-2 bg-white border border-[#E2E8F0] rounded-xl shadow-sm p-5">
+<div class="flex items-center justify-between mb-3">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:linear-gradient(135deg,rgba(45,86,210,0.10),rgba(71,144,255,0.10));color:#2D56D2"><svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z"/></svg></div>
+<h3 class="text-[14px] font-semibold text-[#0B1430]">Jobs by Status</h3>
+</div>
+<span id="status-filter-pill" class="filter-pill hidden" onclick="filterByStatus(null)"><svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg><span id="status-filter-label">All</span></span>
+</div>
+<div class="text-[10.5px] mb-2" style="color:rgba(30,41,59,0.55)">คลิกสถานะเพื่อ filter ตาราง Graphic Workload ด้านล่าง</div>
+<div class="grid grid-cols-3 gap-2">
+<button type="button" class="status-chip p-2.5 rounded-lg bg-slate-50 border border-slate-200 text-center text-slate-600" data-status="Unassigned" onclick="filterByStatus('Unassigned')"><div class="text-[20px] font-bold text-slate-700 tnum">18</div><div class="text-[10.5px] font-medium">Unassigned</div></button>
+<button type="button" class="status-chip p-2.5 rounded-lg bg-amber-50 border border-amber-200 text-center text-amber-700" data-status="To Do" onclick="filterByStatus('To Do')"><div class="text-[20px] font-bold tnum">24</div><div class="text-[10.5px] font-medium">To Do</div></button>
+<button type="button" class="status-chip p-2.5 rounded-lg bg-blue-50 border border-blue-200 text-center text-blue-700" data-status="On Process" onclick="filterByStatus('On Process')"><div class="text-[20px] font-bold tnum">38</div><div class="text-[10.5px] font-medium">On Process</div></button>
+<button type="button" class="status-chip p-2.5 rounded-lg bg-rose-50 border border-rose-200 text-center text-rose-700" data-status="Revise" onclick="filterByStatus('Revise')"><div class="text-[20px] font-bold tnum">9</div><div class="text-[10.5px] font-medium">Revise</div></button>
+<button type="button" class="status-chip p-2.5 rounded-lg bg-indigo-50 border border-indigo-200 text-center text-indigo-700" data-status="Final Render" onclick="filterByStatus('Final Render')"><div class="text-[20px] font-bold tnum">11</div><div class="text-[10.5px] font-medium">Final Render</div></button>
+<button type="button" class="status-chip p-2.5 rounded-lg bg-emerald-50 border border-emerald-200 text-center text-emerald-700" data-status="Done" onclick="filterByStatus('Done')"><div class="text-[20px] font-bold tnum">42</div><div class="text-[10.5px] font-medium">Done</div></button>
+</div>
+<!-- Period strip -->
+<div class="border-t border-[#E2E8F0] mt-4 pt-3">
+<div class="flex items-center justify-between mb-2">
+<div class="text-[10.5px] uppercase tracking-wide font-medium" style="color:rgba(30,41,59,0.5)">Jobs by Period</div>
+<div class="text-[10px]" style="color:rgba(30,41,59,0.4)">คลิกเพื่อเปลี่ยน scope</div>
+</div>
+<div class="grid grid-cols-4 gap-2">
+<button type="button" class="period-chip p-2 rounded-lg bg-[#F8FAFC] border border-[#E2E8F0] text-center" data-period="today" onclick="switchPeriod('today')"><div class="text-[15px] font-bold text-[#0B1430] tnum period-num">3</div><div class="text-[9.5px] font-medium period-lbl" style="color:rgba(30,41,59,0.5)">Today</div></button>
+<button type="button" class="period-chip p-2 rounded-lg bg-[#F8FAFC] border border-[#E2E8F0] text-center" data-period="week" onclick="switchPeriod('week')"><div class="text-[15px] font-bold text-[#0B1430] tnum period-num">18</div><div class="text-[9.5px] font-medium period-lbl" style="color:rgba(30,41,59,0.5)">Week</div></button>
+<button type="button" class="period-chip p-2 rounded-lg bg-[#F8FAFC] border border-[#E2E8F0] text-center" data-period="month" onclick="switchPeriod('month')"><div class="text-[15px] font-bold text-[#0B1430] tnum period-num">64</div><div class="text-[9.5px] font-medium period-lbl" style="color:rgba(30,41,59,0.5)">Month</div></button>
+<button type="button" class="period-chip is-active p-2 rounded-lg bg-[#F8FAFC] border border-[#E2E8F0] text-center" data-period="year" onclick="switchPeriod('year')"><div class="text-[15px] font-bold text-[#0B1430] tnum period-num">142</div><div class="text-[9.5px] font-medium period-lbl" style="color:rgba(30,41,59,0.5)">Year</div></button>
+</div>
+</div>
+</div>
+</div>
+<!-- Row 3: Graphic Workload + SLA per Graphic -->
+<div class="grid grid-cols-1 lg:grid-cols-5 gap-4">
+<!-- Graphic Workload -->
+<div class="lg:col-span-3 bg-white border border-[#E2E8F0] rounded-xl shadow-sm p-5">
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:linear-gradient(135deg,rgba(45,86,210,0.10),rgba(95,203,249,0.10));color:#2D56D2"><svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"/></svg></div>
+<h3 class="text-[14px] font-semibold text-[#0B1430]">Graphic Workload</h3>
+</div>
+<div class="flex items-center gap-2">
+<span id="graphic-focus-pill" class="filter-pill hidden" onclick="focusGraphic(null)"><svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg><span id="graphic-focus-label">All</span></span>
+<span class="text-[11px] px-2 py-0.5 rounded-full bg-[#F1F5F9]" style="color:rgba(30,41,59,0.55)">7 graphics</span>
+</div>
+</div>
+<div class="collapse-body" id="gw-body">
+<div class="text-[10.5px] mb-2" style="color:rgba(30,41,59,0.55)">คลิกแถวเพื่อ focus, คลิก status chip ด้านบนเพื่อ highlight column</div>
+<div class="overflow-x-auto">
+<table class="w-full text-[12px]">
+<thead><tr class="text-[10px] uppercase tracking-wide border-b border-[#E2E8F0]" style="color:rgba(30,41,59,0.5)">
+<th class="pb-2 pr-2 text-left font-medium">Graphic</th>
+<th class="pb-2 px-1 text-center font-medium">To Do</th>
+<th class="pb-2 px-1 text-center font-medium">On Process</th>
+<th class="pb-2 px-1 text-center font-medium">Revise</th>
+<th class="pb-2 px-1 text-center font-medium">Final Render</th>
+<th class="pb-2 px-1 text-center font-medium">Done</th>
+<th class="pb-2 pl-1 text-center font-medium">Total</th>
+</tr></thead>
+<tbody id="gw-tbody"></tbody>
+</table>
+</div>
+</div>
+</div>
+<!-- SLA per Graphic -->
+<div class="lg:col-span-2 bg-white border border-[#E2E8F0] rounded-xl shadow-sm p-5">
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:linear-gradient(135deg,rgba(16,185,129,0.10),rgba(5,150,105,0.10));color:#059669"><svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
+<h3 class="text-[14px] font-semibold text-[#0B1430]">SLA per Graphic</h3>
+</div>
+<select id="sla-graphic" class="h-8 pl-2.5 pr-7 bg-white border border-[#E2E8F0] rounded-lg text-[12px]" onchange="switchSLAGraphic(this.value)" style="appearance:none;background-image:url('data:image/svg+xml;utf8,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2210%22 height=%2210%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%236b7280%22 stroke-width=%222%22&gt;&lt;path d=%22M6 9l6 6 6-6%22/&gt;&lt;/svg&gt;');background-repeat:no-repeat;background-position:right 6px center"></select>
+</div>
+<div class="collapse-body" id="sla-body">
+<!-- Period chips -->
+<div class="grid grid-cols-4 gap-1.5 mb-3">
+<button type="button" class="sla-period-chip px-2 py-1.5 text-[11px] font-medium" data-period="day" onclick="switchSLAPeriod('day')">Day</button>
+<button type="button" class="sla-period-chip px-2 py-1.5 text-[11px] font-medium" data-period="week" onclick="switchSLAPeriod('week')">Week</button>
+<button type="button" class="sla-period-chip px-2 py-1.5 text-[11px] font-medium" data-period="month" onclick="switchSLAPeriod('month')">Month</button>
+<button type="button" class="sla-period-chip is-active px-2 py-1.5 text-[11px] font-medium" data-period="year" onclick="switchSLAPeriod('year')">Year</button>
+</div>
+<!-- Aggregate SLA summary (clickable to toggle chart series) -->
+<div class="text-[10.5px] mb-2" style="color:rgba(30,41,59,0.55)">คลิก card เพื่อ filter เส้นใน chart</div>
+<div class="grid grid-cols-2 gap-2 mb-3">
+<button type="button" class="sla-card is-active p-2 rounded-lg border bg-gradient-to-br from-sky-50 to-white border-sky-200" data-type="fb" onclick="toggleSLACard('fb')">
+<div class="text-[10px] font-semibold uppercase tracking-wide text-sky-700 flex items-center gap-1.5"><span class="w-2 h-2 rounded-sm bg-[#0EA5E9]"></span>Feedback SLA</div>
+<div class="flex items-baseline gap-1.5 mt-0.5"><div class="text-[18px] font-bold text-sky-700 tnum">87%</div><div class="text-[10px] text-rose-600 font-semibold">· 16 overdue</div></div>
+</button>
+<button type="button" class="sla-card is-active p-2 rounded-lg border bg-gradient-to-br from-violet-50 to-white border-violet-200" data-type="prog" onclick="toggleSLACard('prog')">
+<div class="text-[10px] font-semibold uppercase tracking-wide text-violet-700 flex items-center gap-1.5"><span class="w-2 h-2 rounded-sm bg-[#8B5CF6]"></span>Progress SLA</div>
+<div class="flex items-baseline gap-1.5 mt-0.5"><div class="text-[18px] font-bold text-violet-700 tnum">95%</div><div class="text-[10px] text-rose-600 font-semibold">· 5 overdue</div></div>
+</button>
+</div>
+<!-- Line chart -->
+<div id="sla-chart-wrap" class="relative" style="height:220px"></div>
+<div class="mt-2 text-[10px] text-center" style="color:rgba(30,41,59,0.5)">เกณฑ์: <span class="text-emerald-600 font-semibold">≥90% ดี</span> · <span class="text-amber-600 font-semibold">80–89% เฝ้าระวัง</span> · <span class="text-rose-600 font-semibold">&lt;80% เสี่ยง</span></div>
+</div>
+</div>
+</div>
+<!-- Row 4: Export Report -->
+<div class="bg-white border border-[#E2E8F0] rounded-xl shadow-sm">
+<div class="px-6 py-4 border-b border-[#E2E8F0] flex items-center justify-between">
+<div>
+<h3 class="text-[15px] font-semibold text-[#0B1430]">Export Report</h3>
+<p class="text-[12px] mt-0.5" style="color:rgba(30,41,59,0.5)">Filter and export job data to Excel</p>
+</div>
+<button class="h-9 px-4 bg-emerald-600 text-white rounded-lg text-[13px] font-medium hover:bg-emerald-700 inline-flex items-center gap-1.5" onclick="exportExcel()">
+<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24"><path d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span>Export Excel</span>
+</button>
+</div>
+<!-- Filters -->
+<div class="px-6 py-3 border-b border-[#E2E8F0] bg-[#F8FAFC]">
+<div class="flex items-center gap-2 flex-wrap">
+<select class="h-8 pl-2.5 pr-6 bg-white border border-[#E2E8F0] rounded-lg text-[12px]" id="exp-status" onchange="filterExport()" style="appearance:none;background-image:url('data:image/svg+xml;utf8,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2210%22 height=%2210%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%236b7280%22 stroke-width=%222%22&gt;&lt;path d=%22M6 9l6 6 6-6%22/&gt;&lt;/svg&gt;');background-repeat:no-repeat;background-position:right 6px center"><option value="all">All Status</option><option>Unassigned</option><option>To Do</option><option>On Process</option><option>Done</option></select>
+<select class="h-8 pl-2.5 pr-6 bg-white border border-[#E2E8F0] rounded-lg text-[12px]" id="exp-media" onchange="filterExport()" style="appearance:none;background-image:url('data:image/svg+xml;utf8,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2210%22 height=%2210%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%236b7280%22 stroke-width=%222%22&gt;&lt;path d=%22M6 9l6 6 6-6%22/&gt;&lt;/svg&gt;');background-repeat:no-repeat;background-position:right 6px center"><option value="all">All Media</option><option>Metro</option><option>7-Eleven</option><option>POS</option><option>Radio</option></select>
+<select class="h-8 pl-2.5 pr-6 bg-white border border-[#E2E8F0] rounded-lg text-[12px]" id="exp-graphic" onchange="filterExport()" style="appearance:none;background-image:url('data:image/svg+xml;utf8,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2210%22 height=%2210%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%236b7280%22 stroke-width=%222%22&gt;&lt;path d=%22M6 9l6 6 6-6%22/&gt;&lt;/svg&gt;');background-repeat:no-repeat;background-position:right 6px center"><option value="all">All Graphics</option><option>Kitti Pongtep</option><option>Preeya Wongsa</option><option>Napha Saengthong</option><option>Wutti Chaiyaporn</option><option>Pim Kanchanawong</option><option>Somsak Rattanakul</option><option>Anong Thanaphong</option></select>
+<input class="h-8 w-[120px] px-2 bg-white border border-[#E2E8F0] rounded-lg text-[11px]" id="exp-from" onblur="fmtD(this)" onfocus="this.type='date'" placeholder="From dd/mm/yyyy" type="text"/>
+<input class="h-8 w-[120px] px-2 bg-white border border-[#E2E8F0] rounded-lg text-[11px]" id="exp-to" onblur="fmtD(this)" onfocus="this.type='date'" placeholder="To dd/mm/yyyy" type="text"/>
+<span class="text-[11px] ml-2" id="exp-count" style="color:rgba(30,41,59,0.45)">Showing 12 records</span>
+</div>
+</div>
+<!-- Data Table -->
+<div class="overflow-x-auto">
+<table class="w-full text-[12px]">
+<thead class="border-b border-[#E2E8F0]" style="background:rgba(248,250,252,0.8)">
+<tr class="text-[10px] uppercase tracking-wide" style="color:rgba(30,41,59,0.5)">
+<th class="px-4 py-2.5 text-left font-medium">Job No</th>
+<th class="px-4 py-2.5 text-left font-medium">Ticket</th>
+<th class="px-4 py-2.5 text-left font-medium">Client</th>
+<th class="px-4 py-2.5 text-left font-medium">Product</th>
+<th class="px-4 py-2.5 text-left font-medium">Media</th>
+<th class="px-4 py-2.5 text-left font-medium">Graphic</th>
+<th class="px-4 py-2.5 text-left font-medium">Status</th>
+<th class="px-4 py-2.5 text-left font-medium">Feedback SLA</th>
+<th class="px-4 py-2.5 text-left font-medium">Progress SLA</th>
+<th class="px-4 py-2.5 text-left font-medium">Create Date</th>
+</tr>
+</thead>
+<tbody id="exp-tbody"></tbody>
+</table>
+</div>
+</div>
+<script>
+var EXP_DATA = [
+  {job:'JOB-1040-M',tk:'TK-0031',client:'Chang Beer',     product:'Chang Classic 620ml',  media:'Metro',   graphic:'Kitti Pongtep',     status:'On Process', fbSla:'On track', pSla:'In time',  date:'02/05/2026'},
+  {job:'JOB-1040-7',tk:'TK-0031',client:'Chang Beer',     product:'Chang Classic 620ml',  media:'7-Eleven',graphic:'Preeya Wongsa',     status:'On Process', fbSla:'On track', pSla:'In time',  date:'02/05/2026'},
+  {job:'JOB-1040-P',tk:'TK-0031',client:'Chang Beer',     product:'Chang Classic 620ml',  media:'POS',     graphic:'Napha Saengthong',  status:'To Do',      fbSla:'On track', pSla:'-',        date:'02/05/2026'},
+  {job:'JOB-1040-R',tk:'TK-0031',client:'Chang Beer',     product:'Chang Classic 620ml',  media:'Radio',   graphic:'',                  status:'Unassigned', fbSla:'-',        pSla:'-',        date:'02/05/2026'},
+  {job:'JOB-1039-M',tk:'TK-0030',client:'Toyota',         product:'Yaris Ativ 2026',      media:'Metro',   graphic:'Kitti Pongtep',     status:'On Process', fbSla:'On track', pSla:'In time',  date:'01/05/2026'},
+  {job:'JOB-1039-7',tk:'TK-0030',client:'Toyota',         product:'Yaris Ativ 2026',      media:'7-Eleven',graphic:'Napha Saengthong',  status:'To Do',      fbSla:'Overdue',  pSla:'-',        date:'01/05/2026'},
+  {job:'JOB-1038-M',tk:'TK-0029',client:'AIS',            product:'5G Pro Max',            media:'Metro',   graphic:'Preeya Wongsa',     status:'Done',       fbSla:'On track', pSla:'In time',  date:'28/04/2026'},
+  {job:'JOB-1038-7',tk:'TK-0029',client:'AIS',            product:'5G Pro Max',            media:'7-Eleven',graphic:'Wutti Chaiyaporn',  status:'Done',       fbSla:'On track', pSla:'In time',  date:'28/04/2026'},
+  {job:'JOB-1037-7',tk:'TK-0028',client:'Singha',         product:'LEO Beer Summer',       media:'7-Eleven',graphic:'',                  status:'Unassigned', fbSla:'-',        pSla:'-',        date:'25/04/2026'},
+  {job:'JOB-1036-M',tk:'TK-0027',client:'SCB',            product:'SCB Easy 4.0',          media:'Metro',   graphic:'Preeya Wongsa',     status:'On Process', fbSla:'On track', pSla:'Overdue',  date:'22/04/2026'},
+  {job:'JOB-1035-P',tk:'TK-0025',client:'Unilever',       product:'Dove Real Beauty',      media:'POS',     graphic:'Napha Saengthong',  status:'On Process', fbSla:'On track', pSla:'In time',  date:'18/04/2026'},
+  {job:'JOB-1034-M',tk:'TK-0024',client:'TrueMove H',     product:'Summer Promo Digital',  media:'Metro',   graphic:'Pim Kanchanawong',  status:'On Process', fbSla:'Overdue',  pSla:'Overdue',  date:'16/04/2026'},
+];
+
+function fmtD(el){if(el.value){var p=el.value.split('-');if(p.length===3){el.type='text';el.value=p[2]+'/'+p[1]+'/'+p[0];}}else{el.type='text';}}
+
+function filterExport(){
+  var sf=document.getElementById('exp-status').value;
+  var mf=document.getElementById('exp-media').value;
+  var gf=document.getElementById('exp-graphic').value;
+  var rows=EXP_DATA.filter(function(r){
+    if(sf!=='all'&&r.status!==sf) return false;
+    if(mf!=='all'&&r.media!==mf) return false;
+    if(gf!=='all'&&r.graphic!==gf) return false;
+    return true;
+  });
+  document.getElementById('exp-count').textContent='Showing '+rows.length+' records';
+  var tbody=document.getElementById('exp-tbody');
+  if(!rows.length){tbody.innerHTML='<tr><td colspan="10" class="px-4 py-8 text-center text-[12px]" style="color:rgba(30,41,59,0.4)">No records found</td></tr>';return;}
+  var h='';
+  rows.forEach(function(r){
+    var stCls = r.status==='Done'?'bg-emerald-50 text-emerald-700 border-emerald-200':r.status==='On Process'?'bg-blue-50 text-blue-700 border-blue-200':r.status==='To Do'?'bg-amber-50 text-amber-700 border-amber-200':'bg-slate-50 text-slate-600 border-slate-200';
+    var fbCls = r.fbSla==='Overdue'?'text-rose-600 font-semibold':r.fbSla==='On track'?'text-emerald-600':'';
+    var pCls = r.pSla==='Overdue'?'text-rose-600 font-semibold':r.pSla==='In time'?'text-emerald-600':'';
+    h+='<tr class="border-b border-[#F1F5F9] hover:bg-[#F8FAFC]/60">';
+    h+='<td class="px-4 py-2.5 font-mono font-semibold text-[#2D56D2]">'+r.job+'</td>';
+    h+='<td class="px-4 py-2.5 font-mono" style="color:rgba(30,41,59,0.6)">'+r.tk+'</td>';
+    h+='<td class="px-4 py-2.5">'+r.client+'</td>';
+    h+='<td class="px-4 py-2.5">'+r.product+'</td>';
+    h+='<td class="px-4 py-2.5"><span class="px-2 py-0.5 rounded bg-[#F1F5F9] font-medium text-[11px]">'+r.media+'</span></td>';
+    h+='<td class="px-4 py-2.5">'+(r.graphic||'<span style="color:rgba(30,41,59,0.3)">-</span>')+'</td>';
+    h+='<td class="px-4 py-2.5"><span class="text-[11px] px-2 py-0.5 rounded-full font-medium border '+stCls+'">'+r.status+'</span></td>';
+    h+='<td class="px-4 py-2.5 '+fbCls+'">'+r.fbSla+'</td>';
+    h+='<td class="px-4 py-2.5 '+pCls+'">'+r.pSla+'</td>';
+    h+='<td class="px-4 py-2.5 font-mono" style="color:rgba(30,41,59,0.55)">'+r.date+'</td>';
+    h+='</tr>';
+  });
+  tbody.innerHTML=h;
+}
+
+function exportExcel(){
+  var sf=document.getElementById('exp-status').value;
+  var mf=document.getElementById('exp-media').value;
+  var gf=document.getElementById('exp-graphic').value;
+  var rows=EXP_DATA.filter(function(r){
+    if(sf!=='all'&&r.status!==sf) return false;
+    if(mf!=='all'&&r.media!==mf) return false;
+    if(gf!=='all'&&r.graphic!==gf) return false;
+    return true;
+  });
+  var csv='Job No,Ticket,Client,Product,Media,Graphic,Status,Feedback SLA,Progress SLA,Create Date\n';
+  rows.forEach(function(r){csv+=r.job+','+r.tk+','+r.client+','+r.product+','+r.media+','+(r.graphic||'-')+','+r.status+','+r.fbSla+','+r.pSla+','+r.date+'\n';});
+  var blob=new Blob(['\xEF\xBB\xBF'+csv],{type:'text/csv;charset=utf-8;'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');a.href=url;a.download='media_approval_report.csv';a.click();
+  URL.revokeObjectURL(url);
+  var toast=document.createElement('div');toast.className='fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-[#0B1430] text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3 text-[13px]';
+  toast.innerHTML='<svg class="w-5 h-5 text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg><span>Exported '+rows.length+' records to CSV</span>';
+  document.body.appendChild(toast);setTimeout(function(){toast.style.opacity='0';toast.style.transition='opacity 0.3s';setTimeout(function(){toast.remove();},300);},3000);
+}
+
+filterExport();
+
+/* ========== Dashboard Widgets: Packages, Workload, SLA ========== */
+var PKG_DATA = [
+  { name:'BTS Skytrain',        group:'Transit', tickets:14, jobs:46, color:'#0EA5E9' },
+  { name:'7-Eleven Plus',       group:'Retail',  tickets:12, jobs:38, color:'#10B981' },
+  { name:'Digital MRT',         group:'Transit', tickets:9,  jobs:28, color:'#06B6D4' },
+  { name:'Rama9 Connect',       group:'Digital', tickets:7,  jobs:22, color:'#8B5CF6' },
+  { name:'Metro LED',           group:'Retail',  tickets:5,  jobs:18, color:'#059669' },
+  { name:'Suvarnabhumi DOOH',   group:'Airport', tickets:4,  jobs:14, color:'#F59E0B' }
+];
+
+var GRAPHIC_WORKLOAD = [
+  { name:'Kitti Pongtep',     todo:3, onprocess:5, revise:1, finalrender:2, done:8, fb:96, prog:98 },
+  { name:'Preeya Wongsa',     todo:4, onprocess:8, revise:2, finalrender:1, done:6, fb:88, prog:94 },
+  { name:'Napha Saengthong',  todo:5, onprocess:9, revise:1, finalrender:2, done:4, fb:82, prog:91 },
+  { name:'Wutti Chaiyaporn',  todo:2, onprocess:3, revise:0, finalrender:1, done:7, fb:94, prog:97 },
+  { name:'Pim Kanchanawong',  todo:3, onprocess:6, revise:1, finalrender:1, done:5, fb:90, prog:95 },
+  { name:'Somsak Rattanakul', todo:4, onprocess:2, revise:0, finalrender:1, done:6, fb:78, prog:92 },
+  { name:'Anong Thanaphong',  todo:3, onprocess:7, revise:2, finalrender:0, done:6, fb:85, prog:89 }
+];
+
+function renderPackages(){
+  var el=document.getElementById('pkg-list'); if(!el) return;
+  var maxJobs=Math.max.apply(null, PKG_DATA.map(function(p){return p.jobs;}));
+  var GROUP_BG={Transit:'rgba(14,165,233,0.08)',Retail:'rgba(16,185,129,0.08)',Digital:'rgba(139,92,246,0.08)',Airport:'rgba(245,158,11,0.08)',Classic:'rgba(244,63,94,0.08)'};
+  var GROUP_TXT={Transit:'#0369A1',Retail:'#047857',Digital:'#6D28D9',Airport:'#B45309',Classic:'#BE123C'};
+  var h='';
+  PKG_DATA.forEach(function(p,i){
+    var pct=Math.round((p.jobs/maxJobs)*100);
+    // mock breakdown derived from jobs
+    var todo=Math.round(p.jobs*0.18), proc=Math.round(p.jobs*0.32), rev=Math.round(p.jobs*0.08), fin=Math.round(p.jobs*0.12), done=p.jobs-todo-proc-rev-fin;
+    h+='<div class="pkg-row" data-idx="'+i+'" onclick="togglePackage('+i+')">'+
+      '<div class="flex items-center justify-between mb-1">'+
+        '<div class="flex items-center gap-2 min-w-0">'+
+          '<svg class="w-3 h-3 shrink-0 text-slate-400 transition-transform pkg-chev" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>'+
+          '<span class="text-[10px] px-1.5 py-0.5 rounded font-semibold shrink-0" style="background:'+GROUP_BG[p.group]+';color:'+GROUP_TXT[p.group]+'">'+p.group+'</span>'+
+          '<span class="text-[12.5px] font-medium text-[#0B1430] truncate">'+p.name+'</span>'+
+        '</div>'+
+        '<div class="text-[11.5px] tnum font-semibold shrink-0 ml-2" style="color:rgba(30,41,59,0.7)">'+
+          '<span style="color:'+p.color+'">'+p.tickets+'</span> tickets · <span class="font-bold text-[#0B1430]">'+p.jobs+'</span> jobs'+
+        '</div>'+
+      '</div>'+
+      '<div class="h-2 bg-[#F1F5F9] rounded-full overflow-hidden">'+
+        '<div class="h-full rounded-full bar-anim" style="width:'+pct+'%;background:linear-gradient(90deg,'+p.color+'cc,'+p.color+')"></div>'+
+      '</div>'+
+      '<div class="pkg-detail">'+
+        '<div class="grid grid-cols-5 gap-1.5 text-center text-[10px]">'+
+          '<div class="px-1.5 py-1 rounded bg-amber-50 border border-amber-100"><div class="font-bold text-amber-700 tnum text-[12px]">'+todo+'</div><div class="text-amber-700">To Do</div></div>'+
+          '<div class="px-1.5 py-1 rounded bg-blue-50 border border-blue-100"><div class="font-bold text-blue-700 tnum text-[12px]">'+proc+'</div><div class="text-blue-700">On Process</div></div>'+
+          '<div class="px-1.5 py-1 rounded bg-rose-50 border border-rose-100"><div class="font-bold text-rose-700 tnum text-[12px]">'+rev+'</div><div class="text-rose-700">Revise</div></div>'+
+          '<div class="px-1.5 py-1 rounded bg-indigo-50 border border-indigo-100"><div class="font-bold text-indigo-700 tnum text-[12px]">'+fin+'</div><div class="text-indigo-700">Final Render</div></div>'+
+          '<div class="px-1.5 py-1 rounded bg-emerald-50 border border-emerald-100"><div class="font-bold text-emerald-700 tnum text-[12px]">'+done+'</div><div class="text-emerald-700">Done</div></div>'+
+        '</div>'+
+      '</div>'+
+    '</div>';
+  });
+  el.innerHTML=h;
+}
+
+var AVATAR_GRADIENTS=[
+  'linear-gradient(135deg,#2D56D2,#5FCBF9)',
+  'linear-gradient(135deg,#7C3AED,#A78BFA)',
+  'linear-gradient(135deg,#F59E0B,#FBBF24)',
+  'linear-gradient(135deg,#10B981,#34D399)',
+  'linear-gradient(135deg,#EF4444,#FB923C)',
+  'linear-gradient(135deg,#0EA5E9,#22D3EE)',
+  'linear-gradient(135deg,#EC4899,#F472B6)'
+];
+function renderGraphicWorkload(){
+  var el=document.getElementById('gw-tbody'); if(!el) return;
+  var h='';
+  GRAPHIC_WORKLOAD.forEach(function(g,i){
+    var total=g.todo+g.onprocess+g.revise+g.finalrender+g.done;
+    var initials=g.name.split(' ').map(function(s){return s.charAt(0);}).join('').substring(0,2).toUpperCase();
+    var rowBg=i%2===0?'':'bg-[#FBFCFE]';
+    function cell(v,bg,tx,statusKey){return '<td class="py-2 px-1 text-center"><span class="gw-cell inline-flex items-center justify-center min-w-[28px] px-1.5 py-0.5 rounded font-semibold tnum '+bg+' '+tx+'" data-status="'+statusKey+'">'+v+'</span></td>';}
+    h+='<tr class="gw-row border-b border-[#F1F5F9] hover:bg-[#F0F7FF]/40 cursor-pointer '+rowBg+'" data-name="'+g.name+'" onclick="focusGraphic(\''+g.name+'\')">'+
+      '<td class="py-2 pr-2">'+
+        '<div class="flex items-center gap-2">'+
+          '<div class="w-7 h-7 rounded-full flex items-center justify-center text-[10.5px] font-bold text-white shrink-0 shadow-sm" style="background:'+AVATAR_GRADIENTS[i%AVATAR_GRADIENTS.length]+'">'+initials+'</div>'+
+          '<span class="text-[12px] font-medium text-[#0B1430] whitespace-nowrap">'+g.name+'</span>'+
+        '</div>'+
+      '</td>'+
+      cell(g.todo,'bg-amber-50','text-amber-700','To Do')+
+      cell(g.onprocess,'bg-blue-50','text-blue-700','On Process')+
+      cell(g.revise,'bg-rose-50','text-rose-700','Revise')+
+      cell(g.finalrender,'bg-indigo-50','text-indigo-700','Final Render')+
+      cell(g.done,'bg-emerald-50','text-emerald-700','Done')+
+      '<td class="py-2 pl-1 text-center"><span class="font-bold text-[#0B1430] tnum text-[13px]">'+total+'</span></td>'+
+    '</tr>';
+  });
+  el.innerHTML=h;
+}
+
+var _slaMode='both'; // 'fb' | 'prog' | 'both'
+var _slaPeriod='year'; // 'day' | 'week' | 'month' | 'year'
+var _slaGraphic='all'; // 'all' | graphic name
+
+var SLA_PERIOD_LABELS={
+  day:   ['09','10','11','12','13','14','15','16','17','18'],
+  week:  ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
+  month: (function(){var a=[];for(var i=1;i<=30;i++){a.push(i%5===1||i===30?String(i):'');}return a;})(),
+  year:  ['Jun','Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar','Apr','May']
+};
+
+function _slaSeries(graphicName, period, key){
+  var labels=SLA_PERIOD_LABELS[period];
+  var base;
+  if(graphicName==='all'){
+    var sum=0; GRAPHIC_WORKLOAD.forEach(function(g){ sum+=g[key]; });
+    base=sum/GRAPHIC_WORKLOAD.length;
+  } else {
+    var g=GRAPHIC_WORKLOAD.find(function(x){return x.name===graphicName;});
+    base=g?g[key]:90;
+  }
+  var seed=(graphicName+'-'+period+'-'+key).split('').reduce(function(a,c){return a+c.charCodeAt(0);},0);
+  return labels.map(function(_,i){
+    var noise=Math.sin(seed*0.13+i*1.7)*5 + Math.cos(seed*0.07+i*0.9)*3;
+    var v=Math.max(62,Math.min(100,Math.round(base+noise)));
+    return v;
+  });
+}
+
+function populateSLAGraphicSelect(){
+  var sel=document.getElementById('sla-graphic'); if(!sel) return;
+  var h='<option value="all">ทุกคน (เฉลี่ย)</option>';
+  GRAPHIC_WORKLOAD.forEach(function(g){
+    h+='<option value="'+g.name+'">'+g.name+'</option>';
+  });
+  sel.innerHTML=h;
+  sel.value=_slaGraphic;
+}
+
+function switchSLAPeriod(p){
+  _slaPeriod=p;
+  document.querySelectorAll('.sla-period-chip').forEach(function(c){
+    c.classList.toggle('is-active', c.getAttribute('data-period')===p);
+  });
+  renderSLAChart();
+}
+
+function switchSLAGraphic(name){
+  _slaGraphic=name||'all';
+  var sel=document.getElementById('sla-graphic'); if(sel) sel.value=_slaGraphic;
+  renderSLAChart();
+}
+
+function renderSLAChart(){
+  var wrap=document.getElementById('sla-chart-wrap'); if(!wrap) return;
+  var labels=SLA_PERIOD_LABELS[_slaPeriod];
+  var fbVals=_slaSeries(_slaGraphic,_slaPeriod,'fb');
+  var progVals=_slaSeries(_slaGraphic,_slaPeriod,'prog');
+  var W=wrap.clientWidth||520, H=220;
+  var pad={t:14,r:14,b:34,l:30};
+  var iw=W-pad.l-pad.r, ih=H-pad.t-pad.b;
+  var n=labels.length;
+  var xStep=n>1?iw/(n-1):0;
+  function xAt(i){ return pad.l+i*xStep; }
+  function yAt(v){ return pad.t+(1-(v-50)/50)*ih; } // 50–100 range
+  function buildPath(arr){
+    var d='';
+    arr.forEach(function(v,i){
+      var x=xAt(i), y=yAt(v);
+      d+=(i===0?'M':'L')+x.toFixed(1)+','+y.toFixed(1)+' ';
+    });
+    return d.trim();
+  }
+  function buildArea(arr){
+    var d=buildPath(arr);
+    if(!d) return '';
+    return d+' L'+xAt(n-1).toFixed(1)+','+(pad.t+ih).toFixed(1)+' L'+xAt(0).toFixed(1)+','+(pad.t+ih).toFixed(1)+' Z';
+  }
+  var grids=[100,90,80,70,60,50];
+  var gridSvg='';
+  grids.forEach(function(v){
+    var y=yAt(v);
+    gridSvg+='<line class="grid-line" x1="'+pad.l+'" x2="'+(W-pad.r)+'" y1="'+y.toFixed(1)+'" y2="'+y.toFixed(1)+'"/>';
+    gridSvg+='<text x="'+(pad.l-6)+'" y="'+(y+3).toFixed(1)+'" text-anchor="end">'+v+'%</text>';
+  });
+  var xLabels='';
+  labels.forEach(function(lab,i){
+    var x=xAt(i);
+    xLabels+='<text x="'+x.toFixed(1)+'" y="'+(H-pad.b+14).toFixed(1)+'" text-anchor="middle">'+lab+'</text>';
+  });
+  var y90=yAt(90);
+  var thresh='<line x1="'+pad.l+'" x2="'+(W-pad.r)+'" y1="'+y90.toFixed(1)+'" y2="'+y90.toFixed(1)+'" stroke="#10B981" stroke-width="1" stroke-dasharray="4 4" opacity=".6"/>';
+  var defs='<defs>'+
+    '<linearGradient id="fbGrad" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#0EA5E9" stop-opacity=".25"/><stop offset="100%" stop-color="#0EA5E9" stop-opacity="0"/></linearGradient>'+
+    '<linearGradient id="progGrad" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#8B5CF6" stop-opacity=".25"/><stop offset="100%" stop-color="#8B5CF6" stop-opacity="0"/></linearGradient>'+
+  '</defs>';
+  var fbPath=buildPath(fbVals), progPath=buildPath(progVals);
+  var fbArea=buildArea(fbVals), progArea=buildArea(progVals);
+  var areas='<path class="sla-area sla-fb" d="'+fbArea+'" fill="url(#fbGrad)"/>'+
+            '<path class="sla-area sla-prog" d="'+progArea+'" fill="url(#progGrad)"/>';
+  var lines='<path class="sla-line sla-fb" d="'+fbPath+'" stroke="#0EA5E9"/>'+
+            '<path class="sla-line sla-prog" d="'+progPath+'" stroke="#8B5CF6"/>';
+  var dotsFB='', dotsP='';
+  labels.forEach(function(lab,i){
+    var x=xAt(i);
+    dotsFB+='<circle class="sla-dot sla-fb" data-i="'+i+'" data-type="fb" cx="'+x.toFixed(1)+'" cy="'+yAt(fbVals[i]).toFixed(1)+'" r="4" fill="#fff" stroke="#0EA5E9" stroke-width="2"/>';
+    dotsP +='<circle class="sla-dot sla-prog" data-i="'+i+'" data-type="prog" cx="'+x.toFixed(1)+'" cy="'+yAt(progVals[i]).toFixed(1)+'" r="4" fill="#fff" stroke="#8B5CF6" stroke-width="2"/>';
+  });
+  var svg='<svg class="sla-svg" width="100%" height="'+H+'" viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="none">'+
+    defs+gridSvg+thresh+areas+lines+dotsFB+dotsP+xLabels+
+  '</svg>';
+  wrap.innerHTML=svg+'<div class="sla-tooltip" id="sla-tip"></div>';
+  var tip=document.getElementById('sla-tip');
+  wrap.querySelectorAll('.sla-dot').forEach(function(d){
+    d.addEventListener('mouseenter',function(){
+      var i=+this.getAttribute('data-i'), type=this.getAttribute('data-type');
+      var label=type==='fb'?'Feedback SLA':'Progress SLA';
+      var val=type==='fb'?fbVals[i]:progVals[i];
+      tip.innerHTML='<div style="opacity:.7;font-size:10px">'+labels[i]+'</div>'+label+': <b>'+val+'%</b>';
+      var rect=wrap.getBoundingClientRect();
+      var cb=this.getBoundingClientRect();
+      tip.style.left=(cb.left-rect.left+cb.width/2)+'px';
+      tip.style.top=(cb.top-rect.top)+'px';
+      tip.classList.add('is-show');
+    });
+    d.addEventListener('mouseleave',function(){ tip.classList.remove('is-show'); });
+  });
+  // Update summary cards (avg of current view)
+  var fbAvg=Math.round(fbVals.reduce(function(a,b){return a+b;},0)/fbVals.length);
+  var pAvg =Math.round(progVals.reduce(function(a,b){return a+b;},0)/progVals.length);
+  var fbCard=document.querySelector('.sla-card[data-type="fb"] .tnum');
+  var pCard =document.querySelector('.sla-card[data-type="prog"] .tnum');
+  if(fbCard) fbCard.textContent=fbAvg+'%';
+  if(pCard)  pCard.textContent =pAvg+'%';
+  applySLAMode();
+}
+
+function toggleSLACard(type){
+  var cards=document.querySelectorAll('.sla-card');
+  var clicked=document.querySelector('.sla-card[data-type="'+type+'"]');
+  if(!clicked) return;
+  clicked.classList.toggle('is-active');
+  // ensure at least one stays active — if user turns both off, restore both
+  var anyActive=Array.prototype.some.call(cards,function(c){return c.classList.contains('is-active');});
+  if(!anyActive){ cards.forEach(function(c){c.classList.add('is-active');}); }
+  var fbOn=document.querySelector('.sla-card[data-type="fb"]').classList.contains('is-active');
+  var pOn=document.querySelector('.sla-card[data-type="prog"]').classList.contains('is-active');
+  _slaMode=(fbOn&&pOn)?'both':(fbOn?'fb':'prog');
+  applySLAMode();
+}
+
+function applySLAMode(){
+  var fbEls=document.querySelectorAll('.sla-fb');
+  var pEls=document.querySelectorAll('.sla-prog');
+  fbEls.forEach(function(e){ e.classList.toggle('sla-hidden', _slaMode==='prog'); });
+  pEls.forEach(function(e){ e.classList.toggle('sla-hidden', _slaMode==='fb'); });
+  // re-trigger draw animation
+  document.querySelectorAll('.sla-line').forEach(function(l){
+    if(!l.classList.contains('sla-hidden')){
+      l.classList.remove('is-drawing'); void l.offsetWidth; l.classList.add('is-drawing');
+    }
+  });
+}
+
+/* ========== Interactive handlers ========== */
+var _activeStatus=null, _activeGraphic=null;
+
+function filterByStatus(status){
+  if(_activeStatus===status) status=null;
+  _activeStatus=status;
+  // chip active states
+  document.querySelectorAll('.status-chip').forEach(function(c){
+    c.classList.remove('is-active','is-dim');
+    if(status){ if(c.getAttribute('data-status')===status) c.classList.add('is-active'); else c.classList.add('is-dim'); }
+  });
+  // highlight matching column cells in workload table
+  document.querySelectorAll('.gw-cell').forEach(function(c){
+    c.classList.remove('is-dim','is-hot');
+    if(status){ if(c.getAttribute('data-status')===status) c.classList.add('is-hot'); else c.classList.add('is-dim'); }
+  });
+  // filter pill
+  var pill=document.getElementById('status-filter-pill');
+  var lbl=document.getElementById('status-filter-label');
+  if(status){ pill.classList.remove('hidden'); lbl.textContent='Filter: '+status; }
+  else{ pill.classList.add('hidden'); }
+}
+
+function focusGraphic(name){
+  if(_activeGraphic===name) name=null;
+  _activeGraphic=name;
+  // workload row state
+  document.querySelectorAll('.gw-row').forEach(function(r){
+    r.classList.remove('is-active','is-dim');
+    if(name){ if(r.getAttribute('data-name')===name) r.classList.add('is-active'); else r.classList.add('is-dim'); }
+  });
+  // sync SLA chart to focused graphic
+  switchSLAGraphic(name||'all');
+  // filter pill
+  var pill=document.getElementById('graphic-focus-pill');
+  var lbl=document.getElementById('graphic-focus-label');
+  if(name){ pill.classList.remove('hidden'); lbl.textContent='Focus: '+name; }
+  else{ pill.classList.add('hidden'); }
+}
+
+function togglePackage(i){
+  var rows=document.querySelectorAll('.pkg-row');
+  var target=rows[i]; if(!target) return;
+  var wasActive=target.classList.contains('is-active');
+  rows.forEach(function(r){ r.classList.remove('is-active'); var ch=r.querySelector('.pkg-chev'); if(ch) ch.style.transform=''; });
+  if(!wasActive){ target.classList.add('is-active'); var ch=target.querySelector('.pkg-chev'); if(ch) ch.style.transform='rotate(90deg)'; }
+}
+
+function switchPeriod(p){
+  document.querySelectorAll('.period-chip').forEach(function(c){
+    c.classList.remove('is-active');
+    if(c.getAttribute('data-period')===p) c.classList.add('is-active');
+  });
+  // Update KPIs to reflect period (mock data)
+  var SCOPE={
+    today:{tk:3, jb:9,  avg:'3.0', gr:5},
+    week: {tk:9, jb:28, avg:'3.1', gr:7},
+    month:{tk:22,jb:64, avg:'2.9', gr:7},
+    year: {tk:48,jb:142,avg:'3.0', gr:7}
+  };
+  var s=SCOPE[p]||SCOPE.year;
+  animateNum('kpi-tk',s.tk); animateNum('kpi-jb',s.jb);
+  document.getElementById('kpi-avg').textContent=s.avg;
+  animateNum('kpi-gr',s.gr);
+}
+
+function animateNum(id,target){
+  var el=document.getElementById(id); if(!el) return;
+  var start=parseFloat((el.textContent||'0').replace(/,/g,''))||0;
+  var dur=500, t0=performance.now();
+  function tick(now){
+    var p=Math.min(1,(now-t0)/dur);
+    var v=Math.round(start+(target-start)*(1-Math.pow(1-p,3)));
+    el.textContent=v;
+    if(p<1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+
+function toggleCollapse(bodyId,btn){
+  var body=document.getElementById(bodyId); if(!body) return;
+  body.classList.toggle('is-collapsed');
+  if(btn) btn.classList.toggle('is-collapsed');
+}
+
+function flashCard(el){
+  el.style.transform='scale(0.97)';
+  setTimeout(function(){ el.style.transform=''; },140);
+}
+
+renderPackages();
+renderGraphicWorkload();
+populateSLAGraphicSelect();
+renderSLAChart();
+applySLAMode();
+var _slaResizeT;
+window.addEventListener('resize',function(){ clearTimeout(_slaResizeT); _slaResizeT=setTimeout(renderSLAChart,150); });
+</script>
+    </div>
+
+  </main>
+</div>
+
+<!-- AI Panel -->
+<div id="ai-panel" class="fixed right-0 top-0 bottom-0 w-[420px] bg-white border-l border-surface-200 z-40 flex flex-col translate-x-full transition-transform duration-200" style="box-shadow:-8px 0 30px rgba(11,20,48,0.08)">
+  <div class="h-16 px-5 border-b border-surface-200 flex items-center gap-3">
+    <div class="w-8 h-8 rounded-lg flex items-center justify-center text-white" style="background:linear-gradient(135deg,#2D56D2,#5FCBF9)">
+      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"/></svg>
+    </div>
+    <div class="flex-1">
+      <div class="text-[14px] font-semibold">Plan-B Copilot</div>
+      <div class="text-[11px] flex items-center gap-1" style="color:rgba(30,41,59,0.6)"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>Connected to live CRM data</div>
+    </div>
+    <button onclick="toggleAI()" class="w-8 h-8 rounded-md hover:bg-surface-100 flex items-center justify-center">
+      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+    </button>
+  </div>
+
+  <!-- Messages -->
+  <div id="ai-messages" class="flex-1 overflow-y-auto px-5 py-4 space-y-3">
+    <div><div class="text-[10px] font-medium uppercase tracking-wide mb-1" style="color:rgba(30,41,59,0.5)">Copilot</div><div class="inline-block max-w-[90%] text-[13px] leading-relaxed rounded-xl px-3.5 py-2.5 bg-surface-50 border border-surface-200">Hi — I can summarize occupancy, flag anomalies, draft proposals, or forecast revenue. What are we digging into?</div></div>
+  </div>
+
+  <!-- Suggestions -->
+  <div id="ai-suggestions" class="px-5 pb-2 space-y-2">
+    <div class="text-[10px] uppercase tracking-wide font-semibold" style="color:rgba(30,41,59,0.5)">Try asking</div>
+    <button onclick="aiSend(this.textContent)" class="w-full text-left text-[12px] px-3 py-2 border border-surface-200 rounded-lg hover:border-pb-500 hover:bg-blue-50/30 transition-colors">Forecast May occupancy for BTS inventory</button>
+    <button onclick="aiSend(this.textContent)" class="w-full text-left text-[12px] px-3 py-2 border border-surface-200 rounded-lg hover:border-pb-500 hover:bg-blue-50/30 transition-colors">Summarize this week's claims by severity</button>
+    <button onclick="aiSend(this.textContent)" class="w-full text-left text-[12px] px-3 py-2 border border-surface-200 rounded-lg hover:border-pb-500 hover:bg-blue-50/30 transition-colors">Who are my top 3 clients and where are they underspending?</button>
+    <button onclick="aiSend(this.textContent)" class="w-full text-left text-[12px] px-3 py-2 border border-surface-200 rounded-lg hover:border-pb-500 hover:bg-blue-50/30 transition-colors">Draft a proposal: AIS wants 30-day coverage in Bangkok + Chiang Mai</button>
+  </div>
+
+  <!-- Input -->
+  <div class="p-4 border-t border-surface-200">
+    <div class="rounded-xl bg-white border border-surface-200 focus-within:border-pb-500 transition" style="box-shadow:0 0 0 1px rgba(45,86,210,0.1)">
+      <div class="flex items-end gap-2 p-2">
+        <input id="ai-input" type="text" placeholder="Ask about occupancy, pipeline, claims…" class="flex-1 text-[13px] bg-transparent outline-none px-2 py-1.5 placeholder:opacity-40" onkeydown="if(event.key==='Enter'){event.preventDefault();aiSend()}" />
+        <button onclick="aiSend()" class="w-8 h-8 rounded-md bg-ink-900 hover:bg-ink-700 flex items-center justify-center text-white shrink-0">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 18-8-8 18-2-8-8-2Z"/></svg>
+        </button>
+      </div>
+    </div>
+    <p class="text-[10px] text-center mt-2" style="color:rgba(30,41,59,0.4)">Plan-B Copilot — may hallucinate, verify critical actions</p>
+  </div>
+</div>
+
+<script>
+/* === Expand/collapse sub-menus === */
+function toggleMenu(id){
+  const sub=document.getElementById(id+'-sub');
+  const chevron=document.getElementById(id+'-chevron');
+  if(sub.classList.contains('hidden')){
+    sub.classList.remove('hidden');
+    chevron.classList.add('rotate-90');
+  }else{
+    sub.classList.add('hidden');
+    chevron.classList.remove('rotate-90');
+  }
+}
+
+/* === Mobile sidebar overlay === */
+function toggleMobile(){
+  const sidebar=document.getElementById('sidebar');
+  const overlay=document.getElementById('sidebar-overlay');
+  sidebar.classList.toggle('-translate-x-full');
+  overlay.classList.toggle('hidden');
+}
+
+/* === Desktop collapse sidebar === */
+let _sidebarCollapsed = false;
+function collapseSidebar(){
+  // On mobile, toggle mobile drawer instead
+  if(window.innerWidth < 1024){
+    toggleMobile();
+    return;
+  }
+  _sidebarCollapsed = !_sidebarCollapsed;
+  const sb = document.getElementById('sidebar');
+  const main = document.querySelector('main');
+  const labels = sb.querySelectorAll('.sidebar-label');
+  const groups = sb.querySelectorAll('.sidebar-nav-parent');
+  const subs = sb.querySelectorAll('[id$="-sub"]');
+  const brand = document.getElementById('sidebar-brand');
+
+  if(_sidebarCollapsed){
+    sb.classList.remove('w-64');
+    sb.classList.add('w-[68px]');
+    main.classList.remove('lg:ml-64');
+    main.classList.add('lg:ml-[68px]');
+    labels.forEach(el=>el.classList.add('hidden'));
+    groups.forEach(el=>el.classList.add('hidden'));
+    subs.forEach(el=>el.classList.add('hidden'));
+    if(brand) brand.classList.replace('px-4','px-0');
+    if(brand) brand.classList.add('justify-center');
+  } else {
+    sb.classList.remove('w-[68px]');
+    sb.classList.add('w-64');
+    main.classList.remove('lg:ml-[68px]');
+    main.classList.add('lg:ml-64');
+    labels.forEach(el=>el.classList.remove('hidden'));
+    groups.forEach(el=>el.classList.remove('hidden'));
+    // Re-show sub-menus that were explicitly open (have active items)
+    subs.forEach(el=>{
+      if(el.querySelector('.active')) el.classList.remove('hidden');
+    });
+    if(brand) brand.classList.replace('px-0','px-4');
+    if(brand) brand.classList.remove('justify-center');
+  }
+}
+
+/* === AI Panel === */
+let _aiOpen = false;
+function toggleAI(){
+  _aiOpen = !_aiOpen;
+  const panel = document.getElementById('ai-panel');
+  const btn = document.getElementById('ai-toggle');
+  if(_aiOpen){
+    panel.classList.remove('translate-x-full');
+    btn.classList.remove('bg-white','border-surface-300','text-ink-900','hover:bg-surface-50');
+    btn.classList.add('bg-ink-900','text-white','border-ink-900');
+  } else {
+    panel.classList.add('translate-x-full');
+    btn.classList.remove('bg-ink-900','text-white','border-ink-900');
+    btn.classList.add('bg-white','border-surface-300','text-ink-900','hover:bg-surface-50');
+  }
+}
+
+/* AI demo chat */
+const _aiReplies = [
+  "Based on current data, BTS corridor occupancy is trending at 84% — above the 78% network average. If the pattern holds, May could hit 89% with AIS and TrueMove briefs both targeting Silom.",
+  "This week we have 3 open claims: #1284 (high — LED flicker, 2h remaining SLA), #1282 (critical — content not playing, urgent), and #1283 (med — vinyl peel, within SLA). The critical item needs immediate attention.",
+  "Your top 3 clients YTD: AIS Thailand (฿24.8M, 18 campaigns), TrueMove H (฿18.5M, 14 campaigns), and Toyota Motor (฿15.2M, 9 campaigns). Toyota is underspending on digital LED — they only use 2 of your 5 available LED sites.",
+  "Draft proposal ready: AIS 30-day coverage across 8 Bangkok sites (including Silom LED, Rama IX, Asoke) + 2 Chiang Mai sites. Estimated package: ฿4.2M. Occupancy conflicts on TH-SIL-09 for May 5-12 — recommend offering X-CAYA-FY-1 as substitute.",
+];
+let _aiReplyIdx = 0;
+
+function aiSend(text){
+  const input = document.getElementById('ai-input');
+  const msg = text || input.value.trim();
+  if(!msg) return;
+  input.value = '';
+  document.getElementById('ai-suggestions').style.display='none';
+
+  const box = document.getElementById('ai-messages');
+  // User bubble
+  box.innerHTML += '<div class="text-right"><div class="inline-block max-w-[90%] text-[13px] leading-relaxed rounded-xl px-3.5 py-2.5 bg-ink-900 text-white">'+msg.replace(/</g,'&lt;')+'</div></div>';
+  box.scrollTop = box.scrollHeight;
+
+  // Thinking dots
+  const thinkId = 'ai-think-'+Date.now();
+  box.innerHTML += '<div id="'+thinkId+'" class="flex items-center gap-2 text-[12px]" style="color:rgba(30,41,59,0.6)"><div class="flex gap-1"><span class="w-1.5 h-1.5 bg-pb-500 rounded-full pulse-dot"></span><span class="w-1.5 h-1.5 bg-pb-500 rounded-full pulse-dot" style="animation-delay:.2s"></span><span class="w-1.5 h-1.5 bg-pb-500 rounded-full pulse-dot" style="animation-delay:.4s"></span></div>analyzing CRM data…</div>';
+  box.scrollTop = box.scrollHeight;
+
+  setTimeout(()=>{
+    const el = document.getElementById(thinkId);
+    if(el) el.remove();
+    const reply = _aiReplies[_aiReplyIdx % _aiReplies.length];
+    _aiReplyIdx++;
+    box.innerHTML += '<div><div class="text-[10px] font-medium uppercase tracking-wide mb-1" style="color:rgba(30,41,59,0.5)">Copilot</div><div class="inline-block max-w-[90%] text-[13px] leading-relaxed rounded-xl px-3.5 py-2.5 bg-surface-50 border border-surface-200">'+reply+'</div></div>';
+    box.scrollTop = box.scrollHeight;
+  }, 1500);
+}
+</script>
+</body>
+</html>

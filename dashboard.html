@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — Plan-B CRM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config={theme:{extend:{fontFamily:{kanit:['Kanit','sans-serif']},colors:{pb:{900:'#213268',700:'#2D56D2',500:'#4790FF',300:'#5FCBF9',50:'#EBF5FF',100:'#D6ECFF'},ink:{900:'#0B1430',800:'#162040',700:'#1E293B'},surface:{0:'#FFFFFF',50:'#F8FAFC',100:'#F1F5F9',200:'#E2E8F0',300:'#CBD5E1'}}}}}
+</script>
+<style>
+*{font-family:'Kanit',sans-serif;-webkit-font-smoothing:antialiased}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#CBD5E8;border-radius:10px;border:2px solid #F7F9FC}
+::-webkit-scrollbar-thumb:hover{background:#93A4C4}
+.sidebar-scroll::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.06);border:2px solid transparent}
+.sidebar-scroll::-webkit-scrollbar-track{background:transparent}
+/* Sidebar nav items — White theme */
+.sidebar-nav{color:rgba(30,41,59,0.6);transition:all 0.15s;position:relative;font-size:13px}
+.sidebar-nav:hover{color:#0B1430;background:rgba(71,144,255,0.06)}
+.sidebar-nav.active{color:#2D56D2;font-weight:500;background:linear-gradient(90deg,rgba(71,144,255,0.10),rgba(71,144,255,0))}
+.sidebar-nav.active::before{content:'';position:absolute;left:0;top:8px;bottom:8px;width:3px;border-radius:2px;background:#2D56D2}
+/* Sidebar group headers */
+.sidebar-nav-parent{color:rgba(30,41,59,0.4);transition:all 0.15s;font-size:10.5px;text-transform:uppercase;letter-spacing:0.05em;font-weight:600}
+.sidebar-nav-parent:hover{color:rgba(30,41,59,0.7)}
+.sidebar-nav-parent.active{color:rgba(30,41,59,0.7)}
+/* Sidebar sub-items */
+.sidebar-sub{color:rgba(30,41,59,0.55);transition:all 0.15s;position:relative}
+.sidebar-sub:hover{color:#0B1430;background:rgba(71,144,255,0.06)}
+.sidebar-sub.active{color:#2D56D2;font-weight:500;background:linear-gradient(90deg,rgba(71,144,255,0.10),rgba(71,144,255,0))}
+.sidebar-sub.active::before{content:'';position:absolute;left:0;top:6px;bottom:6px;width:3px;border-radius:2px;background:#2D56D2;box-shadow:0 0 8px rgba(45,86,210,0.4)}
+.sidebar-nav.active::before{box-shadow:0 0 8px rgba(45,86,210,0.4)}
+.sidebar-group-icon{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:8px;background:transparent;transition:all .15s;flex-shrink:0;color:rgba(30,41,59,0.55)}
+.sgi-ma{color:#7C3AED}.sgi-rpt{color:#0EA5E9}.sgi-stg{color:#EF4444}
+.nav-parent{border-radius:8px;transition:all .15s}
+.nav-parent:hover{background:#F1F5F9}
+.nav-parent.active:has(.sgi-ma){background:rgba(124,58,237,0.10);color:#7C3AED}
+.nav-parent.active:has(.sgi-ma) .sidebar-group-icon{background:rgba(124,58,237,0.20)}
+.nav-parent.active:has(.sgi-rpt){background:rgba(14,165,233,0.10);color:#0EA5E9}
+.nav-parent.active:has(.sgi-rpt) .sidebar-group-icon{background:rgba(14,165,233,0.20)}
+.nav-parent.active:has(.sgi-stg){background:rgba(239,68,68,0.10);color:#EF4444}
+.nav-parent.active:has(.sgi-stg) .sidebar-group-icon{background:rgba(239,68,68,0.20)}
+#sidebar{background:linear-gradient(180deg,#fff 0%,#fff 60%,#F8FAFC 100%) !important}
+#sidebar-brand{background:linear-gradient(135deg,rgba(45,86,210,0.04),rgba(95,203,249,0.04))}
+/* nav-item for page content compatibility */
+.nav-item{transition:all 0.2s;border-radius:8px}
+.nav-item:hover,.nav-item.active{background:rgba(71,144,255,0.12);color:#4790FF}
+.nav-parent.active{color:#2D56D2;font-weight:500}
+/* Cards & general UI */
+.card-hover{transition:all 0.2s}
+.card-hover:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(33,50,104,0.12)}
+.badge-pulse{animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.7}}
+.status-dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+input:focus,select:focus,textarea:focus{outline:none;border-color:#4790FF;box-shadow:0 0 0 3px rgba(71,144,255,0.15)}
+.tab-btn{transition:all 0.2s}
+.tab-btn.active{color:#2D56D2;border-bottom:2px solid #2D56D2}
+table th{position:sticky;top:0;z-index:1}
+.progress-bar{transition:width 0.6s ease}
+/* Topbar — White glass */
+.topbar-white{background:rgba(255,255,255,0.9);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid #E2E8F0}
+/* Dashboard extras */
+.tnum{font-variant-numeric:tabular-nums}
+.shine{background:linear-gradient(135deg,#2D56D2,#5FCBF9)}
+.shine-soft{background:linear-gradient(135deg,rgba(71,144,255,0.08),rgba(95,203,249,0.08))}
+.ai-border{box-shadow:0 0 0 1px rgba(45,86,210,0.25),0 2px 8px rgba(45,86,210,0.08)}
+.pulse-dot{animation:pulseDot 2s ease-in-out infinite}
+@keyframes pulseDot{0%,100%{transform:scale(1);opacity:.4}50%{transform:scale(1.5);opacity:0}}
+.map-bg{background:linear-gradient(135deg,#F8FAFC 0%,#EBF5FF 100%)}
+.shadow-pop{box-shadow:0 8px 30px rgba(11,20,48,0.12)}
+.shadow-card{box-shadow:0 1px 3px rgba(11,20,48,0.06),0 1px 2px rgba(11,20,48,0.04)}
+/* Sidebar collapse label */
+.sidebar-label{transition:opacity 0.15s;white-space:nowrap;overflow:hidden}
+</style>
+<script src="shared/sidebar.js"></script>
+</head>
+<body class="font-kanit" style="background:#F7F9FC;color:#0B1430">
+
+<div class="min-h-screen flex">
+  <!-- SIDEBAR — Clean White -->
+  <!-- Mobile overlay -->
+  <div id="sidebar-overlay" class="hidden fixed inset-0 bg-black/40 z-20 lg:hidden" onclick="toggleMobile()"></div>
+  <aside id="sidebar" class="w-64 flex flex-col fixed h-full z-30 transition-all duration-200 -translate-x-full lg:translate-x-0 bg-white border-r border-[#E2E8F0]">
+    <!-- Brand -->
+    <div class="px-4 h-16 flex items-center gap-2.5 border-b border-[#E2E8F0]" id="sidebar-brand">
+      <div class="sidebar-label flex items-center gap-2 min-w-0">
+        <img src="logo.jpg" alt="Plan-B Media" class="h-8 w-auto rounded shrink-0" />
+        <span class="text-[11px] font-semibold tracking-wide uppercase border-l border-[#E2E8F0] pl-2 truncate" style="color:rgba(30,41,59,0.55)">Media Flow System</span>
+      </div>
+    </div>
+    <!-- Nav -->
+    <nav class="flex-1 py-3 px-2 overflow-y-auto text-sm sidebar-scroll space-y-0.5">
+
+      <!-- Dashboard -->
+      <a href="dashboard.html" class="active sidebar-nav w-full flex items-center gap-3 h-10 rounded-md px-3 cursor-pointer" data-page="dashboard">
+        <svg class="w-[18px] h-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25a2.25 2.25 0 01-2.25-2.25v-2.25z" /></svg>
+        <span class="flex-1 text-left truncate sidebar-label">Dashboard</span>
+      </a>
+
+      <!-- Inventory -->
+      <a href="inventory.html" class=" sidebar-nav w-full flex items-center gap-3 h-10 rounded-md px-3 cursor-pointer">
+        <svg class="w-[18px] h-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" /></svg>
+        <span class="flex-1 text-left truncate sidebar-label">Inventory</span>
+      </a>
+
+      <!-- Sale -->
+      <a href="sale.html" class=" sidebar-nav w-full flex items-center gap-3 h-10 rounded-md px-3 cursor-pointer">
+        <svg class="w-[18px] h-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z" /></svg>
+        <span class="flex-1 text-left truncate sidebar-label">Sale</span>
+      </a>
+
+      <!-- Media Approval (Expandable) -->
+      <div class="pt-3">
+        <button onclick="toggleMenu('ma')" class="nav-parent sidebar-nav-parent w-full flex items-center gap-3 h-8 px-3 cursor-pointer text-left">
+          <span class="sidebar-group-icon sgi-ma"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></span><span class="flex-1 text-left">Media Approval</span>
+          <svg id="ma-chevron" class="w-3 h-3 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" /></svg>
+        </button>
+        <div id="ma-sub" class="space-y-0.5 hidden">
+          <a href="ma-dashboard.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Dashboard</span>
+          </a>
+          <a href="job-list.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Media Ticket</span>
+            <span class="text-[10px] bg-pb-500 text-white rounded-full px-1.5 min-w-[18px] text-center">12</span>
+          </a>
+          <a href="assign-job.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Assign Ticket</span>
+            <span class="text-[10px] bg-amber-500 text-white rounded-full px-1.5 min-w-[18px] text-center">5</span>
+          </a>
+          <a href="receive-job.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Verify & Production</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Production -->
+      <a href="production.html" class=" sidebar-nav w-full flex items-center gap-3 h-10 rounded-md px-3 cursor-pointer">
+        <svg class="w-[18px] h-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17l-5.1-5.1a2.25 2.25 0 010-3.182l.71-.71a2.25 2.25 0 013.18 0l2.8 2.8 2.8-2.8a2.25 2.25 0 013.18 0l.71.71a2.25 2.25 0 010 3.182l-5.1 5.1a2.25 2.25 0 01-3.18 0z" /></svg>
+        <span class="flex-1 text-left truncate sidebar-label">Production</span>
+      </a>
+
+      <!-- Claim -->
+      <a href="claim.html" class=" sidebar-nav w-full flex items-center gap-3 h-10 rounded-md px-3 cursor-pointer">
+        <svg class="w-[18px] h-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z" /></svg>
+        <span class="flex-1 text-left truncate sidebar-label">Claim</span>
+      </a>
+
+      <!-- Report (Expandable) -->
+      <div class="pt-3">
+        <button onclick="toggleMenu('rpt')" class="nav-parent sidebar-nav-parent w-full flex items-center gap-3 h-8 px-3 cursor-pointer text-left">
+          <span class="sidebar-group-icon sgi-rpt"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg></span><span class="flex-1 text-left">Report</span>
+          <svg id="rpt-chevron" class="w-3 h-3 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" /></svg>
+        </button>
+        <div id="rpt-sub" class="space-y-0.5 hidden">
+          <a href="kpi-dashboard.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">KPI Dashboard</span>
+          </a>
+          <a href="export-airtime.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Export Airtime</span>
+          </a>
+          <a href="report-monthly.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Monthly Report</span>
+          </a>
+          <a href="report-audit.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Audit Log</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Setting (Expandable) -->
+      <div class="pt-3">
+        <button onclick="toggleMenu('stg')" class="nav-parent sidebar-nav-parent w-full flex items-center gap-3 h-8 px-3 cursor-pointer text-left">
+          <span class="sidebar-group-icon sgi-stg"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.93.398.164.855.142 1.205-.108l.737-.527a1.125 1.125 0 011.45.12l.773.774c.39.389.44 1.002.12 1.45l-.527.737c-.25.35-.272.806-.107 1.204.165.397.505.71.93.78l.893.15c.543.09.94.56.94 1.109v1.094c0 .55-.397 1.02-.94 1.11l-.893.149c-.425.07-.765.383-.93.78-.165.398-.143.854.107 1.204l.527.738c.32.447.269 1.06-.12 1.45l-.774.773a1.125 1.125 0 01-1.449.12l-.738-.527c-.35-.25-.806-.272-1.203-.107-.398.165-.71.505-.781.929l-.149.894c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.019-.398-1.11-.94l-.148-.894c-.071-.424-.384-.764-.781-.93-.398-.164-.854-.142-1.204.108l-.738.527c-.447.32-1.06.269-1.45-.12l-.773-.774a1.125 1.125 0 01-.12-1.45l.527-.737c.25-.35.273-.806.108-1.204-.165-.397-.505-.71-.93-.78l-.894-.15c-.542-.09-.94-.56-.94-1.109v-1.094c0-.55.398-1.02.94-1.11l.894-.149c.424-.07.765-.383.93-.78.165-.398.143-.854-.107-1.204l-.527-.738a1.125 1.125 0 01.12-1.45l.773-.773a1.125 1.125 0 011.45-.12l.737.527c.35.25.807.272 1.204.107.397-.165.71-.505.78-.929l.15-.894zM15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg></span><span class="flex-1 text-left">Setting</span>
+          <svg id="stg-chevron" class="w-3 h-3 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" /></svg>
+        </button>
+        <div id="stg-sub" class="space-y-0.5 hidden">
+          <a href="settings-user.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">User Management</span>
+          </a>
+          <a href="settings-usergroup.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">User Group Management</span>
+          </a>
+          <a href="settings-email.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Email Setup</span>
+          </a>
+          <a href="settings-master.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Master Data</span>
+          </a>
+        </div>
+      </div>
+
+    </nav>
+
+    <!-- User Footer -->
+    <div class="p-3 border-t border-[#E2E8F0]">
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-full flex items-center justify-center text-white font-semibold text-[13px] shrink-0" style="background:#4790FF">RK</div>
+        <div class="flex-1 min-w-0 sidebar-label">
+          <div class="text-[13px] font-medium text-[#0B1430] truncate">Raveewan Kaewmanee</div>
+          <div class="text-[11px] truncate" style="color:rgba(30,41,59,0.5)">Admin · Plan-B</div>
+        </div>
+        <a href="login.html" class="transition sidebar-label hover:opacity-80" style="color:rgba(30,41,59,0.4)" title="ออกจากระบบ">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" /></svg>
+        </a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="flex-1 lg:ml-64 min-h-screen">
+    <!-- Top Bar — White Glass -->
+    <header class="topbar-white h-16 shrink-0 sticky top-0 z-20 flex items-center gap-4 px-4 sm:px-6">
+      <!-- Collapse / Mobile toggle -->
+      <button onclick="collapseSidebar()" class="w-9 h-9 rounded-md hover:bg-surface-100 flex items-center justify-center text-ink-700">
+        <svg class="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" /></svg>
+      </button>
+
+      <!-- Breadcrumbs -->
+      <div class="flex items-center gap-1.5 text-[13px]" style="color:rgba(30,41,59,0.6)">
+        <span>Home</span>
+        <svg class="w-3 h-3 opacity-30" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
+        <span class="font-medium" style="color:#0B1430">Dashboard</span>
+      </div>
+
+      <div class="flex-1"></div>
+
+      <!-- Notification -->
+      <button class="w-9 h-9 rounded-md hover:bg-surface-100 flex items-center justify-center relative" style="color:#1E293B">
+        <svg class="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" /></svg>
+        <span class="absolute top-2 right-2 w-2 h-2 bg-rose-500 rounded-full"></span>
+      </button>
+
+      <!-- Ask AI -->
+      <button id="ai-toggle" onclick="toggleAI()" class="h-9 px-3 rounded-lg border flex items-center gap-2 text-[13px] font-medium transition-colors bg-white border-surface-300 text-ink-900 hover:bg-surface-50">
+        <svg class="w-[15px] h-[15px]" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"/></svg>
+        <span>Ask AI</span>
+      </button>
+    </header>
+
+    <!-- Page Content -->
+    <div class="p-3 sm:p-6">
+    <div class="p-4 sm:p-6 space-y-6 max-w-[1600px] mx-auto">
+<!-- ═══════════════ 1. HERO STRIP ═══════════════ -->
+<div class="relative overflow-hidden rounded-2xl border border-surface-200" style="background:#0B1430;color:#fff">
+<div class="absolute inset-0 opacity-40" style="background:radial-gradient(800px 300px at 80% 0%,rgba(95,203,249,.35),transparent 60%),radial-gradient(600px 300px at 0% 100%,rgba(71,144,255,.25),transparent 60%)"></div>
+<div class="relative p-6 grid grid-cols-1 lg:grid-cols-4 gap-6">
+<!-- Left: Greeting -->
+<div class="lg:col-span-2">
+<div class="text-[11px] uppercase tracking-wider font-semibold mb-2" style="color:#5FCBF9">
+<span id="hero-date"></span>
+</div>
+<h1 class="text-[28px] sm:text-[30px] font-semibold tracking-tight leading-tight">Good afternoon, ravewan.</h1>
+<p class="text-[14px] mt-1 max-w-lg" style="color:rgba(255,255,255,0.7)">
+        Your inventory is <span class="font-medium" style="color:#5FCBF9">78.3% full</span> this month — above forecast. Copilot flagged
+        <span class="font-medium" style="color:#FCD34D"> 2 anomalies</span> and drafted
+        <span class="font-medium text-white"> 3 reports</span> for you.
+      </p>
+<div class="flex flex-wrap gap-2 mt-4">
+<button class="h-9 px-4 bg-white rounded-lg text-[13px] font-medium inline-flex items-center gap-2 hover:bg-blue-50" style="color:#0B1430">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24"><path d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</button>
+<button class="h-9 px-4 rounded-lg text-[13px] font-medium inline-flex items-center gap-2 border" style="background:rgba(255,255,255,0.1);color:#fff;border-color:rgba(255,255,255,0.15)">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M12 4.5v15m7.5-7.5h-15" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</button>
+</div>
+</div>
+<!-- Right: Live signals -->
+<div class="lg:col-span-2 space-y-3">
+<div class="text-[10px] uppercase tracking-wider font-semibold" style="color:rgba(255,255,255,0.5)">Live signal</div>
+<!-- Signal 1 -->
+<div class="flex items-center gap-3 p-3 rounded-lg border" style="background:rgba(255,255,255,0.05);border-color:rgba(255,255,255,0.1);backdrop-filter:blur(4px)">
+<div class="w-7 h-7 rounded-md flex items-center justify-center" style="background:rgba(255,255,255,0.1);color:#5FCBF9">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24"><path d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</div>
+<div class="flex-1 min-w-0">
+<div class="text-[11px]" style="color:rgba(255,255,255,0.6)">Rama IX LED</div>
+<div class="text-[13px] font-medium truncate">100% sold-out through May</div>
+</div>
+<div class="text-[11px] hidden lg:block" style="color:rgba(255,255,255,0.5)">+฿2.4M uplift possible</div>
+</div>
+<!-- Signal 2 -->
+<div class="flex items-center gap-3 p-3 rounded-lg border" style="background:rgba(255,255,255,0.05);border-color:rgba(255,255,255,0.1)">
+<div class="w-7 h-7 rounded-md flex items-center justify-center" style="background:rgba(255,255,255,0.1);color:#FCD34D">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24"><path d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</div>
+<div class="flex-1 min-w-0">
+<div class="text-[11px]" style="color:rgba(255,255,255,0.6)">L-BK-BRN-3 install</div>
+<div class="text-[13px] font-medium truncate">SLA at risk</div>
+</div>
+<div class="text-[11px] hidden lg:block" style="color:rgba(255,255,255,0.5)">Crew velocity −23% vs baseline</div>
+</div>
+<!-- Signal 3 -->
+<div class="flex items-center gap-3 p-3 rounded-lg border" style="background:rgba(255,255,255,0.05);border-color:rgba(255,255,255,0.1)">
+<div class="w-7 h-7 rounded-md flex items-center justify-center" style="background:rgba(255,255,255,0.1);color:#6EE7B7">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24"><path d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</div>
+<div class="flex-1 min-w-0">
+<div class="text-[11px]" style="color:rgba(255,255,255,0.6)">AIS spend trajectory</div>
+<div class="text-[13px] font-medium truncate">+18% YoY</div>
+</div>
+<div class="text-[11px] hidden lg:block" style="color:rgba(255,255,255,0.5)">Upsell window opens May 5</div>
+</div>
+</div>
+</div>
+</div>
+<!-- ═══════════════ 2. KPI CARDS ═══════════════ -->
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+<!-- Revenue -->
+<div class="bg-white border border-surface-200 rounded-xl shadow-card p-5">
+<div class="flex items-start justify-between">
+<div class="space-y-1">
+<div class="flex items-center gap-2 text-[12px] font-medium uppercase tracking-wide" style="color:rgba(30,41,59,0.6)">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24"><path d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</div>
+<div class="text-[26px] font-semibold tnum tracking-tight">฿128.4M</div>
+</div>
+<svg class="block" height="36" viewbox="0 0 110 36" width="110">
+<path d="M0,34 L10,30 L20,31 L30,27 L40,22 L50,18 L60,16 L70,14 L80,10 L90,7 L100,4 L110,2 L110,36 L0,36 Z" fill="rgba(71,144,255,.15)"></path>
+<path d="M0,34 L10,30 L20,31 L30,27 L40,22 L50,18 L60,16 L70,14 L80,10 L90,7 L100,4 L110,2" fill="none" stroke="#2D56D2" stroke-width="1.8"></path>
+<circle cx="110" cy="2" fill="#2D56D2" r="2.5"></circle>
+</svg>
+</div>
+<div class="mt-2 flex items-center gap-2">
+<span class="inline-flex items-center gap-1 text-[11px] font-medium px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700">
+<svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</span>
+<span class="text-[11px]" style="color:rgba(30,41,59,0.6)">vs last 30d</span>
+</div>
+</div>
+<!-- Occupancy -->
+<div class="bg-white border border-surface-200 rounded-xl shadow-card p-5">
+<div class="flex items-start justify-between">
+<div class="space-y-1">
+<div class="flex items-center gap-2 text-[12px] font-medium uppercase tracking-wide" style="color:rgba(30,41,59,0.6)">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24"><path d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</div>
+<div class="text-[26px] font-semibold tnum tracking-tight">78.3%</div>
+</div>
+<svg class="block" height="36" viewbox="0 0 110 36" width="110">
+<path d="M0,24 L10,20 L20,18 L30,20 L40,18 L50,14 L60,10 L70,10 L80,8 L90,12 L100,10 L110,10 L110,36 L0,36 Z" fill="rgba(71,144,255,.15)"></path>
+<path d="M0,24 L10,20 L20,18 L30,20 L40,18 L50,14 L60,10 L70,10 L80,8 L90,12 L100,10 L110,10" fill="none" stroke="#2D56D2" stroke-width="1.8"></path>
+<circle cx="110" cy="10" fill="#2D56D2" r="2.5"></circle>
+</svg>
+</div>
+<div class="mt-2 flex items-center gap-2">
+<span class="inline-flex items-center gap-1 text-[11px] font-medium px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700">
+<svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</span>
+<span class="text-[11px]" style="color:rgba(30,41,59,0.6)">vs last 30d</span>
+</div>
+</div>
+<!-- Bookings -->
+<div class="bg-white border border-surface-200 rounded-xl shadow-card p-5">
+<div class="flex items-start justify-between">
+<div class="space-y-1">
+<div class="flex items-center gap-2 text-[12px] font-medium uppercase tracking-wide" style="color:rgba(30,41,59,0.6)">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24"><path d="M20.25 14.15v4.25c0 1.094-.787 2.036-1.872 2.18-2.087.277-4.216.42-6.378.42s-4.291-.143-6.378-.42c-1.085-.144-1.872-1.086-1.872-2.18v-4.25m16.5 0a2.18 2.18 0 00.75-1.661V8.706c0-1.081-.768-2.015-1.837-2.175a48.114 48.114 0 00-3.413-.387m4.5 8.006c-.194.165-.42.295-.673.38A23.978 23.978 0 0112 15.75c-2.648 0-5.195-.429-7.577-1.22a2.016 2.016 0 01-.673-.38m0 0A2.18 2.18 0 013 12.489V8.706c0-1.081.768-2.015 1.837-2.175a48.111 48.111 0 013.413-.387m7.5 0V5.25A2.25 2.25 0 0013.5 3h-3a2.25 2.25 0 00-2.25 2.25v.894m7.5 0a48.667 48.667 0 00-7.5 0M12 12.75h.008v.008H12v-.008z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</div>
+<div class="text-[26px] font-semibold tnum tracking-tight">142</div>
+</div>
+<svg class="block" height="36" viewbox="0 0 110 36" width="110">
+<path d="M0,28 L10,26 L20,22 L30,24 L40,20 L50,14 L60,16 L70,10 L80,12 L90,14 L100,12 L110,12 L110,36 L0,36 Z" fill="rgba(71,144,255,.15)"></path>
+<path d="M0,28 L10,26 L20,22 L30,24 L40,20 L50,14 L60,16 L70,10 L80,12 L90,14 L100,12 L110,12" fill="none" stroke="#4790FF" stroke-width="1.8"></path>
+<circle cx="110" cy="12" fill="#4790FF" r="2.5"></circle>
+</svg>
+</div>
+<div class="mt-2 flex items-center gap-2">
+<span class="inline-flex items-center gap-1 text-[11px] font-medium px-1.5 py-0.5 rounded bg-rose-50 text-rose-700">
+<svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M19.5 4.5l-15 15m0 0h11.25m-11.25 0V8.25" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</span>
+<span class="text-[11px]" style="color:rgba(30,41,59,0.6)">vs last 30d</span>
+</div>
+</div>
+<!-- Media Queue -->
+<div class="bg-white border border-surface-200 rounded-xl shadow-card p-5">
+<div class="flex items-start justify-between">
+<div class="space-y-1">
+<div class="flex items-center gap-2 text-[12px] font-medium uppercase tracking-wide" style="color:rgba(30,41,59,0.6)">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24"><path d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25a2.25 2.25 0 00-2.25-2.25H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</div>
+<div class="text-[26px] font-semibold tnum tracking-tight">28</div>
+</div>
+<svg class="block" height="36" viewbox="0 0 110 36" width="110">
+<path d="M0,30 L10,24 L20,16 L30,18 L40,22 L50,14 L60,10 L70,4 L80,12 L90,16 L100,10 L110,10 L110,36 L0,36 Z" fill="rgba(71,144,255,.15)"></path>
+<path d="M0,30 L10,24 L20,16 L30,18 L40,22 L50,14 L60,10 L70,4 L80,12 L90,16 L100,10 L110,10" fill="none" stroke="#4790FF" stroke-width="1.8"></path>
+<circle cx="110" cy="10" fill="#4790FF" r="2.5"></circle>
+</svg>
+</div>
+<div class="mt-2 flex items-center gap-2">
+<span class="inline-flex items-center gap-1 text-[11px] font-medium px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700">
+<svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M4.5 19.5l15-15m0 0H8.25m11.25 0v11.25" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</span>
+<span class="text-[11px]" style="color:rgba(30,41,59,0.6)">vs last 30d</span>
+</div>
+</div>
+</div>
+<!-- ═══════════════ 3. HEATMAP + AI INSIGHTS ═══════════════ -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+<!-- Occupancy Heatmap -->
+<div class="lg:col-span-2 bg-white border border-surface-200 rounded-xl shadow-card p-5">
+<div class="flex flex-col sm:flex-row items-start justify-between mb-4 gap-2">
+<div>
+<h3 class="text-[15px] font-semibold">Inventory Occupancy — 2026</h3>
+<p class="text-[12px] mt-0.5" style="color:rgba(30,41,59,0.6)">Daily fill rate % — hover a cell for detail. AI projects Q2 +6.4% overall.</p>
+</div>
+<div class="flex items-center gap-2">
+<div class="inline-flex h-8 p-0.5 bg-surface-100 rounded-lg border border-surface-200">
+<button class="px-3 text-[13px] rounded-md font-medium bg-white text-ink-900 shadow-sm">%</button>
+<button class="px-3 text-[13px] rounded-md font-medium" style="color:rgba(30,41,59,0.7)">฿</button>
+</div>
+<button class="h-8 px-3 text-[13px] rounded-lg font-medium inline-flex items-center gap-1.5 border border-transparent hover:bg-surface-100" style="color:rgba(30,41,59,0.8)">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24"><path d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span>Export</span>
+</button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<div class="min-w-[800px] space-y-1">
+<!-- Header -->
+<div class="grid gap-1 items-center" style="grid-template-columns:160px repeat(12,1fr) 50px">
+<div></div>
+<div class="text-[10px] text-center font-medium" style="color:rgba(30,41,59,0.5)">Jan</div>
+<div class="text-[10px] text-center font-medium" style="color:rgba(30,41,59,0.5)">Feb</div>
+<div class="text-[10px] text-center font-medium" style="color:rgba(30,41,59,0.5)">Mar</div>
+<div class="text-[10px] text-center font-medium" style="color:rgba(30,41,59,0.5)">Apr</div>
+<div class="text-[10px] text-center font-medium" style="color:rgba(30,41,59,0.5)">May</div>
+<div class="text-[10px] text-center font-medium" style="color:rgba(30,41,59,0.5)">Jun</div>
+<div class="text-[10px] text-center font-medium" style="color:rgba(30,41,59,0.5)">Jul</div>
+<div class="text-[10px] text-center font-medium" style="color:rgba(30,41,59,0.5)">Aug</div>
+<div class="text-[10px] text-center font-medium" style="color:rgba(30,41,59,0.5)">Sep</div>
+<div class="text-[10px] text-center font-medium" style="color:rgba(30,41,59,0.5)">Oct</div>
+<div class="text-[10px] text-center font-medium" style="color:rgba(30,41,59,0.5)">Nov</div>
+<div class="text-[10px] text-center font-medium" style="color:rgba(30,41,59,0.5)">Dec</div>
+<div class="text-[10px] text-center font-medium" style="color:rgba(30,41,59,0.5)">Avg</div>
+</div>
+<!-- Row: S-NCM-5 -->
+<div class="grid gap-1 items-center" style="grid-template-columns:160px repeat(12,1fr) 50px">
+<div class="text-[12px] truncate"><span class="font-mono mr-1.5" style="color:rgba(30,41,59,0.5)">S-NCM-5</span></div>
+<div class="h-8 rounded bg-[#2D56D2] flex items-center justify-center text-[10px] font-medium text-white tnum">80</div>
+<div class="h-8 rounded bg-[#2D56D2] flex items-center justify-center text-[10px] font-medium text-white tnum">86</div>
+<div class="h-8 rounded bg-[#2D56D2] flex items-center justify-center text-[10px] font-medium text-white tnum">84</div>
+<div class="h-8 rounded bg-[#213268] flex items-center justify-center text-[10px] font-medium text-white tnum">92</div>
+<div class="h-8 rounded bg-[#2D56D2] flex items-center justify-center text-[10px] font-medium text-white tnum">88</div>
+<div class="h-8 rounded bg-[#2D56D2] flex items-center justify-center text-[10px] font-medium text-white tnum">76</div>
+<div class="h-8 rounded bg-[#4790FF] flex items-center justify-center text-[10px] font-medium text-white tnum">72</div>
+<div class="h-8 rounded bg-[#4790FF] flex items-center justify-center text-[10px] font-medium text-white tnum">68</div>
+<div class="h-8 rounded bg-[#2D56D2] flex items-center justify-center text-[10px] font-medium text-white tnum">76</div>
+<div class="h-8 rounded bg-[#2D56D2] flex items-center justify-center text-[10px] font-medium text-white tnum">80</div>
+<div class="h-8 rounded bg-[#2D56D2] flex items-center justify-center text-[10px] font-medium text-white tnum">84</div>
+<div class="h-8 rounded bg-[#2D56D2] flex items-center justify-center text-[10px] font-medium text-white tnum">88</div>
+<div class="text-[12px] font-semibold text-right tnum">81%</div>
+</div>
+<!-- Row: L-BK-LSU-2 -->
+<div class="grid gap-1 items-center" style="grid-template-columns:160px repeat(12,1fr) 50px">
+<div class="text-[12px] truncate"><span class="font-mono mr-1.5" style="color:rgba(30,41,59,0.5)">L-BK-LSU-2</span></div>
+<div class="h-8 rounded bg-[#4790FF] flex items-center justify-center text-[10px] font-medium text-white tnum">66</div>
+<div class="h-8 rounded bg-[#4790FF] flex items-center justify-center text-[10px] font-medium text-white tnum">72</div>
+<div class="h-8 rounded bg-[#4790FF] flex items-center justify-center text-[10px] font-medium text-white tnum">70</div>
+<div class="h-8 rounded bg-[#2D56D2] flex items-center justify-center text-[10px] font-medium text-white tnum">78</div>
+<div class="h-8 rounded bg-[#4790FF] flex items-center justify-center text-[10px] font-medium text-white tnum">74</div>
+<div class="h-8 rounded bg-[#4790FF] flex items-center justify-center text-[10px] font-medium text-white tnum">62</div>
+<div class="h-8 rounded bg-[#5FCBF9] flex items-center justify-center text-[10px] font-medium tnum" style="color:#0B1430">58</div>
+<div class="h-8 rounded bg-[#5FCBF9] flex items-center justify-center text-[10px] font-medium tnum" style="color:#0B1430">54</div>
+<div class="h-8 rounded bg-[#4790FF] flex items-center justify-center text-[10px] font-medium text-white tnum">62</div>
+<div class="h-8 rounded bg-[#4790FF] flex items-center justify-center text-[10px] font-medium text-white tnum">66</div>
+<div class="h-8 rounded bg-[#4790FF] flex items-center justify-center text-[10px] font-medium text-white tnum">70</div>
+<div class="h-8 rounded bg-[#4790FF] flex items-center justify-center text-[10px] font-medium text-white tnum">74</div>
+<div class="text-[12px] font-semibold text-right tnum">67%</div>
+</div>
+<!-- Row: BFV-UAH-04 -->
+<div class="grid gap-1 items-center" style="grid-template-columns:160px repeat(12,1fr) 50px">
+<div class="text-[12px] truncate"><span class="font-mono mr-1.5" style="color:rgba(30,41,59,0.5)">BFV-UAH-04</span></div>
+<div class="h-8 rounded bg-[#5FCBF9] flex items-center justify-center text-[10px] font-medium tnum" style="color:#0B1430">52</div>
+<div class="h-8 rounded bg-[#5FCBF9] flex items-center justify-center text-[10px] font-medium tnum" style="color:#0B1430">58</div>
+<div class="h-8 rounded bg-[#5FCBF9] flex items-center justify-center text-[10px] font-medium tnum" style="color:#0B1430">56</div>
+<div class="h-8 rounded bg-[#4790FF] flex items-center justify-center text-[10px] font-medium text-white tnum">64</div>
+<div class="h-8 rounded bg-[#4790FF] flex items-center justify-center text-[10px] font-medium text-white tnum">60</div>
+<div class="h-8 rounded bg-[#5FCBF9] flex items-center justify-center text-[10px] font-medium tnum" style="color:#0B1430">48</div>
+<div class="h-8 rounded bg-[#BFE3FA] flex items-center justify-center text-[10px] font-medium tnum" style="color:#0B1430">44</div>
+<div class="h-8 rounded bg-[#BFE3FA] flex items-center justify-center text-[10px] font-medium tnum" style="color:#0B1430">40</div>
+<div class="h-8 rounded bg-[#5FCBF9] flex items-center justify-center text-[10px] font-medium tnum" style="color:#0B1430">48</div>
+<div class="h-8 rounded bg-[#5FCBF9] flex items-center justify-center text-[10px] font-medium tnum" style="color:#0B1430">52</div>
+<div class="h-8 rounded bg-[#5FCBF9] flex items-center justify-center text-[10px] font-medium tnum" style="color:#0B1430">56</div>
+<div class="h-8 rounded bg-[#4790FF] flex items-center justify-center text-[10px] font-medium text-white tnum">60</div>
+<div class="text-[12px] font-semibold text-right tnum">53%</div>
+</div>
+<!-- Row: M-UK-HM-15 -->
+<div class="grid gap-1 items-center" style="grid-template-columns:160px repeat(12,1fr) 50px">
+<div class="text-[12px] truncate"><span class="font-mono mr-1.5" style="color:rgba(30,41,59,0.5)">M-UK-HM-15</span></div>
+<div class="h-8 rounded bg-[#2D56D2] flex items-center justify-center text-[10px] font-medium text-white tnum">76</div>
+<div class="h-8 rounded bg-[#2D56D2] flex items-center justify-center text-[10px] font-medium text-white tnum">82</div>
+<div class="h-8 rounded bg-[#2D56D2] flex items-center justify-center text-[10px] font-medium text-white tnum">80</div>
+<div class="h-8 rounded bg-[#2D56D2] flex items-center justify-center text-[10px] font-medium text-white tnum">88</div>
+<div class="h-8 rounded bg-[#2D56D2] flex items-center justify-center text-[10px] font-medium text-white tnum">84</div>
+<div class="h-8 rounded bg-[#4790FF] flex items-center justify-center text-[10px] font-medium text-white tnum">72</div>
+<div class="h-8 rounded bg-[#4790FF] flex items-center justify-center text-[10px] font-medium text-white tnum">68</div>
+<div class="h-8 rounded bg-[#4790FF] flex items-center justify-center text-[10px] font-medium text-white tnum">64</div>
+<div class="h-8 rounded bg-[#4790FF] flex items-center justify-center text-[10px] font-medium text-white tnum">72</div>
+<div class="h-8 rounded bg-[#2D56D2] flex items-center justify-center text-[10px] font-medium text-white tnum">76</div>
+<div class="h-8 rounded bg-[#2D56D2] flex items-center justify-center text-[10px] font-medium text-white tnum">80</div>
+<div class="h-8 rounded bg-[#2D56D2] flex items-center justify-center text-[10px] font-medium text-white tnum">84</div>
+<div class="text-[12px] font-semibold text-right tnum">77%</div>
+</div>
+<!-- Row: X-CAYA-FY-1 -->
+<div class="grid gap-1 items-center" style="grid-template-columns:160px repeat(12,1fr) 50px">
+<div class="text-[12px] truncate"><span class="font-mono mr-1.5" style="color:rgba(30,41,59,0.5)">X-CAYA-FY-1</span></div>
+<div class="h-8 rounded bg-[#2D56D2] flex items-center justify-center text-[10px] font-medium text-white tnum">88</div>
+<div class="h-8 rounded bg-[#213268] flex items-center justify-center text-[10px] font-medium text-white tnum">94</div>
+<div class="h-8 rounded bg-[#213268] flex items-center justify-center text-[10px] font-medium text-white tnum">92</div>
+<div class="h-8 rounded bg-[#213268] flex items-center justify-center text-[10px] font-medium text-white tnum">100</div>
+<div class="h-8 rounded bg-[#213268] flex items-center justify-center text-[10px] font-medium text-white tnum">96</div>
+<div class="h-8 rounded bg-[#2D56D2] flex items-center justify-center text-[10px] font-medium text-white tnum">84</div>
+<div class="h-8 rounded bg-[#2D56D2] flex items-center justify-center text-[10px] font-medium text-white tnum">80</div>
+<div class="h-8 rounded bg-[#2D56D2] flex items-center justify-center text-[10px] font-medium text-white tnum">76</div>
+<div class="h-8 rounded bg-[#2D56D2] flex items-center justify-center text-[10px] font-medium text-white tnum">84</div>
+<div class="h-8 rounded bg-[#2D56D2] flex items-center justify-center text-[10px] font-medium text-white tnum">88</div>
+<div class="h-8 rounded bg-[#213268] flex items-center justify-center text-[10px] font-medium text-white tnum">92</div>
+<div class="h-8 rounded bg-[#213268] flex items-center justify-center text-[10px] font-medium text-white tnum">96</div>
+<div class="text-[12px] font-semibold text-right tnum">89%</div>
+</div>
+<!-- Row: L-BK-BRN-3 -->
+<div class="grid gap-1 items-center" style="grid-template-columns:160px repeat(12,1fr) 50px">
+<div class="text-[12px] truncate"><span class="font-mono mr-1.5" style="color:rgba(30,41,59,0.5)">L-BK-BRN-3</span></div>
+<div class="h-8 rounded bg-[#5FCBF9] flex items-center justify-center text-[10px] font-medium tnum" style="color:#0B1430">59</div>
+<div class="h-8 rounded bg-[#4790FF] flex items-center justify-center text-[10px] font-medium text-white tnum">65</div>
+<div class="h-8 rounded bg-[#4790FF] flex items-center justify-center text-[10px] font-medium text-white tnum">63</div>
+<div class="h-8 rounded bg-[#4790FF] flex items-center justify-center text-[10px] font-medium text-white tnum">71</div>
+<div class="h-8 rounded bg-[#4790FF] flex items-center justify-center text-[10px] font-medium text-white tnum">67</div>
+<div class="h-8 rounded bg-[#5FCBF9] flex items-center justify-center text-[10px] font-medium tnum" style="color:#0B1430">55</div>
+<div class="h-8 rounded bg-[#5FCBF9] flex items-center justify-center text-[10px] font-medium tnum" style="color:#0B1430">51</div>
+<div class="h-8 rounded bg-[#5FCBF9] flex items-center justify-center text-[10px] font-medium tnum" style="color:#0B1430">47</div>
+<div class="h-8 rounded bg-[#5FCBF9] flex items-center justify-center text-[10px] font-medium tnum" style="color:#0B1430">55</div>
+<div class="h-8 rounded bg-[#5FCBF9] flex items-center justify-center text-[10px] font-medium tnum" style="color:#0B1430">59</div>
+<div class="h-8 rounded bg-[#4790FF] flex items-center justify-center text-[10px] font-medium text-white tnum">63</div>
+<div class="h-8 rounded bg-[#4790FF] flex items-center justify-center text-[10px] font-medium text-white tnum">67</div>
+<div class="text-[12px] font-semibold text-right tnum">60%</div>
+</div>
+<!-- Row: CRM-BK-BRK -->
+<div class="grid gap-1 items-center" style="grid-template-columns:160px repeat(12,1fr) 50px">
+<div class="text-[12px] truncate"><span class="font-mono mr-1.5" style="color:rgba(30,41,59,0.5)">CRM-BK-BRK</span></div>
+<div class="h-8 rounded bg-[#BFE3FA] flex items-center justify-center text-[10px] font-medium tnum" style="color:#0B1430">43</div>
+<div class="h-8 rounded bg-[#5FCBF9] flex items-center justify-center text-[10px] font-medium tnum" style="color:#0B1430">49</div>
+<div class="h-8 rounded bg-[#5FCBF9] flex items-center justify-center text-[10px] font-medium tnum" style="color:#0B1430">47</div>
+<div class="h-8 rounded bg-[#5FCBF9] flex items-center justify-center text-[10px] font-medium tnum" style="color:#0B1430">55</div>
+<div class="h-8 rounded bg-[#5FCBF9] flex items-center justify-center text-[10px] font-medium tnum" style="color:#0B1430">51</div>
+<div class="h-8 rounded bg-[#BFE3FA] flex items-center justify-center text-[10px] font-medium tnum" style="color:#0B1430">39</div>
+<div class="h-8 rounded bg-[#BFE3FA] flex items-center justify-center text-[10px] font-medium tnum" style="color:#0B1430">35</div>
+<div class="h-8 rounded bg-[#BFE3FA] flex items-center justify-center text-[10px] font-medium tnum" style="color:#0B1430">31</div>
+<div class="h-8 rounded bg-[#BFE3FA] flex items-center justify-center text-[10px] font-medium tnum" style="color:#0B1430">39</div>
+<div class="h-8 rounded bg-[#BFE3FA] flex items-center justify-center text-[10px] font-medium tnum" style="color:#0B1430">43</div>
+<div class="h-8 rounded bg-[#5FCBF9] flex items-center justify-center text-[10px] font-medium tnum" style="color:#0B1430">47</div>
+<div class="h-8 rounded bg-[#5FCBF9] flex items-center justify-center text-[10px] font-medium tnum" style="color:#0B1430">51</div>
+<div class="text-[12px] font-semibold text-right tnum">44%</div>
+</div>
+<!-- Row: TH-SIL-09 -->
+<div class="grid gap-1 items-center" style="grid-template-columns:160px repeat(12,1fr) 50px">
+<div class="text-[12px] truncate"><span class="font-mono mr-1.5" style="color:rgba(30,41,59,0.5)">TH-SIL-09</span></div>
+<div class="h-8 rounded bg-[#2D56D2] flex items-center justify-center text-[10px] font-medium text-white tnum">83</div>
+<div class="h-8 rounded bg-[#2D56D2] flex items-center justify-center text-[10px] font-medium text-white tnum">89</div>
+<div class="h-8 rounded bg-[#2D56D2] flex items-center justify-center text-[10px] font-medium text-white tnum">87</div>
+<div class="h-8 rounded bg-[#213268] flex items-center justify-center text-[10px] font-medium text-white tnum">95</div>
+<div class="h-8 rounded bg-[#213268] flex items-center justify-center text-[10px] font-medium text-white tnum">91</div>
+<div class="h-8 rounded bg-[#2D56D2] flex items-center justify-center text-[10px] font-medium text-white tnum">79</div>
+<div class="h-8 rounded bg-[#2D56D2] flex items-center justify-center text-[10px] font-medium text-white tnum">75</div>
+<div class="h-8 rounded bg-[#4790FF] flex items-center justify-center text-[10px] font-medium text-white tnum">71</div>
+<div class="h-8 rounded bg-[#2D56D2] flex items-center justify-center text-[10px] font-medium text-white tnum">79</div>
+<div class="h-8 rounded bg-[#2D56D2] flex items-center justify-center text-[10px] font-medium text-white tnum">83</div>
+<div class="h-8 rounded bg-[#2D56D2] flex items-center justify-center text-[10px] font-medium text-white tnum">87</div>
+<div class="h-8 rounded bg-[#213268] flex items-center justify-center text-[10px] font-medium text-white tnum">91</div>
+<div class="text-[12px] font-semibold text-right tnum">84%</div>
+</div>
+<!-- Row: TH-SUM-22 -->
+<div class="grid gap-1 items-center" style="grid-template-columns:160px repeat(12,1fr) 50px">
+<div class="text-[12px] truncate"><span class="font-mono mr-1.5" style="color:rgba(30,41,59,0.5)">TH-SUM-22</span></div>
+<div class="h-8 rounded bg-[#4790FF] flex items-center justify-center text-[10px] font-medium text-white tnum">71</div>
+<div class="h-8 rounded bg-[#2D56D2] flex items-center justify-center text-[10px] font-medium text-white tnum">77</div>
+<div class="h-8 rounded bg-[#2D56D2] flex items-center justify-center text-[10px] font-medium text-white tnum">75</div>
+<div class="h-8 rounded bg-[#2D56D2] flex items-center justify-center text-[10px] font-medium text-white tnum">83</div>
+<div class="h-8 rounded bg-[#2D56D2] flex items-center justify-center text-[10px] font-medium text-white tnum">79</div>
+<div class="h-8 rounded bg-[#4790FF] flex items-center justify-center text-[10px] font-medium text-white tnum">67</div>
+<div class="h-8 rounded bg-[#4790FF] flex items-center justify-center text-[10px] font-medium text-white tnum">63</div>
+<div class="h-8 rounded bg-[#5FCBF9] flex items-center justify-center text-[10px] font-medium tnum" style="color:#0B1430">59</div>
+<div class="h-8 rounded bg-[#4790FF] flex items-center justify-center text-[10px] font-medium text-white tnum">67</div>
+<div class="h-8 rounded bg-[#4790FF] flex items-center justify-center text-[10px] font-medium text-white tnum">71</div>
+<div class="h-8 rounded bg-[#2D56D2] flex items-center justify-center text-[10px] font-medium text-white tnum">75</div>
+<div class="h-8 rounded bg-[#2D56D2] flex items-center justify-center text-[10px] font-medium text-white tnum">79</div>
+<div class="text-[12px] font-semibold text-right tnum">72%</div>
+</div>
+<!-- Row: CM-NOR-01 -->
+<div class="grid gap-1 items-center" style="grid-template-columns:160px repeat(12,1fr) 50px">
+<div class="text-[12px] truncate"><span class="font-mono mr-1.5" style="color:rgba(30,41,59,0.5)">CM-NOR-01</span></div>
+<div class="h-8 rounded bg-[#BFE3FA] flex items-center justify-center text-[10px] font-medium tnum" style="color:#0B1430">30</div>
+<div class="h-8 rounded bg-[#BFE3FA] flex items-center justify-center text-[10px] font-medium tnum" style="color:#0B1430">36</div>
+<div class="h-8 rounded bg-[#BFE3FA] flex items-center justify-center text-[10px] font-medium tnum" style="color:#0B1430">34</div>
+<div class="h-8 rounded bg-[#BFE3FA] flex items-center justify-center text-[10px] font-medium tnum" style="color:#0B1430">42</div>
+<div class="h-8 rounded bg-[#BFE3FA] flex items-center justify-center text-[10px] font-medium tnum" style="color:#0B1430">38</div>
+<div class="h-8 rounded bg-[#EAF3FB] flex items-center justify-center text-[10px] font-medium tnum" style="color:rgba(30,41,59,0.5)">26</div>
+<div class="h-8 rounded bg-[#EAF3FB] flex items-center justify-center text-[10px] font-medium tnum" style="color:rgba(30,41,59,0.5)">22</div>
+<div class="h-8 rounded bg-[#EAF3FB] flex items-center justify-center text-[10px] font-medium tnum" style="color:rgba(30,41,59,0.5)">18</div>
+<div class="h-8 rounded bg-[#EAF3FB] flex items-center justify-center text-[10px] font-medium tnum" style="color:rgba(30,41,59,0.5)">26</div>
+<div class="h-8 rounded bg-[#BFE3FA] flex items-center justify-center text-[10px] font-medium tnum" style="color:#0B1430">30</div>
+<div class="h-8 rounded bg-[#BFE3FA] flex items-center justify-center text-[10px] font-medium tnum" style="color:#0B1430">34</div>
+<div class="h-8 rounded bg-[#BFE3FA] flex items-center justify-center text-[10px] font-medium tnum" style="color:#0B1430">38</div>
+<div class="text-[12px] font-semibold text-right tnum">31%</div>
+</div>
+</div>
+</div>
+<!-- Legend -->
+<div class="flex items-center gap-3 mt-4 pt-3 border-t border-surface-100 text-[11px]" style="color:rgba(30,41,59,0.6)">
+<span>Low</span>
+<div class="w-6 h-3 rounded bg-[#EAF3FB]"></div>
+<div class="w-6 h-3 rounded bg-[#BFE3FA]"></div>
+<div class="w-6 h-3 rounded bg-[#5FCBF9]"></div>
+<div class="w-6 h-3 rounded bg-[#4790FF]"></div>
+<div class="w-6 h-3 rounded bg-[#2D56D2]"></div>
+<div class="w-6 h-3 rounded bg-[#213268]"></div>
+<span>High</span>
+<div class="flex-1"></div>
+<span class="inline-flex items-center gap-1.5">
+<svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="1.5" style="color:#2D56D2" viewbox="0 0 24 24"><path d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</span>
+</div>
+</div>
+<!-- AI Insights -->
+<div class="bg-white border border-surface-200 rounded-xl shadow-card p-5 ai-border">
+<div class="flex items-center gap-2 mb-4">
+<div class="w-8 h-8 rounded-lg shine flex items-center justify-center text-white">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24"><path d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</div>
+<div>
+<h3 class="text-[14px] font-semibold">AI Insights</h3>
+<p class="text-[11px]" style="color:rgba(30,41,59,0.6)">Updated 2 min ago</p>
+</div>
+</div>
+<div class="space-y-3">
+<!-- Insight 1 -->
+<div class="p-3 rounded-lg border border-surface-200 bg-surface-50/60">
+<div class="flex items-start justify-between gap-2 mb-1">
+<div class="text-[13px] font-semibold">Occupancy forecast — May</div>
+<span class="text-[10px] font-mono tnum shrink-0" style="color:rgba(30,41,59,0.6)">92%</span>
+</div>
+<p class="text-[12px] leading-relaxed" style="color:rgba(30,41,59,0.8)">Northern corridor (L-BK-LSU-2, CM-NOR-01) trending +14% vs Apr. Recommend +8% rate uplift on LED.</p>
+<div class="mt-2 flex items-center gap-1.5">
+<button class="text-[11px] font-medium hover:underline" style="color:#2D56D2">Take action</button>
+<span style="color:rgba(30,41,59,0.3)">·</span>
+<button class="text-[11px] hover:underline" style="color:rgba(30,41,59,0.5)">Dismiss</button>
+</div>
+</div>
+<!-- Insight 2 -->
+<div class="p-3 rounded-lg border border-surface-200 bg-surface-50/60">
+<div class="flex items-start justify-between gap-2 mb-1">
+<div class="text-[13px] font-semibold">Demand signal</div>
+<span class="text-[10px] font-mono tnum shrink-0" style="color:rgba(30,41,59,0.6)">87%</span>
+</div>
+<p class="text-[12px] leading-relaxed" style="color:rgba(30,41,59,0.8)">3 briefs (AIS, True, SCB) target Silom 25-34 commuters. Cluster BTS/MRT inventory on next proposal.</p>
+<div class="mt-2 flex items-center gap-1.5">
+<button class="text-[11px] font-medium hover:underline" style="color:#2D56D2">Take action</button>
+<span style="color:rgba(30,41,59,0.3)">·</span>
+<button class="text-[11px] hover:underline" style="color:rgba(30,41,59,0.5)">Dismiss</button>
+</div>
+</div>
+<!-- Insight 3 (warning) -->
+<div class="p-3 rounded-lg border border-amber-200 bg-amber-50/40">
+<div class="flex items-start justify-between gap-2 mb-1">
+<div class="text-[13px] font-semibold">Anomaly</div>
+<span class="text-[10px] font-mono tnum shrink-0" style="color:rgba(30,41,59,0.6)">81%</span>
+</div>
+<p class="text-[12px] leading-relaxed" style="color:rgba(30,41,59,0.8)">Install SLA on L-BK-BRN-3 likely to breach by 3h based on crew velocity.</p>
+<div class="mt-2 flex items-center gap-1.5">
+<button class="text-[11px] font-medium hover:underline" style="color:#2D56D2">Take action</button>
+<span style="color:rgba(30,41,59,0.3)">·</span>
+<button class="text-[11px] hover:underline" style="color:rgba(30,41,59,0.5)">Dismiss</button>
+</div>
+</div>
+<!-- Insight 4 (warning) -->
+<div class="p-3 rounded-lg border border-amber-200 bg-amber-50/40">
+<div class="flex items-start justify-between gap-2 mb-1">
+<div class="text-[13px] font-semibold">Creative risk</div>
+<span class="text-[10px] font-mono tnum shrink-0" style="color:rgba(30,41,59,0.6)">74%</span>
+</div>
+<p class="text-[12px] leading-relaxed" style="color:rgba(30,41,59,0.8)">SCB Easy 4.0 v4 has 62% QC score — typography mismatch + logo registration.</p>
+<div class="mt-2 flex items-center gap-1.5">
+<button class="text-[11px] font-medium hover:underline" style="color:#2D56D2">Take action</button>
+<span style="color:rgba(30,41,59,0.3)">·</span>
+<button class="text-[11px] hover:underline" style="color:rgba(30,41,59,0.5)">Dismiss</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- ═══════════════ 4. MAP + PIPELINE ═══════════════ -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+<!-- Map -->
+<div class="lg:col-span-2 bg-white border border-surface-200 rounded-xl shadow-card overflow-hidden">
+<div class="p-5 flex flex-col sm:flex-row items-start justify-between border-b border-surface-100 gap-2">
+<div>
+<h3 class="text-[15px] font-semibold">Inventory Map — Thailand</h3>
+<p class="text-[12px] mt-0.5" style="color:rgba(30,41,59,0.6)">12 assets · click a pin for details</p>
+</div>
+<div class="inline-flex h-8 p-0.5 bg-surface-100 rounded-lg border border-surface-200">
+<button class="px-3 text-[13px] rounded-md font-medium bg-white text-ink-900 shadow-sm">All</button>
+<button class="px-3 text-[13px] rounded-md font-medium" style="color:rgba(30,41,59,0.7)">Live</button>
+<button class="px-3 text-[13px] rounded-md font-medium" style="color:rgba(30,41,59,0.7)">Maint.</button>
+<button class="px-3 text-[13px] rounded-md font-medium" style="color:rgba(30,41,59,0.7)">Vacant</button>
+</div>
+</div>
+<div class="relative h-[340px] map-bg">
+<!-- Thailand silhouette -->
+<svg class="absolute inset-0 w-full h-full" preserveaspectratio="none" viewbox="0 0 100 100">
+<path d="M48,8 L58,12 L62,20 L56,26 L60,34 L66,38 L64,46 L56,48 L50,56 L54,62 L48,70 L52,78 L48,86 L42,88 L38,80 L32,72 L30,62 L36,54 L34,46 L40,42 L38,34 L42,26 L44,16 Z" fill="rgba(33,50,104,.06)" stroke="rgba(33,50,104,.15)" stroke-width=".3"></path>
+</svg>
+<!-- Pins -->
+<button class="absolute -translate-x-1/2 -translate-y-1/2 w-4 h-4 rounded-full border-2 border-white shadow hover:scale-125 transition-transform z-10" style="left:56%;top:52%;background:#213268" title="S-NCM-5 · 92%"></button>
+<button class="absolute -translate-x-1/2 -translate-y-1/2 w-3.5 h-3.5 rounded-full border-2 border-white shadow hover:scale-125 transition-transform z-10" style="left:56%;top:46%;background:#2D56D2" title="L-BK-LSU-2 · 78%"></button>
+<button class="absolute -translate-x-1/2 -translate-y-1/2 w-3 h-3 rounded-full border-2 border-white shadow hover:scale-125 transition-transform z-10" style="left:57%;top:40%;background:#2D56D2" title="BFV-UAH-04 · 64%"></button>
+<button class="absolute -translate-x-1/2 -translate-y-1/2 w-3.5 h-3.5 rounded-full border-2 border-white shadow hover:scale-125 transition-transform z-10" style="left:56%;top:50%;background:#2D56D2" title="M-UK-HM-15 · 88%"></button>
+<button class="absolute -translate-x-1/2 -translate-y-1/2 w-4 h-4 rounded-full border-2 border-white shadow hover:scale-125 transition-transform z-10" style="left:57%;top:51%;background:#213268" title="X-CAYA-FY-1 · 100%"></button>
+<button class="absolute -translate-x-1/2 -translate-y-1/2 w-3 h-3 rounded-full border-2 border-white shadow hover:scale-125 transition-transform z-10" style="left:57%;top:56%;background:#F59E0B" title="L-BK-BRN-3 · Maint"></button>
+<button class="absolute -translate-x-1/2 -translate-y-1/2 w-3 h-3 rounded-full border-2 border-white shadow hover:scale-125 transition-transform z-10" style="left:55%;top:44%;background:#2D56D2" title="CRM-BK-BRK · 55%"></button>
+<button class="absolute -translate-x-1/2 -translate-y-1/2 w-4 h-4 rounded-full border-2 border-white shadow hover:scale-125 transition-transform z-10" style="left:55%;top:53%;background:#213268" title="TH-SIL-09 · 95%"></button>
+<button class="absolute -translate-x-1/2 -translate-y-1/2 w-3.5 h-3.5 rounded-full border-2 border-white shadow hover:scale-125 transition-transform z-10" style="left:56%;top:53%;background:#2D56D2" title="TH-SUM-22 · 83%"></button>
+<button class="absolute -translate-x-1/2 -translate-y-1/2 w-2.5 h-2.5 rounded-full border-2 border-white shadow hover:scale-125 transition-transform z-10" style="left:27%;top:10%;background:#9CA3AF" title="CM-NOR-01 · Vacant"></button>
+<button class="absolute -translate-x-1/2 -translate-y-1/2 w-3 h-3 rounded-full border-2 border-white shadow hover:scale-125 transition-transform z-10" style="left:15%;top:93%;background:#2D56D2" title="PK-PHK-03 · 60%"></button>
+<button class="absolute -translate-x-1/2 -translate-y-1/2 w-3 h-3 rounded-full border-2 border-white shadow hover:scale-125 transition-transform z-10" style="left:83%;top:34%;background:#2D56D2" title="KR-KON-07 · 74%"></button>
+<!-- Stats overlay -->
+<div class="absolute top-4 right-4 bg-white/95 backdrop-blur border border-surface-200 rounded-lg p-3 text-[11px] space-y-1.5 min-w-[160px]">
+<div class="flex items-center justify-between gap-3"><span style="color:rgba(30,41,59,0.6)">Total sites</span><span class="font-semibold tnum">12</span></div>
+<div class="flex items-center justify-between gap-3"><span class="inline-flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-[#2D56D2]"></span>Live</span><span class="font-semibold tnum">9</span></div>
+<div class="flex items-center justify-between gap-3"><span class="inline-flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-amber-500"></span>Maint.</span><span class="font-semibold tnum">1</span></div>
+<div class="flex items-center justify-between gap-3"><span class="inline-flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-gray-400"></span>Vacant</span><span class="font-semibold tnum">1</span></div>
+</div>
+</div>
+</div>
+<!-- Pipeline -->
+<div class="bg-white border border-surface-200 rounded-xl shadow-card p-5">
+<div class="flex items-start justify-between mb-4">
+<div>
+<h3 class="text-[15px] font-semibold">Sales Pipeline</h3>
+<p class="text-[12px] mt-0.5" style="color:rgba(30,41,59,0.6)">฿256.3M total · Q2 2026</p>
+</div>
+<span class="inline-flex items-center gap-1.5 border rounded-full font-medium text-[11px] px-2 py-0.5 bg-emerald-50 text-emerald-700 border-emerald-100"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>On track</span>
+</div>
+<div class="space-y-3.5">
+<div><div class="flex items-center justify-between mb-1.5"><div class="flex items-center gap-2"><span class="text-[12px] font-medium">Brief</span><span class="text-[10px] font-mono" style="color:rgba(30,41,59,0.5)">42</span></div><span class="text-[12px] font-semibold tnum">฿18.4M</span></div><div class="w-full bg-surface-100 rounded-full overflow-hidden h-2"><div class="h-full rounded-full" style="width:20%;background:linear-gradient(90deg,#213268,#2D56D2 15%,#4790FF)"></div></div></div>
+<div><div class="flex items-center justify-between mb-1.5"><div class="flex items-center gap-2"><span class="text-[12px] font-medium">Proposal</span><span class="text-[10px] font-mono" style="color:rgba(30,41,59,0.5)">28</span></div><span class="text-[12px] font-semibold tnum">฿34.2M</span></div><div class="w-full bg-surface-100 rounded-full overflow-hidden h-2"><div class="h-full rounded-full" style="width:37%;background:linear-gradient(90deg,#213268,#2D56D2 30%,#4790FF)"></div></div></div>
+<div><div class="flex items-center justify-between mb-1.5"><div class="flex items-center gap-2"><span class="text-[12px] font-medium">Negotiate</span><span class="text-[10px] font-mono" style="color:rgba(30,41,59,0.5)">17</span></div><span class="text-[12px] font-semibold tnum">฿48.6M</span></div><div class="w-full bg-surface-100 rounded-full overflow-hidden h-2"><div class="h-full rounded-full" style="width:53%;background:linear-gradient(90deg,#213268,#2D56D2 45%,#4790FF)"></div></div></div>
+<div><div class="flex items-center justify-between mb-1.5"><div class="flex items-center gap-2"><span class="text-[12px] font-medium">Confirmed</span><span class="text-[10px] font-mono" style="color:rgba(30,41,59,0.5)">12</span></div><span class="text-[12px] font-semibold tnum">฿63.1M</span></div><div class="w-full bg-surface-100 rounded-full overflow-hidden h-2"><div class="h-full rounded-full" style="width:69%;background:linear-gradient(90deg,#213268,#2D56D2 60%,#4790FF)"></div></div></div>
+<div><div class="flex items-center justify-between mb-1.5"><div class="flex items-center gap-2"><span class="text-[12px] font-medium">Live</span><span class="text-[10px] font-mono" style="color:rgba(30,41,59,0.5)">34</span></div><span class="text-[12px] font-semibold tnum">฿92M</span></div><div class="w-full bg-surface-100 rounded-full overflow-hidden h-2"><div class="h-full rounded-full" style="width:100%;background:linear-gradient(90deg,#213268,#2D56D2 75%,#4790FF)"></div></div></div>
+</div>
+<div class="mt-4 pt-4 border-t border-surface-100 grid grid-cols-2 gap-3">
+<div><div class="text-[11px]" style="color:rgba(30,41,59,0.6)">Forecast close</div><div class="text-[16px] font-semibold tnum mt-0.5">฿76.2M</div><div class="text-[11px] text-emerald-700 mt-0.5">+18% vs Q1</div></div>
+<div><div class="text-[11px]" style="color:rgba(30,41,59,0.6)">Avg deal size</div><div class="text-[16px] font-semibold tnum mt-0.5">฿1.94M</div><div class="text-[11px] mt-0.5" style="color:rgba(30,41,59,0.6)">133 deals</div></div>
+</div>
+</div>
+</div>
+<!-- ═══════════════ 5. TASKS + ACTIVITY ═══════════════ -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+<!-- Tasks -->
+<div class="bg-white border border-surface-200 rounded-xl shadow-card p-5">
+<div class="flex items-center justify-between mb-4">
+<div><h3 class="text-[15px] font-semibold">Today's Tasks</h3><p class="text-[12px] mt-0.5" style="color:rgba(30,41,59,0.6)">6 remaining</p></div>
+<span class="inline-flex items-center gap-1.5 border rounded-full font-medium text-[11px] px-2 py-0.5 bg-[rgba(45,86,210,0.1)] text-[#2D56D2] border-[rgba(45,86,210,0.2)]">Today</span>
+</div>
+<div class="space-y-2">
+<div class="flex items-start gap-3 p-2.5 rounded-lg border border-surface-200 hover:border-pb-500 cursor-pointer">
+<div class="mt-0.5 w-4 h-4 rounded border-2 border-surface-300 shrink-0"></div>
+<div class="flex-1 min-w-0"><div class="text-[12.5px] font-medium">Review AIS 5G creative v3</div><div class="flex items-center gap-2 mt-0.5 text-[11px]" style="color:rgba(30,41,59,0.6)"><span>Today 17:00</span><span>·</span><span>Parima</span></div></div>
+<span class="inline-flex items-center border rounded-full font-medium text-[11px] px-2 py-0.5 bg-rose-50 text-rose-700 border-rose-100">high</span>
+</div>
+<div class="flex items-start gap-3 p-2.5 rounded-lg border border-surface-200 hover:border-pb-500 cursor-pointer">
+<div class="mt-0.5 w-4 h-4 rounded border-2 border-surface-300 shrink-0"></div>
+<div class="flex-1 min-w-0"><div class="text-[12.5px] font-medium">Approve rate card Q2 — Northern</div><div class="flex items-center gap-2 mt-0.5 text-[11px]" style="color:rgba(30,41,59,0.6)"><span>Today 18:30</span><span>·</span><span>Warin</span></div></div>
+<span class="inline-flex items-center border rounded-full font-medium text-[11px] px-2 py-0.5 bg-rose-50 text-rose-700 border-rose-100">high</span>
+</div>
+<div class="flex items-start gap-3 p-2.5 rounded-lg border border-surface-200 hover:border-pb-500 cursor-pointer">
+<div class="mt-0.5 w-4 h-4 rounded border-2 border-surface-300 shrink-0"></div>
+<div class="flex-1 min-w-0"><div class="text-[12.5px] font-medium">Install LED panel — L-BK-BRN-3</div><div class="flex items-center gap-2 mt-0.5 text-[11px]" style="color:rgba(30,41,59,0.6)"><span>Tomorrow</span><span>·</span><span>Production</span></div></div>
+<span class="inline-flex items-center border rounded-full font-medium text-[11px] px-2 py-0.5 bg-amber-50 text-amber-700 border-amber-100">med</span>
+</div>
+<div class="flex items-start gap-3 p-2.5 rounded-lg border border-surface-200 hover:border-pb-500 cursor-pointer">
+<div class="mt-0.5 w-4 h-4 rounded border-2 border-surface-300 shrink-0"></div>
+<div class="flex-1 min-w-0"><div class="text-[12.5px] font-medium">Respond to claim #1284</div><div class="flex items-center gap-2 mt-0.5 text-[11px]" style="color:rgba(30,41,59,0.6)"><span>Today 15:00</span><span>·</span><span>Suchada</span></div></div>
+<span class="inline-flex items-center border rounded-full font-medium text-[11px] px-2 py-0.5 bg-rose-50 text-rose-700 border-rose-100">high</span>
+</div>
+<div class="flex items-start gap-3 p-2.5 rounded-lg border border-surface-200 hover:border-pb-500 cursor-pointer">
+<div class="mt-0.5 w-4 h-4 rounded border-2 border-surface-300 shrink-0"></div>
+<div class="flex-1 min-w-0"><div class="text-[12.5px] font-medium">Site inspection photos — Phuket</div><div class="flex items-center gap-2 mt-0.5 text-[11px]" style="color:rgba(30,41,59,0.6)"><span>Thu</span><span>·</span><span>Field Ops</span></div></div>
+<span class="inline-flex items-center border rounded-full font-medium text-[11px] px-2 py-0.5 bg-surface-100 text-ink-700 border-surface-200">low</span>
+</div>
+<div class="flex items-start gap-3 p-2.5 rounded-lg border border-surface-200 hover:border-pb-500 cursor-pointer">
+<div class="mt-0.5 w-4 h-4 rounded border-2 border-surface-300 shrink-0"></div>
+<div class="flex-1 min-w-0"><div class="text-[12.5px] font-medium">Finalize Toyota Yaris proposal</div><div class="flex items-center gap-2 mt-0.5 text-[11px]" style="color:rgba(30,41,59,0.6)"><span>Fri</span><span>·</span><span>Natcha</span></div></div>
+<span class="inline-flex items-center border rounded-full font-medium text-[11px] px-2 py-0.5 bg-amber-50 text-amber-700 border-amber-100">med</span>
+</div>
+</div>
+</div>
+<!-- Activity Stream -->
+<div class="lg:col-span-2 bg-white border border-surface-200 rounded-xl shadow-card p-5">
+<div class="flex items-center justify-between mb-4">
+<div><h3 class="text-[15px] font-semibold">Activity Stream</h3><p class="text-[12px] mt-0.5" style="color:rgba(30,41,59,0.6)">Across all modules · last 3 hours</p></div>
+<div class="flex items-center gap-1.5 text-[11px] text-emerald-700"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full pulse-dot"></span>Live</div>
+</div>
+<div class="relative pl-4">
+<div class="absolute left-[9px] top-1 bottom-1 w-px bg-surface-200"></div>
+<div class="space-y-3">
+<div class="relative flex items-start gap-3"><div class="relative z-10 w-5 h-5 rounded-full -ml-4 flex items-center justify-center shrink-0 bg-[rgba(45,86,210,0.15)] text-[#2D56D2]"><svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24"><path d="M20.25 14.15v4.25c0 1.094-.787 2.036-1.872 2.18-2.087.277-4.216.42-6.378.42s-4.291-.143-6.378-.42c-1.085-.144-1.872-1.086-1.872-2.18v-4.25m16.5 0a2.18 2.18 0 00.75-1.661V8.706c0-1.081-.768-2.015-1.837-2.175a48.114 48.114 0 00-3.413-.387m4.5 8.006c-.194.165-.42.295-.673.38A23.978 23.978 0 0112 15.75c-2.648 0-5.195-.429-7.577-1.22a2.016 2.016 0 01-.673-.38m0 0A2.18 2.18 0 013 12.489V8.706c0-1.081.768-2.015 1.837-2.175a48.111 48.111 0 013.413-.387m7.5 0V5.25A2.25 2.25 0 0013.5 3h-3a2.25 2.25 0 00-2.25 2.25v.894m7.5 0a48.667 48.667 0 00-7.5 0M12 12.75h.008v.008H12v-.008z" stroke-linecap="round" stroke-linejoin="round"></path></svg></div><div class="flex-1 min-w-0 flex items-baseline gap-2"><div class="flex-1 min-w-0"><span class="text-[12.5px] font-semibold">Natcha Phuwadon</span><span class="text-[12.5px]" style="color:rgba(30,41,59,0.7)"> confirmed booking </span><span class="text-[12.5px] font-medium">TH-SIL-09 · AIS 5G Mar</span></div><span class="text-[11px] shrink-0 tnum" style="color:rgba(30,41,59,0.5)">2m</span></div></div>
+<div class="relative flex items-start gap-3"><div class="relative z-10 w-5 h-5 rounded-full -ml-4 flex items-center justify-center shrink-0 bg-[#213268] text-white"><svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24"><path d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" stroke-linecap="round" stroke-linejoin="round"></path></svg></div><div class="flex-1 min-w-0 flex items-baseline gap-2"><div class="flex-1 min-w-0"><span class="text-[12.5px] font-semibold">AI Assistant</span><span class="text-[12.5px]" style="color:rgba(30,41,59,0.7)"> flagged anomaly </span><span class="text-[12.5px] font-medium">L-BK-BRN-3 — install SLA at risk</span></div><span class="text-[11px] shrink-0 tnum" style="color:rgba(30,41,59,0.5)">8m</span></div></div>
+<div class="relative flex items-start gap-3"><div class="relative z-10 w-5 h-5 rounded-full -ml-4 flex items-center justify-center shrink-0 bg-[rgba(95,203,249,0.2)] text-[#0B5B8A]"><svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24"><path d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25a2.25 2.25 0 00-2.25-2.25H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z" stroke-linecap="round" stroke-linejoin="round"></path></svg></div><div class="flex-1 min-w-0 flex items-baseline gap-2"><div class="flex-1 min-w-0"><span class="text-[12.5px] font-semibold">Kittipong Sukhumvit</span><span class="text-[12.5px]" style="color:rgba(30,41,59,0.7)"> uploaded artwork </span><span class="text-[12.5px] font-medium">Toyota Yaris · Rama IX</span></div><span class="text-[11px] shrink-0 tnum" style="color:rgba(30,41,59,0.5)">14m</span></div></div>
+<div class="relative flex items-start gap-3"><div class="relative z-10 w-5 h-5 rounded-full -ml-4 flex items-center justify-center shrink-0 bg-emerald-100 text-emerald-700"><svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M4.5 12.75l6 6 9-13.5" stroke-linecap="round" stroke-linejoin="round"></path></svg></div><div class="flex-1 min-w-0 flex items-baseline gap-2"><div class="flex-1 min-w-0"><span class="text-[12.5px] font-semibold">Parima Lertchaipattana</span><span class="text-[12.5px]" style="color:rgba(30,41,59,0.7)"> approved creative </span><span class="text-[12.5px] font-medium">TrueMove · Silom</span></div><span class="text-[11px] shrink-0 tnum" style="color:rgba(30,41,59,0.5)">22m</span></div></div>
+<div class="relative flex items-start gap-3"><div class="relative z-10 w-5 h-5 rounded-full -ml-4 flex items-center justify-center shrink-0 bg-amber-100 text-amber-700"><svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24"><path d="M11.42 15.17l-5.384-3.084A.75.75 0 005.25 12.75v5.5a.75.75 0 00.786.716l5.384-.308a.75.75 0 00.616-.433l2.83-5.684a.75.75 0 00-.434-1.005l-2.83-1.073a.75.75 0 00-.182-.033z" stroke-linecap="round" stroke-linejoin="round"></path></svg></div><div class="flex-1 min-w-0 flex items-baseline gap-2"><div class="flex-1 min-w-0"><span class="text-[12.5px] font-semibold">Production</span><span class="text-[12.5px]" style="color:rgba(30,41,59,0.7)"> install complete </span><span class="text-[12.5px] font-medium">M-UK-HM-15 (Rama IX)</span></div><span class="text-[11px] shrink-0 tnum" style="color:rgba(30,41,59,0.5)">41m</span></div></div>
+<div class="relative flex items-start gap-3"><div class="relative z-10 w-5 h-5 rounded-full -ml-4 flex items-center justify-center shrink-0 bg-rose-100 text-rose-700"><svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24"><path d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" stroke-linecap="round" stroke-linejoin="round"></path></svg></div><div class="flex-1 min-w-0 flex items-baseline gap-2"><div class="flex-1 min-w-0"><span class="text-[12.5px] font-semibold">Suchada Thongchai</span><span class="text-[12.5px]" style="color:rgba(30,41,59,0.7)"> opened claim #1284 </span><span class="text-[12.5px] font-medium">LED panel flicker — Lat Phrao</span></div><span class="text-[11px] shrink-0 tnum" style="color:rgba(30,41,59,0.5)">1h</span></div></div>
+<div class="relative flex items-start gap-3"><div class="relative z-10 w-5 h-5 rounded-full -ml-4 flex items-center justify-center shrink-0 bg-[rgba(45,86,210,0.1)] text-[#2D56D2]"><svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24"><path d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121 0 2.002-.951 1.847-2.062l-1.076-7.7a2 2 0 00-1.981-1.738H7.098" stroke-linecap="round" stroke-linejoin="round"></path></svg></div><div class="flex-1 min-w-0 flex items-baseline gap-2"><div class="flex-1 min-w-0"><span class="text-[12.5px] font-semibold">Warin Kittipong</span><span class="text-[12.5px]" style="color:rgba(30,41,59,0.7)"> sent proposal </span><span class="text-[12.5px] font-medium">Central Retail · Q2 cover buy</span></div><span class="text-[11px] shrink-0 tnum" style="color:rgba(30,41,59,0.5)">2h</span></div></div>
+<div class="relative flex items-start gap-3"><div class="relative z-10 w-5 h-5 rounded-full -ml-4 flex items-center justify-center shrink-0 bg-[#213268] text-white"><svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24"><path d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z" stroke-linecap="round" stroke-linejoin="round"></path></svg></div><div class="flex-1 min-w-0 flex items-baseline gap-2"><div class="flex-1 min-w-0"><span class="text-[12.5px] font-semibold">AI Assistant</span><span class="text-[12.5px]" style="color:rgba(30,41,59,0.7)"> generated monthly report </span><span class="text-[12.5px] font-medium">March 2026 — Occupancy</span></div><span class="text-[11px] shrink-0 tnum" style="color:rgba(30,41,59,0.5)">3h</span></div></div>
+</div>
+</div>
+</div>
+</div>
+<!-- ═══════════════ 6. APPROVAL + PRODUCTION + CLAIMS ═══════════════ -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+<!-- Approval Queue -->
+<div class="bg-white border border-surface-200 rounded-xl shadow-card p-5">
+<div class="flex items-center justify-between mb-4">
+<div><h3 class="text-[15px] font-semibold">Media Approval</h3><p class="text-[12px] mt-0.5" style="color:rgba(30,41,59,0.6)">AI Computer Vision QC</p></div>
+<span class="inline-flex items-center gap-1.5 border rounded-full font-medium text-[11px] px-2 py-0.5 bg-[rgba(45,86,210,0.1)] text-[#2D56D2] border-[rgba(45,86,210,0.2)]">4 open</span>
+</div>
+<div class="space-y-2.5">
+<div class="flex items-center gap-3 p-2.5 rounded-lg border border-surface-200 hover:border-pb-500 cursor-pointer"><div class="w-10 h-10 rounded-md shine-soft border border-surface-200 flex items-center justify-center shrink-0"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" style="color:#2D56D2" viewbox="0 0 24 24"><path d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25a2.25 2.25 0 00-2.25-2.25H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z" stroke-linecap="round" stroke-linejoin="round"></path></svg></div><div class="flex-1 min-w-0"><div class="text-[12.5px] font-medium truncate">5G Unlimited — Hero KV</div><div class="text-[11px]" style="color:rgba(30,41,59,0.6)">AIS · v3</div></div><div class="text-right"><div class="text-[11px] font-semibold tnum text-emerald-700">QC 94</div><div class="text-[10px]" style="color:rgba(30,41,59,0.5)">pending-review</div></div></div>
+<div class="flex items-center gap-3 p-2.5 rounded-lg border border-surface-200 hover:border-pb-500 cursor-pointer"><div class="w-10 h-10 rounded-md shine-soft border border-surface-200 flex items-center justify-center shrink-0"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" style="color:#2D56D2" viewbox="0 0 24 24"><path d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25a2.25 2.25 0 00-2.25-2.25H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z" stroke-linecap="round" stroke-linejoin="round"></path></svg></div><div class="flex-1 min-w-0"><div class="text-[12.5px] font-medium truncate">Summer Promo — Rama IX</div><div class="text-[11px]" style="color:rgba(30,41,59,0.6)">TrueMove H · v1</div></div><div class="text-right"><div class="text-[11px] font-semibold tnum text-amber-700">QC 71</div><div class="text-[10px]" style="color:rgba(30,41,59,0.5)">ai-check</div></div></div>
+<div class="flex items-center gap-3 p-2.5 rounded-lg border border-surface-200 hover:border-pb-500 cursor-pointer"><div class="w-10 h-10 rounded-md shine-soft border border-surface-200 flex items-center justify-center shrink-0"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" style="color:#2D56D2" viewbox="0 0 24 24"><path d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25a2.25 2.25 0 00-2.25-2.25H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z" stroke-linecap="round" stroke-linejoin="round"></path></svg></div><div class="flex-1 min-w-0"><div class="text-[12.5px] font-medium truncate">Yaris Cross 2026 Launch</div><div class="text-[11px]" style="color:rgba(30,41,59,0.6)">Toyota · v2</div></div><div class="text-right"><div class="text-[11px] font-semibold tnum text-emerald-700">QC 98</div><div class="text-[10px]" style="color:rgba(30,41,59,0.5)">approved</div></div></div>
+<div class="flex items-center gap-3 p-2.5 rounded-lg border border-surface-200 hover:border-pb-500 cursor-pointer"><div class="w-10 h-10 rounded-md shine-soft border border-surface-200 flex items-center justify-center shrink-0"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" style="color:#2D56D2" viewbox="0 0 24 24"><path d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25a2.25 2.25 0 00-2.25-2.25H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z" stroke-linecap="round" stroke-linejoin="round"></path></svg></div><div class="flex-1 min-w-0"><div class="text-[12.5px] font-medium truncate">Mid-Year Sale — Silom</div><div class="text-[11px]" style="color:rgba(30,41,59,0.6)">Central · v1</div></div><div class="text-right"><div class="text-[11px] font-semibold tnum" style="color:#2D56D2">QC 86</div><div class="text-[10px]" style="color:rgba(30,41,59,0.5)">pending-review</div></div></div>
+</div>
+</div>
+<!-- Production Schedule -->
+<div class="bg-white border border-surface-200 rounded-xl shadow-card p-5">
+<div class="flex items-center justify-between mb-4">
+<div><h3 class="text-[15px] font-semibold">Production Schedule</h3><p class="text-[12px] mt-0.5" style="color:rgba(30,41,59,0.6)">Next 5 days</p></div>
+<span class="inline-flex items-center gap-1.5 border rounded-full font-medium text-[11px] px-2 py-0.5 bg-amber-50 text-amber-700 border-amber-100">2 live</span>
+</div>
+<div class="grid grid-cols-5 gap-1.5 mb-3">
+<div class="text-center"><div class="text-[10px] uppercase" style="color:rgba(30,41,59,0.6)">Tue</div><div class="text-[14px] font-semibold" style="color:#2D56D2">22</div></div>
+<div class="text-center"><div class="text-[10px] uppercase" style="color:rgba(30,41,59,0.6)">Wed</div><div class="text-[14px] font-semibold">23</div></div>
+<div class="text-center"><div class="text-[10px] uppercase" style="color:rgba(30,41,59,0.6)">Thu</div><div class="text-[14px] font-semibold">24</div></div>
+<div class="text-center"><div class="text-[10px] uppercase" style="color:rgba(30,41,59,0.6)">Fri</div><div class="text-[14px] font-semibold">25</div></div>
+<div class="text-center"><div class="text-[10px] uppercase" style="color:rgba(30,41,59,0.6)">Sat</div><div class="text-[14px] font-semibold">26</div></div>
+</div>
+<div class="space-y-2">
+<div class="flex items-center gap-3 p-2 rounded-md bg-surface-50/50 border border-surface-100"><span class="text-[10px] font-mono w-14 shrink-0" style="color:rgba(30,41,59,0.5)">TH-SIL-09</span><div class="flex-1 min-w-0"><div class="text-[12px] font-medium truncate">Install — AIS 5G vinyl</div><div class="text-[10px]" style="color:rgba(30,41,59,0.6)">Team A · Apr 22</div></div><span class="inline-flex items-center gap-1.5 border rounded-full font-medium text-[11px] px-2 py-0.5 bg-emerald-50 text-emerald-700 border-emerald-100"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>done</span></div>
+<div class="flex items-center gap-3 p-2 rounded-md bg-surface-50/50 border border-surface-100"><span class="text-[10px] font-mono w-14 shrink-0" style="color:rgba(30,41,59,0.5)">M-UK-HM</span><div class="flex-1 min-w-0"><div class="text-[12px] font-medium truncate">Digital content swap</div><div class="text-[10px]" style="color:rgba(30,41,59,0.6)">Team B · Apr 22</div></div><span class="inline-flex items-center gap-1.5 border rounded-full font-medium text-[11px] px-2 py-0.5 bg-emerald-50 text-emerald-700 border-emerald-100"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>done</span></div>
+<div class="flex items-center gap-3 p-2 rounded-md bg-surface-50/50 border border-surface-100"><span class="text-[10px] font-mono w-14 shrink-0" style="color:rgba(30,41,59,0.5)">L-BK-BRN</span><div class="flex-1 min-w-0"><div class="text-[12px] font-medium truncate">LED module replacement</div><div class="text-[10px]" style="color:rgba(30,41,59,0.6)">Team C · Apr 22–23</div></div><div class="w-12"><div class="w-full bg-surface-100 rounded-full overflow-hidden h-1"><div class="bg-amber-500 h-full rounded-full" style="width:45%"></div></div></div><span class="inline-flex items-center gap-1.5 border rounded-full font-medium text-[11px] px-2 py-0.5 bg-amber-50 text-amber-700 border-amber-100"><span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>inprog</span></div>
+<div class="flex items-center gap-3 p-2 rounded-md bg-surface-50/50 border border-surface-100"><span class="text-[10px] font-mono w-14 shrink-0" style="color:rgba(30,41,59,0.5)">CM-NOR</span><div class="flex-1 min-w-0"><div class="text-[12px] font-medium truncate">New install — Chiang Mai</div><div class="text-[10px]" style="color:rgba(30,41,59,0.6)">Team D · Apr 23–24</div></div><div class="w-12"><div class="w-full bg-surface-100 rounded-full overflow-hidden h-1"><div class="bg-amber-500 h-full rounded-full" style="width:20%"></div></div></div><span class="inline-flex items-center gap-1.5 border rounded-full font-medium text-[11px] px-2 py-0.5 bg-amber-50 text-amber-700 border-amber-100"><span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>inprog</span></div>
+<div class="flex items-center gap-3 p-2 rounded-md bg-surface-50/50 border border-surface-100"><span class="text-[10px] font-mono w-14 shrink-0" style="color:rgba(30,41,59,0.5)">BFV-UAH</span><div class="flex-1 min-w-0"><div class="text-[12px] font-medium truncate">Re-tension vinyl</div><div class="text-[10px]" style="color:rgba(30,41,59,0.6)">Team A · Apr 24</div></div><span class="inline-flex items-center border rounded-full font-medium text-[11px] px-2 py-0.5 bg-surface-100 text-ink-700 border-surface-200">scheduled</span></div>
+</div>
+</div>
+<!-- Claims SLA -->
+<div class="bg-white border border-surface-200 rounded-xl shadow-card p-5">
+<div class="flex items-center justify-between mb-4">
+<div><h3 class="text-[15px] font-semibold">Active Claims</h3><p class="text-[12px] mt-0.5" style="color:rgba(30,41,59,0.6)">SLA status</p></div>
+<span class="inline-flex items-center gap-1.5 border rounded-full font-medium text-[11px] px-2 py-0.5 bg-rose-50 text-rose-700 border-rose-100">3 open</span>
+</div>
+<div class="space-y-2.5">
+<div class="p-2.5 rounded-lg border border-surface-200 hover:border-pb-500"><div class="flex items-center justify-between mb-1"><div class="flex items-center gap-2"><span class="text-[11px] font-mono" style="color:rgba(30,41,59,0.6)">#1284</span><span class="inline-flex items-center gap-1.5 border rounded-full font-medium text-[11px] px-2 py-0.5 bg-rose-50 text-rose-700 border-rose-100"><span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>high</span></div><span class="text-[10px]" style="color:rgba(30,41,59,0.5)">2h ago</span></div><div class="text-[12.5px] font-medium">LED panel flicker on column 3</div><div class="text-[11px]" style="color:rgba(30,41,59,0.6)">TrueMove H · SLA 4h</div></div>
+<div class="p-2.5 rounded-lg border border-surface-200 hover:border-pb-500"><div class="flex items-center justify-between mb-1"><div class="flex items-center gap-2"><span class="text-[11px] font-mono" style="color:rgba(30,41,59,0.6)">#1283</span><span class="inline-flex items-center gap-1.5 border rounded-full font-medium text-[11px] px-2 py-0.5 bg-amber-50 text-amber-700 border-amber-100"><span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>med</span></div><span class="text-[10px]" style="color:rgba(30,41,59,0.5)">5h ago</span></div><div class="text-[12.5px] font-medium">Vinyl peel — corner</div><div class="text-[11px]" style="color:rgba(30,41,59,0.6)">AIS · SLA 24h</div></div>
+<div class="p-2.5 rounded-lg border border-surface-200 hover:border-pb-500"><div class="flex items-center justify-between mb-1"><div class="flex items-center gap-2"><span class="text-[11px] font-mono" style="color:rgba(30,41,59,0.6)">#1282</span><span class="inline-flex items-center gap-1.5 border rounded-full font-medium text-[11px] px-2 py-0.5 bg-rose-50 text-rose-700 border-rose-100"><span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>crit</span></div><span class="text-[10px]" style="color:rgba(30,41,59,0.5)">1h ago</span></div><div class="text-[12.5px] font-medium">Content not playing — 02:00 slot</div><div class="text-[11px]" style="color:rgba(30,41,59,0.6)">Central · SLA 1h</div></div>
+<div class="p-2.5 rounded-lg border border-surface-200 hover:border-pb-500"><div class="flex items-center justify-between mb-1"><div class="flex items-center gap-2"><span class="text-[11px] font-mono" style="color:rgba(30,41,59,0.6)">#1281</span><span class="inline-flex items-center gap-1.5 border rounded-full font-medium text-[11px] px-2 py-0.5 bg-amber-50 text-amber-700 border-amber-100"><span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>med</span></div><span class="text-[10px]" style="color:rgba(30,41,59,0.5)">8h ago</span></div><div class="text-[12.5px] font-medium">Lighting fixture out</div><div class="text-[11px]" style="color:rgba(30,41,59,0.6)">Toyota · SLA 8h · resolved</div></div>
+<div class="p-2.5 rounded-lg border border-surface-200 hover:border-pb-500"><div class="flex items-center justify-between mb-1"><div class="flex items-center gap-2"><span class="text-[11px] font-mono" style="color:rgba(30,41,59,0.6)">#1280</span><span class="inline-flex items-center border rounded-full font-medium text-[11px] px-2 py-0.5 bg-surface-100 text-ink-700 border-surface-200">low</span></div><span class="text-[10px]" style="color:rgba(30,41,59,0.5)">1d ago</span></div><div class="text-[12.5px] font-medium">Scratched surface reported</div><div class="text-[11px]" style="color:rgba(30,41,59,0.6)">SCB · SLA 48h · resolved</div></div>
+</div>
+</div>
+</div>
+<!-- ═══════════════ 7. TOP CLIENTS ═══════════════ -->
+<div class="bg-white border border-surface-200 rounded-xl shadow-card p-5">
+<div class="flex flex-col sm:flex-row items-start justify-between mb-4 gap-2">
+<div><h3 class="text-[15px] font-semibold">Top Clients — YTD</h3><p class="text-[12px] mt-0.5" style="color:rgba(30,41,59,0.6)">Revenue contribution · click to drill into account</p></div>
+<div class="inline-flex h-8 p-0.5 bg-surface-100 rounded-lg border border-surface-200">
+<button class="px-3 text-[13px] rounded-md font-medium bg-white text-ink-900 shadow-sm">YTD</button>
+<button class="px-3 text-[13px] rounded-md font-medium" style="color:rgba(30,41,59,0.7)">QTD</button>
+<button class="px-3 text-[13px] rounded-md font-medium" style="color:rgba(30,41,59,0.7)">MTD</button>
+</div>
+</div>
+<div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-4">
+<div class="space-y-2"><div class="flex items-center gap-2"><div class="w-7 h-7 rounded text-white font-bold text-[11px] flex items-center justify-center shrink-0" style="background:#2D56D2">AI</div><div class="min-w-0 flex-1"><div class="text-[11px] font-medium truncate">AIS Thailand</div></div></div><div class="text-[16px] font-semibold tnum">฿24.8M</div><div class="w-full h-1.5 bg-surface-100 rounded-full overflow-hidden"><div class="h-full rounded-full" style="width:100%;background:#2D56D2"></div></div><div class="text-[11px]" style="color:rgba(30,41,59,0.6)">18 campaigns</div></div>
+<div class="space-y-2"><div class="flex items-center gap-2"><div class="w-7 h-7 rounded text-white font-bold text-[11px] flex items-center justify-center shrink-0" style="background:#4790FF">TH</div><div class="min-w-0 flex-1"><div class="text-[11px] font-medium truncate">TrueMove H</div></div></div><div class="text-[16px] font-semibold tnum">฿18.5M</div><div class="w-full h-1.5 bg-surface-100 rounded-full overflow-hidden"><div class="h-full rounded-full" style="width:75%;background:#4790FF"></div></div><div class="text-[11px]" style="color:rgba(30,41,59,0.6)">14 campaigns</div></div>
+<div class="space-y-2"><div class="flex items-center gap-2"><div class="w-7 h-7 rounded text-white font-bold text-[11px] flex items-center justify-center shrink-0" style="background:#5FCBF9">TM</div><div class="min-w-0 flex-1"><div class="text-[11px] font-medium truncate">Toyota Motor</div></div></div><div class="text-[16px] font-semibold tnum">฿15.2M</div><div class="w-full h-1.5 bg-surface-100 rounded-full overflow-hidden"><div class="h-full rounded-full" style="width:61%;background:#5FCBF9"></div></div><div class="text-[11px]" style="color:rgba(30,41,59,0.6)">9 campaigns</div></div>
+<div class="space-y-2"><div class="flex items-center gap-2"><div class="w-7 h-7 rounded text-white font-bold text-[11px] flex items-center justify-center shrink-0" style="background:#213268">CR</div><div class="min-w-0 flex-1"><div class="text-[11px] font-medium truncate">Central Retail</div></div></div><div class="text-[16px] font-semibold tnum">฿12.5M</div><div class="w-full h-1.5 bg-surface-100 rounded-full overflow-hidden"><div class="h-full rounded-full" style="width:50%;background:#213268"></div></div><div class="text-[11px]" style="color:rgba(30,41,59,0.6)">22 campaigns</div></div>
+<div class="space-y-2"><div class="flex items-center gap-2"><div class="w-7 h-7 rounded text-white font-bold text-[11px] flex items-center justify-center shrink-0" style="background:#7BA7FF">SC</div><div class="min-w-0 flex-1"><div class="text-[11px] font-medium truncate">SCB</div></div></div><div class="text-[16px] font-semibold tnum">฿9.8M</div><div class="w-full h-1.5 bg-surface-100 rounded-full overflow-hidden"><div class="h-full rounded-full" style="width:40%;background:#7BA7FF"></div></div><div class="text-[11px]" style="color:rgba(30,41,59,0.6)">7 campaigns</div></div>
+<div class="space-y-2"><div class="flex items-center gap-2"><div class="w-7 h-7 rounded text-white font-bold text-[11px] flex items-center justify-center shrink-0" style="background:#36B5D8">CC</div><div class="min-w-0 flex-1"><div class="text-[11px] font-medium truncate">Coca-Cola</div></div></div><div class="text-[16px] font-semibold tnum">฿8.3M</div><div class="w-full h-1.5 bg-surface-100 rounded-full overflow-hidden"><div class="h-full rounded-full" style="width:33%;background:#36B5D8"></div></div><div class="text-[11px]" style="color:rgba(30,41,59,0.6)">11 campaigns</div></div>
+<div class="space-y-2"><div class="flex items-center gap-2"><div class="w-7 h-7 rounded text-white font-bold text-[11px] flex items-center justify-center shrink-0" style="background:#1E40AF">UT</div><div class="min-w-0 flex-1"><div class="text-[11px] font-medium truncate">Unilever</div></div></div><div class="text-[16px] font-semibold tnum">฿7.1M</div><div class="w-full h-1.5 bg-surface-100 rounded-full overflow-hidden"><div class="h-full rounded-full" style="width:29%;background:#1E40AF"></div></div><div class="text-[11px]" style="color:rgba(30,41,59,0.6)">8 campaigns</div></div>
+</div>
+</div>
+</div> /max-w-[1600px] 
+<script>
+</script>
+    </div>
+
+  </main>
+</div>
+
+<!-- AI Panel -->
+<div id="ai-panel" class="fixed right-0 top-0 bottom-0 w-[420px] bg-white border-l border-surface-200 z-40 flex flex-col translate-x-full transition-transform duration-200" style="box-shadow:-8px 0 30px rgba(11,20,48,0.08)">
+  <div class="h-16 px-5 border-b border-surface-200 flex items-center gap-3">
+    <div class="w-8 h-8 rounded-lg flex items-center justify-center text-white" style="background:linear-gradient(135deg,#2D56D2,#5FCBF9)">
+      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"/></svg>
+    </div>
+    <div class="flex-1">
+      <div class="text-[14px] font-semibold">Plan-B Copilot</div>
+      <div class="text-[11px] flex items-center gap-1" style="color:rgba(30,41,59,0.6)"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>Connected to live CRM data</div>
+    </div>
+    <button onclick="toggleAI()" class="w-8 h-8 rounded-md hover:bg-surface-100 flex items-center justify-center">
+      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+    </button>
+  </div>
+
+  <!-- Messages -->
+  <div id="ai-messages" class="flex-1 overflow-y-auto px-5 py-4 space-y-3">
+    <div><div class="text-[10px] font-medium uppercase tracking-wide mb-1" style="color:rgba(30,41,59,0.5)">Copilot</div><div class="inline-block max-w-[90%] text-[13px] leading-relaxed rounded-xl px-3.5 py-2.5 bg-surface-50 border border-surface-200">Hi — I can summarize occupancy, flag anomalies, draft proposals, or forecast revenue. What are we digging into?</div></div>
+  </div>
+
+  <!-- Suggestions -->
+  <div id="ai-suggestions" class="px-5 pb-2 space-y-2">
+    <div class="text-[10px] uppercase tracking-wide font-semibold" style="color:rgba(30,41,59,0.5)">Try asking</div>
+    <button onclick="aiSend(this.textContent)" class="w-full text-left text-[12px] px-3 py-2 border border-surface-200 rounded-lg hover:border-pb-500 hover:bg-blue-50/30 transition-colors">Forecast May occupancy for BTS inventory</button>
+    <button onclick="aiSend(this.textContent)" class="w-full text-left text-[12px] px-3 py-2 border border-surface-200 rounded-lg hover:border-pb-500 hover:bg-blue-50/30 transition-colors">Summarize this week's claims by severity</button>
+    <button onclick="aiSend(this.textContent)" class="w-full text-left text-[12px] px-3 py-2 border border-surface-200 rounded-lg hover:border-pb-500 hover:bg-blue-50/30 transition-colors">Who are my top 3 clients and where are they underspending?</button>
+    <button onclick="aiSend(this.textContent)" class="w-full text-left text-[12px] px-3 py-2 border border-surface-200 rounded-lg hover:border-pb-500 hover:bg-blue-50/30 transition-colors">Draft a proposal: AIS wants 30-day coverage in Bangkok + Chiang Mai</button>
+  </div>
+
+  <!-- Input -->
+  <div class="p-4 border-t border-surface-200">
+    <div class="rounded-xl bg-white border border-surface-200 focus-within:border-pb-500 transition" style="box-shadow:0 0 0 1px rgba(45,86,210,0.1)">
+      <div class="flex items-end gap-2 p-2">
+        <input id="ai-input" type="text" placeholder="Ask about occupancy, pipeline, claims…" class="flex-1 text-[13px] bg-transparent outline-none px-2 py-1.5 placeholder:opacity-40" onkeydown="if(event.key==='Enter'){event.preventDefault();aiSend()}" />
+        <button onclick="aiSend()" class="w-8 h-8 rounded-md bg-ink-900 hover:bg-ink-700 flex items-center justify-center text-white shrink-0">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 18-8-8 18-2-8-8-2Z"/></svg>
+        </button>
+      </div>
+    </div>
+    <p class="text-[10px] text-center mt-2" style="color:rgba(30,41,59,0.4)">Plan-B Copilot — may hallucinate, verify critical actions</p>
+  </div>
+</div>
+
+<script>
+/* === Expand/collapse sub-menus === */
+function toggleMenu(id){
+  const sub=document.getElementById(id+'-sub');
+  const chevron=document.getElementById(id+'-chevron');
+  if(sub.classList.contains('hidden')){
+    sub.classList.remove('hidden');
+    chevron.classList.add('rotate-90');
+  }else{
+    sub.classList.add('hidden');
+    chevron.classList.remove('rotate-90');
+  }
+}
+
+/* === Mobile sidebar overlay === */
+function toggleMobile(){
+  const sidebar=document.getElementById('sidebar');
+  const overlay=document.getElementById('sidebar-overlay');
+  sidebar.classList.toggle('-translate-x-full');
+  overlay.classList.toggle('hidden');
+}
+
+/* === Desktop collapse sidebar === */
+let _sidebarCollapsed = false;
+function collapseSidebar(){
+  // On mobile, toggle mobile drawer instead
+  if(window.innerWidth < 1024){
+    toggleMobile();
+    return;
+  }
+  _sidebarCollapsed = !_sidebarCollapsed;
+  const sb = document.getElementById('sidebar');
+  const main = document.querySelector('main');
+  const labels = sb.querySelectorAll('.sidebar-label');
+  const groups = sb.querySelectorAll('.sidebar-nav-parent');
+  const subs = sb.querySelectorAll('[id$="-sub"]');
+  const brand = document.getElementById('sidebar-brand');
+
+  if(_sidebarCollapsed){
+    sb.classList.remove('w-64');
+    sb.classList.add('w-[68px]');
+    main.classList.remove('lg:ml-64');
+    main.classList.add('lg:ml-[68px]');
+    labels.forEach(el=>el.classList.add('hidden'));
+    groups.forEach(el=>el.classList.add('hidden'));
+    subs.forEach(el=>el.classList.add('hidden'));
+    if(brand) brand.classList.replace('px-4','px-0');
+    if(brand) brand.classList.add('justify-center');
+  } else {
+    sb.classList.remove('w-[68px]');
+    sb.classList.add('w-64');
+    main.classList.remove('lg:ml-[68px]');
+    main.classList.add('lg:ml-64');
+    labels.forEach(el=>el.classList.remove('hidden'));
+    groups.forEach(el=>el.classList.remove('hidden'));
+    // Re-show sub-menus that were explicitly open (have active items)
+    subs.forEach(el=>{
+      if(el.querySelector('.active')) el.classList.remove('hidden');
+    });
+    if(brand) brand.classList.replace('px-0','px-4');
+    if(brand) brand.classList.remove('justify-center');
+  }
+}
+
+/* === AI Panel === */
+let _aiOpen = false;
+function toggleAI(){
+  _aiOpen = !_aiOpen;
+  const panel = document.getElementById('ai-panel');
+  const btn = document.getElementById('ai-toggle');
+  if(_aiOpen){
+    panel.classList.remove('translate-x-full');
+    btn.classList.remove('bg-white','border-surface-300','text-ink-900','hover:bg-surface-50');
+    btn.classList.add('bg-ink-900','text-white','border-ink-900');
+  } else {
+    panel.classList.add('translate-x-full');
+    btn.classList.remove('bg-ink-900','text-white','border-ink-900');
+    btn.classList.add('bg-white','border-surface-300','text-ink-900','hover:bg-surface-50');
+  }
+}
+
+/* AI demo chat */
+const _aiReplies = [
+  "Based on current data, BTS corridor occupancy is trending at 84% — above the 78% network average. If the pattern holds, May could hit 89% with AIS and TrueMove briefs both targeting Silom.",
+  "This week we have 3 open claims: #1284 (high — LED flicker, 2h remaining SLA), #1282 (critical — content not playing, urgent), and #1283 (med — vinyl peel, within SLA). The critical item needs immediate attention.",
+  "Your top 3 clients YTD: AIS Thailand (฿24.8M, 18 campaigns), TrueMove H (฿18.5M, 14 campaigns), and Toyota Motor (฿15.2M, 9 campaigns). Toyota is underspending on digital LED — they only use 2 of your 5 available LED sites.",
+  "Draft proposal ready: AIS 30-day coverage across 8 Bangkok sites (including Silom LED, Rama IX, Asoke) + 2 Chiang Mai sites. Estimated package: ฿4.2M. Occupancy conflicts on TH-SIL-09 for May 5-12 — recommend offering X-CAYA-FY-1 as substitute.",
+];
+let _aiReplyIdx = 0;
+
+function aiSend(text){
+  const input = document.getElementById('ai-input');
+  const msg = text || input.value.trim();
+  if(!msg) return;
+  input.value = '';
+  document.getElementById('ai-suggestions').style.display='none';
+
+  const box = document.getElementById('ai-messages');
+  // User bubble
+  box.innerHTML += '<div class="text-right"><div class="inline-block max-w-[90%] text-[13px] leading-relaxed rounded-xl px-3.5 py-2.5 bg-ink-900 text-white">'+msg.replace(/</g,'&lt;')+'</div></div>';
+  box.scrollTop = box.scrollHeight;
+
+  // Thinking dots
+  const thinkId = 'ai-think-'+Date.now();
+  box.innerHTML += '<div id="'+thinkId+'" class="flex items-center gap-2 text-[12px]" style="color:rgba(30,41,59,0.6)"><div class="flex gap-1"><span class="w-1.5 h-1.5 bg-pb-500 rounded-full pulse-dot"></span><span class="w-1.5 h-1.5 bg-pb-500 rounded-full pulse-dot" style="animation-delay:.2s"></span><span class="w-1.5 h-1.5 bg-pb-500 rounded-full pulse-dot" style="animation-delay:.4s"></span></div>analyzing CRM data…</div>';
+  box.scrollTop = box.scrollHeight;
+
+  setTimeout(()=>{
+    const el = document.getElementById(thinkId);
+    if(el) el.remove();
+    const reply = _aiReplies[_aiReplyIdx % _aiReplies.length];
+    _aiReplyIdx++;
+    box.innerHTML += '<div><div class="text-[10px] font-medium uppercase tracking-wide mb-1" style="color:rgba(30,41,59,0.5)">Copilot</div><div class="inline-block max-w-[90%] text-[13px] leading-relaxed rounded-xl px-3.5 py-2.5 bg-surface-50 border border-surface-200">'+reply+'</div></div>';
+    box.scrollTop = box.scrollHeight;
+  }, 1500);
+}
+</script>
+</body>
+</html>

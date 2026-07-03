@@ -1,0 +1,773 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>User Group Management — Plan-B CRM</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: { extend: {
+      fontFamily: { kanit:['Kanit','sans-serif'], mono:['JetBrains Mono','monospace'] },
+      colors: {
+        pb:{900:'#213268',700:'#2D56D2',500:'#4790FF',300:'#5FCBF9',100:'#D6ECFF',50:'#EBF5FF'},
+        ink:{900:'#0B1430',800:'#162040',700:'#1E293B'},
+        surface:{0:'#FFFFFF',50:'#F8FAFC',100:'#F1F5F9',200:'#E2E8F0',300:'#CBD5E1'},
+      },
+    }},
+  };
+</script>
+
+<style>
+  *,*::before,*::after{font-family:'Kanit',sans-serif;-webkit-font-smoothing:antialiased}
+  body{background:#F7F9FC;color:#0B1430;margin:0}
+  .font-mono,code,.font-mono *{font-family:'JetBrains Mono',monospace}
+  ::-webkit-scrollbar{width:10px;height:10px}
+  ::-webkit-scrollbar-track{background:transparent}
+  ::-webkit-scrollbar-thumb{background:#CBD5E8;border-radius:10px;border:2px solid #F7F9FC}
+  ::-webkit-scrollbar-thumb:hover{background:#93A4C4}
+  .line-clamp-2{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:#4790FF;box-shadow:0 0 0 3px rgba(71,144,255,.15)}
+</style>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin="anonymous"></script>
+<script src="shared/shared-layout.js"></script>
+<script src="shared/sidebar.js"></script>
+</head>
+<body>
+<div id="root"></div>
+
+<!-- ========================================================
+     Seed data — embedded from screens/SettingsUserGroupData.jsx
+     ======================================================== -->
+<script type="text/babel" data-presets="react">
+const SYSTEMS = [
+  { id:'inventory', nameTh:'Inventory', nameEn:'Inventory', icon:'archive-box', color:'#2D56D2',
+    menus:[
+      { id:'inv-dashboard', label:'Dashboard' },
+      { id:'inv-sites',     label:'Sites' },
+      { id:'inv-map',       label:'Map View' },
+      { id:'inv-photos',    label:'Photo Records' },
+      { id:'inv-export',    label:'Export' },
+    ]},
+  { id:'sale', nameTh:'Sale', nameEn:'Sale', icon:'banknotes', color:'#10B981',
+    menus:[
+      { id:'sale-dashboard', label:'Dashboard' },
+      { id:'sale-quotes',    label:'Quotations' },
+      { id:'sale-clients',   label:'Clients' },
+      { id:'sale-pricing',   label:'Pricing & Rate Cards' },
+      { id:'sale-pipeline',  label:'Pipeline' },
+    ]},
+  { id:'media-approval', nameTh:'Media Approval', nameEn:'Media Approval', icon:'check-circle', color:'#7C3AED',
+    menus:[
+      { id:'ma-dashboard',  label:'Dashboard' },
+      { id:'ma-ticket',     label:'Media Ticket' },
+      { id:'ma-assign',     label:'Assign Ticket' },
+      { id:'ma-production', label:'Verify & Production' },
+      { id:'ma-management', label:'Media Management' },
+    ]},
+  { id:'production', nameTh:'Production', nameEn:'Production', icon:'wrench', color:'#F59E0B',
+    menus:[
+      { id:'prod-dashboard', label:'Dashboard' },
+      { id:'prod-jobs',      label:'Production Jobs' },
+      { id:'prod-crew',      label:'Crew Schedule' },
+      { id:'prod-stock',     label:'Material Stock' },
+      { id:'prod-install',   label:'Installation Log' },
+    ]},
+  { id:'claim', nameTh:'Claim', nameEn:'Claim', icon:'clipboard', color:'#06B6D4',
+    menus:[
+      { id:'claim-dashboard', label:'Dashboard' },
+      { id:'claim-open',      label:'Open Claims' },
+      { id:'claim-resolved',  label:'Resolved Claims' },
+      { id:'claim-sla',       label:'SLA Tracking' },
+    ]},
+  { id:'admin', nameTh:'Admin', nameEn:'Admin', icon:'lock', color:'#EF4444',
+    menus:[
+      { id:'adm-users',  label:'User Management' },
+      { id:'adm-groups', label:'User Group Management' },
+      { id:'adm-email',  label:'Email Setup' },
+      { id:'adm-master', label:'Master Data' },
+    ]},
+];
+
+const ALL_MENU_IDS = SYSTEMS.flatMap(s => s.menus.map(m => m.id));
+
+const SAMPLE_USERS = [
+  { id:'U-001', name:'Raveewan Kaewmanee',     email:'ravewan@planbmedia.co.th',    role:'Admin',      avatar:'#2D56D2' },
+  { id:'U-002', name:'Preeya Wongsuwan',      email:'preeya.w@planbmedia.co.th',   role:'Sales Lead', avatar:'#10B981' },
+  { id:'U-003', name:'Kitti Phutthiphan',       email:'kitti.p@planbmedia.co.th',    role:'Designer',   avatar:'#F59E0B' },
+  { id:'U-004', name:'Napha Saetang',       email:'napha.s@planbmedia.co.th',    role:'Production', avatar:'#7C3AED' },
+  { id:'U-005', name:'Somchai Khamsri',     email:'somchai.k@planbmedia.co.th',  role:'Sales',      avatar:'#06B6D4' },
+  { id:'U-006', name:'Weera Somboon',  email:'weera.s@planbmedia.co.th',    role:'Sales Mgr',  avatar:'#EF4444' },
+  { id:'U-007', name:'Suree Phromma',       email:'suree.p@planbmedia.co.th',    role:'Approver',   avatar:'#0EA5E9' },
+  { id:'U-008', name:'Thanat Manopimoke',      email:'thanat.m@planbmedia.co.th',   role:'Designer',   avatar:'#84CC16' },
+  { id:'U-009', name:'Arada Tantipong',       email:'arada.t@planbmedia.co.th',    role:'Designer',   avatar:'#F97316' },
+  { id:'U-010', name:'Boonmee Limthong',     email:'boonmee.l@planbmedia.co.th',  role:'Crew Lead',  avatar:'#A855F7' },
+  { id:'U-011', name:'Chaiwat Nopthong',     email:'chaiwat.n@planbmedia.co.th',  role:'Operations', avatar:'#EC4899' },
+  { id:'U-012', name:'Duangjai Photisarn',    email:'duangjai.p@planbmedia.co.th', role:'Finance',    avatar:'#14B8A6' },
+  { id:'U-013', name:'Eakkachai Rakkanchanok',   email:'eakkachai.r@planbmedia.co.th',role:'IT',         avatar:'#6366F1' },
+  { id:'U-014', name:'Fa Suriya',      email:'fa.s@planbmedia.co.th',       role:'Care',       avatar:'#F43F5E' },
+  { id:'U-015', name:'Gan Wittayasak',         email:'gan.w@planbmedia.co.th',      role:'Designer',   avatar:'#22C55E' },
+];
+
+const USER_GROUPS_SEED = [
+  { id:'admin', name:'Admin', nameTh:'ผู้ดูแลระบบ', status:'active',
+    description:'สิทธิ์เต็มทั้งระบบ — ดูแล Master Data, Settings, รายงาน',
+    systems: SYSTEMS.map(s => s.id), menus: ALL_MENU_IDS, userIds:['U-001','U-013'] },
+  { id:'sales-lead', name:'Sales — Lead', nameTh:'หัวหน้าฝ่ายขาย', status:'active',
+    description:'หัวหน้าทีมขาย — เห็นทุก quote ของทีม + อนุมัติส่วนลด',
+    systems:['sale','inventory'],
+    menus:['inv-dashboard','inv-sites','inv-map','sale-dashboard','sale-quotes','sale-clients','sale-pricing','sale-pipeline'],
+    userIds:['U-002','U-006'] },
+  { id:'sales', name:'Sales', nameTh:'พนักงานขาย', status:'active',
+    description:'พนักงานขาย — เห็นเฉพาะ quote ของตัวเอง',
+    systems:['sale','inventory'],
+    menus:['inv-dashboard','inv-sites','sale-dashboard','sale-quotes','sale-clients'],
+    userIds:['U-005','U-011'] },
+  { id:'media-approval', name:'Media Approval', nameTh:'อนุมัติสื่อ', status:'active',
+    description:'ผู้อนุมัติงานสื่อ ฝ่าย QA/QC ภายใน',
+    systems:['media-approval'],
+    menus:['ma-dashboard','ma-ticket','ma-assign','ma-production','ma-management'],
+    userIds:['U-007'] },
+  { id:'production', name:'Production', nameTh:'ฝ่ายผลิต', status:'active',
+    description:'ทีมผลิต + ติดตั้งสื่อ + เคลียร์ claim',
+    systems:['production','claim','media-approval'],
+    menus:['prod-dashboard','prod-jobs','prod-crew','prod-stock','prod-install','claim-dashboard','claim-open','ma-production'],
+    userIds:['U-004','U-010'] },
+  { id:'designer', name:'Designer', nameTh:'นักออกแบบ', status:'active',
+    description:'ทีมกราฟิก — รับ ticket, ส่ง artwork',
+    systems:['media-approval','production'],
+    menus:['ma-dashboard','ma-ticket','ma-production','prod-jobs'],
+    userIds:['U-003','U-008','U-009','U-015'] },
+  { id:'cs', name:'Customer Care', nameTh:'ดูแลลูกค้า', status:'active',
+    description:'รับเรื่อง / ติดตาม claim จากลูกค้า',
+    systems:['claim','sale'],
+    menus:['claim-dashboard','claim-open','claim-resolved','claim-sla','sale-clients'],
+    userIds:['U-014'] },
+  { id:'finance', name:'Finance', nameTh:'การเงิน', status:'active',
+    description:'ออกใบเสร็จ / ใบกำกับภาษี / ตามจ่าย',
+    systems:['sale'], menus:['sale-dashboard','sale-quotes','sale-pricing'], userIds:['U-012'] },
+  { id:'media-ops', name:'Media Operations', nameTh:'ปฏิบัติการสื่อ', status:'active',
+    description:'ดูแลคลังสื่อ + Inventory + Landlord',
+    systems:['inventory','media-approval'],
+    menus:['inv-dashboard','inv-sites','inv-map','inv-photos','ma-management'], userIds:[] },
+  { id:'auditor', name:'Internal Auditor', nameTh:'ตรวจสอบภายใน', status:'inactive',
+    description:'อ่านอย่างเดียวเพื่อ audit — ปิดชั่วคราว',
+    systems:['inventory','sale','media-approval','claim'],
+    menus:['inv-dashboard','sale-dashboard','ma-dashboard','claim-dashboard'], userIds:[] },
+  { id:'agency', name:'External Agency', nameTh:'เอเจนซี่ภายนอก', status:'active',
+    description:'เห็นเฉพาะ ticket ที่เกี่ยวข้อง — สำหรับพาร์ทเนอร์',
+    systems:['media-approval'], menus:['ma-ticket','ma-production'], userIds:[] },
+  { id:'landlord', name:'Landlord Portal', nameTh:'เจ้าของพื้นที่', status:'active',
+    description:'เจ้าของพื้นที่เห็นเฉพาะ Landlord Approval',
+    systems:['media-approval'], menus:['ma-management'], userIds:[] },
+];
+
+function systemOf(id) { return SYSTEMS.find(s => s.id === id); }
+function userOf(id)   { return SAMPLE_USERS.find(u => u.id === id); }
+
+Object.assign(window, { SYSTEMS, ALL_MENU_IDS, SAMPLE_USERS, USER_GROUPS_SEED, systemOf, userOf });
+</script>
+
+<!-- ========================================================
+     Screen — embedded from screens/SettingsUserGroup.jsx
+     ======================================================== -->
+<script type="text/babel" data-presets="react">
+const { useState, useMemo, useRef, useEffect } = React;
+
+function GroupStatusBadge({ status }) {
+  if (status === 'active') {
+    return (
+      <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full font-medium border text-[11px]"
+        style={{ background:'#ECFDF5', color:'#047857', borderColor:'#A7F3D0' }}>
+        <span className="w-1.5 h-1.5 rounded-full" style={{ background:'#10B981' }} />Active
+      </span>
+    );
+  }
+  return (
+    <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full font-medium border text-[11px]"
+      style={{ background:'#F8FAFC', color:'#475569', borderColor:'#E2E8F0' }}>
+      <span className="w-1.5 h-1.5 rounded-full" style={{ background:'#94A3B8' }} />Inactive
+    </span>
+  );
+}
+
+function GTile({ icon, label, value, tone='#2D56D2' }) {
+  return (
+    <div className="bg-white border border-surface-200 rounded-xl px-4 py-3 flex items-center gap-3"
+      style={{ boxShadow:'0 1px 3px rgba(11,20,48,.06), 0 1px 2px rgba(11,20,48,.04)' }}>
+      <div className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
+        style={{ background: `${tone}14`, color: tone }}><Icon name={icon} size={17} /></div>
+      <div className="min-w-0">
+        <div className="text-[10px] uppercase font-semibold tracking-wider text-ink-700/55">{label}</div>
+        <div className="text-[18px] font-semibold tracking-tight" style={{ fontVariantNumeric:'tabular-nums' }}>{value}</div>
+      </div>
+    </div>
+  );
+}
+
+function SystemPill({ id, menus, total, compact=false }) {
+  const s = window.systemOf(id);
+  if (!s) return null;
+  const isFull = menus.length === total;
+  return (
+    <span className="inline-flex items-center gap-1.5 px-1.5 py-0.5 rounded-md text-[10.5px] font-medium border"
+      style={{ background: s.color + '12', color: s.color, borderColor: s.color + '30' }}
+      title={`${s.nameTh} · ${menus.length}/${total} menus`}>
+      <Icon name={s.icon} size={11} />
+      <span className="font-semibold">{compact ? s.nameTh.slice(0,3) : s.nameTh}</span>
+      <span className="font-mono opacity-70">{isFull ? 'all' : `${menus.length}/${total}`}</span>
+    </span>
+  );
+}
+
+function GroupCard({ group, onViewUsers, onEdit, onDelete }) {
+  const memberCount = group.userIds.length;
+  return (
+    <div className="bg-white border border-surface-200 rounded-xl p-4 flex flex-col gap-3 hover:shadow-md transition-shadow"
+      style={{ boxShadow:'0 1px 3px rgba(11,20,48,.06), 0 1px 2px rgba(11,20,48,.04)' }}>
+      <div className="flex items-start gap-3">
+        <div className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0"
+          style={{ background:'linear-gradient(135deg, rgba(45,86,210,0.08), rgba(71,144,255,0.12))', color:'#2D56D2' }}>
+          <Icon name="users" size={18} />
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-[14px] font-semibold text-ink-900 truncate">{group.name}</span>
+            <GroupStatusBadge status={group.status} />
+          </div>
+          <div className="text-[11.5px] text-ink-700/55 truncate">{group.nameTh}</div>
+        </div>
+      </div>
+
+      {group.description && (
+        <div className="text-[12px] text-ink-700/70 leading-snug line-clamp-2 min-h-[32px]">{group.description}</div>
+      )}
+
+      <button onClick={() => onViewUsers(group)}
+        className="flex items-center gap-2 px-3 py-2 rounded-lg bg-surface-50 hover:bg-pb-50 border border-surface-200 hover:border-pb-100 transition-colors group/btn text-left">
+        <div className="flex -space-x-1.5 shrink-0">
+          {group.userIds.slice(0, 3).map(uid => {
+            const u = window.userOf(uid);
+            if (!u) return null;
+            return (
+              <span key={uid} className="w-6 h-6 rounded-full border-2 border-white flex items-center justify-center text-white text-[9px] font-semibold"
+                style={{ background: u.avatar }}>
+                {u.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase()}
+              </span>
+            );
+          })}
+          {memberCount === 0 && (
+            <span className="w-6 h-6 rounded-full border-2 border-white flex items-center justify-center bg-surface-100 text-ink-700/40">
+              <Icon name="user" size={10} />
+            </span>
+          )}
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="text-[12px] font-semibold text-ink-900 tabular-nums">{memberCount} {memberCount === 1 ? 'user' : 'users'}</div>
+          <div className="text-[10.5px] text-ink-700/50">กดเพื่อดูรายชื่อ</div>
+        </div>
+        <Icon name="chev-right" size={12} className="text-ink-700/30 group-hover/btn:text-pb-700 transition-colors" />
+      </button>
+
+      <div>
+        <div className="text-[9.5px] uppercase font-semibold tracking-wider text-ink-700/45 mb-1.5">
+          เข้าถึงระบบ <span className="text-ink-700/70 font-mono">{group.systems.length}</span>
+        </div>
+        <div className="flex flex-wrap gap-1">
+          {group.systems.length === 0
+            ? <span className="text-[11px] text-ink-700/40 italic">ไม่มีสิทธิ์เข้าถึงระบบใด</span>
+            : group.systems.map(sid => {
+              const s = window.systemOf(sid);
+              if (!s) return null;
+              const totalMenus = s.menus.length;
+              const groupMenus = group.menus.filter(m => s.menus.some(mn => mn.id === m));
+              return <SystemPill key={sid} id={sid} menus={groupMenus} total={totalMenus} />;
+            })}
+        </div>
+      </div>
+
+      <div className="flex items-center gap-1 mt-auto pt-3 border-t border-surface-100">
+        <button onClick={() => onEdit(group)} title="Edit"
+          className="flex-1 h-8 px-3 rounded-md bg-pb-50/60 text-pb-700 hover:bg-pb-100 hover:text-pb-900 text-[12px] font-semibold inline-flex items-center justify-start gap-1.5 transition-colors">
+          <Icon name="pencil" size={13} />Edit
+        </button>
+        <button onClick={() => onDelete(group)} title="Delete"
+          className="h-8 w-8 rounded-md bg-rose-50/60 text-rose-600 hover:bg-rose-100 hover:text-rose-700 flex items-center justify-center transition-colors">
+          <Icon name="trash" size={14} />
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function UserListDrawer({ open, group, onClose }) {
+  if (!group) return null;
+  const users = group.userIds.map(window.userOf).filter(Boolean);
+  return (
+    <React.Fragment>
+      <div onClick={onClose} className={`fixed inset-0 bg-black/30 z-30 transition-opacity ${open ? 'opacity-100' : 'pointer-events-none opacity-0'}`} />
+      <aside className={`fixed right-0 top-0 bottom-0 w-[440px] bg-white border-l border-surface-200 z-40 flex flex-col transition-transform duration-200 ${open ? '' : 'translate-x-full'}`}
+        style={{ boxShadow:'-8px 0 30px rgba(11,20,48,.10)' }}>
+        <header className="h-14 px-5 border-b border-surface-200 flex items-center shrink-0">
+          <div>
+            <div className="text-[10px] uppercase tracking-wider font-semibold text-ink-700/45">User Group</div>
+            <div className="text-[15px] font-semibold text-ink-900 leading-tight">{group.name}</div>
+          </div>
+          <button onClick={onClose} className="ml-auto w-8 h-8 rounded-md hover:bg-surface-100 flex items-center justify-center text-ink-700/40">
+            <Icon name="x" size={16} />
+          </button>
+        </header>
+
+        <div className="px-5 py-3 bg-pb-50/40 border-b border-surface-200 flex items-center gap-2">
+          <Icon name="users" size={14} className="text-pb-700" />
+          <span className="text-[13px] font-semibold text-ink-900 tabular-nums">{users.length}</span>
+          <span className="text-[12px] text-ink-700/65">{users.length === 1 ? 'user' : 'users'} ใน group นี้</span>
+        </div>
+
+        <div className="flex-1 overflow-y-auto">
+          {users.length === 0 ? (
+            <div className="px-5 py-16 text-center">
+              <div className="w-14 h-14 rounded-full bg-surface-100 mx-auto mb-3 flex items-center justify-center text-ink-700/30">
+                <Icon name="users" size={26} />
+              </div>
+              <div className="text-[14px] font-semibold text-ink-900 mb-1">ยังไม่มี user</div>
+              <div className="text-[12px] text-ink-700/55">เพิ่ม user เข้ากลุ่มจากหน้า User Management</div>
+            </div>
+          ) : (
+            <div className="px-2 py-2">
+              {users.map(u => (
+                <div key={u.id} className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-pb-50/40 cursor-pointer">
+                  <span className="w-9 h-9 rounded-full flex items-center justify-center text-white font-semibold text-[12px] shrink-0" style={{ background: u.avatar }}>
+                    {u.name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase()}
+                  </span>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-[13px] font-medium text-ink-900 truncate">{u.name}</div>
+                    <div className="text-[11.5px] text-ink-700/55 truncate font-mono">{u.email}</div>
+                  </div>
+                  <span className="text-[10.5px] px-2 py-0.5 rounded-md bg-surface-100 text-ink-700/70 font-medium shrink-0">{u.role}</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <footer className="p-4 border-t border-surface-200 shrink-0">
+          <Button variant="secondary" icon="plus" className="w-full">เพิ่ม user เข้ากลุ่ม</Button>
+        </footer>
+      </aside>
+    </React.Fragment>
+  );
+}
+
+function SystemAccordion({ system, isEnabled, selectedMenus, onToggleSystem, onToggleMenu, onToggleAllMenus }) {
+  const [open, setOpen] = useState(isEnabled);
+  useEffect(() => { if (isEnabled) setOpen(true); }, [isEnabled]);
+
+  const allMenuIds = system.menus.map(m => m.id);
+  const selectedInSystem = selectedMenus.filter(m => allMenuIds.includes(m));
+  const allChecked = selectedInSystem.length === system.menus.length;
+
+  return (
+    <div className="border rounded-xl overflow-hidden transition-colors"
+      style={{ borderColor: isEnabled ? system.color + '50' : '#E2E8F0', background: isEnabled ? system.color + '08' : '#fff' }}>
+      <div className="flex items-center gap-3 p-3">
+        <div className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
+          style={{ background: isEnabled ? system.color + '22' : '#F1F5F9', color: isEnabled ? system.color : 'rgba(30,41,59,.4)' }}>
+          <Icon name={system.icon} size={17} />
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="text-[13px] font-semibold text-ink-900">{system.nameTh}</div>
+          <div className="text-[11px] text-ink-700/55">
+            {isEnabled
+              ? <span><span className="font-mono text-ink-700/85">{selectedInSystem.length}</span>/{system.menus.length} เมนู</span>
+              : `${system.menus.length} เมนูในระบบนี้`}
+          </div>
+        </div>
+        <button type="button"
+          onClick={() => { onToggleSystem(system.id, !isEnabled); setOpen(!isEnabled); }}
+          className="relative w-10 h-6 rounded-full transition-colors shrink-0"
+          style={{ background: isEnabled ? system.color : '#CBD5E1' }}
+          aria-pressed={isEnabled}>
+          <span className="absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-all"
+            style={{ left: isEnabled ? '18px' : '2px' }} />
+        </button>
+        {isEnabled && (
+          <button type="button" onClick={() => setOpen(o => !o)}
+            className="w-7 h-7 rounded-md hover:bg-white/50 flex items-center justify-center text-ink-700/50">
+            <Icon name="chev-down" size={14} className="transition-transform" style={{ transform: open ? 'rotate(180deg)' : '' }}/>
+          </button>
+        )}
+      </div>
+
+      {isEnabled && open && (
+        <div className="px-3 pb-3 pt-1">
+          <div className="bg-white rounded-lg border border-surface-200 overflow-hidden">
+            <div className="flex items-center gap-2 px-3 py-2 border-b border-surface-200 bg-surface-50">
+              <span className="text-[10.5px] uppercase font-semibold tracking-wider text-ink-700/55">เมนูภายใต้ {system.nameTh}</span>
+              <button type="button" onClick={() => onToggleAllMenus(system.id, !allChecked)}
+                className="ml-auto text-[11px] font-semibold text-pb-700 hover:underline">
+                {allChecked ? 'Deselect All' : 'Select All'}
+              </button>
+            </div>
+            <div className="grid grid-cols-2 gap-x-1 gap-y-0.5 p-1">
+              {system.menus.map(m => {
+                const checked = selectedMenus.includes(m.id);
+                return (
+                  <label key={m.id} className={`flex items-center gap-2 px-2.5 py-1.5 rounded-md cursor-pointer transition-colors text-[12px] ${checked ? 'bg-pb-50' : 'hover:bg-surface-50'}`}>
+                    <input type="checkbox" checked={checked} onChange={() => onToggleMenu(m.id, !checked)}
+                      className="w-4 h-4 rounded shrink-0 accent-[#2D56D2]" />
+                    <span className={checked ? 'text-ink-900 font-medium' : 'text-ink-700/75'}>{m.label}</span>
+                  </label>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function GroupDrawer({ open, mode, initial, onClose, onSave }) {
+  const blank = { id:'', name:'', nameTh:'', description:'', status:'active', systems:[], menus:[], userIds:[] };
+  const [form, setForm] = useState(blank);
+  const firstRef = useRef(null);
+
+  useEffect(() => {
+    if (open) {
+      setForm(initial ? JSON.parse(JSON.stringify(initial)) : blank);
+      setTimeout(() => firstRef.current && firstRef.current.focus(), 60);
+    }
+  }, [open, initial]);
+
+  const update = (k, v) => setForm(f => ({ ...f, [k]: v }));
+
+  const toggleSystem = (sid, on) => {
+    setForm(f => {
+      let systems = on ? [...new Set([...f.systems, sid])] : f.systems.filter(s => s !== sid);
+      let menus = f.menus.slice();
+      const sys = window.systemOf(sid);
+      if (!on) {
+        const sysMenus = sys.menus.map(m => m.id);
+        menus = menus.filter(m => !sysMenus.includes(m));
+      }
+      return { ...f, systems, menus };
+    });
+  };
+
+  const toggleMenu = (mid, on) => {
+    setForm(f => ({ ...f, menus: on ? [...new Set([...f.menus, mid])] : f.menus.filter(m => m !== mid) }));
+  };
+
+  const toggleAllMenusInSystem = (sid, on) => {
+    const sys = window.systemOf(sid);
+    const sysMenus = sys.menus.map(m => m.id);
+    setForm(f => ({ ...f, menus: on ? [...new Set([...f.menus, ...sysMenus])] : f.menus.filter(m => !sysMenus.includes(m)) }));
+  };
+
+  const submit = (e) => {
+    e.preventDefault();
+    if (!form.name.trim()) return;
+    onSave({ ...form, id: form.id || ('grp-' + Math.random().toString(36).slice(2, 7)) });
+  };
+
+  return (
+    <React.Fragment>
+      <div onClick={onClose} className={`fixed inset-0 bg-black/30 z-30 transition-opacity ${open ? 'opacity-100' : 'pointer-events-none opacity-0'}`} />
+      <aside className={`fixed right-0 top-0 bottom-0 w-[560px] bg-white border-l border-surface-200 z-40 flex flex-col transition-transform duration-200 ${open ? '' : 'translate-x-full'}`}
+        style={{ boxShadow:'-8px 0 30px rgba(11,20,48,.10)' }}>
+        <header className="h-14 px-5 border-b border-surface-200 flex items-center shrink-0">
+          <div>
+            <div className="text-[10px] uppercase tracking-wider font-semibold text-ink-700/45">{mode === 'create' ? 'New' : 'Edit'}</div>
+            <div className="text-[15px] font-semibold text-ink-900 leading-tight">{mode === 'create' ? 'เพิ่ม User Group ใหม่' : 'แก้ไข User Group'}</div>
+          </div>
+          <button onClick={onClose} className="ml-auto w-8 h-8 rounded-md hover:bg-surface-100 flex items-center justify-center text-ink-700/40">
+            <Icon name="x" size={16} />
+          </button>
+        </header>
+
+        <form onSubmit={submit} className="flex-1 overflow-y-auto p-5 space-y-5">
+          <div className="space-y-3">
+            <Field label="ชื่อ User Group" hint="ชื่อหลักที่ใช้ทั่วระบบ — เช่น Sales — Lead">
+              <input ref={firstRef} value={form.name} onChange={e => update('name', e.target.value)} required
+                placeholder="เช่น Sales — Lead"
+                className="w-full h-10 px-3 bg-surface-50 border border-surface-200 rounded-lg text-[14px] font-medium placeholder:opacity-40" />
+            </Field>
+            <Field label="ชื่อภาษาไทย (ทางเลือก)">
+              <input value={form.nameTh} onChange={e => update('nameTh', e.target.value)}
+                placeholder="หัวหน้าฝ่ายขาย"
+                className="w-full h-9 px-3 bg-surface-50 border border-surface-200 rounded-lg text-[13px] placeholder:opacity-40" />
+            </Field>
+            <Field label="คำอธิบาย (ทางเลือก)" hint="อธิบายว่ากลุ่มนี้คือใคร ทำอะไร">
+              <textarea value={form.description} onChange={e => update('description', e.target.value)}
+                rows={2}
+                placeholder="เช่น หัวหน้าทีมขาย — เห็นทุก quote ของทีม + อนุมัติส่วนลด"
+                className="w-full px-3 py-2 bg-surface-50 border border-surface-200 rounded-lg text-[13px] resize-y placeholder:opacity-40" />
+            </Field>
+            <Field label="สถานะ">
+              <div className="flex gap-2">
+                {[
+                  { id:'active',   label:'Active',   color:'#10B981', bg:'#ECFDF5', border:'#A7F3D0', text:'#047857' },
+                  { id:'inactive', label:'Inactive', color:'#94A3B8', bg:'#F8FAFC', border:'#E2E8F0', text:'#475569' },
+                ].map(s => (
+                  <button key={s.id} type="button" onClick={() => update('status', s.id)}
+                    className="h-9 px-3 rounded-lg text-[12px] font-medium border transition-colors flex items-center gap-1.5 flex-1"
+                    style={form.status === s.id
+                      ? { background: s.bg, color: s.text, borderColor: s.border }
+                      : { background:'#fff', color:'rgba(30,41,59,.7)', borderColor:'#E2E8F0' }}>
+                    <span className="w-1.5 h-1.5 rounded-full" style={{ background: s.color }} />{s.label}
+                  </button>
+                ))}
+              </div>
+            </Field>
+          </div>
+
+          <div>
+            <div className="flex items-baseline justify-between mb-2">
+              <h4 className="text-[13px] font-semibold text-ink-900">สิทธิ์เข้าถึงระบบ</h4>
+              <span className="text-[11px] text-ink-700/55">เปิดระบบที่ต้องการ — แล้วเลือกเมนูภายใต้ระบบนั้น</span>
+            </div>
+            <div className="space-y-2">
+              {window.SYSTEMS.map(s => (
+                <SystemAccordion key={s.id} system={s}
+                  isEnabled={form.systems.includes(s.id)}
+                  selectedMenus={form.menus}
+                  onToggleSystem={toggleSystem}
+                  onToggleMenu={toggleMenu}
+                  onToggleAllMenus={toggleAllMenusInSystem} />
+              ))}
+            </div>
+            <div className="mt-3 rounded-lg bg-surface-50 border border-surface-200 px-3 py-2 flex items-center gap-2 text-[11.5px] text-ink-700/70">
+              <Icon name="check-circle" size={13} className="text-emerald-500 shrink-0" />
+              <span>เลือกแล้ว <b className="text-ink-900 font-mono">{form.systems.length}</b> ระบบ ·{' '}
+                <b className="text-ink-900 font-mono">{form.menus.length}</b> เมนู</span>
+            </div>
+          </div>
+        </form>
+
+        <footer className="p-4 border-t border-surface-200 flex gap-2 shrink-0">
+          <Button variant="primary" icon="check" className="flex-1" onClick={submit}>
+            {mode === 'create' ? 'บันทึก Group' : 'บันทึกการแก้ไข'}
+          </Button>
+          <Button variant="secondary" onClick={onClose}>ยกเลิก</Button>
+        </footer>
+      </aside>
+    </React.Fragment>
+  );
+}
+
+function ConfirmDeleteGroup({ open, target, onClose, onConfirm }) {
+  if (!target) return null;
+  return (
+    <React.Fragment>
+      <div onClick={onClose} className={`fixed inset-0 bg-black/40 z-40 transition-opacity ${open ? 'opacity-100' : 'pointer-events-none opacity-0'}`} />
+      <div className={`fixed inset-0 z-50 flex items-center justify-center pointer-events-none p-6 transition-opacity ${open ? 'opacity-100' : 'opacity-0'}`}>
+        <div className="bg-white rounded-2xl border border-surface-200 pointer-events-auto w-full max-w-md"
+          style={{ boxShadow:'0 24px 60px rgba(11,20,48,.18)' }}>
+          <div className="p-6">
+            <div className="w-12 h-12 rounded-full bg-rose-50 flex items-center justify-center mb-4">
+              <Icon name="warning" size={22} className="text-rose-600" />
+            </div>
+            <h3 className="text-[18px] font-semibold text-ink-900 mb-1">ยืนยันการลบ</h3>
+            <p className="text-[13px] text-ink-700/65 leading-relaxed">
+              ต้องการลบกลุ่ม <span className="font-semibold text-ink-900">{target.name}</span> ใช่หรือไม่?
+              {target.userIds.length > 0 && (
+                <span className="block mt-2 text-rose-600">มี {target.userIds.length} user อยู่ในกลุ่มนี้ จะถูกถอดออกจากกลุ่มทั้งหมด</span>
+              )}
+              <span className="block mt-2 text-ink-700/45">การลบจะไม่สามารถย้อนกลับได้</span>
+            </p>
+          </div>
+          <div className="px-6 py-4 bg-surface-50 border-t border-surface-200 flex gap-2 justify-end rounded-b-2xl">
+            <Button variant="secondary" onClick={onClose}>ยกเลิก</Button>
+            <Button variant="primary" icon="trash" onClick={onConfirm} className="!bg-rose-600 hover:!bg-rose-700">Delete Permanently</Button>
+          </div>
+        </div>
+      </div>
+    </React.Fragment>
+  );
+}
+
+function SettingsUserGroupScreen() {
+  const [groups, setGroups] = useState(() => JSON.parse(JSON.stringify(window.USER_GROUPS_SEED)));
+  const [collapsed, setCollapsed] = useState(false);
+  const [search, setSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [systemFilter, setSystemFilter] = useState('all');
+  const [drawer, setDrawer] = useState({ open:false, mode:'create', initial:null });
+  const [usersDrawer, setUsersDrawer] = useState({ open:false, group:null });
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [aiOpen, setAiOpen] = useState(false);
+
+  const filtered = useMemo(() => {
+    return groups.filter(g => {
+      if (statusFilter !== 'all' && g.status !== statusFilter) return false;
+      if (systemFilter !== 'all' && !g.systems.includes(systemFilter)) return false;
+      if (search) {
+        const q = search.toLowerCase();
+        const hay = `${g.name} ${g.nameTh || ''} ${g.description || ''}`.toLowerCase();
+        if (!hay.includes(q)) return false;
+      }
+      return true;
+    });
+  }, [groups, search, statusFilter, systemFilter]);
+
+  const stats = useMemo(() => {
+    const totalUsers = groups.reduce((sum, g) => sum + g.userIds.length, 0);
+    const active = groups.filter(g => g.status === 'active').length;
+    return { total: groups.length, active, inactive: groups.length - active, totalUsers };
+  }, [groups]);
+
+  const openCreate = () => setDrawer({ open:true, mode:'create', initial:null });
+  const openEdit = (g) => setDrawer({ open:true, mode:'edit', initial:g });
+  const closeDrawer = () => setDrawer(d => ({ ...d, open:false }));
+
+  const saveGroup = (data) => {
+    setGroups(prev => {
+      const idx = prev.findIndex(g => g.id === data.id);
+      if (idx === -1) return [data, ...prev];
+      const next = [...prev];
+      next[idx] = data;
+      return next;
+    });
+    closeDrawer();
+  };
+
+  const confirmDelete = () => {
+    if (!deleteTarget) return;
+    setGroups(prev => prev.filter(g => g.id !== deleteTarget.id));
+    setDeleteTarget(null);
+  };
+
+  const resetFilters = () => { setSearch(''); setStatusFilter('all'); setSystemFilter('all'); };
+
+  const leftPad = collapsed ? 68 : 256;
+
+  return (
+    <div className="min-h-screen flex bg-[#F7F9FC]" style={{ color: '#0B1430' }}>
+      <main className="flex-1 min-h-screen flex flex-col transition-[margin-left] duration-200 lg:ml-64">
+        <Topbar
+          crumbs={[
+            { label:'Home',    href:'dashboard.html' },
+            { label:'Setting', href:'settings-master.html' },
+            'User Group Management'
+          ]}
+          onToggleSidebar={() => window.collapseSidebar()}
+          onToggleAi={() => setAiOpen(o => !o)}
+          aiOpen={aiOpen} />
+
+        <div className="flex-1 p-4 sm:p-6">
+          <div className="max-w-[1600px] mx-auto space-y-4">
+            <div className="flex items-start justify-between gap-3 flex-wrap">
+              <div>
+                <h2 className="text-[22px] font-semibold text-ink-900 tracking-tight">User Group Management</h2>
+                <p className="text-[12px] text-ink-700/55 mt-0.5">
+                  จัดการกลุ่มผู้ใช้และสิทธิ์เข้าถึงระบบ — แต่ละกลุ่มกำหนดได้ว่าจะเห็นระบบไหน และเมนูย่อยอะไรบ้าง
+                </p>
+              </div>
+              <div className="flex gap-2">
+                <Button variant="ghost" icon="upload">ส่งออก</Button>
+                <Button variant="primary" icon="plus" onClick={openCreate}>เพิ่ม User Group</Button>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <GTile icon="users"        label="User Groups ทั้งหมด" value={stats.total}      tone="#2D56D2" />
+              <GTile icon="check-circle" label="Active"               value={stats.active}     tone="#10B981" />
+              <GTile icon="x"            label="Inactive"             value={stats.inactive}   tone="#94A3B8" />
+              <GTile icon="user"         label="Users รวม"            value={stats.totalUsers} tone="#7C3AED" />
+            </div>
+
+            <div className="bg-white border border-surface-200 rounded-xl p-3"
+              style={{ boxShadow:'0 1px 3px rgba(11,20,48,.06), 0 1px 2px rgba(11,20,48,.04)' }}>
+              <div className="flex items-center gap-2 flex-wrap mb-2">
+                <div className="relative flex-1 min-w-[220px]">
+                  <Icon name="search" size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-700/35" />
+                  <input value={search} onChange={e => setSearch(e.target.value)}
+                    placeholder="ค้นหา — ชื่อ group, คำอธิบาย..."
+                    className="w-full h-9 pl-9 pr-3 bg-surface-50 border border-surface-200 rounded-lg text-[13px] placeholder:opacity-40" />
+                </div>
+                <Select value={statusFilter} onChange={e => setStatusFilter(e.target.value)}
+                  options={[
+                    { value:'all',      label:'ทุกสถานะ' },
+                    { value:'active',   label:'Active' },
+                    { value:'inactive', label:'Inactive' },
+                  ]} />
+                <Button variant="secondary" icon="refresh" onClick={resetFilters} className="!h-9 !px-3">รีเซ็ต</Button>
+              </div>
+
+              <div className="flex items-center gap-1.5 flex-wrap">
+                <button onClick={() => setSystemFilter('all')}
+                  className={`h-7 px-3 rounded-full text-[11.5px] font-medium border transition-colors ${systemFilter === 'all' ? 'bg-pb-700 text-white border-pb-700' : 'bg-white text-ink-700/70 border-surface-200 hover:bg-pb-50 hover:border-pb-100'}`}>
+                  ทุกระบบ · {groups.length}
+                </button>
+                {window.SYSTEMS.map(s => {
+                  const count = groups.filter(g => g.systems.includes(s.id)).length;
+                  return (
+                    <button key={s.id} onClick={() => setSystemFilter(s.id)}
+                      className={`h-7 px-3 rounded-full text-[11.5px] font-medium border transition-colors flex items-center gap-1.5 ${systemFilter === s.id ? 'bg-pb-700 text-white border-pb-700' : 'bg-white text-ink-700/70 border-surface-200 hover:bg-pb-50 hover:border-pb-100'}`}>
+                      <span className="w-1.5 h-1.5 rounded-full" style={{ background: systemFilter === s.id ? '#fff' : s.color }} />
+                      {s.nameTh} · {count}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between px-1">
+              <div className="text-[12px] text-ink-700/60">
+                แสดง <b className="text-ink-700/85">{filtered.length}</b> จาก <b className="text-ink-700/85">{groups.length}</b> กลุ่ม
+              </div>
+              {filtered.length !== groups.length && (
+                <button onClick={resetFilters} className="text-[11px] text-pb-700 font-semibold hover:underline">Clear Filter</button>
+              )}
+            </div>
+
+            {filtered.length === 0 ? (
+              <div className="bg-white border border-surface-200 rounded-xl p-12 text-center"
+                style={{ boxShadow:'0 1px 3px rgba(11,20,48,.06)' }}>
+                <div className="w-16 h-16 rounded-full bg-surface-100 mx-auto mb-3 flex items-center justify-center text-ink-700/30">
+                  <Icon name="users" size={28} />
+                </div>
+                <div className="text-[15px] font-semibold text-ink-900 mb-1">ไม่พบ User Group</div>
+                <div className="text-[12px] text-ink-700/50 mb-4">ลองปรับตัวกรอง หรือสร้างกลุ่มใหม่</div>
+                <Button variant="primary" icon="plus" onClick={openCreate}>เพิ่ม User Group</Button>
+              </div>
+            ) : (
+              <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                {filtered.map(g => (
+                  <GroupCard key={g.id} group={g}
+                    onViewUsers={() => setUsersDrawer({ open:true, group: g })}
+                    onEdit={() => openEdit(g)}
+                    onDelete={() => setDeleteTarget(g)} />
+                ))}
+              </div>
+            )}
+
+            <div className="text-[11px] text-ink-700/45 px-1 leading-relaxed">
+              <Icon name="check-circle" size={11} className="inline-block -mt-0.5 mr-1 text-emerald-500" />
+              กลุ่มที่ Inactive จะยังปรากฏในรายชื่อ แต่ user ในกลุ่มจะถูกถอดสิทธิ์ชั่วคราว
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <GroupDrawer open={drawer.open} mode={drawer.mode} initial={drawer.initial} onClose={closeDrawer} onSave={saveGroup} />
+      <UserListDrawer open={usersDrawer.open} group={usersDrawer.group} onClose={() => setUsersDrawer({ open:false, group:null })} />
+      <ConfirmDeleteGroup open={!!deleteTarget} target={deleteTarget} onClose={() => setDeleteTarget(null)} onConfirm={confirmDelete} />
+      <AiPanel open={aiOpen} onClose={() => setAiOpen(false)} />
+    </div>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<SettingsUserGroupScreen />);
+</script>
+</body>
+</html>

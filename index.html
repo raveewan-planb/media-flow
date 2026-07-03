@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Media Flow System — Plan-B CRM Prototype</title>
+<meta name="description" content="Design prototype for Plan-B Media's CRM — end-to-end media booking, approval, production and reporting workflow.">
+<meta name="robots" content="noindex, nofollow">
+<meta property="og:title" content="Media Flow System — Plan-B CRM Prototype">
+<meta property="og:description" content="Design prototype for Plan-B Media's CRM — end-to-end media booking, approval, production and reporting workflow.">
+<meta property="og:type" content="website">
+<link rel="icon" type="image/jpeg" href="logo.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config={theme:{extend:{fontFamily:{kanit:['Kanit','sans-serif']},colors:{pb:{900:'#213268',700:'#2D56D2',500:'#4790FF',300:'#5FCBF9',100:'#D6ECFF',50:'#EBF5FF'},corp:{navy:'#003060',sky:'#20C0F0'}}}}}
+</script>
+<style>
+*{font-family:'Kanit',sans-serif}
+html{scroll-behavior:smooth}
+
+/* Animated gradient background — same family as login */
+.hero-bg{
+  background:linear-gradient(-45deg,#0f1b3d,#003060,#213268,#2D56D2,#20C0F0,#2D56D2,#003060);
+  background-size:400% 400%;
+  animation:gradientShift 18s ease infinite;
+}
+@keyframes gradientShift{
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}
+
+/* Floating particles */
+.particles{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.particle{
+  position:absolute;border-radius:50%;
+  background:rgba(255,255,255,0.06);
+  animation:floatUp linear infinite;
+}
+@keyframes floatUp{
+  0%{transform:translateY(100vh) scale(0);opacity:0}
+  10%{opacity:1}
+  90%{opacity:1}
+  100%{transform:translateY(-10vh) scale(1);opacity:0}
+}
+
+/* Decorative shapes */
+.shape{position:absolute;border-radius:50%;opacity:0.08;pointer-events:none;filter:blur(2px)}
+.shape-1{width:600px;height:600px;background:#20C0F0;top:-220px;right:-180px;animation:floatShape 10s ease-in-out infinite}
+.shape-2{width:420px;height:420px;background:#4790FF;bottom:-160px;left:-140px;animation:floatShape 12s ease-in-out infinite reverse}
+.shape-3{width:260px;height:260px;background:#5FCBF9;top:40%;left:5%;animation:floatShape 8s ease-in-out infinite 2s}
+@keyframes floatShape{
+  0%,100%{transform:translate(0,0) scale(1)}
+  33%{transform:translate(30px,-25px) scale(1.05)}
+  66%{transform:translate(-20px,20px) scale(0.97)}
+}
+
+/* Fade-in */
+.fade-up{opacity:0;transform:translateY(24px);animation:fadeUp .8s ease forwards}
+.fade-up-d1{animation-delay:.05s}
+.fade-up-d2{animation-delay:.18s}
+.fade-up-d3{animation-delay:.32s}
+.fade-up-d4{animation-delay:.46s}
+.fade-up-d5{animation-delay:.6s}
+.fade-up-d6{animation-delay:.75s}
+@keyframes fadeUp{to{opacity:1;transform:translateY(0)}}
+
+/* Glass card */
+.glass{
+  background:rgba(255,255,255,0.06);
+  backdrop-filter:blur(18px);
+  -webkit-backdrop-filter:blur(18px);
+  border:1px solid rgba(255,255,255,0.12);
+  box-shadow:0 8px 32px rgba(0,0,0,0.18),inset 0 1px 0 rgba(255,255,255,0.08);
+}
+.glass-hover{transition:transform .25s ease,border-color .25s ease,background .25s ease,box-shadow .25s ease}
+.glass-hover:hover{
+  transform:translateY(-4px);
+  background:rgba(255,255,255,0.09);
+  border-color:rgba(95,203,249,0.35);
+  box-shadow:0 12px 40px rgba(0,0,0,0.28),0 0 0 1px rgba(95,203,249,0.12) inset;
+}
+
+/* Logo glow */
+.logo-glow{
+  box-shadow:0 0 30px rgba(71,144,255,0.35),0 0 60px rgba(32,192,240,0.15);
+  animation:pulseGlow 3s ease-in-out infinite;
+}
+@keyframes pulseGlow{
+  0%,100%{box-shadow:0 0 30px rgba(71,144,255,0.35),0 0 60px rgba(32,192,240,0.15)}
+  50%{box-shadow:0 0 45px rgba(95,203,249,0.5),0 0 90px rgba(71,144,255,0.25)}
+}
+
+/* Primary CTA — shine sweep */
+.btn-primary{
+  position:relative;overflow:hidden;
+  background:linear-gradient(90deg,#2D56D2,#5FCBF9);
+  transition:transform .2s ease,box-shadow .3s ease;
+}
+.btn-primary::after{
+  content:'';position:absolute;top:0;left:-100%;
+  width:60%;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.35),transparent);
+  animation:shine 3.5s ease-in-out infinite;
+}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 8px 30px rgba(71,144,255,0.4)}
+@keyframes shine{
+  0%{left:-100%}
+  55%{left:130%}
+  100%{left:130%}
+}
+
+/* Section body */
+.section-body{background:#F7F9FC;color:#0B1430}
+
+/* Screen card — for content on white section */
+.screen-card{
+  background:#fff;
+  border:1px solid #E2E8F0;
+  border-radius:14px;
+  transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease;
+  box-shadow:0 1px 3px rgba(11,20,48,0.06),0 1px 2px rgba(11,20,48,0.04);
+}
+.screen-card:hover{
+  transform:translateY(-3px);
+  box-shadow:0 12px 30px rgba(33,50,104,0.12);
+  border-color:#5FCBF9;
+}
+.screen-card .badge{
+  display:inline-block;font-size:10.5px;padding:2px 8px;border-radius:9999px;
+  font-weight:600;text-transform:uppercase;letter-spacing:.05em;
+}
+
+/* Persona pill */
+.persona{
+  display:inline-flex;align-items:center;gap:8px;padding:8px 14px;
+  border-radius:9999px;background:#fff;border:1px solid #E2E8F0;
+  font-size:12.5px;color:#213268;font-weight:500;
+  transition:all .15s;
+}
+.persona:hover{border-color:#4790FF;background:#EBF5FF;color:#2D56D2}
+.persona .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+
+/* Feature bullet */
+.feat-icon{
+  width:44px;height:44px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,#EBF5FF,#D6ECFF);
+  color:#2D56D2;flex-shrink:0;
+}
+
+/* Screen mini preview illustration */
+.mini-screen{
+  position:relative;height:96px;border-radius:10px;overflow:hidden;
+  background:linear-gradient(135deg,#213268,#2D56D2);
+  padding:10px;
+}
+.mini-screen::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at 20% 30%,rgba(95,203,249,0.25),transparent 40%),
+             radial-gradient(circle at 80% 70%,rgba(32,192,240,0.15),transparent 45%);
+}
+.mini-bar{position:relative;background:rgba(255,255,255,0.25);border-radius:2px;width:8px}
+.mini-line{position:relative;background:rgba(255,255,255,0.35);border-radius:2px;height:4px}
+
+/* Prototype banner */
+.proto-banner{
+  background:linear-gradient(90deg,rgba(245,158,11,0.15),rgba(245,158,11,0.05));
+  border:1px solid rgba(245,158,11,0.35);
+  color:#FDE68A;
+}
+
+/* Nav */
+.top-nav{
+  position:fixed;top:0;left:0;right:0;z-index:50;
+  background:rgba(15,27,61,0.6);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(255,255,255,0.06);
+  transition:background .2s;
+}
+.top-nav.scrolled{background:rgba(15,27,61,0.9)}
+.nav-link{color:rgba(219,234,254,0.7);font-size:13px;transition:color .15s;position:relative}
+.nav-link:hover{color:#fff}
+.nav-link::after{content:'';position:absolute;left:0;right:0;bottom:-4px;height:2px;background:linear-gradient(90deg,#2D56D2,#5FCBF9);transform:scaleX(0);transition:transform .2s;transform-origin:center}
+.nav-link:hover::after{transform:scaleX(1)}
+
+/* Divider label */
+.eyebrow{
+  font-size:11px;text-transform:uppercase;letter-spacing:0.1em;
+  font-weight:600;color:#5FCBF9;
+}
+.eyebrow-dark{
+  font-size:11px;text-transform:uppercase;letter-spacing:0.1em;
+  font-weight:600;color:#2D56D2;
+}
+
+/* Tab bar for module preview */
+.mod-tabs{display:flex;gap:4px;flex-wrap:wrap;justify-content:center;margin-bottom:24px}
+.mod-tab{
+  padding:8px 16px;border-radius:9999px;font-size:13px;font-weight:500;
+  border:1px solid #E2E8F0;background:#fff;color:rgba(30,41,59,0.65);cursor:pointer;
+  transition:all .15s;
+}
+.mod-tab:hover{border-color:#4790FF;color:#2D56D2}
+.mod-tab.active{background:linear-gradient(90deg,#2D56D2,#5FCBF9);color:#fff;border-color:transparent;box-shadow:0 4px 12px rgba(45,86,210,0.25)}
+
+/* Screen grid animation */
+.mod-panel{display:none}
+.mod-panel.active{display:grid;animation:fadeIn .35s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* Stat number */
+.stat-num{
+  font-size:38px;font-weight:700;
+  background:linear-gradient(135deg,#2D56D2,#5FCBF9);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  line-height:1;
+}
+</style>
+</head>
+<body class="bg-[#0f1b3d]">
+
+<!-- ═══════════ TOP NAV ═══════════ -->
+<nav class="top-nav" id="topNav">
+  <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+    <a href="#top" class="flex items-center gap-3">
+      <img src="logo.jpg" alt="Plan-B" class="h-8 w-8 rounded-md" />
+      <div class="leading-tight">
+        <div class="text-white text-sm font-semibold">Plan-B <span class="text-pb-300">CRM</span></div>
+        <div class="text-blue-200/60 text-[10px] uppercase tracking-wider">Media Flow System</div>
+      </div>
+    </a>
+    <div class="hidden md:flex items-center gap-7">
+      <a href="#features" class="nav-link">Features</a>
+      <a href="#modules" class="nav-link">Modules</a>
+      <a href="#personas" class="nav-link">For Teams</a>
+      <a href="#preview" class="nav-link">Screens</a>
+    </div>
+    <a href="login.html" class="btn-primary text-white text-sm font-medium px-5 py-2 rounded-lg">
+      เข้าสู่ระบบ
+    </a>
+  </div>
+</nav>
+
+<!-- ═══════════ HERO ═══════════ -->
+<section id="top" class="hero-bg relative overflow-hidden pt-32 pb-24">
+  <div class="shape shape-1"></div>
+  <div class="shape shape-2"></div>
+  <div class="shape shape-3"></div>
+  <div class="particles" id="particles"></div>
+
+  <div class="relative z-10 max-w-6xl mx-auto px-6">
+    <!-- Prototype banner -->
+    <div class="fade-up fade-up-d1 flex justify-center mb-6">
+      <div class="proto-banner text-xs font-medium px-4 py-1.5 rounded-full flex items-center gap-2">
+        <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
+        Design Prototype · เวอร์ชันสาธิต ยังไม่ใช่ระบบใช้งานจริง
+      </div>
+    </div>
+
+    <!-- Logo + Brand -->
+    <div class="fade-up fade-up-d2 flex flex-col items-center text-center mb-8">
+      <div class="inline-block rounded-2xl overflow-hidden shadow-2xl logo-glow mb-5">
+        <img src="logo.jpg" alt="Plan-B Media" class="block h-16 w-auto" />
+      </div>
+      <p class="eyebrow mb-3">Plan-B Media · CRM System</p>
+      <h1 class="text-white text-4xl md:text-6xl font-bold tracking-tight leading-[1.1] max-w-4xl">
+        จัดการสื่อโฆษณา<br class="hidden md:block"/>
+        <span class="bg-gradient-to-r from-pb-300 to-corp-sky bg-clip-text text-transparent">อย่างมืออาชีพ</span>
+      </h1>
+      <p class="text-blue-100/75 text-base md:text-lg mt-6 max-w-2xl leading-relaxed">
+        ระบบบริหารจัดการลูกค้าสัมพันธ์และกระบวนการอนุมัติสื่อ ครบวงจร<br class="hidden md:block"/>
+        ตั้งแต่การขาย · ผลิตชิ้นงาน · อนุมัติ · จนถึงหน้าจอ
+      </p>
+    </div>
+
+    <!-- CTAs -->
+    <div class="fade-up fade-up-d3 flex flex-col sm:flex-row items-center justify-center gap-3 mb-14">
+      <a href="login.html" class="btn-primary text-white font-semibold px-8 py-3.5 rounded-xl flex items-center gap-2 text-[15px]">
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.75" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9"/></svg>
+        เริ่มทดลองใช้งาน
+      </a>
+      <a href="dashboard.html" class="text-blue-100/85 hover:text-white font-medium px-6 py-3.5 rounded-xl border border-white/15 hover:border-white/35 hover:bg-white/[0.05] transition flex items-center gap-2 text-[15px]">
+        ข้ามไปดู Dashboard
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+      </a>
+    </div>
+
+    <!-- Stat strip -->
+    <div class="fade-up fade-up-d4 grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6 max-w-4xl mx-auto">
+      <div class="glass rounded-2xl p-5 text-center">
+        <div class="text-white text-2xl md:text-3xl font-bold">80+</div>
+        <div class="text-blue-200/70 text-xs mt-1 uppercase tracking-wider">Screens</div>
+      </div>
+      <div class="glass rounded-2xl p-5 text-center">
+        <div class="text-white text-2xl md:text-3xl font-bold">7</div>
+        <div class="text-blue-200/70 text-xs mt-1 uppercase tracking-wider">Modules</div>
+      </div>
+      <div class="glass rounded-2xl p-5 text-center">
+        <div class="text-white text-2xl md:text-3xl font-bold">11</div>
+        <div class="text-blue-200/70 text-xs mt-1 uppercase tracking-wider">Workflow Stages</div>
+      </div>
+      <div class="glass rounded-2xl p-5 text-center">
+        <div class="text-white text-2xl md:text-3xl font-bold">TH · EN</div>
+        <div class="text-blue-200/70 text-xs mt-1 uppercase tracking-wider">Bilingual</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ FEATURES ═══════════ -->
+<section id="features" class="section-body py-20 px-6">
+  <div class="max-w-6xl mx-auto">
+    <div class="text-center mb-14">
+      <p class="eyebrow-dark mb-3">What's inside</p>
+      <h2 class="text-3xl md:text-4xl font-bold text-[#0B1430] tracking-tight">ครอบคลุมทุกขั้นตอน ตั้งแต่ Brief จนถึงหน้าจอ</h2>
+      <p class="text-slate-600 mt-4 max-w-2xl mx-auto text-[15px] leading-relaxed">
+        ระบบเดียวที่รวม Sales · Media Approval · Production · Claim · Report ไว้ในที่เดียว พร้อม AI Copilot ช่วยวิเคราะห์และร่างงานให้อัตโนมัติ
+      </p>
+    </div>
+
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+      <!-- Feature card -->
+      <div class="p-6 rounded-2xl border border-slate-200 bg-white hover:border-pb-500 hover:shadow-lg transition">
+        <div class="feat-icon mb-4">
+          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
+        <h3 class="text-[#0B1430] font-semibold text-lg mb-2">Media Approval Pipeline</h3>
+        <p class="text-slate-600 text-sm leading-relaxed">ระบบ Ticket แบบครบวงจร ตั้งแต่ Create → Assign → Verify → Production → X-Approve → Landlord → Render พร้อม SLA tracking ทุกขั้น</p>
+      </div>
+
+      <div class="p-6 rounded-2xl border border-slate-200 bg-white hover:border-pb-500 hover:shadow-lg transition">
+        <div class="feat-icon mb-4">
+          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z"/></svg>
+        </div>
+        <h3 class="text-[#0B1430] font-semibold text-lg mb-2">Inventory Management</h3>
+        <p class="text-slate-600 text-sm leading-relaxed">จัดการสื่อโฆษณาทุกประเภท — LED Billboard, BTS, Airport, 7-Eleven, POS, Metro พร้อม Heatmap แสดง Occupancy 12 เดือน</p>
+      </div>
+
+      <div class="p-6 rounded-2xl border border-slate-200 bg-white hover:border-pb-500 hover:shadow-lg transition">
+        <div class="feat-icon mb-4">
+          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg>
+        </div>
+        <h3 class="text-[#0B1430] font-semibold text-lg mb-2">KPI & Reports</h3>
+        <p class="text-slate-600 text-sm leading-relaxed">Dashboard ผู้บริหาร · KPI รายทีม · Monthly Report · Export Airtime · Audit Log — ทุกรายงาน export ได้ทันที</p>
+      </div>
+
+      <div class="p-6 rounded-2xl border border-slate-200 bg-white hover:border-pb-500 hover:shadow-lg transition">
+        <div class="feat-icon mb-4">
+          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456z"/></svg>
+        </div>
+        <h3 class="text-[#0B1430] font-semibold text-lg mb-2">Plan-B Copilot</h3>
+        <p class="text-slate-600 text-sm leading-relaxed">AI ผู้ช่วยที่สรุป Occupancy · แจ้งเตือน Anomaly · ร่าง Proposal · Forecast Revenue เข้าถึงได้จากทุกหน้าผ่านปุ่ม Ask AI</p>
+      </div>
+
+      <div class="p-6 rounded-2xl border border-slate-200 bg-white hover:border-pb-500 hover:shadow-lg transition">
+        <div class="feat-icon mb-4">
+          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17l-5.1-5.1a2.25 2.25 0 010-3.182l.71-.71a2.25 2.25 0 013.18 0l2.8 2.8 2.8-2.8a2.25 2.25 0 013.18 0l.71.71a2.25 2.25 0 010 3.182l-5.1 5.1a2.25 2.25 0 01-3.18 0z"/></svg>
+        </div>
+        <h3 class="text-[#0B1430] font-semibold text-lg mb-2">Production Tracking</h3>
+        <p class="text-slate-600 text-sm leading-relaxed">ติดตามคิวผลิต · Material Type · Screen Type · Traffic Light Status ให้ทีม Production เห็นภาพรวมและเปลี่ยน priority ได้ทันที</p>
+      </div>
+
+      <div class="p-6 rounded-2xl border border-slate-200 bg-white hover:border-pb-500 hover:shadow-lg transition">
+        <div class="feat-icon mb-4">
+          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75"/></svg>
+        </div>
+        <h3 class="text-[#0B1430] font-semibold text-lg mb-2">Master Data Management</h3>
+        <p class="text-slate-600 text-sm leading-relaxed">User · Group · Email Setup · 20+ Master ตาราง (Province, Zone, Format, Media Branding, Package) — จัดการทั้งหมดผ่าน UI เดียว</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ MODULES / TAB PREVIEW ═══════════ -->
+<section id="modules" class="section-body py-20 px-6 bg-white">
+  <div class="max-w-6xl mx-auto">
+    <div class="text-center mb-10">
+      <p class="eyebrow-dark mb-3">Explore modules</p>
+      <h2 class="text-3xl md:text-4xl font-bold text-[#0B1430] tracking-tight">เข้าดูแต่ละ Module ได้เลย</h2>
+      <p class="text-slate-600 mt-4 text-[15px]">คลิกที่การ์ดเพื่อเปิดหน้านั้นตรงๆ ไม่ต้อง login</p>
+    </div>
+
+    <!-- Module tabs -->
+    <div class="mod-tabs">
+      <button class="mod-tab active" data-mod="ma">Media Approval</button>
+      <button class="mod-tab" data-mod="inv">Inventory</button>
+      <button class="mod-tab" data-mod="sale">Sale</button>
+      <button class="mod-tab" data-mod="rpt">Reports</button>
+      <button class="mod-tab" data-mod="stg">Settings</button>
+    </div>
+
+    <!-- MEDIA APPROVAL -->
+    <div class="mod-panel active grid md:grid-cols-2 lg:grid-cols-3 gap-4" data-panel="ma">
+      <a href="ma-dashboard.html" class="screen-card p-4 block">
+        <div class="mini-screen mb-3">
+          <div class="relative flex items-end gap-1.5 h-14 mt-2">
+            <div class="mini-bar" style="height:35%"></div>
+            <div class="mini-bar" style="height:60%"></div>
+            <div class="mini-bar" style="height:45%"></div>
+            <div class="mini-bar" style="height:75%"></div>
+            <div class="mini-bar" style="height:55%"></div>
+            <div class="mini-bar" style="height:85%"></div>
+          </div>
+        </div>
+        <span class="badge bg-violet-100 text-violet-700">MA</span>
+        <h3 class="text-[#0B1430] font-semibold mt-2">MA Dashboard</h3>
+        <p class="text-slate-500 text-xs mt-1">ภาพรวม Ticket ทั้งหมด สถานะและ SLA</p>
+      </a>
+      <a href="job-list.html" class="screen-card p-4 block">
+        <div class="mini-screen mb-3">
+          <div class="relative space-y-1.5 mt-2">
+            <div class="mini-line" style="width:80%"></div>
+            <div class="mini-line" style="width:70%"></div>
+            <div class="mini-line" style="width:90%"></div>
+            <div class="mini-line" style="width:60%"></div>
+            <div class="mini-line" style="width:75%"></div>
+          </div>
+        </div>
+        <span class="badge bg-violet-100 text-violet-700">MA</span>
+        <h3 class="text-[#0B1430] font-semibold mt-2">Media Ticket</h3>
+        <p class="text-slate-500 text-xs mt-1">รายการ Ticket แบบ Table + Kanban view</p>
+      </a>
+      <a href="create-job.html" class="screen-card p-4 block">
+        <div class="mini-screen mb-3">
+          <div class="relative mt-2 space-y-2">
+            <div class="mini-line" style="width:100%;height:14px"></div>
+            <div class="mini-line" style="width:65%;height:14px"></div>
+            <div class="mini-line" style="width:85%;height:14px"></div>
+          </div>
+        </div>
+        <span class="badge bg-violet-100 text-violet-700">MA</span>
+        <h3 class="text-[#0B1430] font-semibold mt-2">Create Job</h3>
+        <p class="text-slate-500 text-xs mt-1">สร้าง Ticket ใหม่ กรอกรายละเอียดสื่อ</p>
+      </a>
+      <a href="assign-job.html" class="screen-card p-4 block">
+        <div class="mini-screen mb-3">
+          <div class="relative mt-2 grid grid-cols-3 gap-1">
+            <div class="mini-line" style="height:20px"></div>
+            <div class="mini-line" style="height:20px"></div>
+            <div class="mini-line" style="height:20px"></div>
+            <div class="mini-line" style="height:20px"></div>
+            <div class="mini-line" style="height:20px"></div>
+            <div class="mini-line" style="height:20px"></div>
+          </div>
+        </div>
+        <span class="badge bg-violet-100 text-violet-700">MA</span>
+        <h3 class="text-[#0B1430] font-semibold mt-2">Assign Job</h3>
+        <p class="text-slate-500 text-xs mt-1">มอบหมายทีม รับผิดชอบ Ticket</p>
+      </a>
+      <a href="job-detail.html" class="screen-card p-4 block">
+        <div class="mini-screen mb-3">
+          <div class="relative mt-2 space-y-2">
+            <div class="flex gap-2"><div class="mini-line" style="width:40%;height:8px"></div><div class="mini-line" style="width:50%;height:8px"></div></div>
+            <div class="mini-line" style="width:100%;height:30px"></div>
+          </div>
+        </div>
+        <span class="badge bg-violet-100 text-violet-700">MA</span>
+        <h3 class="text-[#0B1430] font-semibold mt-2">Job Detail</h3>
+        <p class="text-slate-500 text-xs mt-1">รายละเอียด Ticket · Timeline · Approve</p>
+      </a>
+      <a href="media-management.html" class="screen-card p-4 block">
+        <div class="mini-screen mb-3">
+          <div class="relative mt-2 grid grid-cols-4 gap-1">
+            <div class="mini-line" style="height:16px"></div><div class="mini-line" style="height:16px"></div>
+            <div class="mini-line" style="height:16px"></div><div class="mini-line" style="height:16px"></div>
+            <div class="mini-line" style="height:16px"></div><div class="mini-line" style="height:16px"></div>
+            <div class="mini-line" style="height:16px"></div><div class="mini-line" style="height:16px"></div>
+          </div>
+        </div>
+        <span class="badge bg-violet-100 text-violet-700">MA</span>
+        <h3 class="text-[#0B1430] font-semibold mt-2">Media Management</h3>
+        <p class="text-slate-500 text-xs mt-1">จัดสรรสื่อและตำแหน่งให้ Job</p>
+      </a>
+    </div>
+
+    <!-- INVENTORY -->
+    <div class="mod-panel grid md:grid-cols-2 lg:grid-cols-3 gap-4" data-panel="inv">
+      <a href="inventory.html" class="screen-card p-4 block">
+        <div class="mini-screen mb-3" style="background:linear-gradient(135deg,#0891B2,#06B6D4)">
+          <div class="relative mt-2 grid grid-cols-6 gap-0.5">
+            <div class="mini-line" style="height:8px"></div><div class="mini-line" style="height:8px;background:rgba(255,255,255,0.55)"></div><div class="mini-line" style="height:8px"></div><div class="mini-line" style="height:8px;background:rgba(255,255,255,0.55)"></div><div class="mini-line" style="height:8px"></div><div class="mini-line" style="height:8px"></div>
+            <div class="mini-line" style="height:8px;background:rgba(255,255,255,0.55)"></div><div class="mini-line" style="height:8px"></div><div class="mini-line" style="height:8px;background:rgba(255,255,255,0.55)"></div><div class="mini-line" style="height:8px"></div><div class="mini-line" style="height:8px;background:rgba(255,255,255,0.55)"></div><div class="mini-line" style="height:8px"></div>
+            <div class="mini-line" style="height:8px"></div><div class="mini-line" style="height:8px;background:rgba(255,255,255,0.55)"></div><div class="mini-line" style="height:8px"></div><div class="mini-line" style="height:8px"></div><div class="mini-line" style="height:8px;background:rgba(255,255,255,0.55)"></div><div class="mini-line" style="height:8px"></div>
+          </div>
+        </div>
+        <span class="badge bg-cyan-100 text-cyan-700">Inventory</span>
+        <h3 class="text-[#0B1430] font-semibold mt-2">Inventory Overview</h3>
+        <p class="text-slate-500 text-xs mt-1">Heatmap 12 เดือน · Occupancy Rate</p>
+      </a>
+      <a href="inventory-create.html" class="screen-card p-4 block">
+        <div class="mini-screen mb-3" style="background:linear-gradient(135deg,#0891B2,#06B6D4)">
+          <div class="relative mt-2 space-y-2">
+            <div class="mini-line" style="width:100%;height:12px"></div>
+            <div class="mini-line" style="width:70%;height:12px"></div>
+            <div class="mini-line" style="width:85%;height:12px"></div>
+          </div>
+        </div>
+        <span class="badge bg-cyan-100 text-cyan-700">Inventory</span>
+        <h3 class="text-[#0B1430] font-semibold mt-2">Create Inventory</h3>
+        <p class="text-slate-500 text-xs mt-1">เพิ่มสื่อใหม่เข้าระบบ</p>
+      </a>
+      <a href="inventory-import.html" class="screen-card p-4 block">
+        <div class="mini-screen mb-3" style="background:linear-gradient(135deg,#0891B2,#06B6D4)">
+          <div class="relative mt-3 flex items-center justify-center">
+            <div class="w-8 h-8 rounded-lg border-2 border-dashed border-white/50"></div>
+          </div>
+        </div>
+        <span class="badge bg-cyan-100 text-cyan-700">Inventory</span>
+        <h3 class="text-[#0B1430] font-semibold mt-2">Import Inventory</h3>
+        <p class="text-slate-500 text-xs mt-1">Bulk import ผ่าน Excel/CSV</p>
+      </a>
+    </div>
+
+    <!-- SALE -->
+    <div class="mod-panel grid md:grid-cols-2 lg:grid-cols-3 gap-4" data-panel="sale">
+      <a href="dashboard.html" class="screen-card p-4 block">
+        <div class="mini-screen mb-3" style="background:linear-gradient(135deg,#213268,#4790FF)">
+          <div class="relative mt-2 grid grid-cols-2 gap-2">
+            <div class="mini-line" style="height:26px"></div>
+            <div class="mini-line" style="height:26px"></div>
+            <div class="mini-line" style="height:26px"></div>
+            <div class="mini-line" style="height:26px"></div>
+          </div>
+        </div>
+        <span class="badge bg-blue-100 text-blue-700">Sale</span>
+        <h3 class="text-[#0B1430] font-semibold mt-2">Sales Dashboard</h3>
+        <p class="text-slate-500 text-xs mt-1">KPI ยอดขาย · Pipeline · Copilot Signals</p>
+      </a>
+      <a href="sale.html" class="screen-card p-4 block">
+        <div class="mini-screen mb-3" style="background:linear-gradient(135deg,#10B981,#34D399)">
+          <div class="relative mt-2 space-y-1.5">
+            <div class="mini-line" style="width:90%"></div>
+            <div class="mini-line" style="width:75%"></div>
+            <div class="mini-line" style="width:85%"></div>
+            <div class="mini-line" style="width:60%"></div>
+          </div>
+        </div>
+        <span class="badge bg-emerald-100 text-emerald-700">Sale</span>
+        <h3 class="text-[#0B1430] font-semibold mt-2">Sale List</h3>
+        <p class="text-slate-500 text-xs mt-1">รายการ Quotation & Booking</p>
+      </a>
+      <a href="customer-review.html" class="screen-card p-4 block">
+        <div class="mini-screen mb-3" style="background:linear-gradient(135deg,#7C3AED,#A78BFA)">
+          <div class="relative mt-2 space-y-1.5">
+            <div class="mini-line" style="width:100%;height:20px"></div>
+            <div class="mini-line" style="width:65%"></div>
+          </div>
+        </div>
+        <span class="badge bg-violet-100 text-violet-700">Sale</span>
+        <h3 class="text-[#0B1430] font-semibold mt-2">Customer Review</h3>
+        <p class="text-slate-500 text-xs mt-1">รีวิว/อนุมัติจากลูกค้า</p>
+      </a>
+    </div>
+
+    <!-- REPORTS -->
+    <div class="mod-panel grid md:grid-cols-2 lg:grid-cols-3 gap-4" data-panel="rpt">
+      <a href="kpi-dashboard.html" class="screen-card p-4 block">
+        <div class="mini-screen mb-3" style="background:linear-gradient(135deg,#0369A1,#0EA5E9)">
+          <div class="relative mt-2 flex items-end gap-1 h-12">
+            <div class="mini-bar" style="height:50%"></div>
+            <div class="mini-bar" style="height:75%"></div>
+            <div class="mini-bar" style="height:40%"></div>
+            <div class="mini-bar" style="height:85%"></div>
+            <div class="mini-bar" style="height:60%"></div>
+            <div class="mini-bar" style="height:70%"></div>
+          </div>
+        </div>
+        <span class="badge bg-sky-100 text-sky-700">Report</span>
+        <h3 class="text-[#0B1430] font-semibold mt-2">KPI Dashboard</h3>
+        <p class="text-slate-500 text-xs mt-1">KPI ระดับทีมและผู้บริหาร</p>
+      </a>
+      <a href="report-monthly.html" class="screen-card p-4 block">
+        <div class="mini-screen mb-3" style="background:linear-gradient(135deg,#0369A1,#0EA5E9)">
+          <div class="relative mt-2 space-y-1.5">
+            <div class="mini-line" style="width:100%"></div>
+            <div class="mini-line" style="width:100%"></div>
+            <div class="mini-line" style="width:100%"></div>
+          </div>
+        </div>
+        <span class="badge bg-sky-100 text-sky-700">Report</span>
+        <h3 class="text-[#0B1430] font-semibold mt-2">Monthly Report</h3>
+        <p class="text-slate-500 text-xs mt-1">รายงานประจำเดือน · Export PDF/Excel</p>
+      </a>
+      <a href="report-audit.html" class="screen-card p-4 block">
+        <div class="mini-screen mb-3" style="background:linear-gradient(135deg,#0369A1,#0EA5E9)">
+          <div class="relative mt-2 space-y-1">
+            <div class="mini-line" style="width:100%;height:6px"></div>
+            <div class="mini-line" style="width:100%;height:6px"></div>
+            <div class="mini-line" style="width:100%;height:6px"></div>
+            <div class="mini-line" style="width:100%;height:6px"></div>
+            <div class="mini-line" style="width:100%;height:6px"></div>
+          </div>
+        </div>
+        <span class="badge bg-sky-100 text-sky-700">Report</span>
+        <h3 class="text-[#0B1430] font-semibold mt-2">Audit Log</h3>
+        <p class="text-slate-500 text-xs mt-1">บันทึกการเปลี่ยนแปลงทั้งระบบ</p>
+      </a>
+      <a href="export-airtime.html" class="screen-card p-4 block">
+        <div class="mini-screen mb-3" style="background:linear-gradient(135deg,#0369A1,#0EA5E9)">
+          <div class="relative mt-2 grid grid-cols-4 gap-1">
+            <div class="mini-line" style="height:16px"></div><div class="mini-line" style="height:16px"></div>
+            <div class="mini-line" style="height:16px"></div><div class="mini-line" style="height:16px"></div>
+          </div>
+        </div>
+        <span class="badge bg-sky-100 text-sky-700">Report</span>
+        <h3 class="text-[#0B1430] font-semibold mt-2">Export Airtime</h3>
+        <p class="text-slate-500 text-xs mt-1">Export ตารางเวลาออกอากาศ</p>
+      </a>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="mod-panel grid md:grid-cols-2 lg:grid-cols-3 gap-4" data-panel="stg">
+      <a href="settings-user.html" class="screen-card p-4 block">
+        <div class="mini-screen mb-3" style="background:linear-gradient(135deg,#B91C1C,#EF4444)">
+          <div class="relative mt-2 space-y-1.5">
+            <div class="flex gap-2 items-center"><div class="w-4 h-4 rounded-full bg-white/50"></div><div class="mini-line" style="width:60%"></div></div>
+            <div class="flex gap-2 items-center"><div class="w-4 h-4 rounded-full bg-white/50"></div><div class="mini-line" style="width:70%"></div></div>
+            <div class="flex gap-2 items-center"><div class="w-4 h-4 rounded-full bg-white/50"></div><div class="mini-line" style="width:55%"></div></div>
+          </div>
+        </div>
+        <span class="badge bg-red-100 text-red-700">Setting</span>
+        <h3 class="text-[#0B1430] font-semibold mt-2">User Management</h3>
+        <p class="text-slate-500 text-xs mt-1">จัดการผู้ใช้และสิทธิ์</p>
+      </a>
+      <a href="settings-usergroup.html" class="screen-card p-4 block">
+        <div class="mini-screen mb-3" style="background:linear-gradient(135deg,#B91C1C,#EF4444)">
+          <div class="relative mt-2 grid grid-cols-2 gap-2">
+            <div class="mini-line" style="height:24px"></div>
+            <div class="mini-line" style="height:24px"></div>
+          </div>
+        </div>
+        <span class="badge bg-red-100 text-red-700">Setting</span>
+        <h3 class="text-[#0B1430] font-semibold mt-2">User Group</h3>
+        <p class="text-slate-500 text-xs mt-1">Role & Permission Groups</p>
+      </a>
+      <a href="settings-master.html" class="screen-card p-4 block">
+        <div class="mini-screen mb-3" style="background:linear-gradient(135deg,#B91C1C,#EF4444)">
+          <div class="relative mt-2 grid grid-cols-3 gap-1">
+            <div class="mini-line" style="height:12px"></div><div class="mini-line" style="height:12px"></div><div class="mini-line" style="height:12px"></div>
+            <div class="mini-line" style="height:12px"></div><div class="mini-line" style="height:12px"></div><div class="mini-line" style="height:12px"></div>
+          </div>
+        </div>
+        <span class="badge bg-red-100 text-red-700">Setting</span>
+        <h3 class="text-[#0B1430] font-semibold mt-2">Master Data</h3>
+        <p class="text-slate-500 text-xs mt-1">20+ ตาราง Master Data</p>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ PERSONAS ═══════════ -->
+<section id="personas" class="section-body py-20 px-6">
+  <div class="max-w-5xl mx-auto text-center">
+    <p class="eyebrow-dark mb-3">Built for every team</p>
+    <h2 class="text-3xl md:text-4xl font-bold text-[#0B1430] tracking-tight">ทำงานร่วมกันได้ทุกฝ่าย</h2>
+    <p class="text-slate-600 mt-4 max-w-2xl mx-auto text-[15px] leading-relaxed">
+      ระบบเดียวสำหรับทีม Sales, Media Approval, Production, Landlord, Finance และผู้บริหาร
+    </p>
+
+    <div class="flex flex-wrap justify-center gap-3 mt-10">
+      <span class="persona"><span class="dot" style="background:#10B981"></span>Sales Team</span>
+      <span class="persona"><span class="dot" style="background:#7C3AED"></span>Media Approval</span>
+      <span class="persona"><span class="dot" style="background:#F59E0B"></span>Production</span>
+      <span class="persona"><span class="dot" style="background:#EC4899"></span>Claim</span>
+      <span class="persona"><span class="dot" style="background:#06B6D4"></span>Inventory Manager</span>
+      <span class="persona"><span class="dot" style="background:#0EA5E9"></span>Landlord Team</span>
+      <span class="persona"><span class="dot" style="background:#2D56D2"></span>Executive</span>
+      <span class="persona"><span class="dot" style="background:#EF4444"></span>System Admin</span>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ SCREEN PREVIEW / QUICK JUMP ═══════════ -->
+<section id="preview" class="hero-bg relative overflow-hidden py-20 px-6">
+  <div class="shape shape-2" style="opacity:0.06"></div>
+  <div class="relative z-10 max-w-5xl mx-auto text-center">
+    <p class="eyebrow mb-3">Quick access</p>
+    <h2 class="text-3xl md:text-4xl font-bold text-white tracking-tight">พร้อมทดลองใช้แล้ว</h2>
+    <p class="text-blue-100/75 mt-4 max-w-xl mx-auto text-[15px]">
+      คลิกปุ่มด้านล่างเพื่อเริ่มจากหน้า Login หรือข้ามเข้าไปยัง Dashboard ได้ทันที
+    </p>
+
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-3 mt-10">
+      <a href="login.html" class="btn-primary text-white font-semibold px-8 py-3.5 rounded-xl flex items-center gap-2 text-[15px]">
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.75" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9"/></svg>
+        เข้าสู่ระบบ
+      </a>
+      <a href="dashboard.html" class="text-blue-100/85 hover:text-white font-medium px-6 py-3.5 rounded-xl border border-white/15 hover:border-white/35 hover:bg-white/[0.05] transition text-[15px]">
+        ไปหน้า Dashboard →
+      </a>
+    </div>
+
+    <!-- Quick links grid -->
+    <div class="mt-12 grid grid-cols-2 md:grid-cols-4 gap-3 max-w-3xl mx-auto">
+      <a href="dashboard.html" class="glass glass-hover rounded-xl p-4 text-blue-100/85 hover:text-white text-sm">
+        <div class="text-white font-semibold text-sm">Dashboard</div>
+        <div class="text-blue-200/60 text-xs mt-1">Home</div>
+      </a>
+      <a href="ma-dashboard.html" class="glass glass-hover rounded-xl p-4 text-blue-100/85 hover:text-white text-sm">
+        <div class="text-white font-semibold text-sm">Media Approval</div>
+        <div class="text-blue-200/60 text-xs mt-1">MA Dashboard</div>
+      </a>
+      <a href="inventory.html" class="glass glass-hover rounded-xl p-4 text-blue-100/85 hover:text-white text-sm">
+        <div class="text-white font-semibold text-sm">Inventory</div>
+        <div class="text-blue-200/60 text-xs mt-1">Occupancy</div>
+      </a>
+      <a href="kpi-dashboard.html" class="glass glass-hover rounded-xl p-4 text-blue-100/85 hover:text-white text-sm">
+        <div class="text-white font-semibold text-sm">KPI Report</div>
+        <div class="text-blue-200/60 text-xs mt-1">Analytics</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ FOOTER ═══════════ -->
+<footer class="bg-[#0f1b3d] border-t border-white/5 py-10 px-6">
+  <div class="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+    <div class="flex items-center gap-3">
+      <img src="logo.jpg" alt="Plan-B" class="h-8 w-8 rounded-md" />
+      <div class="leading-tight">
+        <div class="text-white text-sm font-semibold">Plan-B Media Pcl.</div>
+        <div class="text-blue-200/50 text-[11px]">CRM System v2.0 · Design Prototype</div>
+      </div>
+    </div>
+    <div class="flex items-center gap-6 text-blue-200/50 text-xs">
+      <span>&copy; 2026 PlanB Media Pcl.</span>
+      <a href="login.html" class="hover:text-blue-200/85 transition">Login</a>
+      <a href="dashboard.html" class="hover:text-blue-200/85 transition">Dashboard</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// Floating particles
+(function(){
+  const c=document.getElementById('particles');
+  if(!c) return;
+  for(let i=0;i<28;i++){
+    const p=document.createElement('div');
+    p.classList.add('particle');
+    const s=Math.random()*4+2;
+    p.style.width=s+'px';p.style.height=s+'px';
+    p.style.left=Math.random()*100+'%';
+    p.style.animationDuration=(Math.random()*18+12)+'s';
+    p.style.animationDelay=(Math.random()*10)+'s';
+    c.appendChild(p);
+  }
+})();
+
+// Sticky nav bg
+window.addEventListener('scroll',()=>{
+  const n=document.getElementById('topNav');
+  if(window.scrollY>40) n.classList.add('scrolled');
+  else n.classList.remove('scrolled');
+});
+
+// Module tabs
+document.querySelectorAll('.mod-tab').forEach(t=>{
+  t.addEventListener('click',()=>{
+    const mod=t.dataset.mod;
+    document.querySelectorAll('.mod-tab').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.mod-panel').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    document.querySelector(`.mod-panel[data-panel="${mod}"]`).classList.add('active');
+  });
+});
+</script>
+
+</body>
+</html>
