@@ -1,0 +1,25 @@
+region,province_name_th,province_name_en,province_code,district_name_th,district_name_en,subdistrict_name_th,subdistrict_name_en,postal_code
+central,กรุงเทพมหานคร,Bangkok,BKK,ปทุมวัน,Pathum Wan,รองเมือง,Rong Mueang,10330
+central,กรุงเทพมหานคร,Bangkok,BKK,ปทุมวัน,Pathum Wan,วังใหม่,Wang Mai,10330
+central,กรุงเทพมหานคร,Bangkok,BKK,ปทุมวัน,Pathum Wan,ปทุมวัน,Pathum Wan,10330
+central,กรุงเทพมหานคร,Bangkok,BKK,ปทุมวัน,Pathum Wan,ลุมพินี,Lumphini,10330
+central,กรุงเทพมหานคร,Bangkok,BKK,บางรัก,Bang Rak,สีลม,Silom,10500
+central,กรุงเทพมหานคร,Bangkok,BKK,บางรัก,Bang Rak,สุริยวงศ์,Suriyawong,10500
+central,กรุงเทพมหานคร,Bangkok,BKK,วัฒนา,Watthana,คลองเตยเหนือ,Khlong Toei Nuea,10110
+central,กรุงเทพมหานคร,Bangkok,BKK,วัฒนา,Watthana,คลองตันเหนือ,Khlong Tan Nuea,10110
+central,นนทบุรี,Nonthaburi,NBI,เมืองนนทบุรี,Mueang Nonthaburi,สวนใหญ่,Suan Yai,11000
+central,นนทบุรี,Nonthaburi,NBI,เมืองนนทบุรี,Mueang Nonthaburi,ตลาดขวัญ,Talat Khwan,11000
+central,นนทบุรี,Nonthaburi,NBI,ปากเกร็ด,Pak Kret,ปากเกร็ด,Pak Kret,11120
+central,นนทบุรี,Nonthaburi,NBI,ปากเกร็ด,Pak Kret,บางตลาด,Bang Talat,11120
+north,เชียงใหม่,Chiang Mai,CNX,เมืองเชียงใหม่,Mueang Chiang Mai,ศรีภูมิ,Si Phum,50200
+north,เชียงใหม่,Chiang Mai,CNX,เมืองเชียงใหม่,Mueang Chiang Mai,พระสิงห์,Phra Sing,50200
+north,เชียงใหม่,Chiang Mai,CNX,เมืองเชียงใหม่,Mueang Chiang Mai,ช้างคลาน,Chang Khlan,50100
+north,เชียงใหม่,Chiang Mai,CNX,สันทราย,San Sai,สันทรายหลวง,San Sai Luang,50210
+northeast,นครราชสีมา,Nakhon Ratchasima,NMA,เมืองนครราชสีมา,Mueang Nakhon Ratchasima,ในเมือง,Nai Mueang,30000
+northeast,นครราชสีมา,Nakhon Ratchasima,NMA,ปากช่อง,Pak Chong,หมูสี,Mu Si,30130
+east,ชลบุรี,Chonburi,CBI,บางละมุง,Bang Lamung,นาเกลือ,Na Kluea,20150
+east,ชลบุรี,Chonburi,CBI,บางละมุง,Bang Lamung,หนองปรือ,Nong Prue,20150
+west,กาญจนบุรี,Kanchanaburi,KRI,เมืองกาญจนบุรี,Mueang Kanchanaburi,ปากแพรก,Pak Phraek,71000
+south,ภูเก็ต,Phuket,HKT,เมืองภูเก็ต,Mueang Phuket,ฉลอง,Chalong,83130
+south,ภูเก็ต,Phuket,HKT,กะทู้,Kathu,ป่าตอง,Patong,83150
+south,สงขลา,Songkhla,SKA,หาดใหญ่,Hat Yai,หาดใหญ่,Hat Yai,90110

@@ -1,0 +1,17 @@
+group_code,group_name_th,group_name_en,type_code,type_name_th,type_name_en,status
+DGT,ดิจิทัล,Digital,PBTV,Plan B TV,Plan B TV,active
+DGT,ดิจิทัล,Digital,PBTVN,Plan B TV Nationwide,Plan B TV Nationwide,active
+DGT,ดิจิทัล,Digital,CBKK,Customize BKK,Customize BKK,active
+DGT,ดิจิทัล,Digital,SPF,Siam Paragon Facade,Siam Paragon Facade,active
+DGT,ดิจิทัล,Digital,TDE,The District EM,The District EM,active
+DGT,ดิจิทัล,Digital,BKJ,Bangkok Jams,Bangkok Jams,active
+DGT,ดิจิทัล,Digital,R9C,Rama 9 Connect,Rama 9 Connect,active
+AIR,สนามบิน,Airport,ATS,Airtraveller Series,Airtraveller Series,active
+AIR,สนามบิน,Airport,DMK,Don Mueang Digital Network,Don Mueang Digital Network,active
+AIR,สนามบิน,Airport,ADN,Airport Digital Network,Airport Digital Network,active
+RTL,รีเทล,Retail,CN,Central Network,Central Network,active
+RTL,รีเทล,Retail,7E,7-Eleven Plus,7-Eleven Plus,active
+TRN,ทรานสิท,Transit,DMRT,Digital MRT,Digital MRT,active
+TRN,ทรานสิท,Transit,BTS-SKY,BTS Skytrain,BTS Skytrain,active
+TRN,ทรานสิท,Transit,BTS-CON,BTS Concourse,BTS Concourse,active
+CLS,คลาสสิก,Classic,CKC,Cookie & Cream,Cookie & Cream,active
