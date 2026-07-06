@@ -438,8 +438,11 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#4790FF;box-sh
           </div>
           <span class="section-step">ส่วนที่ 2 / 6</span>
         </div>
-        <div class="section-body">
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-4">
+        <div class="section-body space-y-6">
+          <!-- ข้อมูลที่ตั้ง -->
+          <div>
+            <div class="group-subtitle">ข้อมูลที่ตั้ง</div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-4">
             <div>
               <label class="fld-label">Location (TH) <span class="req">*</span></label>
               <input class="fld-input" placeholder="จุดติดตั้งป้าย/สื่อ (ภาษาไทย)" />
@@ -538,29 +541,60 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#4790FF;box-sh
                 <option>Expressway Chalerm Maha Nakhon - Dao Khanong</option>
               </select>
             </div>
-            <div>
-              <label class="fld-label">Latitude <span class="req">*</span></label>
-              <div class="fld-with-icon">
-                <svg class="icn" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21.75a9.75 9.75 0 100-19.5 9.75 9.75 0 000 19.5zM3.75 12h16.5"/></svg>
-                <input type="number" step="any" class="fld-input font-mono" placeholder="13.737501" />
+            </div>
+          </div>
+
+          <!-- จุดติดตั้งป้าย -->
+          <div>
+            <div class="group-subtitle">จุดติดตั้งป้าย</div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-4">
+              <div>
+                <label class="fld-label">Latitude <span class="req">*</span></label>
+                <div class="fld-with-icon">
+                  <svg class="icn" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21.75a9.75 9.75 0 100-19.5 9.75 9.75 0 000 19.5zM3.75 12h16.5"/></svg>
+                  <input type="number" step="any" class="fld-input font-mono" placeholder="13.737501" />
+                </div>
+                <div class="helper">พิกัดจุดที่ป้ายติดตั้งจริง</div>
+              </div>
+              <div>
+                <label class="fld-label">Longitude <span class="req">*</span></label>
+                <div class="fld-with-icon">
+                  <svg class="icn" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21.75a9.75 9.75 0 100-19.5 9.75 9.75 0 000 19.5zM12 3.75v16.5"/></svg>
+                  <input type="number" step="any" class="fld-input font-mono" placeholder="100.560020" />
+                </div>
               </div>
             </div>
-            <div>
-              <label class="fld-label">Longitude <span class="req">*</span></label>
-              <div class="fld-with-icon">
-                <svg class="icn" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21.75a9.75 9.75 0 100-19.5 9.75 9.75 0 000 19.5zM12 3.75v16.5"/></svg>
-                <input type="number" step="any" class="fld-input font-mono" placeholder="100.560020" />
+          </div>
+
+          <!-- มุมมองหน้าป้าย -->
+          <div>
+            <div class="group-subtitle">มุมมองหน้าป้าย</div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-4">
+              <div>
+                <label class="fld-label">Latitude <span class="req">*</span></label>
+                <div class="fld-with-icon">
+                  <svg class="icn" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21.75a9.75 9.75 0 100-19.5 9.75 9.75 0 000 19.5zM3.75 12h16.5"/></svg>
+                  <input type="number" step="any" class="fld-input font-mono" placeholder="13.737501" />
+                </div>
+                <div class="helper">พิกัดจุดที่ใช้ถ่ายภาพ/มองเห็นหน้าป้าย</div>
               </div>
-            </div>
-            <div class="lg:col-span-2">
-              <label class="fld-label">Google Street View</label>
-              <textarea class="fld-textarea" placeholder="วาง Embed Code (iframe) ของ Google Street View ที่นี่"></textarea>
-              <div class="helper">ใส่ข้อมูลเป็น Embed Code เพื่อให้แสดงผลเป็น Google Street View</div>
-            </div>
-            <div class="lg:col-span-2">
-              <div class="map-preview">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/></svg>
-                Map preview จะปรากฏเมื่อกรอกพิกัดครบ
+              <div>
+                <label class="fld-label">Longitude <span class="req">*</span></label>
+                <div class="fld-with-icon">
+                  <svg class="icn" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21.75a9.75 9.75 0 100-19.5 9.75 9.75 0 000 19.5zM12 3.75v16.5"/></svg>
+                  <input type="number" step="any" class="fld-input font-mono" placeholder="100.560020" />
+                </div>
+              </div>
+              <div class="lg:col-span-2">
+                <label class="fld-label">Google Street View</label>
+                <textarea class="fld-textarea" placeholder="วาง Embed Code (iframe) ของ Google Street View ที่นี่"></textarea>
+                <div class="helper">ใส่ข้อมูลเป็น Embed Code เพื่อให้แสดงผลเป็น Google Street View</div>
+              </div>
+              <div class="lg:col-span-2">
+                <div class="map-preview">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/></svg>
+                  Map preview จะปรากฏเมื่อกรอกพิกัดครบ
+                </div>
               </div>
             </div>
           </div>
@@ -1112,7 +1146,9 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#4790FF;box-sh
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-4">
               <div>
                 <label class="fld-label">Year of Sign Construction <span class="req">*</span></label>
-                <div class="fld-date-wrap"><input type="text" class="fld-input js-date" placeholder="dd/mm/yyyy" /><svg class="cal-icn" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg></div>
+                <select class="fld-select tnum" id="year-of-sign-construction">
+                  <option value="">— เลือกปี —</option>
+                </select>
                 <div class="helper">ปีที่ก่อสร้างป้าย</div>
               </div>
               <div>
@@ -1177,9 +1213,9 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#4790FF;box-sh
             </div>
           </div>
 
-          <!-- Maintenance & Presale -->
+          <!-- Maintenance -->
           <div>
-            <div class="group-subtitle">Maintenance & Pre-sale</div>
+            <div class="group-subtitle">Maintenance</div>
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-4">
               <div>
                 <label class="fld-label">Maintenance Start</label>
@@ -1187,14 +1223,6 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#4790FF;box-sh
               </div>
               <div>
                 <label class="fld-label">Maintenance End</label>
-                <div class="fld-date-wrap"><input type="text" class="fld-input js-date" placeholder="dd/mm/yyyy" /><svg class="cal-icn" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg></div>
-              </div>
-              <div>
-                <label class="fld-label">Presale Date</label>
-                <div class="fld-date-wrap"><input type="text" class="fld-input js-date" placeholder="dd/mm/yyyy" /><svg class="cal-icn" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg></div>
-              </div>
-              <div>
-                <label class="fld-label">Description Presale Date</label>
                 <div class="fld-date-wrap"><input type="text" class="fld-input js-date" placeholder="dd/mm/yyyy" /><svg class="cal-icn" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg></div>
               </div>
             </div>
@@ -1444,26 +1472,16 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#4790FF;box-sh
             </div>
           </div>
 
-          <!-- Electric -->
+          <!-- Lighting -->
           <div>
             <div class="group-subtitle">ระบบไฟฟ้า</div>
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-x-8 gap-y-4">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-4 mb-5">
               <div>
-                <label class="fld-label">Electric (ดวง)</label>
+                <label class="fld-label">Lighting (Unit)</label>
                 <input type="number" class="fld-input tnum" placeholder="0" />
               </div>
               <div>
-                <label class="fld-label">Electric Condition</label>
-                <select class="fld-select">
-                  <option value="">— เลือกเงื่อนไข —</option>
-                  <option>ทันที</option>
-                  <option>ภายใน 7 วัน</option>
-                  <option>ภายใน 10 วัน</option>
-                  <option>ภายใน 45 วัน</option>
-                </select>
-              </div>
-              <div>
-                <label class="fld-label">Electric Type</label>
+                <label class="fld-label">Lighting Type</label>
                 <select class="fld-select">
                   <option value="">— เลือกประเภทไฟ —</option>
                   <option>LED</option>
@@ -1474,6 +1492,46 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#4790FF;box-sh
                   <option>None</option>
                   <option>Other</option>
                 </select>
+              </div>
+            </div>
+
+            <!-- Electrical Service Time -->
+            <div class="group-subtitle" style="font-size:12px;color:rgba(30,41,59,0.7);margin-top:4px">เวลาให้บริการไฟฟ้า (Electrical Service Time)</div>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-x-8 gap-y-4 mb-5">
+              <div>
+                <label class="fld-label">Electrical Service Turn on</label>
+                <input type="time" id="elec-turn-on" class="fld-input tnum" onchange="calcServiceDuration('elec-turn-on','elec-turn-off','elec-duration')" />
+                <div class="helper">เวลาเปิดระบบไฟฟ้า</div>
+              </div>
+              <div>
+                <label class="fld-label">Electrical Service Turn off</label>
+                <input type="time" id="elec-turn-off" class="fld-input tnum" onchange="calcServiceDuration('elec-turn-on','elec-turn-off','elec-duration')" />
+                <div class="helper">เวลาปิดระบบไฟฟ้า</div>
+              </div>
+              <div>
+                <label class="fld-label">Duration Electrical Service Time (hr:min)</label>
+                <input type="text" id="elec-duration" class="fld-input tnum fld-readonly" readonly placeholder="—:—" />
+                <div class="helper">คำนวณอัตโนมัติ</div>
+              </div>
+            </div>
+
+            <!-- Advertising Service Time -->
+            <div class="group-subtitle" style="font-size:12px;color:rgba(30,41,59,0.7);margin-top:4px">เวลาให้บริการโฆษณา (Advertising Service Time)</div>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-x-8 gap-y-4">
+              <div>
+                <label class="fld-label">Advertising Service Turn on</label>
+                <input type="time" id="ad-turn-on" class="fld-input tnum" onchange="calcServiceDuration('ad-turn-on','ad-turn-off','ad-duration')" />
+                <div class="helper">เวลาเริ่มขึ้นโฆษณา</div>
+              </div>
+              <div>
+                <label class="fld-label">Advertising Service Turn off</label>
+                <input type="time" id="ad-turn-off" class="fld-input tnum" onchange="calcServiceDuration('ad-turn-on','ad-turn-off','ad-duration')" />
+                <div class="helper">เวลาสิ้นสุดการขึ้นโฆษณา</div>
+              </div>
+              <div>
+                <label class="fld-label">Duration Advertising Service Time (hr:min)</label>
+                <input type="text" id="ad-duration" class="fld-input tnum fld-readonly" readonly placeholder="—:—" />
+                <div class="helper">คำนวณอัตโนมัติ</div>
               </div>
             </div>
           </div>
@@ -2059,6 +2117,37 @@ function onOwnerOriginalSameToggle(cb){
   });
 })();
 
+/* Populate Year of Sign Construction (2000 → current year + 1, newest first) */
+(function populateYearOfSign(){
+  const $y = document.getElementById('year-of-sign-construction');
+  if (!$y) return;
+  const maxYear = new Date().getFullYear() + 1;
+  for (let y = maxYear; y >= 2000; y--) {
+    const opt = document.createElement('option');
+    opt.value = String(y);
+    opt.textContent = String(y);
+    $y.appendChild(opt);
+  }
+})();
+
+/* Compute service duration (hr:min) between turn-on and turn-off times.
+   If turn-off is earlier than turn-on, assume it crosses midnight. */
+function calcServiceDuration(fromId, toId, outId){
+  const fromEl = document.getElementById(fromId);
+  const toEl   = document.getElementById(toId);
+  const outEl  = document.getElementById(outId);
+  if (!fromEl || !toEl || !outEl) return;
+  const from = fromEl.value, to = toEl.value;
+  if (!from || !to){ outEl.value = ''; return; }
+  const [fh, fm] = from.split(':').map(Number);
+  const [th, tm] = to.split(':').map(Number);
+  let minutes = (th * 60 + tm) - (fh * 60 + fm);
+  if (minutes < 0) minutes += 24 * 60; // crosses midnight
+  const hh = Math.floor(minutes / 60);
+  const mm = minutes % 60;
+  outEl.value = String(hh).padStart(2,'0') + ':' + String(mm).padStart(2,'0');
+}
+
 function onProvinceChange(){
   const $p = document.getElementById('province-select');
   const $d = document.getElementById('district-select');
@@ -2288,7 +2377,7 @@ function buildRatePreview(){
   const eyeballs  = _val('Eyeballs', 'sec-media');
   const viewH     = _num(_val('View size Height (1)', 'sec-struct'));
   const viewW     = _num(_val('View size Width (1)', 'sec-struct'));
-  const electric  = _val('Electric (ดวง)', 'sec-struct');
+  const electric  = _val('Lighting (Unit)', 'sec-struct');
   const lat       = _val('Latitude', 'sec-location');
   const lng       = _val('Longitude', 'sec-location');
   const roadTh    = _val('Road (TH)', 'sec-location');
@@ -2324,7 +2413,7 @@ function buildRatePreview(){
   // Compose
   const sizeTxt   = (viewH && viewW) ? `สูง ${viewH.toFixed(2)} เมตร × ยาว ${viewW.toFixed(2)} เมตร` : '';
   const rentalTxt = (price !== null && unit) ? `${_fmtNum(price)} บาท/${unitTh}` : (price !== null ? `${_fmtNum(price)} บาท` : '');
-  const elecTxt   = electric ? `จำนวน ${electric} ดวง` : '';
+  const elecTxt   = electric ? `จำนวน ${electric} ดวง (Unit)` : '';
   const latLng    = (lat && lng) ? `${lat}, ${lng}` : (lat || lng || '');
   const roadTag   = roadCode || (roadTh ? roadTh.replace(/^ถนน/,'').trim() : '');
 
