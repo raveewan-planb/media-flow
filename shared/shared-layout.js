@@ -433,7 +433,6 @@ function Topbar({ crumbs=[], onToggleSidebar, onToggleAi, aiOpen }){
       <div className="relative hidden sm:block w-[320px] max-w-[35vw]">
         <Input icon="search" placeholder="ค้นหา..." />
       </div>
-      <IconButton name="bell" label="Notifications" badge />
       <Button variant={aiOpen?'dark':'secondary'} icon="sparkles" onClick={onToggleAi}>Ask AI</Button>
     </header>
   );
