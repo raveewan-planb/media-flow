@@ -679,6 +679,20 @@ var JOBS = [
           { name:'7eleven_mockup_v1.png', type:'image', size:'3.2 MB', url:'https://placehold.co/800x450/ef4444/ffffff?text=7-Eleven+v1' }
         ]}
     ]},
+  { jobNo:'JOB-1040-S', mediaPack:'Siam Square Screens', period:'01/05/2026 - 30/06/2026', versions:1, duration:'15 seconds', material:'material_siam_square_v1.png', brief:'chang_brief_siam.pdf',
+    note:'เน้น Youth Vibe และใช้ Motion Graphic แบบ Bold — สื่อ Siam Square ต้องดึงดูดกลุ่มวัยรุ่น ใช้โทนสี Neon สดใส',
+    assignedTo:'Panida Chaisiri', assignDate:'02/05/2026 10:30', acceptDate:'02/05/2026 11:00',
+    status:'Revise', feedbackSla:'On track', progressSla:'In time', color:'#a855f7',
+    cgFeedbacks:[
+      { by:'Chanya Suwannaphan', date:'08/05/2026 15:20', note:'ปรับ Motion Graphic ตาม Reference ที่แนบมา และเพิ่ม Color Grading โทน Neon Youth ให้สื่อดูสดใสมากขึ้น รอ Client ตรวจสอบก่อนส่ง Final Version' },
+      { by:'Chanya Suwannaphan', date:'06/05/2026 11:15', note:'ส่งงาน Draft v1 ครบทั้ง 3 Scene แล้ว รวม Layout Guide สำหรับ Siam Square Screen — โปรดตรวจสอบ Safe Area ตามที่ระบุใน Brief' }
+    ],
+    mockups:[
+      { ver:1, status:'Review', date:'06/05/2026 11:00', refLink:'https://drive.google.com/file/d/siam-square-mockup-v1/view', note:'Draft แรก 3 Scene — เน้น Youth Vibe และ Motion Graphic แบบ Bold',
+        files:[
+          { name:'siam_square_v1.png', type:'image', size:'3.2 MB', url:'https://placehold.co/800x450/a855f7/ffffff?text=Siam+Square+v1' }
+        ]}
+    ]},
   { jobNo:'JOB-1040-P', mediaPack:'POS (7-Eleven Plus)', period:'15/05/2026 - 31/07/2026', versions:1, duration:'10 seconds', material:'material_pos_display.png', brief:'chang_brief_pos.pdf', note:'', assignedTo:'Napha Saetang',   assignDate:'02/05/2026 10:30', acceptDate:'',                 status:'Verify',      feedbackSla:'On track',  progressSla:'', color:'#f59e0b' },
   { jobNo:'JOB-1040-R', mediaPack:'Radio (7-Eleven Plus)', period:'01/06/2026 - 31/07/2026', versions:2, duration:'30 seconds', material:'', brief:'chang_brief_radio.pdf', note:'Radio spot — voice talent TBD', assignedTo:'',           assignDate:'',                 acceptDate:'',                 status:'Assign', feedbackSla:'',          progressSla:'', color:'#06b6d4' },
   { jobNo:'JOB-1040-B', mediaPack:'Plan B TV',  period:'15/04/2026 - 15/05/2026', versions:3, duration:'Static',     material:'material_billboard_final.png', brief:'chang_brief_billboard.pdf', note:'อนุมัติเรียบร้อย — ส่งโรงพิมพ์แล้ว', assignedTo:'Somchai Thongdee', assignDate:'10/04/2026 09:00', acceptDate:'10/04/2026 09:30', status:'Done',       feedbackSla:'On track',  progressSla:'In time', color:'#10b981', landlord:{ approved:true, by:'Pongsak Tangjit', date:'23/04/2026 14:10' },
@@ -792,6 +806,30 @@ function renderJobs() {
     // Note
     if (j.note) {
       html += '<div class="mt-2 px-3 py-2 rounded-lg text-[11px] flex items-start gap-2" style="background:#EBF5FF;border:1px solid #D6ECFF;color:#213268"><svg class="w-3.5 h-3.5 shrink-0 mt-0.5" style="color:#2D56D2" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/></svg><span><span class="font-semibold" style="color:#2D56D2">Note:</span> ' + j.note + '</span></div>';
+    }
+    // CG Feedback (grouped under the Note block)
+    if (j.cgFeedbacks && j.cgFeedbacks.length) {
+      html += '<div class="mt-2 rounded-lg overflow-hidden" style="background:#FAF5FF;border:1px solid #E9D5FF">';
+      html += '<div class="px-3 py-1.5 flex items-center gap-1.5 border-b" style="background:#F3E8FF;border-color:#E9D5FF">'
+        + '<svg class="w-3 h-3" style="color:#7C3AED" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"/></svg>'
+        + '<span class="text-[10px] font-semibold uppercase tracking-wider" style="color:#6B21A8">Feedback จาก CG</span>'
+        + '<span class="ml-1 inline-flex items-center justify-center min-w-[16px] h-[14px] px-1 rounded-full bg-violet-600 text-white text-[9px] font-bold leading-none">' + j.cgFeedbacks.length + '</span>'
+        + '</div>';
+      html += '<div class="p-2 space-y-1.5">';
+      j.cgFeedbacks.forEach(function(fb){
+        var av = _fbAvColor(fb.by);
+        var init = _fbInitials(fb.by);
+        html += '<div class="px-2.5 py-1.5 rounded-md bg-white border" style="border-color:#EDE9FE">'
+          + '<div class="flex items-center gap-1.5 mb-1">'
+            + '<span class="w-4 h-4 rounded-full inline-flex items-center justify-center text-white font-semibold text-[8px]" style="background:' + av + '">' + init + '</span>'
+            + '<span class="text-[11px] font-semibold" style="color:#0B1430">' + fb.by + '</span>'
+            + '<span class="text-[10px]" style="color:rgba(30,41,59,0.3)">·</span>'
+            + '<span class="text-[10.5px] font-mono" style="color:rgba(30,41,59,0.55)">' + fb.date + '</span>'
+          + '</div>'
+          + '<div class="text-[11.5px] leading-relaxed" style="color:#0B1430">' + fb.note + '</div>'
+        + '</div>';
+      });
+      html += '</div></div>';
     }
     html += '</div>';
     // Review button (when status is Review or Done) — opens Mockup panel.

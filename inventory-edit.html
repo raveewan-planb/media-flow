@@ -176,6 +176,41 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#4790FF;box-sh
 .ms-option input[type=checkbox]:checked::after{content:'';width:8px;height:4px;border:1.5px solid #fff;border-top:0;border-right:0;transform:rotate(-45deg) translate(1px,-1px)}
 .ms-option.selected{background:rgba(71,144,255,0.10);color:#213268;font-weight:500}
 .ms-empty{padding:14px 12px;text-align:center;font-size:12px;color:rgba(30,41,59,0.45)}
+/* === Rate Card list === */
+.rate-summary{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px 16px;padding:12px 14px;background:linear-gradient(90deg,rgba(245,158,11,0.06),rgba(245,158,11,0.02));border:1px solid rgba(245,158,11,0.15);border-radius:12px}
+.rate-legend{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.rate-hint{font-size:11.5px;color:rgba(30,41,59,0.55);display:flex;align-items:center;gap:4px;flex-wrap:wrap;padding:0 4px}
+.rate-add-btn{height:38px;padding:0 16px;border-radius:10px;background:#0B1430;color:#fff;font-size:12.5px;font-weight:600;display:inline-flex;align-items:center;gap:6px;transition:transform .12s,box-shadow .15s,background .15s;cursor:pointer;border:0;flex-shrink:0}
+.rate-add-btn:hover{background:#1E2A4C;transform:translateY(-1px);box-shadow:0 6px 18px rgba(11,20,48,0.20)}
+.rate-add-btn:active{transform:translateY(0)}
+.rate-list{display:flex;flex-direction:column;gap:8px}
+.rate-head{display:none}
+.rate-row{display:grid;grid-template-columns:1fr;gap:12px;padding:14px 16px;border:1px solid #E2E8F0;border-radius:12px;background:#fff;transition:border-color .15s,box-shadow .15s}
+.rate-row:hover{border-color:#CBD5E1;box-shadow:0 2px 8px rgba(11,20,48,0.04)}
+.rate-mobile-label{font-size:11px;font-weight:600;color:rgba(30,41,59,0.55);text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px}
+.rate-status-cell,.rate-actions{display:flex;flex-direction:column;gap:5px}
+.rate-actions{flex-direction:row;align-items:center;gap:6px}
+@media(min-width:900px){
+  .rate-head{display:grid;grid-template-columns:minmax(160px,1.4fr) 80px minmax(120px,1fr) minmax(140px,1fr) 120px 90px;align-items:center;gap:12px;padding:0 16px 4px 16px;font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:rgba(30,41,59,0.55)}
+  .rate-head .text-center{text-align:center}
+  .rate-row{grid-template-columns:minmax(160px,1.4fr) 80px minmax(120px,1fr) minmax(140px,1fr) 120px 90px;align-items:center;gap:12px;padding:10px 16px}
+  .rate-row .rate-mobile-label{display:none}
+  .rate-status-cell{flex-direction:row;justify-content:center}
+  .rate-actions{justify-content:flex-end}
+}
+.rate-year-chip{display:inline-flex;align-items:center;justify-content:center;height:36px;min-width:64px;padding:0 12px;border-radius:8px;background:#F1F5F9;color:#0B1430;font-weight:600;font-size:12.5px;font-feature-settings:'tnum';border:1px solid #E2E8F0}
+.rate-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:99px;font-size:11px;font-weight:600;letter-spacing:.02em;justify-content:center;min-width:78px}
+.rate-badge::before{content:'';width:5px;height:5px;border-radius:99px;background:currentColor}
+.rate-badge.current{background:rgba(22,163,74,0.10);color:#15803D}
+.rate-badge.history{background:rgba(100,116,139,0.10);color:#475569}
+.rate-badge.advance{background:rgba(45,86,210,0.10);color:#2D56D2}
+.rate-badge.draft{background:rgba(148,163,184,0.15);color:rgba(30,41,59,0.55)}
+.rate-icon-btn{width:36px;height:36px;border-radius:8px;border:1px solid #E2E8F0;background:#fff;display:inline-flex;align-items:center;justify-content:center;color:rgba(30,41,59,0.6);transition:all .15s;flex-shrink:0;cursor:pointer}
+.rate-icon-btn:hover{background:#F1F5F9;color:#0B1430;border-color:#CBD5E1}
+.rate-icon-btn.preview:hover{background:rgba(123,31,162,0.08);border-color:rgba(123,31,162,0.30);color:#7B1FA2}
+.rate-icon-btn.danger:hover{background:rgba(244,63,94,0.08);border-color:rgba(244,63,94,0.30);color:#DC2626}
+@keyframes rateRowFlash{0%{background:#FFF8E1;border-color:#F59E0B;box-shadow:0 4px 20px rgba(245,158,11,0.25)}100%{background:#fff;border-color:#E2E8F0;box-shadow:none}}
+.rate-row-flash{animation:rateRowFlash 1.6s ease-out}
 </style>
 <script src="shared/sidebar.js"></script>
 </head>
@@ -614,11 +649,11 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#4790FF;box-sh
                 <label class="fld-label">Media Group <span class="req">*</span></label>
                 <select class="fld-select" id="media-group-select" onchange="onMediaGroupChange()">
                   <option value="">— เลือก Media Group —</option>
-                  <option value="DIG">Digital (ดิจิทัล)</option>
-                  <option value="AIR">Airport (สนามบิน)</option>
-                  <option value="RTL">Retail (รีเทล)</option>
-                  <option value="TRN">Transit (ทรานสิท)</option>
-                  <option value="CLS">Classic (คลาสสิก)</option>
+                  <option value="DIG">Digital</option>
+                  <option value="AIR">Airport</option>
+                  <option value="RTL">Retail</option>
+                  <option value="TRN">Transit</option>
+                  <option value="CLS">Classic</option>
                 </select>
                 <div class="helper">เลือกกลุ่มสื่อเพื่อแสดงฟิลด์เฉพาะที่เกี่ยวข้อง</div>
               </div>
@@ -653,17 +688,9 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#4790FF;box-sh
               </div>
               <div>
                 <label class="fld-label">Package</label>
-                <div class="multi-select" id="package-multiselect">
-                  <div class="multi-select-input" onclick="togglePackageDropdown(event)">
-                    <div class="multi-select-chips" id="package-chips">
-                      <span class="multi-select-placeholder">— เลือก Package (เลือกได้หลายรายการ) —</span>
-                    </div>
-                    <svg class="multi-select-arrow" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
-                  </div>
-                  <div class="multi-select-dropdown hidden" id="package-dropdown">
-                    <div class="ms-empty">เลือก Media Group ก่อนเพื่อดู Package ที่มี</div>
-                  </div>
-                </div>
+                <select class="fld-select" id="package-select" onchange="updateProgress()">
+                  <option value="">— เลือก Package —</option>
+                </select>
               </div>
               <div>
                 <label class="fld-label">History Format</label>
@@ -1228,181 +1255,232 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#4790FF;box-sh
           </span>
           <div class="flex-1 min-w-0">
             <div class="section-title">Rate Card <span class="text-[12.5px] font-normal" style="color:rgba(30,41,59,0.55)">— ราคาขาย</span></div>
-            <div class="section-sub">ราคาขายปัจจุบัน + ประวัติราคาย้อนหลัง</div>
+            <div class="section-sub">รวมทุกช่วงราคาในลิสต์เดียว — สถานะ (History / Current / Advance) จะอัปเดตอัตโนมัติตามวันที่</div>
           </div>
-          <button type="button" onclick="openRatePreview()" class="h-8 px-3 rounded-md text-[12px] font-medium inline-flex items-center gap-1.5 transition" style="background:rgba(123,31,162,0.10);color:#7B1FA2;border:1px solid rgba(123,31,162,0.25)">
-            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-            Preview Rate Card
-          </button>
           <span class="section-step">ส่วนที่ 5 / 6</span>
         </div>
-        <div class="section-body space-y-5">
-          <!-- Current Rate Card -->
-          <div>
-            <div class="group-subtitle">
-              <span>ราคาขายปัจจุบัน</span>
-              <span class="badge" style="background:rgba(22,163,74,0.10);color:#15803D">Current</span>
+        <div class="section-body space-y-3">
+          <!-- Legend + Action bar -->
+          <div class="rate-summary">
+            <div class="rate-legend">
+              <span class="rate-badge advance">Advance</span>
+              <span class="rate-badge current">Current</span>
+              <span class="rate-badge history">History</span>
             </div>
-            <div class="grid grid-cols-1 lg:grid-cols-4 gap-x-6 gap-y-4">
+            <button type="button" onclick="addRateRow()" class="rate-add-btn">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+              <span>เพิ่มรายการราคา</span>
+            </button>
+          </div>
+          <div class="rate-hint">ปีคำนวณจากวันที่อัตโนมัติ · เรียงลำดับ Advance → Current → History · กด <svg class="w-3 h-3 inline -mt-0.5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg> เพื่อดู Preview Rate Card ของแต่ละรายการ</div>
+
+          <!-- Unified rate list -->
+          <div id="rate-list" class="rate-list">
+            <div class="rate-head">
+              <div>วันที่</div>
+              <div class="text-center">ปี</div>
+              <div>ราคา</div>
+              <div>ราคาต่อหน่วย</div>
+              <div class="text-center">สถานะ</div>
+              <div></div>
+            </div>
+
+            <!-- HISTORY -->
+            <div class="rate-row">
               <div>
-                <label class="fld-label">ปี (Year) <span class="req">*</span></label>
-                <select class="fld-select tnum" id="rate-current-year">
-                  <option value="2026" selected>2026</option>
-                  <option value="2025">2025</option>
-                  <option value="2024">2024</option>
-                  <option value="2023">2023</option>
-                  <option value="2022">2022</option>
-                </select>
+                <div class="rate-mobile-label">วันที่</div>
+                <div class="fld-date-wrap"><input type="text" class="fld-input js-date" value="01/04/2022" onchange="refreshRateStatuses()" placeholder="dd/mm/yyyy" /><svg class="cal-icn" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg></div>
               </div>
               <div>
-                <label class="fld-label">วันที่ <span class="req">*</span></label>
-                <div class="fld-date-wrap"><input type="text" class="fld-input js-date" placeholder="dd/mm/yyyy" /><svg class="cal-icn" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg></div>
+                <div class="rate-mobile-label">ปี (อัตโนมัติ)</div>
+                <div class="rate-year-chip tnum">—</div>
               </div>
               <div>
-                <label class="fld-label">ราคา <span class="req">*</span></label>
+                <div class="rate-mobile-label">ราคา</div>
                 <div class="fld-with-suffix">
-                  <input type="number" class="fld-input tnum" id="rate-current-price" placeholder="0" />
+                  <input type="number" class="fld-input tnum rate-price" value="120000" placeholder="0" />
                   <span class="suffix">฿</span>
                 </div>
               </div>
               <div>
-                <label class="fld-label">ราคาต่อหน่วย <span class="req">*</span></label>
-                <select class="fld-select" id="rate-current-unit">
+                <div class="rate-mobile-label">ราคาต่อหน่วย</div>
+                <select class="fld-select rate-unit">
                   <option value="">— เลือก —</option>
+                  <option selected>Month</option>
                   <option>Day</option>
-                  <option>Month</option>
                   <option>Package</option>
                 </select>
               </div>
+              <div class="rate-status-cell">
+                <div class="rate-mobile-label">สถานะ</div>
+                <span class="rate-badge draft">—</span>
+              </div>
+              <div class="rate-actions">
+                <button type="button" onclick="openRowRatePreview(this)" class="rate-icon-btn preview" title="Preview Rate Card">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                </button>
+                <button type="button" onclick="removeRateRow(this)" class="rate-icon-btn danger" title="ลบรายการ">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>
+                </button>
+              </div>
             </div>
-          </div>
 
-          <!-- Past Rate Cards (collapsible) -->
-          <div class="border border-[#E2E8F0] rounded-xl overflow-hidden">
-            <button type="button" id="past-rate-toggle" onclick="togglePastRates()" class="w-full px-5 py-3 bg-[#F8FAFC] hover:bg-[#F1F5F9] flex items-center gap-3 transition text-left">
-              <span class="w-7 h-7 rounded-md inline-flex items-center justify-center" style="background:rgba(45,86,210,0.10);color:#2D56D2">
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-              </span>
-              <div class="flex-1 min-w-0">
-                <div class="text-[13px] font-semibold text-[#0B1430]">ราคาขายย้อนหลัง</div>
-                <div class="text-[11.5px]" style="color:rgba(30,41,59,0.55)">ประวัติราคาที่เคยตั้ง — กดเพื่อดู / แก้ไข</div>
+            <!-- HISTORY -->
+            <div class="rate-row">
+              <div>
+                <div class="rate-mobile-label">วันที่</div>
+                <div class="fld-date-wrap"><input type="text" class="fld-input js-date" value="01/01/2024" onchange="refreshRateStatuses()" placeholder="dd/mm/yyyy" /><svg class="cal-icn" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg></div>
               </div>
-              <span class="text-[11px] font-mono px-2 py-0.5 rounded-md tnum" style="background:rgba(30,41,59,0.06);color:rgba(30,41,59,0.65)" id="past-rate-count">3 รายการ</span>
-              <svg id="past-rate-chevron" class="w-4 h-4 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
-            </button>
-            <div id="past-rate-body" class="hidden border-t border-[#E2E8F0] bg-white">
-              <div id="past-rate-list" class="divide-y divide-[#F1F5F9]">
-                <!-- Past rate rows -->
-                <div class="px-5 py-4 grid grid-cols-1 lg:grid-cols-[1fr_1fr_1fr_1fr_auto] gap-x-4 gap-y-3 items-end">
-                  <div>
-                    <label class="fld-label">ปี (Year)</label>
-                    <select class="fld-select tnum">
-                      <option value="2025" selected>2025</option>
-                      <option value="2026">2026</option>
-                      <option value="2024">2024</option>
-                      <option value="2023">2023</option>
-                      <option value="2022">2022</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label class="fld-label">วันที่</label>
-                    <div class="fld-date-wrap"><input type="text" class="fld-input js-date" placeholder="dd/mm/yyyy" /><svg class="cal-icn" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg></div>
-                  </div>
-                  <div>
-                    <label class="fld-label">ราคา</label>
-                    <div class="fld-with-suffix">
-                      <input type="number" class="fld-input tnum" placeholder="0" />
-                      <span class="suffix">฿</span>
-                    </div>
-                  </div>
-                  <div>
-                    <label class="fld-label">ราคาต่อหน่วย</label>
-                    <select class="fld-select">
-                      <option value="">— เลือก —</option>
-                      <option>Day</option>
-                      <option>Month</option>
-                      <option>Package</option>
-                    </select>
-                  </div>
-                  <button type="button" onclick="removePastRate(this)" class="h-9 w-9 rounded-lg border border-[#E2E8F0] hover:border-rose-300 hover:bg-rose-50 hover:text-rose-600 flex items-center justify-center transition" style="color:rgba(30,41,59,0.55)" title="ลบรายการ">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>
-                  </button>
-                </div>
-                <div class="px-5 py-4 grid grid-cols-1 lg:grid-cols-[1fr_1fr_1fr_1fr_auto] gap-x-4 gap-y-3 items-end">
-                  <div>
-                    <label class="fld-label">ปี (Year)</label>
-                    <select class="fld-select tnum">
-                      <option value="2024" selected>2024</option>
-                      <option value="2026">2026</option>
-                      <option value="2025">2025</option>
-                      <option value="2023">2023</option>
-                      <option value="2022">2022</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label class="fld-label">วันที่</label>
-                    <div class="fld-date-wrap"><input type="text" class="fld-input js-date" placeholder="dd/mm/yyyy" /><svg class="cal-icn" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg></div>
-                  </div>
-                  <div>
-                    <label class="fld-label">ราคา</label>
-                    <div class="fld-with-suffix">
-                      <input type="number" class="fld-input tnum" placeholder="0" />
-                      <span class="suffix">฿</span>
-                    </div>
-                  </div>
-                  <div>
-                    <label class="fld-label">ราคาต่อหน่วย</label>
-                    <select class="fld-select">
-                      <option value="">— เลือก —</option>
-                      <option>Day</option>
-                      <option>Month</option>
-                      <option>Package</option>
-                    </select>
-                  </div>
-                  <button type="button" onclick="removePastRate(this)" class="h-9 w-9 rounded-lg border border-[#E2E8F0] hover:border-rose-300 hover:bg-rose-50 hover:text-rose-600 flex items-center justify-center transition" style="color:rgba(30,41,59,0.55)" title="ลบรายการ">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>
-                  </button>
-                </div>
-                <div class="px-5 py-4 grid grid-cols-1 lg:grid-cols-[1fr_1fr_1fr_1fr_auto] gap-x-4 gap-y-3 items-end">
-                  <div>
-                    <label class="fld-label">ปี (Year)</label>
-                    <select class="fld-select tnum">
-                      <option value="2023" selected>2023</option>
-                      <option value="2026">2026</option>
-                      <option value="2025">2025</option>
-                      <option value="2024">2024</option>
-                      <option value="2022">2022</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label class="fld-label">วันที่</label>
-                    <div class="fld-date-wrap"><input type="text" class="fld-input js-date" placeholder="dd/mm/yyyy" /><svg class="cal-icn" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg></div>
-                  </div>
-                  <div>
-                    <label class="fld-label">ราคา</label>
-                    <div class="fld-with-suffix">
-                      <input type="number" class="fld-input tnum" placeholder="0" />
-                      <span class="suffix">฿</span>
-                    </div>
-                  </div>
-                  <div>
-                    <label class="fld-label">ราคาต่อหน่วย</label>
-                    <select class="fld-select">
-                      <option value="">— เลือก —</option>
-                      <option>Day</option>
-                      <option>Month</option>
-                      <option>Package</option>
-                    </select>
-                  </div>
-                  <button type="button" onclick="removePastRate(this)" class="h-9 w-9 rounded-lg border border-[#E2E8F0] hover:border-rose-300 hover:bg-rose-50 hover:text-rose-600 flex items-center justify-center transition" style="color:rgba(30,41,59,0.55)" title="ลบรายการ">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>
-                  </button>
+              <div>
+                <div class="rate-mobile-label">ปี (อัตโนมัติ)</div>
+                <div class="rate-year-chip tnum">—</div>
+              </div>
+              <div>
+                <div class="rate-mobile-label">ราคา</div>
+                <div class="fld-with-suffix">
+                  <input type="number" class="fld-input tnum rate-price" value="145000" placeholder="0" />
+                  <span class="suffix">฿</span>
                 </div>
               </div>
-              <div class="px-5 py-3 border-t border-[#F1F5F9] bg-[#FAFBFE]">
-                <button type="button" onclick="addPastRate()" class="w-full h-10 border border-dashed border-[#CBD5E1] hover:border-pb-500 hover:bg-pb-50/40 rounded-lg text-[12.5px] font-medium inline-flex items-center justify-center gap-1.5 transition" style="color:rgba(30,41,59,0.65)">
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
-                  <span>Add Past Rate</span>
+              <div>
+                <div class="rate-mobile-label">ราคาต่อหน่วย</div>
+                <select class="fld-select rate-unit">
+                  <option value="">— เลือก —</option>
+                  <option selected>Month</option>
+                  <option>Day</option>
+                  <option>Package</option>
+                </select>
+              </div>
+              <div class="rate-status-cell">
+                <div class="rate-mobile-label">สถานะ</div>
+                <span class="rate-badge draft">—</span>
+              </div>
+              <div class="rate-actions">
+                <button type="button" onclick="openRowRatePreview(this)" class="rate-icon-btn preview" title="Preview Rate Card">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                </button>
+                <button type="button" onclick="removeRateRow(this)" class="rate-icon-btn danger" title="ลบรายการ">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- HISTORY -->
+            <div class="rate-row">
+              <div>
+                <div class="rate-mobile-label">วันที่</div>
+                <div class="fld-date-wrap"><input type="text" class="fld-input js-date" value="01/01/2025" onchange="refreshRateStatuses()" placeholder="dd/mm/yyyy" /><svg class="cal-icn" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg></div>
+              </div>
+              <div>
+                <div class="rate-mobile-label">ปี (อัตโนมัติ)</div>
+                <div class="rate-year-chip tnum">—</div>
+              </div>
+              <div>
+                <div class="rate-mobile-label">ราคา</div>
+                <div class="fld-with-suffix">
+                  <input type="number" class="fld-input tnum rate-price" value="160000" placeholder="0" />
+                  <span class="suffix">฿</span>
+                </div>
+              </div>
+              <div>
+                <div class="rate-mobile-label">ราคาต่อหน่วย</div>
+                <select class="fld-select rate-unit">
+                  <option value="">— เลือก —</option>
+                  <option selected>Month</option>
+                  <option>Day</option>
+                  <option>Package</option>
+                </select>
+              </div>
+              <div class="rate-status-cell">
+                <div class="rate-mobile-label">สถานะ</div>
+                <span class="rate-badge draft">—</span>
+              </div>
+              <div class="rate-actions">
+                <button type="button" onclick="openRowRatePreview(this)" class="rate-icon-btn preview" title="Preview Rate Card">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                </button>
+                <button type="button" onclick="removeRateRow(this)" class="rate-icon-btn danger" title="ลบรายการ">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- CURRENT -->
+            <div class="rate-row">
+              <div>
+                <div class="rate-mobile-label">วันที่</div>
+                <div class="fld-date-wrap"><input type="text" class="fld-input js-date" value="01/01/2026" onchange="refreshRateStatuses()" placeholder="dd/mm/yyyy" /><svg class="cal-icn" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg></div>
+              </div>
+              <div>
+                <div class="rate-mobile-label">ปี (อัตโนมัติ)</div>
+                <div class="rate-year-chip tnum">—</div>
+              </div>
+              <div>
+                <div class="rate-mobile-label">ราคา</div>
+                <div class="fld-with-suffix">
+                  <input type="number" class="fld-input tnum rate-price" value="180000" placeholder="0" />
+                  <span class="suffix">฿</span>
+                </div>
+              </div>
+              <div>
+                <div class="rate-mobile-label">ราคาต่อหน่วย</div>
+                <select class="fld-select rate-unit">
+                  <option value="">— เลือก —</option>
+                  <option selected>Month</option>
+                  <option>Day</option>
+                  <option>Package</option>
+                </select>
+              </div>
+              <div class="rate-status-cell">
+                <div class="rate-mobile-label">สถานะ</div>
+                <span class="rate-badge draft">—</span>
+              </div>
+              <div class="rate-actions">
+                <button type="button" onclick="openRowRatePreview(this)" class="rate-icon-btn preview" title="Preview Rate Card">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                </button>
+                <button type="button" onclick="removeRateRow(this)" class="rate-icon-btn danger" title="ลบรายการ">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- ADVANCE -->
+            <div class="rate-row">
+              <div>
+                <div class="rate-mobile-label">วันที่</div>
+                <div class="fld-date-wrap"><input type="text" class="fld-input js-date" value="01/01/2027" onchange="refreshRateStatuses()" placeholder="dd/mm/yyyy" /><svg class="cal-icn" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg></div>
+              </div>
+              <div>
+                <div class="rate-mobile-label">ปี (อัตโนมัติ)</div>
+                <div class="rate-year-chip tnum">—</div>
+              </div>
+              <div>
+                <div class="rate-mobile-label">ราคา</div>
+                <div class="fld-with-suffix">
+                  <input type="number" class="fld-input tnum rate-price" value="210000" placeholder="0" />
+                  <span class="suffix">฿</span>
+                </div>
+              </div>
+              <div>
+                <div class="rate-mobile-label">ราคาต่อหน่วย</div>
+                <select class="fld-select rate-unit">
+                  <option value="">— เลือก —</option>
+                  <option selected>Month</option>
+                  <option>Day</option>
+                  <option>Package</option>
+                </select>
+              </div>
+              <div class="rate-status-cell">
+                <div class="rate-mobile-label">สถานะ</div>
+                <span class="rate-badge draft">—</span>
+              </div>
+              <div class="rate-actions">
+                <button type="button" onclick="openRowRatePreview(this)" class="rate-icon-btn preview" title="Preview Rate Card">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                </button>
+                <button type="button" onclick="removeRateRow(this)" class="rate-icon-btn danger" title="ลบรายการ">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>
                 </button>
               </div>
             </div>
@@ -2208,7 +2286,7 @@ function onMediaGroupChange(){
   const data = MEDIA_GROUPS_DATA[g];
   $br.innerHTML = '<option value="">— เลือก Media Branding —</option>';
   $mt.innerHTML = '<option value="">— เลือก Media Type —</option>';
-  // Package is a multi-select — repopulate dropdown items
+  // Package is a single-select dropdown — repopulate options
   populatePackageOptions(data ? data.packages : []);
   if(data){
     data.sections.forEach(s => $br.insertAdjacentHTML('beforeend', `<option>${s}</option>`));
@@ -2217,94 +2295,18 @@ function onMediaGroupChange(){
   updateProgress();
 }
 
-/* === Package Multi-Select === */
-let SELECTED_PACKAGES = [];
-let AVAILABLE_PACKAGES = [];
-
+/* === Package Dropdown === */
 function populatePackageOptions(packages){
-  AVAILABLE_PACKAGES = Array.isArray(packages) ? packages.slice() : [];
-  // Drop any currently selected items no longer in the list
-  SELECTED_PACKAGES = SELECTED_PACKAGES.filter(p => AVAILABLE_PACKAGES.includes(p));
-  renderPackageDropdown();
-  renderPackageChips();
+  const sel = document.getElementById('package-select');
+  if(!sel) return;
+  const list = Array.isArray(packages) ? packages : [];
+  const placeholder = list.length
+    ? '— เลือก Package —'
+    : 'เลือก Media Group ก่อนเพื่อดู Package ที่มี';
+  sel.innerHTML = `<option value="">${placeholder}</option>` +
+    list.map(pkg => `<option>${pkg}</option>`).join('');
+  sel.disabled = !list.length;
 }
-
-function renderPackageDropdown(){
-  const dd = document.getElementById('package-dropdown');
-  if(!dd) return;
-  if(!AVAILABLE_PACKAGES.length){
-    dd.innerHTML = '<div class="ms-empty">เลือก Media Group ก่อนเพื่อดู Package ที่มี</div>';
-    return;
-  }
-  dd.innerHTML = AVAILABLE_PACKAGES.map(pkg => {
-    const checked = SELECTED_PACKAGES.includes(pkg);
-    return `<label class="ms-option ${checked?'selected':''}" onclick="event.stopPropagation()">
-      <input type="checkbox" ${checked?'checked':''} onchange="togglePackageItem('${pkg.replace(/'/g,"\\'")}', this.checked)" />
-      <span>${pkg}</span>
-    </label>`;
-  }).join('');
-}
-
-function renderPackageChips(){
-  const wrap = document.getElementById('package-chips');
-  if(!wrap) return;
-  if(!SELECTED_PACKAGES.length){
-    wrap.innerHTML = '<span class="multi-select-placeholder">— เลือก Package (เลือกได้หลายรายการ) —</span>';
-    return;
-  }
-  wrap.innerHTML = SELECTED_PACKAGES.map(pkg => `
-    <span class="ms-chip">
-      ${pkg}
-      <span class="x" onclick="event.stopPropagation();removePackageItem('${pkg.replace(/'/g,"\\'")}')" title="Delete">
-        <svg width="9" height="9" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
-      </span>
-    </span>
-  `).join('');
-}
-
-function togglePackageItem(pkg, checked){
-  if(checked){
-    if(!SELECTED_PACKAGES.includes(pkg)) SELECTED_PACKAGES.push(pkg);
-  } else {
-    SELECTED_PACKAGES = SELECTED_PACKAGES.filter(p => p !== pkg);
-  }
-  renderPackageDropdown();
-  renderPackageChips();
-  updateProgress();
-}
-
-function removePackageItem(pkg){
-  SELECTED_PACKAGES = SELECTED_PACKAGES.filter(p => p !== pkg);
-  renderPackageDropdown();
-  renderPackageChips();
-  updateProgress();
-}
-
-function togglePackageDropdown(e){
-  if(e) e.stopPropagation();
-  const ms = document.getElementById('package-multiselect');
-  const dd = document.getElementById('package-dropdown');
-  if(!ms || !dd) return;
-  const isOpen = !dd.classList.contains('hidden');
-  if(isOpen){
-    dd.classList.add('hidden');
-    ms.classList.remove('open');
-  } else {
-    dd.classList.remove('hidden');
-    ms.classList.add('open');
-  }
-}
-
-// Close on click outside
-document.addEventListener('click', e => {
-  const ms = document.getElementById('package-multiselect');
-  if(!ms) return;
-  if(!ms.contains(e.target)){
-    const dd = document.getElementById('package-dropdown');
-    if(dd) dd.classList.add('hidden');
-    ms.classList.remove('open');
-  }
-});
 
 /* Write Off conditional */
 function onWriteOffChange(){
@@ -2355,7 +2357,7 @@ function _fmtNum(n){
   return Number(n).toLocaleString('en-US');
 }
 
-function buildRatePreview(){
+function buildRatePreview(override){
   // Read form data
   const mediaCode = _val('Media Code', 'sec-general') || 'M-CODE-000';
   const titleTh   = _val('Description (TH)', 'sec-general') || _val('Location (TH)', 'sec-location') || '— กรุณากรอก Description (TH) —';
@@ -2370,11 +2372,31 @@ function buildRatePreview(){
   const lng       = _val('Longitude', 'sec-location');
   const roadTh    = _val('Road (TH)', 'sec-location');
   const roadCode  = _val('Road Code', 'sec-location');
-  // Rate
-  const priceEl = document.getElementById('rate-current-price');
-  const unitEl  = document.getElementById('rate-current-unit');
-  const price   = priceEl ? _num(priceEl.value) : null;
-  const unit    = unitEl && unitEl.value ? unitEl.value : '';
+  // Rate — from a specific row (override) or fall back to the "Current"-badged row
+  let priceStr = '', unit = '', dateStr = '', statusTxt = '';
+  if(override){
+    priceStr = override.price || '';
+    unit     = override.unit  || '';
+    dateStr  = override.date  || '';
+    statusTxt = override.status || '';
+  } else {
+    // Fallback: try to find the row currently marked "Current"
+    const rows = document.querySelectorAll('#rate-list .rate-row');
+    let target = null;
+    rows.forEach(r => {
+      const b = r.querySelector('.rate-badge');
+      if(b && b.classList.contains('current')) target = r;
+    });
+    if(!target && rows.length) target = rows[0];
+    if(target){
+      priceStr = target.querySelector('.rate-price')?.value || '';
+      unit     = target.querySelector('.rate-unit')?.value  || '';
+      dateStr  = target.querySelector('.js-date')?.value    || '';
+      const b  = target.querySelector('.rate-badge');
+      statusTxt = b ? b.textContent.trim() : '';
+    }
+  }
+  const price   = _num(priceStr);
   const unitTh  = unit === 'Day' ? 'วัน' : unit === 'Month' ? 'เดือน' : unit === 'Package' ? 'แพ็คเกจ' : '';
   // Media group / region for branding
   const mgEl = document.getElementById('media-group-select');
@@ -2400,7 +2422,8 @@ function buildRatePreview(){
   }
   // Compose
   const sizeTxt   = (viewH && viewW) ? `สูง ${viewH.toFixed(2)} เมตร × ยาว ${viewW.toFixed(2)} เมตร` : '';
-  const rentalTxt = (price !== null && unit) ? `${_fmtNum(price)} บาท/${unitTh}` : (price !== null ? `${_fmtNum(price)} บาท` : '');
+  const rentalCore = (price !== null && unit) ? `${_fmtNum(price)} บาท/${unitTh}` : (price !== null ? `${_fmtNum(price)} บาท` : '');
+  const rentalTxt = rentalCore && dateStr ? `${rentalCore} <span style="color:rgba(30,41,59,0.5);font-weight:400"> · Effective ${dateStr}</span>` : rentalCore;
   const elecTxt   = electric ? `จำนวน ${electric} ดวง (Unit)` : '';
   const latLng    = (lat && lng) ? `${lat}, ${lng}` : (lat || lng || '');
   const roadTag   = roadCode || (roadTh ? roadTh.replace(/^ถนน/,'').trim() : '');
@@ -2449,11 +2472,11 @@ function buildRatePreview(){
     </div>`;
 }
 
-function openRatePreview(){
+function openRatePreview(override){
   const m = document.getElementById('rate-preview-modal');
   const canvas = document.getElementById('rp-canvas');
   if(!m || !canvas) return;
-  canvas.innerHTML = buildRatePreview();
+  canvas.innerHTML = buildRatePreview(override);
   m.classList.add('open');
   document.body.style.overflow = 'hidden';
 }
@@ -2465,73 +2488,139 @@ function closeRatePreview(){
 }
 document.addEventListener('keydown', e => { if(e.key === 'Escape') closeRatePreview(); });
 
-/* === Past Rate Card: collapse + add/remove rows === */
-function togglePastRates(){
-  const body = document.getElementById('past-rate-body');
-  const chev = document.getElementById('past-rate-chevron');
-  if(!body) return;
-  const opening = body.classList.contains('hidden');
-  body.classList.toggle('hidden');
-  if(chev) chev.style.transform = opening ? 'rotate(180deg)' : '';
+/* === Unified Rate Card list: status + year auto === */
+function _parseDateDMY(s){
+  if(!s) return null;
+  const m = String(s).match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if(!m) return null;
+  const d = new Date(+m[3], +m[2]-1, +m[1]);
+  return isNaN(d.getTime()) ? null : d;
 }
-function updatePastRateCount(){
-  const list = document.getElementById('past-rate-list');
-  const count = document.getElementById('past-rate-count');
-  if(!list || !count) return;
-  const n = list.children.length;
-  count.textContent = n + ' รายการ';
+
+function refreshRateStatuses(){
+  const list = document.getElementById('rate-list');
+  if(!list) return;
+  const rows = Array.from(list.querySelectorAll('.rate-row'));
+  const today = new Date(); today.setHours(0,0,0,0);
+  const rowData = rows.map(r => ({ row:r, date:_parseDateDMY(r.querySelector('.js-date')?.value) }));
+  // Determine "current": the row with the latest date that is <= today
+  let currentIdx = -1;
+  let latestTs = -Infinity;
+  rowData.forEach((rd, i) => {
+    if(rd.date && rd.date.getTime() <= today.getTime() && rd.date.getTime() > latestTs){
+      latestTs = rd.date.getTime();
+      currentIdx = i;
+    }
+  });
+  // Assign status + update chip/badge
+  rowData.forEach((rd, i) => {
+    const chip = rd.row.querySelector('.rate-year-chip');
+    if(chip) chip.textContent = rd.date ? rd.date.getFullYear() : '—';
+    const badge = rd.row.querySelector('.rate-badge');
+    let status = 'draft', label = '—';
+    if(rd.date){
+      if(rd.date.getTime() > today.getTime()){ status = 'advance'; label = 'Advance'; }
+      else if(i === currentIdx){ status = 'current'; label = 'Current'; }
+      else { status = 'history'; label = 'History'; }
+    }
+    rd.status = status;
+    if(badge){
+      badge.className = 'rate-badge ' + status;
+      badge.textContent = label;
+    }
+  });
+  // Sort: draft (empty, newly added) at top → Advance (date DESC) → Current → History (date DESC)
+  const rank = { draft:0, advance:1, current:2, history:3 };
+  rowData.sort((a, b) => {
+    const ra = rank[a.status] ?? 9;
+    const rb = rank[b.status] ?? 9;
+    if(ra !== rb) return ra - rb;
+    const ta = a.date ? a.date.getTime() : 0;
+    const tb = b.date ? b.date.getTime() : 0;
+    return tb - ta; // within same group: newest date first
+  });
+  // Re-attach rows in sorted order; keep header on top
+  const header = list.querySelector('.rate-head');
+  rowData.forEach(rd => list.appendChild(rd.row));
+  if(header) list.insertBefore(header, list.firstChild);
+  if(typeof updateProgress === 'function') updateProgress();
 }
-function addPastRate(){
-  const list = document.getElementById('past-rate-list');
+
+function openRowRatePreview(btn){
+  const row = btn.closest('.rate-row');
+  if(!row) return openRatePreview();
+  const badge = row.querySelector('.rate-badge');
+  openRatePreview({
+    price: row.querySelector('.rate-price')?.value || '',
+    unit:  row.querySelector('.rate-unit')?.value  || '',
+    date:  row.querySelector('.js-date')?.value    || '',
+    status: badge ? badge.textContent.trim() : ''
+  });
+}
+
+function addRateRow(){
+  const list = document.getElementById('rate-list');
   if(!list) return;
   const row = document.createElement('div');
-  row.className = 'px-5 py-4 grid grid-cols-1 lg:grid-cols-[1fr_1fr_1fr_1fr_auto] gap-x-4 gap-y-3 items-end';
+  row.className = 'rate-row';
   row.innerHTML = `
     <div>
-      <label class="fld-label">ปี (Year)</label>
-      <select class="fld-select tnum">
-        <option value="">— เลือกปี —</option>
-        <option value="2026">2026</option>
-        <option value="2025">2025</option>
-        <option value="2024">2024</option>
-        <option value="2023">2023</option>
-        <option value="2022">2022</option>
-      </select>
+      <div class="rate-mobile-label">วันที่</div>
+      <div class="fld-date-wrap"><input type="text" class="fld-input js-date" onchange="refreshRateStatuses()" placeholder="dd/mm/yyyy" /><svg class="cal-icn" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg></div>
     </div>
     <div>
-      <label class="fld-label">วันที่</label>
-      <div class="fld-date-wrap"><input type="text" class="fld-input js-date" placeholder="dd/mm/yyyy" /><svg class="cal-icn" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg></div>
+      <div class="rate-mobile-label">ปี (อัตโนมัติ)</div>
+      <div class="rate-year-chip tnum">—</div>
     </div>
     <div>
-      <label class="fld-label">ราคา</label>
+      <div class="rate-mobile-label">ราคา</div>
       <div class="fld-with-suffix">
-        <input type="number" class="fld-input tnum" placeholder="0" />
+        <input type="number" class="fld-input tnum rate-price" placeholder="0" />
         <span class="suffix">฿</span>
       </div>
     </div>
     <div>
-      <label class="fld-label">ราคาต่อหน่วย</label>
-      <select class="fld-select">
+      <div class="rate-mobile-label">ราคาต่อหน่วย</div>
+      <select class="fld-select rate-unit">
         <option value="">— เลือก —</option>
         <option>Day</option>
         <option>Month</option>
         <option>Package</option>
       </select>
     </div>
-    <button type="button" onclick="removePastRate(this)" class="h-9 w-9 rounded-lg border border-[#E2E8F0] hover:border-rose-300 hover:bg-rose-50 hover:text-rose-600 flex items-center justify-center transition" style="color:rgba(30,41,59,0.55)" title="ลบรายการ">
-      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>
-    </button>`;
+    <div class="rate-status-cell">
+      <div class="rate-mobile-label">สถานะ</div>
+      <span class="rate-badge draft">—</span>
+    </div>
+    <div class="rate-actions">
+      <button type="button" onclick="openRowRatePreview(this)" class="rate-icon-btn preview" title="Preview Rate Card">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+      </button>
+      <button type="button" onclick="removeRateRow(this)" class="rate-icon-btn danger" title="ลบรายการ">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg>
+      </button>
+    </div>`;
   list.appendChild(row);
-  // Re-init flatpickr on the new date input
   if(typeof flatpickr !== 'undefined'){
-    flatpickr(row.querySelector('.js-date'), { dateFormat:'d/m/Y', allowInput:true, disableMobile:true });
+    flatpickr(row.querySelector('.js-date'), { dateFormat:'d/m/Y', allowInput:true, disableMobile:true, onChange: refreshRateStatuses });
   }
-  updatePastRateCount();
+  row.querySelectorAll('input, select').forEach(el => {
+    el.addEventListener('change', updateProgress);
+    el.addEventListener('input', updateProgress);
+  });
+  // Refresh statuses — draft row (no date) will be sorted to the top
+  refreshRateStatuses();
+  // Highlight + scroll into view
+  row.classList.add('rate-row-flash');
+  setTimeout(() => row.classList.remove('rate-row-flash'), 1600);
+  row.scrollIntoView({ behavior:'smooth', block:'center' });
+  const dateInp = row.querySelector('.js-date');
+  if(dateInp && typeof dateInp.focus === 'function') setTimeout(() => dateInp.focus(), 250);
 }
-function removePastRate(btn){
-  const row = btn.closest('.grid');
+function removeRateRow(btn){
+  const row = btn.closest('.rate-row');
   if(row) row.remove();
-  updatePastRateCount();
+  refreshRateStatuses();
 }
 
 /* Add / remove optional size sets (2, 3) */
@@ -2603,20 +2692,32 @@ function updateProgress(){
     const sec = document.getElementById(secId);
     const tab = document.querySelector('.tab-pill[data-sec="' + secId + '"]');
     if(!sec || !tab) return;
-    const requiredLabels = sec.querySelectorAll('.fld-label .req');
-    let done = requiredLabels.length > 0;
-    requiredLabels.forEach(req => {
-      const wrap = req.closest('div');
-      if(!wrap) return;
-      const field = wrap.querySelector('input:not([type=radio]):not([type=checkbox]), select, textarea');
-      if(!field){
-        const grp = wrap.parentElement?.querySelector('.radio-grp input[type=radio]:checked');
-        if(!grp) done = false;
-        return;
-      }
-      const v = (field.value || '').trim();
-      if(!v) done = false;
-    });
+    let done;
+    if(secId === 'sec-rate'){
+      // Rate Card section: done if at least one row has date + price + unit filled
+      done = false;
+      sec.querySelectorAll('.rate-row').forEach(r => {
+        const d = (r.querySelector('.js-date')?.value || '').trim();
+        const p = (r.querySelector('.rate-price')?.value || '').trim();
+        const u = (r.querySelector('.rate-unit')?.value || '').trim();
+        if(d && p && u) done = true;
+      });
+    } else {
+      const requiredLabels = sec.querySelectorAll('.fld-label .req');
+      done = requiredLabels.length > 0;
+      requiredLabels.forEach(req => {
+        const wrap = req.closest('div');
+        if(!wrap) return;
+        const field = wrap.querySelector('input:not([type=radio]):not([type=checkbox]), select, textarea');
+        if(!field){
+          const grp = wrap.parentElement?.querySelector('.radio-grp input[type=radio]:checked');
+          if(!grp) done = false;
+          return;
+        }
+        const v = (field.value || '').trim();
+        if(!v) done = false;
+      });
+    }
     const num = tab.querySelector('.num');
     if(num){
       if(done) num.classList.add('done');
@@ -2795,11 +2896,9 @@ function prefillMockup(){
   _setByLabel('sec-schedule', 'Maintenance Start',  '01/04/2022');
   _setByLabel('sec-schedule', 'Maintenance End',    '01/04/2027');
 
-  /* Section 5 — Rate Card */
-  const priceEl = document.getElementById('rate-current-price');
-  const unitEl  = document.getElementById('rate-current-unit');
-  if(priceEl){ priceEl.value = '180000'; priceEl.dispatchEvent(new Event('input', { bubbles:true })); }
-  if(unitEl){  unitEl.value  = 'Month';  unitEl.dispatchEvent(new Event('change', { bubbles:true })); }
+  /* Section 5 — Rate Card list values are seeded directly in the HTML.
+     Recompute status badges (History / Current / Advance) + year chips. */
+  if(typeof refreshRateStatuses === 'function') refreshRateStatuses();
   // Cost block
   _setByLabel('sec-rate', 'Production Cost',  '450000');
   _setByLabel('sec-rate', 'Product Cost (UOM)','SQM');
@@ -2850,13 +2949,21 @@ function prefillMockup(){
 document.addEventListener('DOMContentLoaded', () => {
   if(typeof flatpickr !== 'undefined'){
     document.querySelectorAll('.js-date').forEach(el => {
-      flatpickr(el, { dateFormat:'d/m/Y', allowInput:true, disableMobile:true });
+      const inRateRow = !!el.closest('.rate-row');
+      flatpickr(el, {
+        dateFormat:'d/m/Y',
+        allowInput:true,
+        disableMobile:true,
+        onChange: inRateRow ? refreshRateStatuses : undefined
+      });
     });
   }
   document.querySelectorAll('input, select, textarea').forEach(el => {
     el.addEventListener('change', updateProgress);
     el.addEventListener('input', updateProgress);
   });
+  // Compute initial rate statuses & year chips (seeded rows)
+  if(typeof refreshRateStatuses === 'function') refreshRateStatuses();
   // Run the prefill once everything (seed scripts, flatpickr) is initialized.
   setTimeout(prefillMockup, 30);
 });
