@@ -282,7 +282,7 @@ table th{position:sticky;top:0;z-index:1}
 <button class="hidden text-[11px] text-rose-600 font-medium hover:underline ml-auto" id="kpi-clear-btn" onclick="clearStatusFilter()">Clear filter</button>
 </div>
 <div class="h-3 rounded-full bg-[#F1F5F9] overflow-hidden flex mb-3" id="kpi-progress-bar" style="transition:all 0.3s"></div>
-<div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-9 gap-2" id="kpi-cards"></div>
+<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 xl:grid-cols-10 gap-2" id="kpi-cards"></div>
 </div>
 <!-- Filter Bar -->
 <div class="bg-white border border-[#E2E8F0] rounded-xl shadow-sm p-3">
@@ -292,7 +292,7 @@ table th{position:sticky;top:0;z-index:1}
 <input class="w-full h-9 pl-9 pr-3 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[13px] focus:outline-none focus:border-[#4790FF] focus:bg-white" id="tk-search" oninput="filterTickets()" placeholder="Search ticket, client, assignee..."/>
 </div>
 <select class="h-9 pl-3 pr-7 bg-white border border-[#E2E8F0] rounded-lg text-[12px] focus:outline-none focus:border-[#4790FF]" id="tk-status" onchange="filterTickets()" style="appearance:none;background-image:url('data:image/svg+xml;utf8,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2210%22 height=%2210%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%236b7280%22 stroke-width=%222%22&gt;&lt;path d=%22M6 9l6 6 6-6%22/&gt;&lt;/svg&gt;');background-repeat:no-repeat;background-position:right 6px center">
-<option value="all">All Status</option><option value="Draft">Draft</option><option value="Revise">Revise</option><option value="Assign">Assign</option><option value="Verify">Verify</option><option value="On Process">On Process</option><option value="Review">Review</option><option value="Final Approve">Final Approve</option><option value="Final Render">Final Render</option><option value="Done">Done</option>
+<option value="all">All Status</option><option value="Draft">Draft</option><option value="Assign (Head CG)">Assign (Head CG)</option><option value="Verify (CG)">Verify (CG)</option><option value="Revise (Sale)">Revise (Sale)</option><option value="On Process (CG)">On Process (CG)</option><option value="Review (Sale)">Review (Sale)</option><option value="Revise (CG)">Revise (CG)</option><option value="Final Approve">Final Approve</option><option value="Final Render">Final Render</option><option value="Done">Done</option>
 </select>
 <button class="h-9 px-3 bg-white text-[#0B1430] rounded-lg border border-[#E2E8F0] text-[12px] font-medium hover:bg-[#F8FAFC] inline-flex items-center gap-1 shrink-0" onclick="resetFilters()">
 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24"><path d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182" stroke-linecap="round" stroke-linejoin="round"></path></svg>
@@ -341,18 +341,30 @@ table th{position:sticky;top:0;z-index:1}
 </div>
 </div>
 <script>
-/* ===== DATA ===== */
-var STATUSES = ['Draft','Revise','Assign','Verify','On Process','Review','Final Approve','Final Render','Done'];
+/* ===== DATA =====
+   Status flow (10 stages): each label carries the responsible role for clarity.
+   1) Draft                         — created but not yet routed
+   2) Assign (Head CG)              — Head CG assigns to a Graphic
+   3) Verify (CG)                   — CG verifies brief/spec before starting
+   4) Revise (Sale)                 — Sale needs to revise/clarify brief
+   5) On Process (CG)               — Graphic is producing mockup
+   6) Review (Sale)                 — Sale reviews mockup (customer feedback loop)
+   7) Revise (CG)                   — CG revises based on Sale/customer feedback
+   8) Final Approve                 — Customer / stakeholders approve
+   9) Final Render                  — Final asset rendering
+  10) Done                          — Delivered / on-air                                    */
+var STATUSES = ['Draft','Assign (Head CG)','Verify (CG)','Revise (Sale)','On Process (CG)','Review (Sale)','Revise (CG)','Final Approve','Final Render','Done'];
 var STATUS_COLORS = {
-  'Draft':         {bg:'bg-slate-50',   border:'border-slate-200',  dot:'bg-slate-400',   text:'text-slate-700',  headerBg:'bg-slate-100',  hex:'#94a3b8'},
-  'Revise':        {bg:'bg-amber-50',   border:'border-amber-200',  dot:'bg-amber-500',   text:'text-amber-700',  headerBg:'bg-amber-100',  hex:'#f59e0b'},
-  'Assign':        {bg:'bg-orange-50',  border:'border-orange-200', dot:'bg-orange-500',  text:'text-orange-700', headerBg:'bg-orange-100', hex:'#f97316'},
-  'Verify':        {bg:'bg-violet-50',  border:'border-violet-200', dot:'bg-violet-500',  text:'text-violet-700', headerBg:'bg-violet-100', hex:'#8b5cf6'},
-  'On Process':   {bg:'bg-blue-50',    border:'border-blue-200',   dot:'bg-blue-500',    text:'text-blue-700',   headerBg:'bg-blue-100',   hex:'#3b82f6'},
-  'Review':        {bg:'bg-cyan-50',    border:'border-cyan-200',   dot:'bg-cyan-500',    text:'text-cyan-700',   headerBg:'bg-cyan-100',   hex:'#06b6d4'},
-  'Final Approve': {bg:'bg-emerald-50', border:'border-emerald-200',dot:'bg-emerald-500', text:'text-emerald-700',headerBg:'bg-emerald-100',hex:'#10b981'},
-  'Final Render':  {bg:'bg-indigo-50',  border:'border-indigo-200', dot:'bg-indigo-500',  text:'text-indigo-700', headerBg:'bg-indigo-100', hex:'#6366f1'},
-  'Done':          {bg:'bg-teal-50',    border:'border-teal-200',   dot:'bg-teal-500',    text:'text-teal-700',   headerBg:'bg-teal-100',   hex:'#14b8a6'},
+  'Draft':            {bg:'bg-slate-50',   border:'border-slate-200',  dot:'bg-slate-400',   text:'text-slate-700',  headerBg:'bg-slate-100',  hex:'#94a3b8'},
+  'Assign (Head CG)': {bg:'bg-amber-50',   border:'border-amber-200',  dot:'bg-amber-500',   text:'text-amber-700',  headerBg:'bg-amber-100',  hex:'#f59e0b'},
+  'Verify (CG)':      {bg:'bg-violet-50',  border:'border-violet-200', dot:'bg-violet-500',  text:'text-violet-700', headerBg:'bg-violet-100', hex:'#8b5cf6'},
+  'Revise (Sale)':    {bg:'bg-rose-50',    border:'border-rose-200',   dot:'bg-rose-500',    text:'text-rose-700',   headerBg:'bg-rose-100',   hex:'#f43f5e'},
+  'On Process (CG)':  {bg:'bg-blue-50',    border:'border-blue-200',   dot:'bg-blue-500',    text:'text-blue-700',   headerBg:'bg-blue-100',   hex:'#3b82f6'},
+  'Review (Sale)':    {bg:'bg-cyan-50',    border:'border-cyan-200',   dot:'bg-cyan-500',    text:'text-cyan-700',   headerBg:'bg-cyan-100',   hex:'#06b6d4'},
+  'Revise (CG)':      {bg:'bg-orange-50',  border:'border-orange-200', dot:'bg-orange-500',  text:'text-orange-700', headerBg:'bg-orange-100', hex:'#f97316'},
+  'Final Approve':    {bg:'bg-emerald-50', border:'border-emerald-200',dot:'bg-emerald-500', text:'text-emerald-700',headerBg:'bg-emerald-100',hex:'#10b981'},
+  'Final Render':     {bg:'bg-indigo-50',  border:'border-indigo-200', dot:'bg-indigo-500',  text:'text-indigo-700', headerBg:'bg-indigo-100', hex:'#6366f1'},
+  'Done':             {bg:'bg-teal-50',    border:'border-teal-200',   dot:'bg-teal-500',    text:'text-teal-700',   headerBg:'bg-teal-100',   hex:'#14b8a6'},
 };
 
 /* Helper: expand packages → flat subjobs where 1 Package + 1 Version = 1 Job */
@@ -444,6 +456,31 @@ var TICKETS = [
   ])},
 ];
 
+/* ───── Migrate legacy status labels → new role-tagged labels ─────
+   Applied once at load so the sample data literals above don't need
+   editing every time the workflow labels evolve. Old value → New value:
+     'Assign'     → 'Assign (Head CG)'
+     'Verify'     → 'Verify (CG)'
+     'On Process' → 'On Process (CG)'
+     'Review'     → 'Review (Sale)'
+     'Revise'     → 'Revise (CG)'          (default — CG-side rework after Sale review)
+   Draft / Final Approve / Final Render / Done are unchanged.
+   'Revise (Sale)' has no seeded rows — reserved slot in the new scheme.  */
+var STATUS_LEGACY_MAP = {
+  'Assign':     'Assign (Head CG)',
+  'Verify':     'Verify (CG)',
+  'On Process': 'On Process (CG)',
+  'Review':     'Review (Sale)',
+  'Revise':     'Revise (CG)'
+};
+function _migrateStatus(s){ return (s && STATUS_LEGACY_MAP[s]) || s; }
+TICKETS.forEach(function(t){
+  t.status = _migrateStatus(t.status);
+  if (t.subjobs && t.subjobs.length){
+    t.subjobs.forEach(function(sj){ sj.st = _migrateStatus(sj.st); });
+  }
+});
+
 /* Derive jobs count = number of subjob rows (1 Package + 1 Version = 1 Job) */
 TICKETS.forEach(function(t){ t.jobs = (t.subjobs || []).length; });
 
@@ -451,7 +488,7 @@ TICKETS.forEach(function(t){ t.jobs = (t.subjobs || []).length; });
    CU (Customer) = อนุมัติแล้ว เมื่อ parent ticket status ∈ {Final Approve, Final Render, Done}
    LL (Landlord) = อนุมัติแล้ว เมื่อ parent status = Done หรือ seed ไว้ล่วงหน้า
    เงื่อนไขพิเศษ: ถ้า status = Final Approve → LL ต้อง รออนุมัติ (รอเจ้าของพื้นที่)            */
-var APPROVE_AUTO_CUSTOMER = ['Final Approve','Final Render','Done'];
+var APPROVE_AUTO_CUSTOMER = ['Final Approve','Final Render','Done']; /* labels unchanged in new scheme */
 (function seedLandlordApprovals(){
   /* Pre-approve landlord on a handful of Final Render rows so we see "approved" state for LL outside Done */
   var preApproved = ['TK-0026']; /* Final Render ticket */
@@ -506,16 +543,16 @@ function jobNoOf(t, sj, idx) {
 }
 
 function progressDateOf(sj) {
-  if (!sj.st || sj.st === 'Assign' || sj.st === 'Verify') return '—';
-  if (sj.st === 'Review')                          return '28/04/2026 16:45';
-  if (sj.st === 'Revise')                          return '03/05/2026 11:20';
-  if (sj.st === 'Done')                            return '30/04/2026 17:00';
+  if (!sj.st || sj.st === 'Assign (Head CG)' || sj.st === 'Verify (CG)') return '—';
+  if (sj.st === 'Review (Sale)')                                          return '28/04/2026 16:45';
+  if (sj.st === 'Revise (CG)' || sj.st === 'Revise (Sale)')               return '03/05/2026 11:20';
+  if (sj.st === 'Done')                                                   return '30/04/2026 17:00';
   return '02/05/2026 14:30';
 }
 
 function progressSlaOf(sj) {
-  if (!sj.st || sj.st === 'Assign' || sj.st === 'Verify') return '';
-  if (sj.st === 'Revise')                       return 'Overdue';
+  if (!sj.st || sj.st === 'Assign (Head CG)' || sj.st === 'Verify (CG)') return '';
+  if (sj.st === 'Revise (CG)' || sj.st === 'Revise (Sale)')              return 'Overdue';
   return 'In time';
 }
 
@@ -540,7 +577,7 @@ var HEAD_CG_MAP = {
   'Somchai Kanchana': 'Thanat Manop'
 };
 function headCgOf(sj) {
-  if (!sj.graphic || !sj.st || sj.st === 'Assign') return '';
+  if (!sj.graphic || !sj.st || sj.st === 'Assign (Head CG)') return '';
   return HEAD_CG_MAP[sj.graphic] || '—';
 }
 
@@ -618,13 +655,23 @@ function sortTable(key) {
   filterTickets();
 }
 
-/* ===== Filter ===== */
+/* ===== Filter =====
+   Status filter is JOB-oriented: a ticket qualifies if any of its jobs
+   (subjobs) matches the selected status. Tickets with no subjobs fall
+   back to their own ticket-level status. renderTable() then hides the
+   non-matching subjob rows so users see only the jobs that match.       */
 function getFiltered() {
   var q=document.getElementById('tk-search').value.toLowerCase();
   var sf=document.getElementById('tk-status').value;
   var result = TICKETS.filter(function(t){
     if(q&&(t.id+' '+t.quo+' '+t.desc+' '+t.client+' '+t.product).toLowerCase().indexOf(q)===-1) return false;
-    if(sf!=='all'&&t.status!==sf) return false;
+    if(sf!=='all'){
+      if (t.subjobs && t.subjobs.length){
+        if (!t.subjobs.some(function(sj){ return sj.st === sf; })) return false;
+      } else if (t.status !== sf) {
+        return false;
+      }
+    }
     return true;
   });
   if (_sortKey) {
@@ -642,26 +689,42 @@ function resetFilters() { document.getElementById('tk-search').value=''; documen
 /* ===== TABLE ===== */
 function renderTable(rows) {
   var tbody=document.getElementById('ticket-tbody'); var pr=document.getElementById('pag-range'); var pt=document.getElementById('pag-total');
+  /* Job-level status filter: when active, hide non-matching subjob rows
+     and auto-expand the sub-row so matches are immediately visible.      */
+  var statusFilter = document.getElementById('tk-status').value;
+  var hasStatusFilter = statusFilter && statusFilter !== 'all';
   if (!rows.length) {
     tbody.innerHTML='<tr><td colspan="10" class="px-4 py-16 text-center"><div class="w-16 h-16 rounded-full bg-[#F1F5F9] flex items-center justify-center mx-auto mb-4"><svg class="w-7 h-7" style="color:rgba(30,41,59,0.3)" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75"/></svg></div><div class="text-[15px] font-semibold text-[#0B1430] mb-1">No Tickets Found</div><div class="text-[13px] mb-4" style="color:rgba(30,41,59,0.5)">Try adjusting your filters</div><button onclick="resetFilters()" class="h-9 px-4 bg-[#2D56D2] text-white rounded-lg text-[13px] font-medium hover:bg-[#213268]">Reset Filters</button></td></tr>';
     pr.textContent='0'; pt.textContent='0'; return;
   }
   var h='';
   var SUBJOB_STATUS = {
-    'Assign':        'bg-slate-50 text-slate-600 border-slate-200',
-    'Verify':        'bg-amber-50 text-amber-700 border-amber-200',
-    'On Process':    'bg-blue-50 text-blue-700 border-blue-200',
-    'Review':        'bg-cyan-50 text-cyan-700 border-cyan-200',
-    'Revise':        'bg-orange-50 text-orange-700 border-orange-200',
-    'Final Approve': 'bg-teal-50 text-teal-700 border-teal-200',
-    'Final Render':  'bg-indigo-50 text-indigo-700 border-indigo-200',
-    'Done':          'bg-emerald-50 text-emerald-700 border-emerald-200'
+    'Assign (Head CG)': 'bg-amber-50 text-amber-700 border-amber-200',
+    'Verify (CG)':      'bg-violet-50 text-violet-700 border-violet-200',
+    'Revise (Sale)':    'bg-rose-50 text-rose-700 border-rose-200',
+    'On Process (CG)':  'bg-blue-50 text-blue-700 border-blue-200',
+    'Review (Sale)':    'bg-cyan-50 text-cyan-700 border-cyan-200',
+    'Revise (CG)':      'bg-orange-50 text-orange-700 border-orange-200',
+    'Final Approve':    'bg-emerald-50 text-emerald-700 border-emerald-200',
+    'Final Render':     'bg-indigo-50 text-indigo-700 border-indigo-200',
+    'Done':             'bg-teal-50 text-teal-700 border-teal-200'
   };
   var DRAFT_BADGE = '<span class="inline-flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded font-semibold border bg-amber-50 text-amber-800 border-amber-300 shadow-sm" title="Draft — ยังไม่ได้ส่งออก"><svg class="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke-width="2.4" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg>Draft</span>';
   rows.forEach(function(t,i){
     var isDraft = t.status === 'Draft';
+    /* Job-level status filter: compute matched count and pick the chevron/badge state */
+    var subjobsTotal = (t.subjobs || []).length;
+    var subjobsMatched = hasStatusFilter && subjobsTotal
+      ? t.subjobs.filter(function(sj){ return sj.st === statusFilter; }).length
+      : subjobsTotal;
+    var chevronRotated = hasStatusFilter && subjobsMatched > 0;
+    var subHiddenCls    = chevronRotated ? '' : 'hidden';
+    /* Jobs badge: filtered → amber "matched / total", otherwise the standard blue pill */
+    var jobsBadge = hasStatusFilter && subjobsTotal
+      ? '<span class="text-[12px] font-semibold tnum px-2 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200" title="แสดง '+subjobsMatched+' job ที่ตรงกับสถานะ · จากทั้งหมด '+subjobsTotal+' jobs">'+subjobsMatched+' <span class="opacity-60 font-normal">/ '+subjobsTotal+'</span></span>'
+      : '<span class="text-[12px] font-semibold tnum px-2 py-0.5 rounded bg-[#EBF5FF] text-[#2D56D2]">'+subjobsTotal+'</span>';
     h+='<tr class="border-b border-[#F1F5F9] '+(isDraft?'bg-amber-50/40 hover:bg-amber-50/70':'hover:bg-[#EBF5FF]/30')+' transition-colors group cursor-pointer" style="animation:fadeIn 0.15s ease '+i*0.03+'s both;'+(isDraft?'box-shadow:inset 3px 0 0 #F59E0B;':'')+'" onclick="toggleExpand(\''+t.id+'\')">';
-    h+='<td class="px-3 py-3 text-center"><svg id="chevron-'+t.id+'" class="w-4 h-4 transition-transform duration-200" style="color:rgba(30,41,59,0.35)" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg></td>';
+    h+='<td class="px-3 py-3 text-center"><svg id="chevron-'+t.id+'" class="w-4 h-4 transition-transform duration-200" style="color:rgba(30,41,59,0.35);'+(chevronRotated?'transform:rotate(90deg);':'')+'" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg></td>';
     h+='<td class="px-3 py-3"><div class="flex items-center gap-2"><a href="ticket-detail.html'+(t.manual?'?manual=1':'')+'" class="font-semibold text-[#2D56D2] hover:text-[#213268] text-[12px] font-mono" onclick="event.stopPropagation()">'+t.id+'</a>'+(isDraft?DRAFT_BADGE:'')+'</div></td>';
     h+='<td class="px-3 py-3 text-[12px] font-mono" style="color:rgba(30,41,59,0.6)">'+(t.manual?'<span class="text-[10px] px-1.5 py-0.5 rounded font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200 font-sans">Manual</span>':t.quo)+'</td>';
     h+='<td class="px-3 py-3 text-[12px] font-medium">'+t.client+'</td>';
@@ -669,17 +732,20 @@ function renderTable(rows) {
     h+='<td class="px-3 py-3 text-[12px]">'+t.product+'</td>';
     h+='<td class="px-3 py-3 max-w-[180px]"><div class="text-[12px] truncate" style="color:rgba(30,41,59,0.7)">'+t.desc+'</div></td>';
     h+='<td class="px-3 py-3 text-[11px] font-mono" style="color:rgba(30,41,59,0.6)">'+(t.startEnd||'')+'</td>';
-    h+='<td class="px-3 py-3 text-center"><span class="text-[12px] font-semibold tnum px-2 py-0.5 rounded bg-[#EBF5FF] text-[#2D56D2]">'+t.jobs+'</span></td>';
+    h+='<td class="px-3 py-3 text-center">'+jobsBadge+'</td>';
     h+='<td class="px-3 py-3 text-[11px] font-mono" style="color:rgba(30,41,59,0.55)">'+t.date+'</td>';
     h+='</tr>';
-    // Sub-job rows (hidden by default)
+    // Sub-job rows — auto-expand when a status filter is active
     if (t.subjobs && t.subjobs.length) {
-      h+='<tr id="sub-'+t.id+'" class="hidden"><td colspan="10" class="p-0">';
+      h+='<tr id="sub-'+t.id+'" class="'+subHiddenCls+'"><td colspan="10" class="p-0">';
       /* note: colspan stays 10 — we added Media Group (+1) and removed Status (-1) so total cols unchanged */
       h+='<div class="bg-[#F8FAFC] border-t border-[#E2E8F0] px-4 py-3">';
       h+='<table class="w-full text-[12px]"><thead><tr class="text-[10px] uppercase tracking-wide" style="color:rgba(30,41,59,0.45)"><th class="px-3 py-2 text-left font-medium">Job No</th><th class="px-3 py-2 text-left font-medium">Media</th><th class="px-3 py-2 text-left font-medium">Package</th><th class="px-3 py-2 text-left font-medium">Period</th><th class="px-3 py-2 text-left font-medium">Version</th><th class="px-3 py-2 text-left font-medium">Head CG</th><th class="px-3 py-2 text-left font-medium">Graphic</th><th class="px-3 py-2 text-left font-medium">Status</th><th class="px-3 py-2 text-left font-medium">Approve</th><th class="px-3 py-2 text-left font-medium">Mockup</th><th class="px-3 py-2 text-left font-medium">Progress Date</th><th class="px-3 py-2 text-left font-medium">Progress SLA</th></tr></thead><tbody>';
       t.subjobs.forEach(function(sj, sIdx){
-        var sjCls = SUBJOB_STATUS[sj.st] || SUBJOB_STATUS['Assign'];
+        /* Skip non-matching subjobs when a status filter is active
+           (preserve original sIdx so JOB-XXXX-NN numbering stays stable). */
+        if (hasStatusFilter && sj.st !== statusFilter) return;
+        var sjCls = SUBJOB_STATUS[sj.st] || SUBJOB_STATUS['Assign (Head CG)'];
         var hcg = headCgOf(sj);
         var sla = progressSlaOf(sj);
         var pkgName = sj.pkg || sj.media;
@@ -697,7 +763,7 @@ function renderTable(rows) {
         if (sj.st === 'Final Render') { var _p = renderPctOf(sj); if (_p !== null) _stLbl = sj.st + ' · ' + _p + '%'; }
         h+='<td class="px-3 py-2">'+(sj.st ? '<span class="text-[10px] px-2 py-0.5 rounded-full font-medium border '+sjCls+'">'+_stLbl+'</span>' : '<span style="color:rgba(30,41,59,0.3)">—</span>')+'</td>';
         h+='<td class="px-3 py-2 align-top">'+renderApproveCell(t, sj)+'</td>';
-        h+='<td class="px-3 py-2">'+(!sj.st || sj.st === 'Assign' ? '<span style="color:rgba(30,41,59,0.3)">—</span>' : '<span class="inline-flex items-center text-[11px] font-mono font-semibold px-1.5 py-0.5 rounded bg-pb-50 text-[#2D56D2] border border-[#D6ECFF]">v'+sj.ver+'</span>')+'</td>';
+        h+='<td class="px-3 py-2">'+(!sj.st || sj.st === 'Assign (Head CG)' ? '<span style="color:rgba(30,41,59,0.3)">—</span>' : '<span class="inline-flex items-center text-[11px] font-mono font-semibold px-1.5 py-0.5 rounded bg-pb-50 text-[#2D56D2] border border-[#D6ECFF]">v'+sj.ver+'</span>')+'</td>';
         h+='<td class="px-3 py-2 font-mono text-[11px]" style="color:rgba(30,41,59,0.55)">'+progressDateOf(sj)+'</td>';
         h+='<td class="px-3 py-2">'+slaBadge(sla)+'</td>';
         h+='</tr>';

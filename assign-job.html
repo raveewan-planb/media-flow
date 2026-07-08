@@ -250,7 +250,7 @@ table th{position:sticky;top:0;z-index:1}
 </div>
 </div>
 <!-- KPI Cards -->
-<div class="grid grid-cols-3 md:grid-cols-6 gap-3" id="assign-kpis"></div>
+<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 xl:grid-cols-9 gap-2.5" id="assign-kpis"></div>
 <!-- Filter Bar -->
 <div class="bg-white border border-[#E2E8F0] rounded-xl shadow-sm p-3">
 <div class="flex items-center gap-2 flex-wrap">
@@ -294,19 +294,19 @@ table th{position:sticky;top:0;z-index:1}
 </div>
 <!-- Ticket Table -->
 <div class="bg-white border border-[#E2E8F0] rounded-xl shadow-sm overflow-hidden">
-<div>
-<table class="w-full text-[12.5px] table-fixed">
+<div class="overflow-x-auto">
+<table class="w-full text-[12.5px] table-fixed" style="min-width:1180px">
 <colgroup>
-  <col style="width:36px">
+  <col style="width:32px">
   <col style="width:78px">
-  <col style="width:130px">
-  <col style="width:120px">
-  <col style="width:180px">
+  <col style="width:110px">
+  <col style="width:105px">
+  <col style="width:140px">
   <col style="width:auto">
-  <col style="width:120px">
-  <col style="width:115px">
-  <col style="width:115px">
-  <col style="width:100px">
+  <col style="width:130px">
+  <col style="width:130px">
+  <col style="width:130px">
+  <col style="width:145px">
 </colgroup>
 <thead class="border-b border-[#E2E8F0]" style="background:rgba(248,250,252,0.8)">
 <tr class="text-left text-[10.5px] uppercase tracking-wide" style="color:rgba(30,41,59,0.55)">
@@ -357,26 +357,65 @@ var AT_DATA = [
   { id:'TK-2026010003', quo:'PB202604401', job:'JOB-1023', client:'Central Retail', product:'Central Mid-Year',    mediaGroup:'Transit', mediaSection:'BTS',              mediaType:'BTS Concourse',           package:'BTS Concourse',         sales:'Sajjaporn Suwanchai', startEnd:'15/01/2026 - 14/04/2026', reqDate:'10/01/2026 11:00', headTeam:'Wanchat Damrongsak', assigned:'Wutti Chaiyaporn',  status:'Done',        hasActions:false, assignStatus:'Assigned' },
 ];
 
+/* ───── Migrate legacy status labels → new role-tagged labels ─────
+   Applied once at load so the AT_DATA literals above don't need editing.
+   Old → New:
+     'Pending'    → 'Assign (Head CG)'
+     'Verify'     → 'Verify (CG)'
+     'On Process' → 'On Process (CG)'
+     'Revise'     → 'Revise (CG)'         (default — CG-side rework after Sale review)
+   'Final Render' / 'Done' pass through unchanged.
+   'Revise (Sale)' / 'Review (Sale)' / 'Final Approve' are reserved slots
+   in the new scheme with 0 seeded sample rows.                          */
+var STATUS_LEGACY_MAP = {
+  'Pending':    'Assign (Head CG)',
+  'Verify':     'Verify (CG)',
+  'On Process': 'On Process (CG)',
+  'Revise':     'Revise (CG)'
+};
+AT_DATA.forEach(function(r){
+  if (STATUS_LEGACY_MAP[r.status]) r.status = STATUS_LEGACY_MAP[r.status];
+});
+
+/* ===== Status flow (9 stages, role-tagged) — mirrors job-list.html scheme =====
+   1) Assign (Head CG)  — Head CG needs to assign job to Graphic (was "Pending")
+   2) Verify (CG)       — CG verifies brief/spec before starting
+   3) Revise (Sale)     — Sale needs to revise/clarify brief
+   4) On Process (CG)   — Graphic is producing mockup
+   5) Review (Sale)     — Sale reviews mockup (customer feedback loop)
+   6) Revise (CG)       — CG revises based on Sale/customer feedback
+   7) Final Approve     — Customer / stakeholders approve
+   8) Final Render      — Final asset rendering
+   9) Done              — Delivered / on-air                                      */
 var AT_KPI = [
-  { label:'Pending',      key:'Pending',       bg:'bg-[#FFFBEB]',  border:'border-amber-200',   text:'text-amber-600',   iconBg:'bg-amber-400',   iconColor:'text-white' },
-  { label:'Verify',       key:'Verify',        bg:'bg-violet-50',  border:'border-violet-200',  text:'text-violet-600',  iconBg:'bg-violet-500',  iconColor:'text-white' },
-  { label:'On Process',   key:'On Process',    bg:'bg-[#EBF5FF]',  border:'border-blue-200',    text:'text-blue-600',    iconBg:'bg-blue-500',    iconColor:'text-white' },
-  { label:'Revise',       key:'Revise',        bg:'bg-rose-50',    border:'border-rose-200',    text:'text-rose-600',    iconBg:'bg-rose-500',    iconColor:'text-white' },
-  { label:'Final Render', key:'Final Render',  bg:'bg-indigo-50',  border:'border-indigo-200',  text:'text-indigo-600',  iconBg:'bg-indigo-500',  iconColor:'text-white' },
-  { label:'Done',         key:'Done',          bg:'bg-teal-50',    border:'border-teal-200',    text:'text-teal-600',    iconBg:'bg-teal-500',    iconColor:'text-white' },
+  { label:'Assign (Head CG)', key:'Assign (Head CG)', bg:'bg-amber-50',   border:'border-amber-200',   text:'text-amber-700',   iconBg:'bg-amber-500',   iconColor:'text-white' },
+  { label:'Verify (CG)',      key:'Verify (CG)',      bg:'bg-violet-50',  border:'border-violet-200',  text:'text-violet-700',  iconBg:'bg-violet-500',  iconColor:'text-white' },
+  { label:'Revise (Sale)',    key:'Revise (Sale)',    bg:'bg-rose-50',    border:'border-rose-200',    text:'text-rose-700',    iconBg:'bg-rose-500',    iconColor:'text-white' },
+  { label:'On Process (CG)',  key:'On Process (CG)',  bg:'bg-blue-50',    border:'border-blue-200',    text:'text-blue-700',    iconBg:'bg-blue-500',    iconColor:'text-white' },
+  { label:'Review (Sale)',    key:'Review (Sale)',    bg:'bg-cyan-50',    border:'border-cyan-200',    text:'text-cyan-700',    iconBg:'bg-cyan-500',    iconColor:'text-white' },
+  { label:'Revise (CG)',      key:'Revise (CG)',      bg:'bg-orange-50',  border:'border-orange-200',  text:'text-orange-700',  iconBg:'bg-orange-500',  iconColor:'text-white' },
+  { label:'Final Approve',    key:'Final Approve',    bg:'bg-emerald-50', border:'border-emerald-200', text:'text-emerald-700', iconBg:'bg-emerald-500', iconColor:'text-white' },
+  { label:'Final Render',     key:'Final Render',     bg:'bg-indigo-50',  border:'border-indigo-200',  text:'text-indigo-700',  iconBg:'bg-indigo-500',  iconColor:'text-white' },
+  { label:'Done',             key:'Done',             bg:'bg-teal-50',    border:'border-teal-200',    text:'text-teal-700',    iconBg:'bg-teal-500',    iconColor:'text-white' },
 ];
 
 function renderKPIs(rows) {
-  var counts = { 'Pending':0, 'Verify':0, 'On Process':0, 'Revise':0, 'Final Render':0, 'Done':0 };
+  var counts = {
+    'Assign (Head CG)':0, 'Verify (CG)':0, 'Revise (Sale)':0, 'On Process (CG)':0,
+    'Review (Sale)':0, 'Revise (CG)':0, 'Final Approve':0, 'Final Render':0, 'Done':0
+  };
   rows.forEach(function(r){ if(counts[r.status]!==undefined) counts[r.status]++; });
   var el = document.getElementById('assign-kpis');
   var kpiIcons = {
-    'Pending':     '<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
-    'Verify':      '<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z"/></svg>',
-    'On Process':  '<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182"/></svg>',
-    'Revise':      '<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"/></svg>',
-    'Final Render':'<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z"/></svg>',
-    'Done':        '<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
+    'Assign (Head CG)': '<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM3 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 12.318 0 019.374 21c-2.331 0-4.512-.645-6.374-1.766z"/></svg>',
+    'Verify (CG)':      '<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z"/></svg>',
+    'Revise (Sale)':    '<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 8.25H7.5a2.25 2.25 0 00-2.25 2.25v9a2.25 2.25 0 002.25 2.25h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25H15m-6 0V5.25A2.25 2.25 0 0111.25 3h1.5A2.25 2.25 0 0115 5.25v3m-6 0h6"/></svg>',
+    'On Process (CG)':  '<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182"/></svg>',
+    'Review (Sale)':    '<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>',
+    'Revise (CG)':      '<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10"/></svg>',
+    'Final Approve':    '<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
+    'Final Render':     '<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z"/></svg>',
+    'Done':             '<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>',
   };
   var html = '';
   AT_KPI.forEach(function(k) {
@@ -423,16 +462,26 @@ function actionButtons(row) {
       '<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 00-3.7-3.7 48.678 48.678 0 00-7.324 0 4.006 4.006 0 00-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3l-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 003.7 3.7 48.656 48.656 0 007.324 0 4.006 4.006 0 003.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3l-3 3"/></svg>' +
     '</button>';
 
-  /* Pending → Assign only (not yet assigned) */
-  if (row.status === 'Pending') {
+  /* Assign (Head CG) → Assign only (not yet assigned to Graphic) */
+  if (row.status === 'Assign (Head CG)') {
     return viewBtn + assignBtn;
   }
   /* Done → no reassign */
   if (row.status === 'Done') {
     return viewBtn;
   }
-  /* All other statuses (Assign / Verify / On Process / Revise / Final Render) → Reassign */
+  /* All other statuses (Verify (CG) / Revise (Sale) / On Process (CG) /
+     Review (Sale) / Revise (CG) / Final Approve / Final Render) → Reassign */
   return viewBtn + reassignBtn;
+}
+
+/* Deterministic mock render-progress % for Final Render rows (mirrors receive-job.html) */
+function renderPctOf(r){
+  if(!r) return null;
+  if(r.renderPct !== undefined) return r.renderPct;
+  var seed = (r.id||'') + '|' + (r.job||'') + '|' + (r.version||'');
+  var h = 0; for(var i=0;i<seed.length;i++) h = ((h<<5) - h) + seed.charCodeAt(i);
+  return 35 + Math.abs(h) % 60; // 35..94
 }
 
 function renderTable(rows) {
@@ -446,15 +495,19 @@ function renderTable(rows) {
   }
   var html = '';
   var STATUS_BADGE = {
-    'Pending':      { cls:'bg-amber-50 text-amber-700 border-amber-200',     dot:'bg-amber-500' },
-    'Verify':       { cls:'bg-violet-50 text-violet-700 border-violet-200',  dot:'bg-violet-500' },
-    'On Process':   { cls:'bg-blue-50 text-blue-700 border-blue-200',        dot:'bg-blue-500' },
-    'Revise':       { cls:'bg-rose-50 text-rose-700 border-rose-200',        dot:'bg-rose-500' },
-    'Final Render': { cls:'bg-indigo-50 text-indigo-700 border-indigo-200',  dot:'bg-indigo-500' },
-    'Done':         { cls:'bg-teal-50 text-teal-700 border-teal-200',        dot:'bg-teal-500' }
+    'Assign (Head CG)': { cls:'bg-amber-50 text-amber-700 border-amber-200',       dot:'bg-amber-500' },
+    'Verify (CG)':      { cls:'bg-violet-50 text-violet-700 border-violet-200',    dot:'bg-violet-500' },
+    'Revise (Sale)':    { cls:'bg-rose-50 text-rose-700 border-rose-200',          dot:'bg-rose-500' },
+    'On Process (CG)':  { cls:'bg-blue-50 text-blue-700 border-blue-200',          dot:'bg-blue-500' },
+    'Review (Sale)':    { cls:'bg-cyan-50 text-cyan-700 border-cyan-200',          dot:'bg-cyan-500' },
+    'Revise (CG)':      { cls:'bg-orange-50 text-orange-700 border-orange-200',    dot:'bg-orange-500' },
+    'Final Approve':    { cls:'bg-emerald-50 text-emerald-700 border-emerald-200', dot:'bg-emerald-500' },
+    'Final Render':     { cls:'bg-indigo-50 text-indigo-700 border-indigo-200',    dot:'bg-indigo-500' },
+    'Done':             { cls:'bg-teal-50 text-teal-700 border-teal-200',          dot:'bg-teal-500' }
   };
   rows.forEach(function(r) {
-    var isPending = r.status === 'Pending';
+    /* "isPending" = job still awaiting Head CG assignment — gets checkbox + amber row bg */
+    var isPending = r.status === 'Assign (Head CG)';
     var rowBg = isPending ? 'bg-amber-50/30' : '';
     var sb = STATUS_BADGE[r.status] || { cls:'bg-slate-50 text-slate-600 border-slate-200', dot:'bg-slate-400' };
     var cbCell = isPending ? '<td class="px-2 py-2.5 text-center"><input type="checkbox" class="w-3.5 h-3.5 rounded border-[#CBD5E1] accent-[#2D56D2]" data-package="' + (r.package||'').replace(/"/g,'&quot;') + '" onchange="onRowCheck(this)"></td>' : '<td class="px-2 py-2.5"></td>';
@@ -499,7 +552,7 @@ function renderTable(rows) {
       '<td class="px-2 py-2.5">' + periodCell + '</td>' +
       '<td class="px-2 py-2.5">' + salesCell + '</td>' +
       '<td class="px-2 py-2.5">' + headAssignedCell + '</td>' +
-      '<td class="px-2 py-2.5"><span class="inline-flex items-center gap-1 text-[10.5px] px-1.5 py-0.5 rounded-full font-medium border whitespace-nowrap ' + sb.cls + '"><span class="w-1.5 h-1.5 rounded-full ' + sb.dot + '"></span>' + r.status + '</span></td>' +
+      '<td class="px-2 py-2.5"><span class="inline-flex items-center gap-1 text-[10.5px] px-1.5 py-0.5 rounded-full font-medium border whitespace-nowrap ' + sb.cls + '"><span class="w-1.5 h-1.5 rounded-full ' + sb.dot + '"></span>' + (r.status === 'Final Render' ? (function(){ var p = renderPctOf(r); return r.status + (p !== null ? ' · ' + p + '%' : ''); })() : r.status) + '</span></td>' +
     '</tr>';
   });
   tbody.innerHTML = html;

@@ -268,7 +268,7 @@ table th{position:sticky;top:0;z-index:1}
 <div class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-[#213268] text-white tnum" id="pr-total-badge">0 tickets</div>
 </div>
 <div class="h-3 rounded-full bg-[#F1F5F9] overflow-hidden flex mb-3" id="pr-progress-bar"></div>
-<div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2" id="pr-kpi-cards"></div>
+<div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-4 xl:grid-cols-8 gap-2" id="pr-kpi-cards"></div>
 </div>
 <!-- Filter Bar -->
 <div class="bg-white border border-[#E2E8F0] rounded-xl shadow-sm p-3">
@@ -278,7 +278,7 @@ table th{position:sticky;top:0;z-index:1}
 <input class="w-full h-9 pl-9 pr-3 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[13px] focus:outline-none focus:border-[#4790FF] focus:bg-white" id="pr-search" oninput="filterPR()" placeholder="Search ticket, product, client..."/>
 </div>
 <select class="h-9 pl-3 pr-7 bg-white border border-[#E2E8F0] rounded-lg text-[12px] focus:outline-none focus:border-[#4790FF]" id="pr-status" onchange="filterPR()" style="appearance:none;background-image:url('data:image/svg+xml;utf8,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2210%22 height=%2210%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%236b7280%22 stroke-width=%222%22&gt;&lt;path d=%22M6 9l6 6 6-6%22/&gt;&lt;/svg&gt;');background-repeat:no-repeat;background-position:right 6px center">
-<option value="all">All Status</option><option>To Do</option><option>On Process</option><option>Review</option><option>Revise</option><option>Final Approve</option><option>Final Render</option><option>Done</option>
+<option value="all">All Status</option><option value="Verify (CG)">Verify (CG)</option><option value="Revise (Sale)">Revise (Sale)</option><option value="On Process (CG)">On Process (CG)</option><option value="Review (Sale)">Review (Sale)</option><option value="Revise (CG)">Revise (CG)</option><option value="Final Approve">Final Approve</option><option value="Final Render">Final Render</option><option value="Done">Done</option>
 </select>
 <select class="h-9 pl-3 pr-7 bg-white border border-[#E2E8F0] rounded-lg text-[12px] focus:outline-none focus:border-[#4790FF]" id="pr-media" onchange="filterPR()" style="appearance:none;background-image:url('data:image/svg+xml;utf8,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2210%22 height=%2210%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%236b7280%22 stroke-width=%222%22&gt;&lt;path d=%22M6 9l6 6 6-6%22/&gt;&lt;/svg&gt;');background-repeat:no-repeat;background-position:right 6px center">
 <option value="all">All Media</option><option>Digital</option><option>Airport</option><option>Retail</option><option>Transit</option><option>Classic</option>
@@ -334,15 +334,25 @@ table th{position:sticky;top:0;z-index:1}
 <div class="grid grid-cols-3 gap-4" id="pr-board-cols"></div>
 </div>
 <script>
-var PR_STATUSES = ['To Do','On Process','Review','Revise','Final Approve','Final Render','Done'];
+/* ===== Status flow (8 stages, role-tagged) — mirrors job-list.html scheme =====
+   1) Verify (CG)      — CG verifies brief/spec before starting (was "To Do")
+   2) Revise (Sale)    — Sale needs to revise/clarify brief
+   3) On Process (CG)  — Graphic is producing mockup
+   4) Review (Sale)    — Sale reviews mockup (customer feedback loop)
+   5) Revise (CG)      — CG revises based on Sale/customer feedback
+   6) Final Approve    — Customer / stakeholders approve
+   7) Final Render     — Final asset rendering
+   8) Done             — Delivered / on-air                                      */
+var PR_STATUSES = ['Verify (CG)','Revise (Sale)','On Process (CG)','Review (Sale)','Revise (CG)','Final Approve','Final Render','Done'];
 var PR_COLORS = {
-  'To Do':         { bg:'bg-slate-50',   border:'border-slate-200',   dot:'bg-slate-400',   text:'text-slate-700',   headerBg:'bg-slate-100',   hex:'#94a3b8' },
-  'On Process':    { bg:'bg-blue-50',    border:'border-blue-200',    dot:'bg-blue-500',    text:'text-blue-700',    headerBg:'bg-blue-100',    hex:'#3b82f6' },
-  'Review':        { bg:'bg-cyan-50',    border:'border-cyan-200',    dot:'bg-cyan-500',    text:'text-cyan-700',    headerBg:'bg-cyan-100',    hex:'#06b6d4' },
-  'Revise':        { bg:'bg-orange-50',  border:'border-orange-200',  dot:'bg-orange-500',  text:'text-orange-700',  headerBg:'bg-orange-100',  hex:'#f97316' },
-  'Final Approve': { bg:'bg-teal-50',    border:'border-teal-200',    dot:'bg-teal-500',    text:'text-teal-700',    headerBg:'bg-teal-100',    hex:'#14b8a6' },
-  'Final Render':  { bg:'bg-indigo-50',  border:'border-indigo-200',  dot:'bg-indigo-500',  text:'text-indigo-700',  headerBg:'bg-indigo-100',  hex:'#6366f1' },
-  'Done':          { bg:'bg-emerald-50', border:'border-emerald-200', dot:'bg-emerald-500', text:'text-emerald-700', headerBg:'bg-emerald-100', hex:'#10b981' },
+  'Verify (CG)':     { bg:'bg-violet-50',  border:'border-violet-200',  dot:'bg-violet-500',  text:'text-violet-700',  headerBg:'bg-violet-100',  hex:'#8b5cf6' },
+  'Revise (Sale)':   { bg:'bg-rose-50',    border:'border-rose-200',    dot:'bg-rose-500',    text:'text-rose-700',    headerBg:'bg-rose-100',    hex:'#f43f5e' },
+  'On Process (CG)': { bg:'bg-blue-50',    border:'border-blue-200',    dot:'bg-blue-500',    text:'text-blue-700',    headerBg:'bg-blue-100',    hex:'#3b82f6' },
+  'Review (Sale)':   { bg:'bg-cyan-50',    border:'border-cyan-200',    dot:'bg-cyan-500',    text:'text-cyan-700',    headerBg:'bg-cyan-100',    hex:'#06b6d4' },
+  'Revise (CG)':     { bg:'bg-orange-50',  border:'border-orange-200',  dot:'bg-orange-500',  text:'text-orange-700',  headerBg:'bg-orange-100',  hex:'#f97316' },
+  'Final Approve':   { bg:'bg-emerald-50', border:'border-emerald-200', dot:'bg-emerald-500', text:'text-emerald-700', headerBg:'bg-emerald-100', hex:'#10b981' },
+  'Final Render':    { bg:'bg-indigo-50',  border:'border-indigo-200',  dot:'bg-indigo-500',  text:'text-indigo-700',  headerBg:'bg-indigo-100',  hex:'#6366f1' },
+  'Done':            { bg:'bg-teal-50',    border:'border-teal-200',    dot:'bg-teal-500',    text:'text-teal-700',    headerBg:'bg-teal-100',    hex:'#14b8a6' },
 };
 
 var PR_DATA = [
@@ -362,6 +372,25 @@ var PR_DATA = [
   { id:'TK-2026020008', job:'JOB-1028',   version:1, mockup:'v1', product:'5G Pro Max',           mediaGroup:'Airport', mediaSection:'Thai Flight',      mediaType:'Airport Digital Network',  package:'LED Baggage Claim',     sales:'Sajjaporn Suwanchai',startEnd:'01/02/2026 - 31/01/2027', assignBy:'Suree Phoonsap',     assignDate:'15/04/2026 15:30', feedbackSla:'On track',  acceptDate:'15/04/2026 16:00',  status:'Done' },
   { id:'TK-2026010003', job:'JOB-1023',   version:2, mockup:'v2', product:'Central Mid-Year',     mediaGroup:'Transit', mediaSection:'BTS',              mediaType:'BTS Concourse',            package:'BTS Concourse',         sales:'Sajjaporn Suwanchai',startEnd:'15/01/2026 - 14/04/2026', assignBy:'Wanchat Damrongsak', assignDate:'10/04/2026 10:00', feedbackSla:'Overdue',   acceptDate:'11/04/2026 08:30',  status:'Done' },
 ];
+
+/* ───── Migrate legacy status labels → new role-tagged labels ─────
+   Applied once at load so the PR_DATA literals above don't need editing.
+   Old → New:
+     'To Do'      → 'Verify (CG)'         (CG needs to verify/accept the job)
+     'On Process' → 'On Process (CG)'
+     'Review'     → 'Review (Sale)'
+     'Revise'     → 'Revise (CG)'         (default — CG-side rework after Sale review)
+   'Final Approve' / 'Final Render' / 'Done' pass through unchanged.
+   'Revise (Sale)' is a reserved slot in the new scheme (0 seeded rows).  */
+var STATUS_LEGACY_MAP = {
+  'To Do':      'Verify (CG)',
+  'On Process': 'On Process (CG)',
+  'Review':     'Review (Sale)',
+  'Revise':     'Revise (CG)'
+};
+PR_DATA.forEach(function(r){
+  if (STATUS_LEGACY_MAP[r.status]) r.status = STATUS_LEGACY_MAP[r.status];
+});
 
 /* KPIs */
 function renderPRKPIs(rows) {
@@ -406,7 +435,7 @@ function renderPctOf(r){
   return 35 + Math.abs(h) % 60; // 35..94
 }
 function prStatusBadge(s, r) {
-  var sc=PR_COLORS[s]||PR_COLORS['To Do'];
+  var sc=PR_COLORS[s]||PR_COLORS['Verify (CG)'];
   var lbl = s;
   if (s === 'Final Render') { var p = renderPctOf(r); if (p !== null) lbl = s + ' · ' + p + '%'; }
   return '<span class="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-full font-medium border whitespace-nowrap '+sc.bg+' '+sc.text+' '+sc.border+'"><span class="w-1.5 h-1.5 rounded-full '+sc.dot+'"></span>'+lbl+'</span>';

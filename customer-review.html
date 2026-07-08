@@ -108,11 +108,26 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#4790FF;box-sh
 <label class="block text-[12px] font-medium mb-1.5">Feedback / Comment สรุปภาพรวม <span class="text-rose-500">*</span></label>
 <textarea id="f-note" rows="4" placeholder="บอกความเห็นโดยรวม เช่น ภาพรวมโอเค แต่ขอแก้ logo, สี, ฯลฯ — คุณสามารถ comment เฉพาะจุดบนรูปด้านล่างได้ด้วย" class="w-full px-3 py-2.5 border border-surface-200 rounded-lg text-[13px] bg-white resize-y"></textarea>
 </div>
+<div class="md:col-span-2">
+<div class="flex items-center justify-between mb-1.5">
+<label class="block text-[12px] font-medium">แนบไฟล์ประกอบ Feedback <span class="text-[10.5px] font-normal" style="color:rgba(30,41,59,0.5)">(ไม่บังคับ)</span></label>
+<span id="f-att-size" class="text-[10.5px] tnum" style="color:rgba(30,41,59,0.5)">0 B / 50 MB</span>
+</div>
+<label class="upload-box block cursor-pointer border-2 border-dashed border-surface-300 rounded-lg p-4 text-center bg-[#FAFBFF] hover:bg-white hover:border-amber-400 transition-colors" ondragover="event.preventDefault(); this.classList.add('bg-amber-50/60','border-amber-400')" ondragleave="this.classList.remove('bg-amber-50/60','border-amber-400')" ondrop="event.preventDefault(); this.classList.remove('bg-amber-50/60','border-amber-400'); var inp=this.querySelector('input[type=file]'); inp.files=event.dataTransfer.files; inp.dispatchEvent(new Event('change'));">
+<input type="file" multiple onchange="fbOnAttach(this)" class="hidden" accept="image/*,video/*,application/pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip,.rar,.txt">
+<svg class="w-8 h-8 mx-auto mb-1.5 text-amber-500" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 8.25H7.5a2.25 2.25 0 00-2.25 2.25v9a2.25 2.25 0 002.25 2.25h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25H15M9 12l3-3m0 0l3 3m-3-3v12"/></svg>
+<div class="text-[12.5px] font-semibold text-[#0B1430]">ลากไฟล์มาวางที่นี่ หรือคลิกเพื่อเลือก</div>
+<div class="text-[10.5px] mt-0.5" style="color:rgba(30,41,59,0.55)">Reference file · ภาพ · วีดีโอ · เอกสาร · รวมไม่เกิน 50 MB</div>
+<span class="inline-flex mt-2 h-7 px-3 bg-white border border-surface-300 text-[#0B1430] rounded-md text-[11.5px] font-medium items-center hover:bg-surface-50">Choose File</span>
+</label>
+<div id="f-att-list" class="mt-2 space-y-1.5"></div>
+</div>
 </div>
 <div class="px-5 py-4 border-t border-surface-200 bg-[#F8FAFC] rounded-b-xl flex items-center justify-between flex-wrap gap-3">
 <div class="text-[11.5px]" style="color:rgba(30,41,59,0.55)">
 <span class="font-semibold text-[#0B1430]" id="annot-count">0</span> comment(s) on artwork ·
-<span class="font-semibold text-[#0B1430]" id="frame-count">0</span> captured frame(s)
+<span class="font-semibold text-[#0B1430]" id="frame-count">0</span> captured frame(s) ·
+<span class="font-semibold text-[#0B1430]" id="attach-count">0</span> attached file(s)
 </div>
 </div>
 </section>
@@ -550,10 +565,76 @@ function onSubmit(){
   if(!name){ toast('กรุณากรอกชื่อ Reviewer', '#DC2626'); document.getElementById('f-name').focus(); return; }
   if(!note){ toast('กรุณากรอก Feedback', '#DC2626'); document.getElementById('f-note').focus(); return; }
   var pins = _totalPins();
-  toast('Submit แล้ว — ' + pins + ' comment(s) บน artwork', '#10B981');
+  var att  = _fbAttachFiles.length;
+  var extra = (att ? ' · แนบไฟล์ ' + att + ' รายการ' : '');
+  toast('Submit แล้ว — ' + pins + ' comment(s) บน artwork' + extra, '#10B981');
+}
+
+/* ===== Feedback Form — file attachments (multi-file, 50 MB combined) ===== */
+var FB_ATTACH_MAX_BYTES = 50 * 1024 * 1024;
+var _fbAttachFiles = [];
+function _fbFmtBytes(n){
+  if(n < 1024) return n + ' B';
+  if(n < 1024*1024) return (n/1024).toFixed(1) + ' KB';
+  return (n/1024/1024).toFixed(2) + ' MB';
+}
+function _fbAttachTotal(){ return _fbAttachFiles.reduce(function(s,f){ return s + f.size; }, 0); }
+function _fbFileIcon(mime, name){
+  var n = (name || '').toLowerCase();
+  var m = (mime || '').toLowerCase();
+  if(m.indexOf('image/') === 0) return { bg:'#EFF6FF', fg:'#2563EB', label:'IMG' };
+  if(m.indexOf('video/') === 0) return { bg:'#F5F3FF', fg:'#7C3AED', label:'VID' };
+  if(m === 'application/pdf' || n.endsWith('.pdf')) return { bg:'#FEF2F2', fg:'#DC2626', label:'PDF' };
+  if(/\.(docx?|rtf)$/.test(n)) return { bg:'#EFF6FF', fg:'#1D4ED8', label:'DOC' };
+  if(/\.(xlsx?|csv)$/.test(n)) return { bg:'#ECFDF5', fg:'#047857', label:'XLS' };
+  if(/\.(pptx?)$/.test(n))     return { bg:'#FFF7ED', fg:'#C2410C', label:'PPT' };
+  if(/\.(zip|rar|7z)$/.test(n)) return { bg:'#F3F4F6', fg:'#374151', label:'ZIP' };
+  return { bg:'#F1F5F9', fg:'#334155', label:'FILE' };
+}
+function fbOnAttach(input){
+  if(!input || !input.files || !input.files.length) return;
+  var existing = _fbAttachTotal();
+  for(var i = 0; i < input.files.length; i++){
+    var f = input.files[i];
+    if(existing + f.size > FB_ATTACH_MAX_BYTES){
+      toast('ไฟล์ "' + f.name + '" ทำให้ขนาดรวมเกิน 50 MB — ข้ามไฟล์นี้', '#DC2626');
+      continue;
+    }
+    existing += f.size;
+    _fbAttachFiles.push({ name:f.name, size:f.size, type:(f.type || '') });
+  }
+  input.value = '';
+  fbRenderAttachList();
+}
+function fbRemoveAttach(idx){
+  _fbAttachFiles.splice(idx, 1);
+  fbRenderAttachList();
+}
+function fbRenderAttachList(){
+  var list = document.getElementById('f-att-list');
+  var sizeEl = document.getElementById('f-att-size');
+  var cntEl = document.getElementById('attach-count');
+  if(sizeEl) sizeEl.textContent = _fbFmtBytes(_fbAttachTotal()) + ' / 50 MB';
+  if(cntEl) cntEl.textContent = _fbAttachFiles.length;
+  if(!list) return;
+  if(!_fbAttachFiles.length){ list.innerHTML = ''; return; }
+  list.innerHTML = _fbAttachFiles.map(function(f, i){
+    var ic = _fbFileIcon(f.type, f.name);
+    return (
+      '<div class="flex items-center gap-2 px-2.5 py-1.5 bg-white border border-surface-200 rounded-md hover:border-amber-300 transition-colors">' +
+        '<span class="inline-flex items-center justify-center w-8 h-8 rounded-md text-[10px] font-bold shrink-0" style="background:' + ic.bg + ';color:' + ic.fg + '">' + ic.label + '</span>' +
+        '<span class="flex-1 truncate text-[12px] font-mono text-[#0B1430]" title="' + _esc(f.name) + '">' + _esc(f.name) + '</span>' +
+        '<span class="text-[10.5px] tnum shrink-0" style="color:rgba(30,41,59,0.55)">' + _fbFmtBytes(f.size) + '</span>' +
+        '<button type="button" onclick="fbRemoveAttach(' + i + ')" title="ลบไฟล์" class="w-6 h-6 rounded hover:bg-rose-50 flex items-center justify-center text-slate-400 hover:text-rose-600 shrink-0">' +
+          '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>' +
+        '</button>' +
+      '</div>'
+    );
+  }).join('');
 }
 
 renderFiles();
+fbRenderAttachList();
 </script>
 
 </body>
