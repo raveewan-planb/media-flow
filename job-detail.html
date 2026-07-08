@@ -353,6 +353,48 @@ table th{position:sticky;top:0;z-index:1}
 <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="1.5" style="color:rgba(30,41,59,0.3)" viewbox="0 0 24 24"><path d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
 </div>
 </div>
+
+<!-- CG Feedback — shown only when job=JOB-1040 -->
+<div id="cg-feedback-box" class="mt-4 rounded-xl overflow-hidden" style="background:#FAF5FF;border:1px solid #E9D5FF">
+  <div class="px-3.5 py-2 flex items-center gap-2 border-b" style="background:#F3E8FF;border-color:#E9D5FF">
+    <svg class="w-3.5 h-3.5" style="color:#7C3AED" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"/></svg>
+    <span class="text-[10.5px] font-semibold uppercase tracking-wider" style="color:#6B21A8">Feedback จาก CG</span>
+    <span class="ml-1 inline-flex items-center justify-center min-w-[16px] h-[16px] px-1 rounded-full bg-violet-600 text-white text-[10px] font-bold leading-none">2</span>
+    <span class="ml-auto text-[10.5px]" style="color:rgba(30,41,59,0.5)">ล่าสุด · 08/05/2026 15:20</span>
+  </div>
+  <ol class="p-3 space-y-2">
+    <!-- Item 1 (latest) -->
+    <li>
+      <div class="bg-white rounded-lg p-3 border" style="border-color:#EDE9FE">
+        <div class="flex items-center gap-2 mb-1.5 flex-wrap">
+          <span class="text-[12.5px] font-semibold text-[#0B1430]">Chanya Suwannaphan</span>
+          <span class="text-[10px]" style="color:rgba(30,41,59,0.3)">·</span>
+<span class="text-[11px] font-mono inline-flex items-center gap-1" style="color:rgba(30,41,59,0.55)">
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            08/05/2026 15:20
+          </span>
+        </div>
+        <p class="text-[12.5px] leading-relaxed text-[#0B1430]">ปรับ Motion Graphic ตาม Reference ที่แนบมา และเพิ่ม Color Grading โทน Neon Youth ให้สื่อดูสดใสมากขึ้น รอ Client ตรวจสอบก่อนส่ง Final Version</p>
+      </div>
+    </li>
+
+    <!-- Item 2 -->
+    <li>
+      <div class="bg-white rounded-lg p-3 border" style="border-color:#EDE9FE">
+        <div class="flex items-center gap-2 mb-1.5 flex-wrap">
+          <span class="text-[12.5px] font-semibold text-[#0B1430]">Chanya Suwannaphan</span>
+          <span class="text-[10px]" style="color:rgba(30,41,59,0.3)">·</span>
+<span class="text-[11px] font-mono inline-flex items-center gap-1" style="color:rgba(30,41,59,0.55)">
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            06/05/2026 11:15
+          </span>
+        </div>
+        <p class="text-[12.5px] leading-relaxed text-[#0B1430]">ส่งงาน Draft v1 ครบทั้ง 3 Scene แล้ว รวม Layout Guide สำหรับ Screen — โปรดตรวจสอบ Safe Area ตามที่ระบุใน Brief และปรับ Padding รอบขอบให้พอดี</p>
+      </div>
+    </li>
+  </ol>
+</div>
+
 </div>
 <!-- Feedback & Actions — content filled by JS based on status -->
 <div id="job-actions-card" class="bg-white border border-[#E2E8F0] rounded-xl shadow-sm p-6"></div>
@@ -1633,6 +1675,13 @@ function renderStatusView() {
 
   /* Render Mockup History card in right sidebar (only when status != To Do) */
   renderMockupHistorySidebar(status);
+
+  /* CG Feedback box — visible only for JOB-1040 */
+  var cgBox = document.getElementById('cg-feedback-box');
+  if (cgBox) {
+    var jobParam = getQueryParam('job') || '';
+    if (jobParam !== 'JOB-1040') cgBox.style.display = 'none';
+  }
 }
 
 renderStatusView();
