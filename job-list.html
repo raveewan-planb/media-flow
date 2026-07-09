@@ -74,6 +74,26 @@ table th{position:sticky;top:0;z-index:1}
 .shadow-card{box-shadow:0 1px 3px rgba(11,20,48,0.06),0 1px 2px rgba(11,20,48,0.04)}
 /* Sidebar collapse label */
 .sidebar-label{transition:opacity 0.15s;white-space:nowrap;overflow:hidden}
+/* ===== Status Overview polish ===== */
+.status-panel{background:linear-gradient(180deg,#FFFFFF 0%,#FBFCFE 100%)}
+.kpi-card{transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease}
+.kpi-card:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(11,20,48,.09)}
+.kpi-card.is-active{transform:translateY(-1px);box-shadow:0 6px 16px rgba(11,20,48,.10)}
+.kpi-progress{background:#EEF2F7;box-shadow:inset 0 0 0 1px rgba(15,23,42,.04)}
+.kpi-progress > div{transition:width .5s cubic-bezier(.4,0,.2,1)}
+.kpi-progress > div:first-child{border-top-left-radius:9999px;border-bottom-left-radius:9999px}
+.kpi-progress > div:last-child{border-top-right-radius:9999px;border-bottom-right-radius:9999px}
+/* ===== Table polish ===== */
+.mf-th{padding-top:14px !important;padding-bottom:14px !important;font-weight:600 !important;letter-spacing:.06em;font-size:11px}
+.mf-thead{background:linear-gradient(180deg,#FBFCFE,#F4F7FB) !important;box-shadow:inset 0 -1px 0 #E2E8F0}
+.mf-row{transition:background-color .12s ease}
+.mf-row:hover{background:#F0F7FF}
+.mf-pag-btn{display:inline-flex;align-items:center;justify-content:center;min-width:32px;height:30px;padding:0 10px;border:1px solid #E2E8F0;border-radius:8px;font-size:12px;font-weight:500;color:#0B1430;background:#fff;transition:all .12s ease}
+.mf-pag-btn:hover:not(:disabled){border-color:#4790FF;color:#2D56D2;background:#F0F7FF}
+.mf-pag-btn:disabled{opacity:.35;cursor:not-allowed}
+.mf-pag-btn.is-active{background:#2D56D2;border-color:#2D56D2;color:#fff;box-shadow:0 2px 6px rgba(45,86,210,.25)}
+.mf-pag-select{height:30px;padding:0 8px;background:#fff;border:1px solid #E2E8F0;border-radius:8px;font-size:12px;color:#0B1430;transition:all .12s ease}
+.mf-pag-select:hover{border-color:#CBD5E1}
 </style>
 <script src="shared/sidebar.js"></script>
 </head>
@@ -266,10 +286,13 @@ table th{position:sticky;top:0;z-index:1}
 </div>
 </div>
 <!-- Status Summary — clickable cards -->
-<div class="bg-white border border-[#E2E8F0] rounded-xl shadow-sm p-4">
-<div class="flex items-center gap-3 mb-3">
-<div class="text-[13px] font-semibold text-[#0B1430]">Status Overview</div>
-<div class="inline-flex items-center gap-2">
+<div class="status-panel border border-[#E2E8F0] rounded-xl shadow-sm p-5">
+<div class="flex items-center gap-3 mb-4">
+<div class="flex items-center gap-2">
+<span class="w-1 h-4 rounded-full bg-gradient-to-b from-[#2D56D2] to-[#4790FF]"></span>
+<div class="text-[13.5px] font-semibold text-[#0B1430] tracking-tight">Status Overview</div>
+</div>
+<div class="inline-flex items-center gap-1.5">
 <span class="inline-flex items-center gap-1.5 text-[11px] font-semibold pl-2 pr-2.5 py-1 rounded-full bg-gradient-to-r from-[#2D56D2] to-[#4790FF] text-white tnum shadow-sm">
 <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
 <span id="kpi-total-badge">0 tickets</span>
@@ -279,9 +302,11 @@ table th{position:sticky;top:0;z-index:1}
 <span id="kpi-jobs-badge">0 jobs</span>
 </span>
 </div>
-<button class="hidden text-[11px] text-rose-600 font-medium hover:underline ml-auto" id="kpi-clear-btn" onclick="clearStatusFilter()">Clear filter</button>
+<button class="hidden text-[11px] text-rose-600 font-semibold hover:text-rose-700 hover:underline inline-flex items-center gap-1 ml-auto" id="kpi-clear-btn" onclick="clearStatusFilter()">
+<svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke-width="2.2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+Clear filter</button>
 </div>
-<div class="h-3 rounded-full bg-[#F1F5F9] overflow-hidden flex mb-3" id="kpi-progress-bar" style="transition:all 0.3s"></div>
+<div class="kpi-progress h-2.5 rounded-full overflow-hidden flex mb-4" id="kpi-progress-bar"></div>
 <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 xl:grid-cols-10 gap-2" id="kpi-cards"></div>
 </div>
 <!-- Filter Bar -->
@@ -304,32 +329,32 @@ table th{position:sticky;top:0;z-index:1}
 <div class="bg-white border border-[#E2E8F0] rounded-xl shadow-sm overflow-hidden">
 <div class="overflow-x-auto">
 <table class="w-full text-[13px]">
-<thead class="border-b border-[#E2E8F0]" style="background:rgba(248,250,252,0.8)">
-<tr class="text-left text-[11px] uppercase tracking-wide" style="color:rgba(30,41,59,0.55)">
-<th class="px-3 py-3 font-semibold w-8"></th>
-<th class="px-3 py-3 font-semibold cursor-pointer hover:text-[#0B1430]" onclick="sortTable('id')">Ticket No <span class="text-[9px]" id="sort-id"></span></th>
-<th class="px-3 py-3 font-semibold">Quotation No.</th>
-<th class="px-3 py-3 font-semibold">Client</th>
-<th class="px-3 py-3 font-semibold">Media Group</th>
-<th class="px-3 py-3 font-semibold">Product</th>
-<th class="px-3 py-3 font-semibold">Description</th>
-<th class="px-3 py-3 font-semibold">Start - End</th>
-<th class="px-3 py-3 font-semibold">Job</th>
-<th class="px-3 py-3 font-semibold cursor-pointer hover:text-[#0B1430]" onclick="sortTable('date')">Create Date <span class="text-[9px]" id="sort-date"></span></th>
+<thead class="mf-thead">
+<tr class="text-left uppercase" style="color:rgba(30,41,59,0.55)">
+<th class="mf-th px-3 w-8"></th>
+<th class="mf-th px-3 cursor-pointer hover:text-[#0B1430] transition-colors" onclick="sortTable('id')">Ticket No <span class="text-[9px] ml-0.5" id="sort-id"></span></th>
+<th class="mf-th px-3">Quotation No.</th>
+<th class="mf-th px-3">Client</th>
+<th class="mf-th px-3">Media Group</th>
+<th class="mf-th px-3">Product</th>
+<th class="mf-th px-3">Description</th>
+<th class="mf-th px-3">Start - End</th>
+<th class="mf-th px-3">Job</th>
+<th class="mf-th px-3 cursor-pointer hover:text-[#0B1430] transition-colors" onclick="sortTable('date')">Create Date <span class="text-[9px] ml-0.5" id="sort-date"></span></th>
 </tr>
 </thead>
 <tbody id="ticket-tbody"></tbody>
 </table>
 </div>
-<div class="px-4 py-3 border-t border-[#E2E8F0] flex items-center justify-between" style="background:rgba(248,250,252,0.5)">
+<div class="px-4 py-3 border-t border-[#E2E8F0] flex items-center justify-between flex-wrap gap-2" style="background:linear-gradient(180deg,#FBFCFE,#F5F8FC)">
 <div class="flex items-center gap-2 text-[12px]" style="color:rgba(30,41,59,0.6)">
-        Show <select class="h-7 px-1.5 bg-white border border-[#E2E8F0] rounded text-[12px]"><option>15</option><option>25</option><option>50</option></select> entries
-        <span class="ml-2" style="color:rgba(30,41,59,0.45)">· Showing <b id="pag-range" style="color:rgba(30,41,59,0.7)">0</b> of <b id="pag-total" style="color:rgba(30,41,59,0.7)">0</b></span>
+        Show <select class="mf-pag-select"><option>15</option><option>25</option><option>50</option></select> entries
+        <span class="ml-2" style="color:rgba(30,41,59,0.45)">Showing <b id="pag-range" style="color:rgba(30,41,59,0.75)">0</b> of <b id="pag-total" style="color:rgba(30,41,59,0.75)">0</b></span>
 </div>
-<div class="flex gap-1">
-<button class="px-3 py-1 border border-[#CBD5E1] rounded-md text-[12px] font-medium hover:bg-[#F8FAFC] disabled:opacity-40" disabled="">«</button>
-<button class="px-3 py-1 bg-[#2D56D2] text-white rounded-md text-[12px] font-medium">1</button>
-<button class="px-3 py-1 border border-[#CBD5E1] rounded-md text-[12px] font-medium hover:bg-[#F8FAFC]">»</button>
+<div class="flex gap-1.5">
+<button class="mf-pag-btn" disabled aria-label="Previous">&lsaquo;</button>
+<button class="mf-pag-btn is-active">1</button>
+<button class="mf-pag-btn" aria-label="Next">&rsaquo;</button>
 </div>
 </div>
 </div>
@@ -616,14 +641,41 @@ function renderKPIs(allTickets) {
   bar.innerHTML = barH || '<div style="width:100%;background:#F1F5F9"></div>';
   var el = document.getElementById('kpi-cards');
   var h = '';
+  /* Split status labels into title + role tag so long names like
+     "Assign (Head CG)" fit on the compact single-row cards without truncation. */
+  var STATUS_LABELS = {
+    'Draft':            {title:'Draft'},
+    'Assign (Head CG)': {title:'Assign',      role:'Head CG'},
+    'Verify (CG)':      {title:'Verify',      role:'CG'},
+    'Revise (Sale)':    {title:'Revise',      role:'Sale'},
+    'On Process (CG)':  {title:'On Process',  role:'CG'},
+    'Review (Sale)':    {title:'Review',      role:'Sale'},
+    'Revise (CG)':      {title:'Revise',      role:'CG'},
+    'Final Approve':    {title:'Final Approve'},
+    'Final Render':     {title:'Final Render'},
+    'Done':             {title:'Done'}
+  };
   STATUSES.forEach(function(s) {
     var sc = STATUS_COLORS[s]; var v=counts[s]||0;
-    var active = _statusFilter===s ? 'ring-2 ring-offset-1 ring-'+s.replace(/ /g,'')+' shadow-md' : (v>0?'':'opacity-40');
-    var ring = _statusFilter===s ? 'ring-2 ring-['+sc.hex+']/40 shadow-md' : '';
-    h += '<div onclick="clickStatus(\''+s+'\')" class="relative '+sc.bg+' border '+sc.border+' rounded-lg px-3 py-3 cursor-pointer hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 overflow-hidden '+ring+'">' +
-      '<div class="absolute left-0 top-0 bottom-0 w-1" style="background:'+sc.hex+'"></div>' +
-      '<div class="flex items-center justify-between gap-2 mb-1.5 pl-1.5"><span class="text-[10px] font-semibold uppercase tracking-wider '+sc.text+' truncate">'+s+'</span><span class="w-1.5 h-1.5 rounded-full shrink-0" style="background:'+sc.hex+'"></span></div>' +
-      '<div class="pl-1.5 flex items-end justify-between"><div class="text-[24px] font-bold tnum leading-none '+sc.text+'">'+v+'</div><div class="text-[10px] font-medium tnum '+sc.text+' opacity-60 pb-0.5">'+(total>0?Math.round(v/total*100):0)+'%</div></div>' +
+    var lbl = STATUS_LABELS[s] || {title:s};
+    var isActive = _statusFilter===s;
+    var isDim    = (!isActive && v===0);
+    var activeCls = isActive ? 'is-active' : '';
+    var dimCls    = isDim ? 'opacity-40' : '';
+    var activeStyle = isActive ? ';box-shadow:0 0 0 2px '+sc.hex+'55, 0 6px 16px rgba(11,20,48,.10)' : '';
+    var roleTag = lbl.role
+      ? '<span class="text-[8.5px] font-semibold uppercase tracking-wider px-1 py-[1px] rounded '+sc.text+' whitespace-nowrap" style="background:'+sc.hex+'18">'+lbl.role+'</span>'
+      : '';
+    h += '<div onclick="clickStatus(\''+s+'\')" title="'+s+'" class="kpi-card relative '+sc.bg+' border '+sc.border+' rounded-xl pl-2.5 pr-2 py-2.5 cursor-pointer overflow-hidden '+activeCls+' '+dimCls+'" style="background-image:linear-gradient(135deg,'+sc.hex+'08,'+sc.hex+'02)'+activeStyle+'">' +
+      '<div class="absolute left-0 top-0 bottom-0 w-[3px]" style="background:'+sc.hex+'"></div>' +
+      '<div class="flex items-center justify-between gap-1 mb-1.5">' +
+        '<div class="text-[11px] font-semibold '+sc.text+' leading-tight truncate">'+lbl.title+'</div>' +
+        '<span class="w-1.5 h-1.5 rounded-full shrink-0" style="background:'+sc.hex+'"></span>' +
+      '</div>' +
+      '<div class="flex items-end justify-between gap-1">' +
+        '<div class="text-[22px] font-bold tnum leading-none '+sc.text+'">'+v+'</div>' +
+        (roleTag ? '<div class="pb-0.5">'+roleTag+'</div>' : '') +
+      '</div>' +
     '</div>';
   });
   el.innerHTML = h;
@@ -723,17 +775,17 @@ function renderTable(rows) {
     var jobsBadge = hasStatusFilter && subjobsTotal
       ? '<span class="text-[12px] font-semibold tnum px-2 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200" title="แสดง '+subjobsMatched+' job ที่ตรงกับสถานะ · จากทั้งหมด '+subjobsTotal+' jobs">'+subjobsMatched+' <span class="opacity-60 font-normal">/ '+subjobsTotal+'</span></span>'
       : '<span class="text-[12px] font-semibold tnum px-2 py-0.5 rounded bg-[#EBF5FF] text-[#2D56D2]">'+subjobsTotal+'</span>';
-    h+='<tr class="border-b border-[#F1F5F9] '+(isDraft?'bg-amber-50/40 hover:bg-amber-50/70':'hover:bg-[#EBF5FF]/30')+' transition-colors group cursor-pointer" style="animation:fadeIn 0.15s ease '+i*0.03+'s both;'+(isDraft?'box-shadow:inset 3px 0 0 #F59E0B;':'')+'" onclick="toggleExpand(\''+t.id+'\')">';
-    h+='<td class="px-3 py-3 text-center"><svg id="chevron-'+t.id+'" class="w-4 h-4 transition-transform duration-200" style="color:rgba(30,41,59,0.35);'+(chevronRotated?'transform:rotate(90deg);':'')+'" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg></td>';
-    h+='<td class="px-3 py-3"><div class="flex items-center gap-2"><a href="ticket-detail.html'+(t.manual?'?manual=1':'')+'" class="font-semibold text-[#2D56D2] hover:text-[#213268] text-[12px] font-mono" onclick="event.stopPropagation()">'+t.id+'</a>'+(isDraft?DRAFT_BADGE:'')+'</div></td>';
-    h+='<td class="px-3 py-3 text-[12px] font-mono" style="color:rgba(30,41,59,0.6)">'+(t.manual?'<span class="text-[10px] px-1.5 py-0.5 rounded font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200 font-sans">Manual</span>':t.quo)+'</td>';
-    h+='<td class="px-3 py-3 text-[12px] font-medium">'+t.client+'</td>';
-    h+='<td class="px-3 py-3">'+mediaGroupPills(t)+'</td>';
-    h+='<td class="px-3 py-3 text-[12px]">'+t.product+'</td>';
-    h+='<td class="px-3 py-3 max-w-[180px]"><div class="text-[12px] truncate" style="color:rgba(30,41,59,0.7)">'+t.desc+'</div></td>';
-    h+='<td class="px-3 py-3 text-[11px] font-mono" style="color:rgba(30,41,59,0.6)">'+(t.startEnd||'')+'</td>';
-    h+='<td class="px-3 py-3 text-center">'+jobsBadge+'</td>';
-    h+='<td class="px-3 py-3 text-[11px] font-mono" style="color:rgba(30,41,59,0.55)">'+t.date+'</td>';
+    h+='<tr class="mf-row border-b border-[#F1F5F9] '+(isDraft?'bg-amber-50/40 hover:bg-amber-50/70':'')+' group cursor-pointer" style="animation:fadeIn 0.15s ease '+i*0.03+'s both;'+(isDraft?'box-shadow:inset 3px 0 0 #F59E0B;':'')+'" onclick="toggleExpand(\''+t.id+'\')">';
+    h+='<td class="px-3 py-3.5 text-center"><svg id="chevron-'+t.id+'" class="w-4 h-4 transition-transform duration-200" style="color:rgba(30,41,59,0.35);'+(chevronRotated?'transform:rotate(90deg);':'')+'" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg></td>';
+    h+='<td class="px-3 py-3.5"><div class="flex items-center gap-2"><a href="ticket-detail.html'+(t.manual?'?manual=1':'')+'" class="font-semibold text-[#2D56D2] hover:text-[#213268] text-[12px] font-mono" onclick="event.stopPropagation()">'+t.id+'</a>'+(isDraft?DRAFT_BADGE:'')+'</div></td>';
+    h+='<td class="px-3 py-3.5 text-[12px] font-mono" style="color:rgba(30,41,59,0.6)">'+(t.manual?'<span class="text-[10px] px-1.5 py-0.5 rounded font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200 font-sans">Manual</span>':t.quo)+'</td>';
+    h+='<td class="px-3 py-3.5 text-[12px] font-medium">'+t.client+'</td>';
+    h+='<td class="px-3 py-3.5">'+mediaGroupPills(t)+'</td>';
+    h+='<td class="px-3 py-3.5 text-[12px]">'+t.product+'</td>';
+    h+='<td class="px-3 py-3.5 max-w-[180px]"><div class="text-[12px] truncate" style="color:rgba(30,41,59,0.7)">'+t.desc+'</div></td>';
+    h+='<td class="px-3 py-3.5 text-[11px] font-mono" style="color:rgba(30,41,59,0.6)">'+(t.startEnd||'')+'</td>';
+    h+='<td class="px-3 py-3.5 text-center">'+jobsBadge+'</td>';
+    h+='<td class="px-3 py-3.5 text-[11px] font-mono" style="color:rgba(30,41,59,0.55)">'+t.date+'</td>';
     h+='</tr>';
     // Sub-job rows — auto-expand when a status filter is active
     if (t.subjobs && t.subjobs.length) {

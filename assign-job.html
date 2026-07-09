@@ -74,6 +74,26 @@ table th{position:sticky;top:0;z-index:1}
 .shadow-card{box-shadow:0 1px 3px rgba(11,20,48,0.06),0 1px 2px rgba(11,20,48,0.04)}
 /* Sidebar collapse label */
 .sidebar-label{transition:opacity 0.15s;white-space:nowrap;overflow:hidden}
+/* ===== Status Overview polish ===== */
+.status-panel{background:linear-gradient(180deg,#FFFFFF 0%,#FBFCFE 100%)}
+.kpi-card{transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease}
+.kpi-card:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(11,20,48,.09)}
+.kpi-card.is-active{transform:translateY(-1px);box-shadow:0 6px 16px rgba(11,20,48,.10)}
+.kpi-progress{background:#EEF2F7;box-shadow:inset 0 0 0 1px rgba(15,23,42,.04)}
+.kpi-progress > div{transition:width .5s cubic-bezier(.4,0,.2,1)}
+.kpi-progress > div:first-child{border-top-left-radius:9999px;border-bottom-left-radius:9999px}
+.kpi-progress > div:last-child{border-top-right-radius:9999px;border-bottom-right-radius:9999px}
+/* ===== Table polish ===== */
+.mf-th{padding-top:14px !important;padding-bottom:14px !important;font-weight:600 !important;letter-spacing:.06em;font-size:11px}
+.mf-thead{background:linear-gradient(180deg,#FBFCFE,#F4F7FB) !important;box-shadow:inset 0 -1px 0 #E2E8F0}
+.mf-row{transition:background-color .12s ease}
+.mf-row:hover{background:#F0F7FF}
+.mf-pag-btn{display:inline-flex;align-items:center;justify-content:center;min-width:32px;height:30px;padding:0 10px;border:1px solid #E2E8F0;border-radius:8px;font-size:12px;font-weight:500;color:#0B1430;background:#fff;transition:all .12s ease;cursor:pointer}
+.mf-pag-btn:hover:not(:disabled){border-color:#4790FF;color:#2D56D2;background:#F0F7FF}
+.mf-pag-btn:disabled{opacity:.35;cursor:not-allowed}
+.mf-pag-btn.is-active{background:#2D56D2;border-color:#2D56D2;color:#fff;box-shadow:0 2px 6px rgba(45,86,210,.25)}
+.mf-pag-select{height:30px;padding:0 8px;background:#fff;border:1px solid #E2E8F0;border-radius:8px;font-size:12px;color:#0B1430;transition:all .12s ease}
+.mf-pag-select:hover{border-color:#CBD5E1}
 </style>
 <script src="shared/sidebar.js"></script>
 </head>
@@ -249,8 +269,22 @@ table th{position:sticky;top:0;z-index:1}
 </div>
 </div>
 </div>
-<!-- KPI Cards -->
-<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 xl:grid-cols-9 gap-2.5" id="assign-kpis"></div>
+<!-- Status Overview — clickable KPI cards -->
+<div class="status-panel border border-[#E2E8F0] rounded-xl shadow-sm p-5">
+<div class="flex items-center gap-3 mb-4">
+<div class="flex items-center gap-2">
+<span class="w-1 h-4 rounded-full bg-gradient-to-b from-[#F59E0B] to-[#FBBF24]"></span>
+<div class="text-[13.5px] font-semibold text-[#0B1430] tracking-tight">Assignment Overview</div>
+</div>
+<div class="inline-flex items-center gap-1.5">
+<span class="inline-flex items-center gap-1.5 text-[11px] font-semibold pl-2 pr-2.5 py-1 rounded-full bg-gradient-to-r from-[#F59E0B] to-[#FBBF24] text-white tnum shadow-sm">
+<svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 14.15v4.25c0 1.094-.787 2.036-1.872 2.18-2.087.277-4.216.42-6.378.42s-4.291-.143-6.378-.42c-1.085-.144-1.872-1.086-1.872-2.18v-4.25m16.5 0a2.18 2.18 0 00.75-1.661V8.706c0-1.081-.768-2.015-1.837-2.175a48.114 48.114 0 00-3.413-.387m4.5 8.006c-.194.165-.42.295-.673.38A23.978 23.978 0 0112 15.75c-2.648 0-5.195-.429-7.577-1.22a2.16 2.16 0 01-.673-.38m0 0A2.18 2.18 0 013 12.489V8.706c0-1.081.768-2.015 1.837-2.175a48.111 48.111 0 013.413-.387m7.5 0V5.25A2.25 2.25 0 0013.5 3h-3a2.25 2.25 0 00-2.25 2.25v.894m7.5 0a48.667 48.667 0 00-7.5 0M12 12.75h.008v.008H12v-.008z"/></svg>
+<span id="at-total-badge">0 jobs</span>
+</span>
+</div>
+</div>
+<div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 xl:grid-cols-9 gap-2" id="assign-kpis"></div>
+</div>
 <!-- Filter Bar -->
 <div class="bg-white border border-[#E2E8F0] rounded-xl shadow-sm p-3">
 <div class="flex items-center gap-2 flex-wrap">
@@ -308,30 +342,30 @@ table th{position:sticky;top:0;z-index:1}
   <col style="width:130px">
   <col style="width:145px">
 </colgroup>
-<thead class="border-b border-[#E2E8F0]" style="background:rgba(248,250,252,0.8)">
-<tr class="text-left text-[10.5px] uppercase tracking-wide" style="color:rgba(30,41,59,0.55)">
-<th class="px-2 py-3 font-semibold text-center"><input class="w-3.5 h-3.5 rounded border-[#CBD5E1] accent-[#2D56D2]" onclick="toggleAllAssign(this)" type="checkbox"/></th>
-<th class="px-2 py-3 font-semibold">Actions</th>
-<th class="px-2 py-3 font-semibold">Job · Ticket</th>
-<th class="px-2 py-3 font-semibold">Quotation</th>
-<th class="px-2 py-3 font-semibold">Client / Product</th>
-<th class="px-2 py-3 font-semibold">Media · Package</th>
-<th class="px-2 py-3 font-semibold">Period</th>
-<th class="px-2 py-3 font-semibold">Sales Person</th>
-<th class="px-2 py-3 font-semibold">Head / Assigned</th>
-<th class="px-2 py-3 font-semibold">Status</th>
+<thead class="mf-thead">
+<tr class="text-left uppercase" style="color:rgba(30,41,59,0.55)">
+<th class="mf-th px-2 text-center"><input class="w-3.5 h-3.5 rounded border-[#CBD5E1] accent-[#2D56D2]" onclick="toggleAllAssign(this)" type="checkbox"/></th>
+<th class="mf-th px-2">Actions</th>
+<th class="mf-th px-2">Job · Ticket</th>
+<th class="mf-th px-2">Quotation</th>
+<th class="mf-th px-2">Client / Product</th>
+<th class="mf-th px-2">Media · Package</th>
+<th class="mf-th px-2">Period</th>
+<th class="mf-th px-2">Sales Person</th>
+<th class="mf-th px-2">Head / Assigned</th>
+<th class="mf-th px-2">Status</th>
 </tr>
 </thead>
 <tbody id="assign-tbody"></tbody>
 </table>
 </div>
 <!-- Pagination -->
-<div class="px-4 py-3 border-t border-[#E2E8F0] flex items-center justify-between" style="background:rgba(248,250,252,0.5)">
+<div class="px-4 py-3 border-t border-[#E2E8F0] flex items-center justify-between flex-wrap gap-2" style="background:linear-gradient(180deg,#FBFCFE,#F5F8FC)">
 <div class="flex items-center gap-2 text-[12px]" style="color:rgba(30,41,59,0.6)">
-      Show <select class="h-7 px-1.5 bg-white border border-[#E2E8F0] rounded text-[12px]"><option>15</option><option>25</option><option>50</option></select> entries
-      <span class="ml-2" style="color:rgba(30,41,59,0.45)">· Showing <b id="at-pag-range" style="color:rgba(30,41,59,0.7)">0</b> of <b id="at-pag-total" style="color:rgba(30,41,59,0.7)">0</b></span>
+      Show <select class="mf-pag-select"><option>15</option><option>25</option><option>50</option></select> entries
+      <span class="ml-2" style="color:rgba(30,41,59,0.45)">Showing <b id="at-pag-range" style="color:rgba(30,41,59,0.75)">0</b> of <b id="at-pag-total" style="color:rgba(30,41,59,0.75)">0</b></span>
 </div>
-<div class="flex gap-1" id="at-pagination"></div>
+<div class="flex gap-1.5" id="at-pagination"></div>
 </div>
 </div>
 <script>
@@ -405,6 +439,9 @@ function renderKPIs(rows) {
     'Review (Sale)':0, 'Revise (CG)':0, 'Final Approve':0, 'Final Render':0, 'Done':0
   };
   rows.forEach(function(r){ if(counts[r.status]!==undefined) counts[r.status]++; });
+  var totalJobs = rows.length;
+  var totBadge = document.getElementById('at-total-badge');
+  if (totBadge) totBadge.textContent = totalJobs + ' job' + (totalJobs!==1?'s':'');
   var el = document.getElementById('assign-kpis');
   var kpiIcons = {
     'Assign (Head CG)': '<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM3 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 12.318 0 019.374 21c-2.331 0-4.512-.645-6.374-1.766z"/></svg>',
@@ -417,15 +454,46 @@ function renderKPIs(rows) {
     'Final Render':     '<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z"/></svg>',
     'Done':             '<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>',
   };
+  var kpiHex = {
+    'Assign (Head CG)':'#f59e0b','Verify (CG)':'#8b5cf6','Revise (Sale)':'#f43f5e',
+    'On Process (CG)':'#3b82f6','Review (Sale)':'#06b6d4','Revise (CG)':'#f97316',
+    'Final Approve':'#10b981','Final Render':'#6366f1','Done':'#14b8a6'
+  };
+  /* Split status labels into title + role tag so long names like
+     "Assign (Head CG)" fit on the compact single-row cards without truncation. */
+  var STATUS_LABELS = {
+    'Assign (Head CG)': {title:'Assign',     role:'Head CG'},
+    'Verify (CG)':      {title:'Verify',     role:'CG'},
+    'Revise (Sale)':    {title:'Revise',     role:'Sale'},
+    'On Process (CG)':  {title:'On Process', role:'CG'},
+    'Review (Sale)':    {title:'Review',     role:'Sale'},
+    'Revise (CG)':      {title:'Revise',     role:'CG'},
+    'Final Approve':    {title:'Final Approve'},
+    'Final Render':     {title:'Final Render'},
+    'Done':             {title:'Done'}
+  };
   var html = '';
   AT_KPI.forEach(function(k) {
     var v = counts[k.key] || 0;
+    var lbl = STATUS_LABELS[k.key] || {title:k.label};
     var isActive = _statusFilter === k.key;
-    var ring = isActive ? 'ring-2 ring-offset-1 ring-[#2D56D2] shadow-md scale-[1.015]' : 'hover:shadow-md hover:-translate-y-px';
+    var hex = kpiHex[k.key] || '#64748b';
     var dim  = (!isActive && _statusFilter) ? 'opacity-55' : '';
-    html += '<button type="button" onclick="toggleStatusFilter(\''+k.key+'\')" class="'+k.bg+' border '+k.border+' rounded-xl shadow-sm p-4 flex items-center justify-between text-left transition-all duration-150 cursor-pointer '+ring+' '+dim+'">' +
-              '<div><div class="text-[12px] font-medium '+k.text+'">'+k.label+'</div><div class="text-[26px] font-bold mt-0.5 tnum '+k.text+'">'+v+'</div></div>' +
-              '<div class="w-10 h-10 rounded-xl '+k.iconBg+' '+k.iconColor+' flex items-center justify-center">'+kpiIcons[k.key]+'</div>' +
+    var activeStyle = isActive ? ';box-shadow:0 0 0 2px '+hex+'55, 0 8px 20px rgba(11,20,48,.10)' : '';
+    var activeCls = isActive ? 'is-active' : '';
+    var roleTag = lbl.role
+      ? '<span class="text-[8.5px] font-semibold uppercase tracking-wider px-1 py-[1px] rounded '+k.text+' whitespace-nowrap" style="background:'+hex+'18">'+lbl.role+'</span>'
+      : '';
+    html += '<button type="button" onclick="toggleStatusFilter(\''+k.key+'\')" title="'+k.label+'" class="kpi-card '+k.bg+' border '+k.border+' rounded-xl shadow-sm pl-2.5 pr-2 py-2.5 text-left cursor-pointer relative overflow-hidden '+activeCls+' '+dim+'" style="background-image:linear-gradient(135deg,'+hex+'0d,'+hex+'02)'+activeStyle+'">' +
+              '<span class="absolute left-0 top-0 bottom-0 w-[3px]" style="background:'+hex+'"></span>' +
+              '<div class="flex items-center justify-between gap-1 mb-1.5">' +
+                '<div class="text-[11px] font-semibold '+k.text+' leading-tight truncate">'+lbl.title+'</div>' +
+                '<span class="w-1.5 h-1.5 rounded-full shrink-0" style="background:'+hex+'"></span>' +
+              '</div>' +
+              '<div class="flex items-end justify-between gap-1">' +
+                '<div class="text-[22px] font-bold tnum leading-none '+k.text+'">'+v+'</div>' +
+                (roleTag ? '<div class="pb-0.5">'+roleTag+'</div>' : '') +
+              '</div>' +
             '</button>';
   });
   el.innerHTML = html;
@@ -489,7 +557,7 @@ function renderTable(rows) {
   var pr = document.getElementById('at-pag-range');
   var pt = document.getElementById('at-pag-total');
   if (!rows.length) {
-    tbody.innerHTML = '<tr><td colspan="10" class="px-4 py-12 text-center text-[13px]" style="color:rgba(30,41,59,0.4)">No jobs found</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="10" class="px-4 py-16 text-center"><div class="w-16 h-16 rounded-full bg-[#F1F5F9] flex items-center justify-center mx-auto mb-4"><svg class="w-7 h-7" style="color:rgba(30,41,59,0.35)" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM3 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 12.318 0 019.374 21c-2.331 0-4.512-.645-6.374-1.766z"/></svg></div><div class="text-[15px] font-semibold text-[#0B1430] mb-1">No Jobs Found</div><div class="text-[13px]" style="color:rgba(30,41,59,0.5)">Try adjusting your filters</div></td></tr>';
     pr.textContent = '0'; pt.textContent = '0';
     renderPagination(0); return;
   }
@@ -542,7 +610,7 @@ function renderTable(rows) {
         '<div class="text-[11.5px] font-medium truncate" title="' + (r.assigned||'') + '">' + (r.assigned || '<span style="color:rgba(30,41,59,0.3)">— unassigned —</span>') + '</div>' +
         '<div class="text-[10.5px] truncate mt-0.5" style="color:rgba(30,41,59,0.5)" title="' + (r.headTeam||'') + '">head: ' + (r.headTeam || '<span style="color:rgba(30,41,59,0.3)">—</span>') + '</div>' +
       '</div>';
-    html += '<tr class="border-b border-[#F1F5F9] hover:bg-[#F8FAFC]/60 ' + rowBg + '">' +
+    html += '<tr class="mf-row border-b border-[#F1F5F9] ' + rowBg + '">' +
       cbCell +
       '<td class="px-2 py-2.5"><div class="flex items-center gap-1">' + actionButtons(r) + '</div></td>' +
       '<td class="px-2 py-2.5">' + jobTicketCell + '</td>' +
@@ -563,13 +631,13 @@ function renderTable(rows) {
 
 function renderPagination(total) {
   var el = document.getElementById('at-pagination');
-  if (total <= 15) { el.innerHTML = '<button class="px-3 py-1 border border-[#CBD5E1] rounded-md text-[12px] font-medium disabled:opacity-40" disabled>&lsaquo;</button><button class="px-3 py-1 bg-[#2D56D2] text-white rounded-md text-[12px] font-medium">1</button><button class="px-3 py-1 border border-[#CBD5E1] rounded-md text-[12px] font-medium disabled:opacity-40" disabled>&rsaquo;</button>'; return; }
+  if (total <= 15) { el.innerHTML = '<button class="mf-pag-btn" disabled>&lsaquo;</button><button class="mf-pag-btn is-active">1</button><button class="mf-pag-btn" disabled>&rsaquo;</button>'; return; }
   var pages = Math.ceil(total / 15);
-  var html = '<button class="px-3 py-1 border border-[#CBD5E1] rounded-md text-[12px] font-medium disabled:opacity-40" disabled>&lsaquo;</button>';
+  var html = '<button class="mf-pag-btn" disabled>&lsaquo;</button>';
   for (var i=1; i<=Math.min(pages,5); i++) {
-    html += '<button class="px-3 py-1 '+(i===1?'bg-[#2D56D2] text-white':'border border-[#CBD5E1] hover:bg-[#F8FAFC]')+' rounded-md text-[12px] font-medium">'+i+'</button>';
+    html += '<button class="mf-pag-btn '+(i===1?'is-active':'')+'">'+i+'</button>';
   }
-  html += '<button class="px-3 py-1 border border-[#CBD5E1] rounded-md text-[12px] font-medium hover:bg-[#F8FAFC]">&rsaquo;</button>';
+  html += '<button class="mf-pag-btn">&rsaquo;</button>';
   el.innerHTML = html;
 }
 
