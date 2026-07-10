@@ -1429,46 +1429,150 @@ function renderStatusView() {
     card.innerHTML = '';
     card.style.display = 'none';
   } else if (status === 'Final Approve') {
-    /* Mirror of Final Render — but owner approval pending and no Render form */
     card.style.display = '';
-    card.innerHTML =
-      '<h3 class="text-[15px] font-semibold text-[#0B1430] mb-3">Media Allocate</h3>' +
-      '<div class="grid grid-cols-2 gap-3 mb-4">' +
-        '<div class="rounded-lg border border-indigo-100 bg-indigo-50/50 p-3">' +
-          '<div class="text-[10px] uppercase font-semibold tracking-wider mb-1" style="color:#4338CA">ออกอากาศ/ชั่วโมง</div>' +
-          '<div class="text-[20px] font-bold text-indigo-900 tnum">6 <span class="text-[11px] font-medium" style="color:rgba(67,56,202,0.65)">ครั้ง</span></div>' +
+    var jobParam = getQueryParam('job') || '';
+    if (jobParam === 'JOB-1029') {
+      /* JOB-1029: mirror JOB-1031-F layout — approval on top (partial/pending),
+         render form locked (owner pending), file list disabled,
+         but รายการที่แก้ไข (feedback) form remains fully functional. */
+      card.innerHTML =
+        /* ===== ผลการอนุมัติ 2 ฝ่าย — client=อนุมัติบางส่วน / owner=รออนุมัติ ===== */
+        '<div class="text-[10.5px] uppercase font-semibold tracking-wider mb-2" style="color:rgba(30,41,59,0.55)">ผลการอนุมัติ</div>' +
+        '<div class="grid grid-cols-2 gap-3 mb-4" id="render-approval-row">' +
+          renderApprovalBox('client', 'ลูกค้าอนุมัติ',         'Chang Beverage Co., Ltd.', true,  _approvalState.clientDate || '15/04/2026 11:30', _approvalState.clientUser || 'Somchai Wattanakul', 'partial') +
+          renderApprovalBox('owner',  'เจ้าของพื้นที่อนุมัติ',  'BTS Group Holdings',         false, '', '') +
         '</div>' +
-        '<div class="rounded-lg border border-indigo-100 bg-indigo-50/50 p-3">' +
-          '<div class="text-[10px] uppercase font-semibold tracking-wider mb-1" style="color:#4338CA">ระยะเวลาแสดง</div>' +
-          '<div class="text-[20px] font-bold text-indigo-900 tnum">15 <span class="text-[11px] font-medium" style="color:rgba(67,56,202,0.65)">วินาที</span></div>' +
+        /* ===== Hint banner — รอเจ้าของพื้นที่อนุมัติก่อนจึงจะเริ่ม Render ได้ ===== */
+        '<div class="rounded-lg border border-teal-200 bg-teal-50 p-3 flex items-start gap-3 mb-4">' +
+          '<svg class="w-5 h-5 text-teal-700 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>' +
+          '<div class="flex-1">' +
+            '<div class="text-[13px] font-semibold text-teal-900">รอเจ้าของพื้นที่อนุมัติ</div>' +
+            '<div class="text-[12px] mt-1 text-teal-800/85">ลูกค้าอนุมัติบางส่วนแล้ว — เมื่อเจ้าของพื้นที่อนุมัติเสร็จ จะเปิดให้กรอกข้อมูล Render ได้</div>' +
+          '</div>' +
         '</div>' +
-        '<div class="rounded-lg border border-indigo-100 bg-indigo-50/50 p-3">' +
-          '<div class="text-[10px] uppercase font-semibold tracking-wider mb-1" style="color:#4338CA">ช่วงเวลาออกอากาศ</div>' +
-          '<div class="text-[13px] font-semibold text-indigo-900">06:00 – 23:00</div>' +
+        /* ===== Render form (LOCKED — owner has not approved) ===== */
+        '<div class="relative rounded-lg border border-[#E2E8F0] p-4 bg-[#F8FAFC]" id="render-form-wrap">' +
+          /* Locked overlay + badge */
+          '<div class="absolute inset-0 bg-white/55 rounded-lg z-10 flex items-center justify-center pointer-events-none">' +
+            '<div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800/90 text-white text-[11.5px] font-semibold shadow-lg">' +
+              '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/></svg>' +
+              'ล็อค — รอเจ้าของพื้นที่อนุมัติ' +
+            '</div>' +
+          '</div>' +
+          /* Dim actual form so the overlay message stands out */
+          '<div class="opacity-50 pointer-events-none select-none">' +
+            '<div class="flex items-center gap-2 mb-2.5">' +
+              '<div class="text-[11px] font-semibold uppercase tracking-wider" style="color:rgba(30,41,59,0.6)">ข้อมูล Render</div>' +
+              '<span class="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-md bg-slate-100 text-slate-500 border border-slate-200 font-semibold font-mono">' +
+                '<svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"/></svg>' +
+                'v3NestleBearBrand' +
+              '</span>' +
+            '</div>' +
+            '<div class="mb-3">' +
+              '<label class="block text-[10.5px] font-medium mb-1" style="color:rgba(30,41,59,0.6)">File Name <span class="text-rose-500">*</span></label>' +
+              '<input disabled type="text" placeholder="เช่น nestle_mrt_final" class="w-full h-9 px-3 bg-slate-100 border border-[#CBD5E1] rounded-md text-[12.5px] font-mono placeholder:opacity-40 cursor-not-allowed"/>' +
+            '</div>' +
+            /* Sound switch — disabled */
+            '<div class="mb-3 flex items-center justify-between rounded-md border border-[#E2E8F0] bg-slate-50 px-3 py-2">' +
+              '<div>' +
+                '<label class="block text-[10.5px] font-medium" style="color:rgba(30,41,59,0.6)">เสียง (Sound)</label>' +
+                '<div class="text-[11px]" style="color:rgba(30,41,59,0.5)">เปิด/ปิดเสียงในไฟล์ render</div>' +
+              '</div>' +
+              '<label class="inline-flex items-center gap-2 cursor-not-allowed">' +
+                '<span class="text-[12px] font-semibold text-slate-400">มีเสียง</span>' +
+                '<span class="toggle"><input disabled type="checkbox" checked><span class="slider"></span></span>' +
+              '</label>' +
+            '</div>' +
+            '<div class="mb-3">' +
+              '<label class="block text-[10.5px] font-medium mb-1.5" style="color:rgba(30,41,59,0.6)">ตำแหน่งของ Format Name</label>' +
+              '<div class="flex items-center gap-4 flex-wrap">' +
+                '<label class="inline-flex items-center gap-2 cursor-not-allowed text-[12px]">' +
+                  '<input disabled type="radio" checked class="w-3.5 h-3.5 accent-indigo-600"/>' +
+                  '<span>วาง <b>หลัง</b> File Name <span class="text-[10.5px] font-mono" style="color:rgba(30,41,59,0.5)">(yyyymmdd…_filename_16-9)</span></span>' +
+                '</label>' +
+                '<label class="inline-flex items-center gap-2 cursor-not-allowed text-[12px]">' +
+                  '<input disabled type="radio" class="w-3.5 h-3.5 accent-indigo-600"/>' +
+                  '<span>วาง <b>หน้า</b> File Name <span class="text-[10.5px] font-mono" style="color:rgba(30,41,59,0.5)">(16-9_yyyymmdd…_filename)</span></span>' +
+                '</label>' +
+              '</div>' +
+            '</div>' +
+            '<button disabled class="w-full h-10 bg-slate-300 text-white rounded-lg text-[13px] font-semibold cursor-not-allowed inline-flex items-center justify-center gap-1.5">' +
+              '<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"/></svg>' +
+              '<span>Render File</span>' +
+            '</button>' +
+          '</div>' +
         '</div>' +
-        '<div class="rounded-lg border border-indigo-100 bg-indigo-50/50 p-3">' +
-          '<div class="text-[10px] uppercase font-semibold tracking-wider mb-1" style="color:#4338CA">จำนวน Sites</div>' +
-          '<div class="text-[20px] font-bold text-indigo-900 tnum">18 <span class="text-[11px] font-medium" style="color:rgba(67,56,202,0.65)">จุด</span></div>' +
+        /* ===== ไฟล์ที่ Render (Approved formats — disabled, awaiting owner approval) ===== */
+        '<div id="render-output-wrap" class="mt-4 opacity-70 pointer-events-none">' +
+          '<div class="px-3 py-2.5 bg-slate-100 border border-slate-200 rounded-t-lg flex items-center gap-2">' +
+            '<svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/></svg>' +
+            '<span class="flex-1 text-left text-[12.5px] font-semibold text-slate-700">ไฟล์ที่ Render <span class="font-mono opacity-70">(' + _approvedFormats().length + ' formats Approved)</span></span>' +
+            '<span class="text-[10.5px] font-mono text-slate-600 bg-white px-2 py-0.5 rounded-md border border-slate-200">รอเจ้าของพื้นที่อนุมัติ</span>' +
+          '</div>' +
+          '<div class="overflow-hidden border-x border-b border-[#E2E8F0] rounded-b-lg">' +
+            '<table class="w-full text-[12px]">' +
+              '<thead class="bg-[#F8FAFC]"><tr>' +
+                '<th class="text-left px-3 py-2 font-semibold text-[10.5px] uppercase tracking-wider w-32 border-b border-[#E2E8F0]" style="color:rgba(30,41,59,0.55)">Format Name</th>' +
+                '<th class="text-left px-3 py-2 font-semibold text-[10.5px] uppercase tracking-wider border-b border-[#E2E8F0]" style="color:rgba(30,41,59,0.55)">File Name Render</th>' +
+              '</tr></thead>' +
+              '<tbody id="render-output-tbody-locked">' +
+                _approvedFormats().map(function(fmt){
+                  return '<tr class="border-t border-[#E2E8F0]">' +
+                    '<td class="px-3 py-1.5"><span class="text-[11.5px] font-mono font-semibold px-2 py-0.5 rounded bg-slate-100 text-slate-500 border border-slate-200">' + fmt + '</span></td>' +
+                    '<td class="px-3 py-1.5"><span class="font-mono text-[12px]" style="color:rgba(30,41,59,0.4)">— รอเจ้าของพื้นที่อนุมัติก่อนจึงจะ Render ได้ —</span></td>' +
+                  '</tr>';
+                }).join('') +
+              '</tbody>' +
+            '</table>' +
+          '</div>' +
         '</div>' +
-      '</div>' +
-      '<div class="rounded-lg bg-amber-50 border border-amber-200 p-3 mb-4">' +
-        '<div class="text-[12px] font-semibold text-amber-900 mb-1">คำสั่งพิเศษจาก Sales</div>' +
-        '<p class="text-[12px] leading-relaxed text-amber-800/90">เน้นออกอากาศช่วง Prime Time 18:00–22:00 ทุกวัน (ความถี่ x2) หลีกเลี่ยงการออกอากาศซ้อนกับโฆษณาคู่แข่ง (Pepsi, Coke) ส่งไฟล์ render เป็น MP4 1080p H.264 bitrate ≥ 8 Mbps พร้อมตรวจสอบสี/โลโก้ให้ตรง brand guideline ก่อนส่งทุกครั้ง</p>' +
-      '</div>' +
-      /* ===== ผลการอนุมัติ 2 ฝ่าย — Final Approve: client อนุมัติแล้ว / owner รออนุมัติ ===== */
-      '<div class="text-[10.5px] uppercase font-semibold tracking-wider mb-2" style="color:rgba(30,41,59,0.55)">ผลการอนุมัติ</div>' +
-      '<div class="grid grid-cols-2 gap-3 mb-4">' +
-        renderApprovalBox('client', 'ลูกค้าอนุมัติ',         'Chang Beverage Co., Ltd.', true,  _approvalState.clientDate || '18/05/2026 14:20', _approvalState.clientUser || 'Somchai Wattanakul') +
-        renderApprovalBox('owner',  'เจ้าของพื้นที่อนุมัติ',  'BTS Group Holdings',         false, '', '') +
-      '</div>' +
-      /* ===== Hint banner — รอเจ้าของพื้นที่อนุมัติก่อนจึงจะเริ่ม Render ได้ ===== */
-      '<div class="rounded-lg border border-teal-200 bg-teal-50 p-3 flex items-start gap-3">' +
-        '<svg class="w-5 h-5 text-teal-700 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>' +
-        '<div class="flex-1">' +
-          '<div class="text-[13px] font-semibold text-teal-900">รอเจ้าของพื้นที่อนุมัติ</div>' +
-          '<div class="text-[12px] mt-1 text-teal-800/85">ลูกค้าอนุมัติแล้ว — เมื่อเจ้าของพื้นที่อนุมัติเสร็จ สถานะจะเปลี่ยนเป็น <span class="font-semibold">Final Render</span> และจะเปิดให้กรอกข้อมูล Render ได้</div>' +
+        /* ===== รายการที่แก้ไข (Feedback box) — ล่างสุด, ทำงานต่อได้เหมือน JOB-1031-F ===== */
+        '<div id="render-feedback-box" class="mt-4"></div>';
+      /* Populate the feedback box (same as JOB-1031-F) */
+      setTimeout(function(){
+        buildFeedbackBox();
+      }, 0);
+    } else {
+      /* Default Final Approve — Media Allocate + approval block */
+      card.innerHTML =
+        '<h3 class="text-[15px] font-semibold text-[#0B1430] mb-3">Media Allocate</h3>' +
+        '<div class="grid grid-cols-2 gap-3 mb-4">' +
+          '<div class="rounded-lg border border-indigo-100 bg-indigo-50/50 p-3">' +
+            '<div class="text-[10px] uppercase font-semibold tracking-wider mb-1" style="color:#4338CA">ออกอากาศ/ชั่วโมง</div>' +
+            '<div class="text-[20px] font-bold text-indigo-900 tnum">6 <span class="text-[11px] font-medium" style="color:rgba(67,56,202,0.65)">ครั้ง</span></div>' +
+          '</div>' +
+          '<div class="rounded-lg border border-indigo-100 bg-indigo-50/50 p-3">' +
+            '<div class="text-[10px] uppercase font-semibold tracking-wider mb-1" style="color:#4338CA">ระยะเวลาแสดง</div>' +
+            '<div class="text-[20px] font-bold text-indigo-900 tnum">15 <span class="text-[11px] font-medium" style="color:rgba(67,56,202,0.65)">วินาที</span></div>' +
+          '</div>' +
+          '<div class="rounded-lg border border-indigo-100 bg-indigo-50/50 p-3">' +
+            '<div class="text-[10px] uppercase font-semibold tracking-wider mb-1" style="color:#4338CA">ช่วงเวลาออกอากาศ</div>' +
+            '<div class="text-[13px] font-semibold text-indigo-900">06:00 – 23:00</div>' +
+          '</div>' +
+          '<div class="rounded-lg border border-indigo-100 bg-indigo-50/50 p-3">' +
+            '<div class="text-[10px] uppercase font-semibold tracking-wider mb-1" style="color:#4338CA">จำนวน Sites</div>' +
+            '<div class="text-[20px] font-bold text-indigo-900 tnum">18 <span class="text-[11px] font-medium" style="color:rgba(67,56,202,0.65)">จุด</span></div>' +
+          '</div>' +
         '</div>' +
-      '</div>';
+        '<div class="rounded-lg bg-amber-50 border border-amber-200 p-3 mb-4">' +
+          '<div class="text-[12px] font-semibold text-amber-900 mb-1">คำสั่งพิเศษจาก Sales</div>' +
+          '<p class="text-[12px] leading-relaxed text-amber-800/90">เน้นออกอากาศช่วง Prime Time 18:00–22:00 ทุกวัน (ความถี่ x2) หลีกเลี่ยงการออกอากาศซ้อนกับโฆษณาคู่แข่ง (Pepsi, Coke) ส่งไฟล์ render เป็น MP4 1080p H.264 bitrate ≥ 8 Mbps พร้อมตรวจสอบสี/โลโก้ให้ตรง brand guideline ก่อนส่งทุกครั้ง</p>' +
+        '</div>' +
+        /* ===== ผลการอนุมัติ 2 ฝ่าย — Final Approve: client อนุมัติแล้ว / owner รออนุมัติ ===== */
+        '<div class="text-[10.5px] uppercase font-semibold tracking-wider mb-2" style="color:rgba(30,41,59,0.55)">ผลการอนุมัติ</div>' +
+        '<div class="grid grid-cols-2 gap-3 mb-4">' +
+          renderApprovalBox('client', 'ลูกค้าอนุมัติ',         'Chang Beverage Co., Ltd.', true,  _approvalState.clientDate || '18/05/2026 14:20', _approvalState.clientUser || 'Somchai Wattanakul') +
+          renderApprovalBox('owner',  'เจ้าของพื้นที่อนุมัติ',  'BTS Group Holdings',         false, '', '') +
+        '</div>' +
+        /* ===== Hint banner — รอเจ้าของพื้นที่อนุมัติก่อนจึงจะเริ่ม Render ได้ ===== */
+        '<div class="rounded-lg border border-teal-200 bg-teal-50 p-3 flex items-start gap-3">' +
+          '<svg class="w-5 h-5 text-teal-700 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>' +
+          '<div class="flex-1">' +
+            '<div class="text-[13px] font-semibold text-teal-900">รอเจ้าของพื้นที่อนุมัติ</div>' +
+            '<div class="text-[12px] mt-1 text-teal-800/85">ลูกค้าอนุมัติแล้ว — เมื่อเจ้าของพื้นที่อนุมัติเสร็จ สถานะจะเปลี่ยนเป็น <span class="font-semibold">Final Render</span> และจะเปิดให้กรอกข้อมูล Render ได้</div>' +
+          '</div>' +
+        '</div>';
+    }
   } else if (status === 'Final Render') {
     card.style.display = '';
     card.innerHTML =
