@@ -1266,24 +1266,51 @@ function openFeedbackPanel() {
 }
 renderFeedbackDrawer();
 
-/* ===== Status-based view switching (driven by URL ?status=...) ===== */
+/* ===== Status-based view switching (driven by URL ?status=...) =====
+   The action-card conditionals below (`status === 'To Do' / 'On Process' / …`)
+   were written against the old short labels. Upstream pages now send new
+   role-tagged labels. STATUS_ALIAS resolves those to the same internal
+   shorthand so we don't have to rewrite every branch.                       */
+var STATUS_ALIAS = {
+  'Assign (Head CG)': 'To Do',      /* pre-CG-acceptance — Accept/Feedback flow */
+  'Verify (CG)':      'To Do',      /* ★ JOB-1039, JOB-1037 land here → Accept/Feedback (NOT Upload) */
+  'Revise (Sale)':    'To Do',      /* CG waiting on Sale to clarify — Accept/Feedback flow */
+  'On Process (CG)':  'On Process',
+  'Review (Sale)':    'Review',
+  'Revise (CG)':      'Revise'
+  /* 'Final Approve' / 'Final Render' / 'Done' pass through unchanged */
+};
 var STATUS_BADGE_CLASS = {
-  'To Do':         'bg-slate-50 text-slate-700 border-slate-200',
-  'On Process':    'bg-blue-50 text-blue-700 border-blue-200',
-  'Review':        'bg-cyan-50 text-cyan-700 border-cyan-200',
-  'Revise':        'bg-orange-50 text-orange-700 border-orange-200',
-  'Final Approve': 'bg-teal-50 text-teal-700 border-teal-200',
-  'Final Render':  'bg-indigo-50 text-indigo-700 border-indigo-200',
-  'Done':          'bg-emerald-50 text-emerald-700 border-emerald-200'
+  /* legacy short labels (kept for backward compatibility) */
+  'To Do':            'bg-slate-50 text-slate-700 border-slate-200',
+  'On Process':       'bg-blue-50 text-blue-700 border-blue-200',
+  'Review':           'bg-cyan-50 text-cyan-700 border-cyan-200',
+  'Revise':           'bg-orange-50 text-orange-700 border-orange-200',
+  'Final Approve':    'bg-emerald-50 text-emerald-700 border-emerald-200',
+  'Final Render':     'bg-indigo-50 text-indigo-700 border-indigo-200',
+  'Done':             'bg-teal-50 text-teal-700 border-teal-200',
+  /* new role-tagged labels — palette mirrors job-list / receive-job */
+  'Assign (Head CG)': 'bg-amber-50 text-amber-700 border-amber-200',
+  'Verify (CG)':      'bg-violet-50 text-violet-700 border-violet-200',
+  'Revise (Sale)':    'bg-rose-50 text-rose-700 border-rose-200',
+  'On Process (CG)':  'bg-blue-50 text-blue-700 border-blue-200',
+  'Review (Sale)':    'bg-cyan-50 text-cyan-700 border-cyan-200',
+  'Revise (CG)':      'bg-orange-50 text-orange-700 border-orange-200'
 };
 var STATUS_DOT_CLASS = {
-  'To Do':         'bg-slate-400',
-  'On Process':    'bg-blue-500',
-  'Review':        'bg-cyan-500',
-  'Revise':        'bg-orange-500',
-  'Final Approve': 'bg-teal-500',
-  'Final Render':  'bg-indigo-500',
-  'Done':          'bg-emerald-500'
+  'To Do':            'bg-slate-400',
+  'On Process':       'bg-blue-500',
+  'Review':           'bg-cyan-500',
+  'Revise':           'bg-orange-500',
+  'Final Approve':    'bg-emerald-500',
+  'Final Render':     'bg-indigo-500',
+  'Done':             'bg-teal-500',
+  'Assign (Head CG)': 'bg-amber-500',
+  'Verify (CG)':      'bg-violet-500',
+  'Revise (Sale)':    'bg-rose-500',
+  'On Process (CG)':  'bg-blue-500',
+  'Review (Sale)':    'bg-cyan-500',
+  'Revise (CG)':      'bg-orange-500'
 };
 
 function getQueryParam(name) {
@@ -1292,14 +1319,19 @@ function getQueryParam(name) {
 }
 
 function renderStatusView() {
-  var status = getQueryParam('status') || 'On Process';
-  if (!STATUS_BADGE_CLASS[status]) status = 'On Process';
+  /* displayStatus  = what the user sees in the badge (raw URL param)
+     status         = internal shorthand used by all the conditional branches below */
+  var displayStatus = getQueryParam('status') || 'On Process';
+  var status = STATUS_ALIAS[displayStatus] || displayStatus;
+  /* Unknown status → default to On Process for both display and flow */
+  if (!STATUS_BADGE_CLASS[displayStatus]) { displayStatus = 'On Process'; }
+  if (!STATUS_BADGE_CLASS[status])        { status = 'On Process'; }
 
-  /* Update header badge */
+  /* Update header badge — uses displayStatus so the new label text is preserved */
   var badge = document.getElementById('job-status-badge');
   if (badge) {
-    badge.className = 'text-[11px] px-2.5 py-1 rounded-full font-medium border inline-flex items-center gap-1 ' + STATUS_BADGE_CLASS[status];
-    badge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full ' + STATUS_DOT_CLASS[status] + '"></span>' + status;
+    badge.className = 'text-[11px] px-2.5 py-1 rounded-full font-medium border inline-flex items-center gap-1 ' + STATUS_BADGE_CLASS[displayStatus];
+    badge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full ' + STATUS_DOT_CLASS[displayStatus] + '"></span>' + displayStatus;
   }
 
   /* Status-specific top banner (only for Revise & Done; To Do & On Process no banner) */
