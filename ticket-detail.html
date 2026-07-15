@@ -349,10 +349,6 @@ table th{position:sticky;top:0;z-index:1}
           </div>
         </div>
         <div>
-          <div class="text-[10px] uppercase font-medium mb-0.5" style="color:rgba(30,41,59,0.45)">Media Section</div>
-          <div class="text-[13px] font-semibold">In-store, BTS, The Network</div>
-        </div>
-        <div>
           <div class="text-[10px] uppercase font-medium mb-0.5" style="color:rgba(30,41,59,0.45)">Media Type</div>
           <div class="text-[13px] font-semibold">7-Eleven Plus, BTS Skytrain, Plan B TV</div>
         </div>
@@ -380,6 +376,102 @@ table th{position:sticky;top:0;z-index:1}
 
   </div>
 </div>
+<!-- Quotation Items (Collapse) — shows only when Ticket has Quotation No -->
+<div id="sf-items-box" class="bg-white border border-[#E2E8F0] rounded-xl shadow-sm overflow-hidden">
+  <button type="button" onclick="toggleSfItems()" class="w-full px-6 py-4 flex items-center justify-between hover:bg-[#F8FAFC] transition-colors">
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 rounded-lg bg-[#EBF5FF] flex items-center justify-center shrink-0">
+        <svg class="w-4 h-4 text-[#2D56D2]" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75A2.25 2.25 0 016 4.5h12A2.25 2.25 0 0120.25 6.75v10.5A2.25 2.25 0 0118 19.5H6a2.25 2.25 0 01-2.25-2.25V6.75zM3.75 9.75h16.5M9 4.5v15"/></svg>
+      </div>
+      <div class="text-left">
+        <div class="text-[15px] font-semibold text-[#0B1430]">Quotation Items</div>
+        <div class="text-[12px]" style="color:rgba(30,41,59,0.6)"><span id="sf-items-count">0</span> items · Total <span id="sf-items-total" class="font-semibold text-[#0B1430]">0.00</span> THB</div>
+      </div>
+    </div>
+    <div class="flex items-center gap-3">
+      <span id="sf-items-toggle-label" class="text-[12px] font-medium text-[#2D56D2]">Show details</span>
+      <svg id="sf-items-chev" class="w-5 h-5 transition-transform" style="color:rgba(30,41,59,0.5)" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
+    </div>
+  </button>
+  <div id="sf-items-body" class="hidden border-t border-[#E2E8F0] overflow-x-auto">
+    <table class="w-full text-[12px]">
+      <thead>
+        <tr class="border-b border-[#E2E8F0]" style="background:#F8FAFC">
+          <th class="px-4 py-3 text-left font-semibold text-[11px] uppercase tracking-wider whitespace-nowrap" style="color:rgba(30,41,59,0.6)">No</th>
+          <th class="px-4 py-3 text-left font-semibold text-[11px] uppercase tracking-wider" style="color:rgba(30,41,59,0.6)">Description</th>
+          <th class="px-4 py-3 text-left font-semibold text-[11px] uppercase tracking-wider whitespace-nowrap" style="color:rgba(30,41,59,0.6)">Quantity</th>
+          <th class="px-4 py-3 text-left font-semibold text-[11px] uppercase tracking-wider whitespace-nowrap" style="color:rgba(30,41,59,0.6)">Period</th>
+          <th class="px-4 py-3 text-right font-semibold text-[11px] uppercase tracking-wider whitespace-nowrap" style="color:rgba(30,41,59,0.6)">Fee (THB)</th>
+          <th class="px-4 py-3 text-right font-semibold text-[11px] uppercase tracking-wider whitespace-nowrap" style="color:rgba(30,41,59,0.6)">Disc%</th>
+          <th class="px-4 py-3 text-right font-semibold text-[11px] uppercase tracking-wider whitespace-nowrap" style="color:rgba(30,41,59,0.6)">Net Fee (THB)</th>
+          <th class="px-4 py-3 text-right font-semibold text-[11px] uppercase tracking-wider whitespace-nowrap" style="color:rgba(30,41,59,0.6)">Total Net Fee (THB)</th>
+        </tr>
+      </thead>
+      <tbody id="sf-items-tbody"></tbody>
+      <tfoot>
+        <tr class="border-t-2 border-[#E2E8F0]" style="background:#F8FAFC">
+          <td colspan="7" class="px-4 py-3 text-right font-semibold text-[12px] text-[#0B1430]">Grand Total</td>
+          <td class="px-4 py-3 text-right font-bold text-[13px] text-[#2D56D2] tnum" id="sf-items-grand-total">0.00</td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+</div>
+<script>
+/* ===== Mock Quotation Items (shown when Ticket has Quotation No) ===== */
+var SF_QUOTATION_ITEMS = [
+  { no:'C02001-36A-P001', desc:'ค่าสื่อโฆษณา Plan B TV 240',                                                              period:'01/05/26 - 15/05/26', qty:'1.00 PACK', dur:'0.50 Month', fee:3690000, disc:25.47, net:2750000, total:1375000 },
+  { no:'A02003-01M-P083', desc:'L-BK-ECD-22A ค่าสื่อโฆษณา Unipole ทางด่วนเฉลิมมหานคร - ดินแดง มักกะสัน มุ่งหน้าพระราม 4', period:'01/05/26 - 30/09/26', qty:'1.00 PACK', dur:'5.00 Month', fee:400000,  disc:20.00, net:320000,  total:1600000 },
+  { no:'A02003-01P-P139', desc:'L-BK-RM4-20A ค่าผลิตสื่อโฆษณา Unipole ถนนพระราม 4 (สะพานไทย-ญี่ปุ่น)',                    period:'01/05/26 - 01/05/26', qty:'1.00 PACK', dur:'1.00 TIME',  fee:96000,   disc:0.00,  net:96000,   total:96000 },
+  { no:'A02024-01P-P324', desc:'L-BK-RM4-5 ค่าผลิตสื่อโฆษณา Unipole ถนนพระราม 4 (ท้ายซอยสุขุมวิท 24)',                     period:'01/05/26 - 01/05/26', qty:'1.00 PACK', dur:'1.00 TIME',  fee:89544,   disc:0.00,  net:89544,   total:89544 },
+  { no:'A02003-01P-P120', desc:'L-BK-ECD-24A ค่าผลิตสื่อโฆษณา Unipole ทางด่วนเฉลิมมหานคร (มักกะสัน) มุ่งหน้าพระราม 4',    period:'01/05/26 - 01/05/26', qty:'1.00 PACK', dur:'1.00 TIME',  fee:268200,  disc:0.00,  net:268200,  total:268200 },
+  { no:'A02003-01M-P139', desc:'L-BK-RM4-20A ค่าสื่อโฆษณา Unipole ถนนพระราม 4 (สะพานไทย-ญี่ปุ่น)',                        period:'01/05/26 - 30/09/26', qty:'1.00 PACK', dur:'5.00 Month', fee:300000,  disc:20.00, net:240000,  total:1200000 },
+  { no:'C02001-36A-P001', desc:'ค่าสื่อโฆษณา Plan B TV 240',                                                              period:'16/05/26 - 31/05/26', qty:'1.00 PACK', dur:'0.50 Month', fee:3690000, disc:25.47, net:2750000, total:1375000 },
+  { no:'A02002-02M-P014', desc:'ค่าสื่อโฆษณา Gateway Billboard-ประชาชื่น(v)',                                             period:'01/06/26 - 15/09/26', qty:'1.00 PACK', dur:'3.50 Month', fee:1400000, disc:25.00, net:1050000, total:3675000 },
+  { no:'C02001-36A-P001', desc:'ค่าสื่อโฆษณา Plan B TV 240',                                                              period:'01/09/26 - 30/09/26', qty:'1.00 PACK', dur:'1.00 Month', fee:3690000, disc:25.47, net:2750000, total:2750000 },
+  { no:'C02001-36A-P001', desc:'ค่าสื่อโฆษณา Plan B TV 240',                                                              period:'01/11/26 - 30/11/26', qty:'1.00 PACK', dur:'1.00 Month', fee:3690000, disc:25.47, net:2750000, total:2750000 },
+];
+function fmtQuoNum(n){ return Number(n).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+function renderSfItemsTable(){
+  var tbody = document.getElementById('sf-items-tbody'); if (!tbody) return;
+  var html='', totalSum=0;
+  SF_QUOTATION_ITEMS.forEach(function(item){
+    totalSum += item.total;
+    html += '<tr class="border-b border-[#F1F5F9] hover:bg-[#F8FAFC]">'
+      + '<td class="px-4 py-3 font-mono text-[11px] align-top whitespace-nowrap" style="color:rgba(30,41,59,0.75)">' + item.no + '</td>'
+      + '<td class="px-4 py-3 align-top"><div class="font-medium text-[#0B1430]">' + item.desc + '</div><div class="text-[11px] mt-0.5" style="color:rgba(30,41,59,0.5)">Period : ' + item.period + '</div></td>'
+      + '<td class="px-4 py-3 tnum align-top whitespace-nowrap" style="color:rgba(30,41,59,0.75)">' + item.qty + '</td>'
+      + '<td class="px-4 py-3 tnum align-top whitespace-nowrap" style="color:rgba(30,41,59,0.75)">' + item.dur + '</td>'
+      + '<td class="px-4 py-3 tnum text-right align-top whitespace-nowrap">' + fmtQuoNum(item.fee) + '</td>'
+      + '<td class="px-4 py-3 tnum text-right align-top whitespace-nowrap">' + item.disc.toFixed(2) + '</td>'
+      + '<td class="px-4 py-3 tnum text-right align-top font-medium whitespace-nowrap">' + fmtQuoNum(item.net) + '</td>'
+      + '<td class="px-4 py-3 tnum text-right align-top font-semibold text-[#0B1430] whitespace-nowrap">' + fmtQuoNum(item.total) + '</td>'
+      + '</tr>';
+  });
+  tbody.innerHTML = html;
+  var c=document.getElementById('sf-items-count'), t=document.getElementById('sf-items-total'), g=document.getElementById('sf-items-grand-total');
+  if (c) c.textContent = SF_QUOTATION_ITEMS.length;
+  if (t) t.textContent = fmtQuoNum(totalSum);
+  if (g) g.textContent = fmtQuoNum(totalSum);
+}
+function toggleSfItems(){
+  var body=document.getElementById('sf-items-body'), chev=document.getElementById('sf-items-chev'), label=document.getElementById('sf-items-toggle-label');
+  var willOpen = body.classList.contains('hidden');
+  body.classList.toggle('hidden');
+  if (chev) chev.style.transform = willOpen ? 'rotate(180deg)' : '';
+  if (label) label.textContent = willOpen ? 'Hide details' : 'Show details';
+}
+/* Show/hide box based on Quotation presence (manual-entry tickets hide it) */
+(function(){
+  var params = new URLSearchParams(location.search);
+  var quoValEl = document.getElementById('ticket-quo-value');
+  var quoRaw = quoValEl ? (quoValEl.textContent || '').trim() : '';
+  var isManual = (params.get('manual') === '1') || !quoRaw;
+  var box = document.getElementById('sf-items-box');
+  if (isManual) { if (box) box.classList.add('hidden'); }
+  else { renderSfItemsTable(); }
+})();
+</script>
 <!-- Jobs under this Ticket -->
 <div class="bg-white border border-[#E2E8F0] rounded-xl shadow-sm">
 <div class="px-6 py-4 border-b border-[#E2E8F0] flex items-center justify-between">
@@ -664,7 +756,7 @@ table th{position:sticky;top:0;z-index:1}
 
 <script>
 var JOBS = [
-  { jobNo:'JOB-1040-M', mediaPack:'Digital MRT',    period:'01/05/2026 - 30/06/2026', versions:2, duration:'15 seconds', material:'material_metro_v2.png', brief:'chang_brief_metro.pdf', note:'Use updated brand guideline for Metro screens', assignedTo:'Kitti Phutthiphan',   assignDate:'02/05/2026 10:30', acceptDate:'02/05/2026 11:00', status:'On Process', feedbackSla:'On track',  progressSla:'In time', color:'#8b5cf6',
+  { jobNo:'JOB-1040-M', mediaPack:'Digital MRT',    period:'01/05/2026 - 30/06/2026', durationMin:0, durationSec:15, versions:2, duration:'15 seconds', material:'material_metro_v2.png', brief:'chang_brief_metro.pdf', note:'Use updated brand guideline for Metro screens', assignedTo:'Kitti Phutthiphan',   assignDate:'02/05/2026 10:30', acceptDate:'02/05/2026 11:00', status:'On Process', feedbackSla:'On track',  progressSla:'In time', color:'#8b5cf6',
     feedbacks:[
       { by:'Sirinya Pongchai', role:'Media Operation', date:'06/05/2026 09:45', note:'ขอให้ปรับโทนสีให้ใกล้เคียงกับ Brand Guideline ใหม่ที่อัปเดต และเพิ่ม Safe Area รอบขอบจอ MRT อีก 5% เพื่อไม่ให้โดน Crop', link:'https://drive.google.com/file/d/brand-guideline-mrt-v3', files:[
         { name:'metro_safe_area_reference.png', size:'1.2 MB', type:'image' },
@@ -677,7 +769,7 @@ var JOBS = [
           { name:'metro_mockup_v1.png',     type:'image', size:'2.6 MB', url:'https://placehold.co/800x450/8b5cf6/ffffff?text=Metro+Mockup+v1' }
         ]}
     ]},
-  { jobNo:'JOB-1040-7', mediaPack:'7-Eleven Plus',  period:'01/05/2026 - 31/07/2026', versions:3, duration:'10 seconds', material:'material_7eleven_packshot.png', brief:'chang_brief_v2.pdf', note:'Follow 7-Eleven standard pack template', assignedTo:'Preeya Wongsuwan',  assignDate:'02/05/2026 10:30', acceptDate:'02/05/2026 11:15', status:'Review',     feedbackSla:'On track',  progressSla:'In time', color:'#ef4444', landlord:{ approved:true, by:'Wichai Boonyarat', date:'11/05/2026 09:30' },
+  { jobNo:'JOB-1040-7', mediaPack:'7-Eleven Plus',  period:'01/05/2026 - 31/07/2026', durationMin:0, durationSec:10, versions:3, duration:'10 seconds', material:'material_7eleven_packshot.png', brief:'chang_brief_v2.pdf', note:'Follow 7-Eleven standard pack template', assignedTo:'Preeya Wongsuwan',  assignDate:'02/05/2026 10:30', acceptDate:'02/05/2026 11:15', status:'Review',     feedbackSla:'On track',  progressSla:'In time', color:'#ef4444', landlord:{ approved:true, by:'Wichai Boonyarat', date:'11/05/2026 09:30' },
     feedbacks:[
       { by:'Nattapong Srisai', role:'Media Operation', date:'09/05/2026 16:20', note:'Logo placement ยังไม่ตรงตามมาตรฐาน 7-Eleven Plus กรุณาย้ายไปมุมขวาบนตาม Spec ที่แนบ และปรับ Padding ให้พอดี Safe Area', link:'https://7eleven.brand-portal.co.th/specs/logo-placement', files:[
         { name:'7eleven_logo_spec_v2.png', size:'2.1 MB', type:'image' },
@@ -720,7 +812,7 @@ var JOBS = [
           { name:'7eleven_mockup_v1.png', type:'image', size:'3.2 MB', url:'https://placehold.co/800x450/ef4444/ffffff?text=7-Eleven+v1' }
         ]}
     ]},
-  { jobNo:'JOB-1040-S', mediaPack:'Siam Square Screens', period:'01/05/2026 - 30/06/2026', versions:1, duration:'15 seconds', material:'material_siam_square_v1.png', brief:'chang_brief_siam.pdf',
+  { jobNo:'JOB-1040-S', mediaPack:'Siam Square Screens', period:'01/05/2026 - 30/06/2026', durationMin:0, durationSec:15, versions:1, duration:'15 seconds', material:'material_siam_square_v1.png', brief:'chang_brief_siam.pdf',
     note:'เน้น Youth Vibe และใช้ Motion Graphic แบบ Bold — สื่อ Siam Square ต้องดึงดูดกลุ่มวัยรุ่น ใช้โทนสี Neon สดใส',
     assignedTo:'Panida Chaisiri', assignDate:'02/05/2026 10:30', acceptDate:'02/05/2026 11:00',
     status:'Revise', feedbackSla:'On track', progressSla:'In time', color:'#a855f7',
@@ -734,9 +826,9 @@ var JOBS = [
           { name:'siam_square_v1.png', type:'image', size:'3.2 MB', url:'https://placehold.co/800x450/a855f7/ffffff?text=Siam+Square+v1' }
         ]}
     ]},
-  { jobNo:'JOB-1040-P', mediaPack:'POS (7-Eleven Plus)', period:'15/05/2026 - 31/07/2026', versions:1, duration:'10 seconds', material:'material_pos_display.png', brief:'chang_brief_pos.pdf', note:'', assignedTo:'Napha Saetang',   assignDate:'02/05/2026 10:30', acceptDate:'',                 status:'Verify',      feedbackSla:'On track',  progressSla:'', color:'#f59e0b' },
-  { jobNo:'JOB-1040-R', mediaPack:'Radio (7-Eleven Plus)', period:'01/06/2026 - 31/07/2026', versions:2, duration:'30 seconds', material:'', brief:'chang_brief_radio.pdf', note:'Radio spot — voice talent TBD', assignedTo:'',           assignDate:'',                 acceptDate:'',                 status:'Assign', feedbackSla:'',          progressSla:'', color:'#06b6d4' },
-  { jobNo:'JOB-1040-B', mediaPack:'Plan B TV',  period:'15/04/2026 - 15/05/2026', versions:3, duration:'Static',     material:'material_billboard_final.png', brief:'chang_brief_billboard.pdf', note:'อนุมัติเรียบร้อย — ส่งโรงพิมพ์แล้ว', assignedTo:'Somchai Thongdee', assignDate:'10/04/2026 09:00', acceptDate:'10/04/2026 09:30', status:'Done',       feedbackSla:'On track',  progressSla:'In time', color:'#10b981', landlord:{ approved:true, by:'Pongsak Tangjit', date:'23/04/2026 14:10' },
+  { jobNo:'JOB-1040-P', mediaPack:'POS (7-Eleven Plus)', period:'15/05/2026 - 31/07/2026', durationMin:0, durationSec:10, versions:1, duration:'10 seconds', material:'material_pos_display.png', brief:'chang_brief_pos.pdf', note:'', assignedTo:'Napha Saetang',   assignDate:'02/05/2026 10:30', acceptDate:'',                 status:'Verify',      feedbackSla:'On track',  progressSla:'', color:'#f59e0b' },
+  { jobNo:'JOB-1040-R', mediaPack:'Radio (7-Eleven Plus)', period:'01/06/2026 - 31/07/2026', durationMin:0, durationSec:30, versions:2, duration:'30 seconds', material:'', brief:'chang_brief_radio.pdf', note:'Radio spot — voice talent TBD', assignedTo:'',           assignDate:'',                 acceptDate:'',                 status:'Assign', feedbackSla:'',          progressSla:'', color:'#06b6d4' },
+  { jobNo:'JOB-1040-B', mediaPack:'Plan B TV',  period:'15/04/2026 - 15/05/2026', durationMin:1, durationSec:30, versions:3, duration:'Static',     material:'material_billboard_final.png', brief:'chang_brief_billboard.pdf', note:'อนุมัติเรียบร้อย — ส่งโรงพิมพ์แล้ว', assignedTo:'Somchai Thongdee', assignDate:'10/04/2026 09:00', acceptDate:'10/04/2026 09:30', status:'Done',       feedbackSla:'On track',  progressSla:'In time', color:'#10b981', landlord:{ approved:true, by:'Pongsak Tangjit', date:'23/04/2026 14:10' },
     feedbacks:[
       { by:'Wichai Boonyarat', role:'Media Operation', date:'22/04/2026 10:30', note:'รอบสุดท้ายดูดีมาก — เพิ่ม Saturation ของ Logo อีก 10% ตามที่ Brand ขอ แล้วส่งโรงพิมพ์ได้เลย', link:'', files:[] },
       { by:'Nattapong Srisai', role:'Media Operation', date:'17/04/2026 13:45', note:'Concept ดีแล้ว แต่ Palette ยังเย็นเกินไป ลองปรับให้อบอุ่นขึ้นอีกหน่อย และขยายขนาด Product Shot ให้เด่นกว่านี้ประมาณ 20%', link:'https://pantone.com/color-finder/warm-2026', files:[
@@ -761,7 +853,7 @@ var JOBS = [
           { name:'billboard_v1.png', type:'image', size:'3.8 MB', url:'https://placehold.co/800x450/10b981/ffffff?text=Billboard+v1' }
         ]}
     ]},
-  { jobNo:'JOB-1040-D', mediaPack:'Siam Paragon Facade', period:'01/04/2026 - 30/04/2026', versions:1, duration:'20 seconds', material:'material_digital_loop.mp4', brief:'chang_brief_digital.pdf', note:'แคมเปญจบแล้ว — เก็บไฟล์เข้า archive', assignedTo:'Apinya Ratanakul', assignDate:'25/03/2026 13:00', acceptDate:'25/03/2026 13:20', status:'Done', feedbackSla:'On track', progressSla:'In time', color:'#059669',
+  { jobNo:'JOB-1040-D', mediaPack:'Siam Paragon Facade', period:'01/04/2026 - 30/04/2026', durationMin:0, durationSec:20, versions:1, duration:'20 seconds', material:'material_digital_loop.mp4', brief:'chang_brief_digital.pdf', note:'แคมเปญจบแล้ว — เก็บไฟล์เข้า archive', assignedTo:'Apinya Ratanakul', assignDate:'25/03/2026 13:00', acceptDate:'25/03/2026 13:20', status:'Done', feedbackSla:'On track', progressSla:'In time', color:'#059669',
     mockups:[
       { ver:1, status:'Approved', date:'28/03/2026 10:15', note:'อนุมัติผ่านในรอบแรก — เริ่ม onair ตามแผน',
         files:[
@@ -793,7 +885,6 @@ function renderJobs() {
 
     html += '<div class="px-6 py-4 hover:bg-[#F8FAFC]/60 transition-colors">';
     html += '<div class="flex items-start gap-4">';
-    html += '<div class="w-10 h-10 rounded-lg flex items-center justify-center text-white font-bold text-[13px] shrink-0 mt-0.5" style="background:' + j.color + '">' + j.mediaPack.charAt(0) + '</div>';
     html += '<div class="flex-1 min-w-0">';
     html += '<div class="flex items-center gap-2 mb-1">';
     html += '<span class="text-[13px] font-semibold font-mono text-[#2D56D2]">' + j.jobNo + '</span>';
@@ -808,9 +899,13 @@ function renderJobs() {
       '</span>';
     }
     html += '</div>';
-    // Row 1: Period, Versions, Duration, Assigned To
+    // Row 1: Period (+ Duration นาที/วินาที), Versions, Duration, Assigned To
     html += '<div class="grid grid-cols-2 sm:grid-cols-4 gap-x-6 gap-y-1.5 text-[12px] mt-2">';
-    html += '<div><span style="color:rgba(30,41,59,0.45)">Period:</span> <span class="font-medium font-mono">' + j.period + '</span></div>';
+    var durParts = [];
+    if (typeof j.durationMin === 'number' && j.durationMin > 0) durParts.push(j.durationMin + ' นาที');
+    if (typeof j.durationSec === 'number' && j.durationSec > 0) durParts.push(j.durationSec + ' วินาที');
+    var durBadge = durParts.length ? ' <span class="inline-flex items-center gap-1 ml-1 text-[10.5px] font-semibold px-1.5 py-0.5 rounded bg-[#EBF5FF] text-[#2D56D2] border border-[#D6ECFF] tnum align-middle"><svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>' + durParts.join(' ') + '</span>' : '';
+    html += '<div><span style="color:rgba(30,41,59,0.45)">Period:</span> <span class="font-medium font-mono">' + j.period + '</span>' + durBadge + '</div>';
     html += '<div><span style="color:rgba(30,41,59,0.45)">Versions:</span> <span class="font-medium">' + j.versions + '</span></div>';
     html += '<div><span style="color:rgba(30,41,59,0.45)">Duration:</span> <span class="font-medium">' + j.duration + '</span></div>';
     html += '<div><span style="color:rgba(30,41,59,0.45)">Assigned To:</span> ';
@@ -2000,14 +2095,10 @@ function tdRenderFiles(jid, kind) {
 }
 function tdUpdatePackSel(jid) {
   var sel = document.getElementById('tdj-' + jid + '-pack');
-  var icon = document.getElementById('tdj-' + jid + '-icon');
   var label = document.getElementById('tdj-' + jid + '-label');
-  if (!sel || !icon) return;
+  if (!sel) return;
   var v = sel.value;
-  if (!v) { icon.style.background = '#94a3b8'; icon.textContent = '?'; if (label) label.textContent = 'New Job'; return; }
-  icon.style.background = TD_PACK_COLOR[v] || '#64748B';
-  icon.textContent = TD_PACK_ICON[v] || v.charAt(0);
-  if (label) label.textContent = v;
+  if (label) label.textContent = v || 'New Job';
 }
 function tdRemoveJob(jid) {
   var el = document.getElementById('tdj-' + jid);
@@ -2034,7 +2125,6 @@ function addJobInline() {
   var h = '';
   // Header
   h += '<div class="flex items-center gap-3 mb-4 flex-wrap">';
-  h += '<div id="tdj-' + jid + '-icon" class="w-9 h-9 rounded-lg flex items-center justify-center text-white font-bold text-[14px] shrink-0" style="background:#94a3b8">?</div>';
   h += '<div>';
   h += '<div class="text-[13px] font-semibold text-[#0B1430]" id="tdj-' + jid + '-label">New Job</div>';
   h += '<div class="text-[10.5px] uppercase tracking-wider font-semibold" style="color:#2D56D2">New · Draft</div>';
