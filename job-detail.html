@@ -486,9 +486,9 @@ function submitFeedback() {
   _toastAndBack('Feedback ส่งให้ Sales แล้ว', '#F59E0B');
 }
 
-function submitMockup() { _toastAndBack('Submit Mockup สำเร็จ', '#2D56D2'); }
+function submitMockup() { _toastAndBack('Submit Prove สำเร็จ', '#2D56D2'); }
 function saveDraft()    { _toastAndBack('บันทึก Draft แล้ว', '#64748B'); }
-function resubmitMockup() { _toastAndBack('Resubmit Mockup สำเร็จ', '#F97316'); }
+function resubmitMockup() { _toastAndBack('Resubmit Prove สำเร็จ', '#F97316'); }
 function renderFile() {
   var el = document.getElementById('render-filename');
   var name = el ? el.value.trim() : '';
@@ -758,7 +758,7 @@ function buildFeedbackBox(){
         '<div class="flex justify-end">' +
           '<button onclick="resubmitMockup()" class="h-9 px-4 bg-amber-600 text-white rounded-lg text-[12.5px] font-semibold hover:bg-amber-700 inline-flex items-center gap-1.5 shadow-sm">' +
             '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m3 11 18-8-8 18-2-8-8-2Z"/></svg>' +
-            '<span>Resubmit Mockup</span>' +
+            '<span>Resubmit Prove</span>' +
           '</button>' +
         '</div>' +
       '</div>' +
@@ -1100,7 +1100,7 @@ function renderMockupHistorySidebar(status) {
         '<div class="w-7 h-7 rounded-md flex items-center justify-center" style="background:rgba(16,185,129,0.14);color:#047857">' +
           '<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z"/></svg>' +
         '</div>' +
-        '<h3 class="text-[14px] font-semibold text-[#0B1430]">Mockup History</h3>' +
+        '<h3 class="text-[14px] font-semibold text-[#0B1430]">Prove History</h3>' +
         '<span class="ml-auto text-[10.5px] font-mono px-1.5 py-0.5 rounded bg-[#F1F5F9]" style="color:rgba(30,41,59,0.6)">' + list.length + ' ver</span>' +
       '</div>' +
       '<div class="space-y-3">';
@@ -1345,7 +1345,7 @@ function renderStatusView() {
           '</div>' +
           '<div class="flex-1">' +
             '<div class="text-[13px] font-semibold text-orange-900">Reviewer ส่งกลับให้แก้ไข</div>' +
-            '<div class="text-[12px] mt-1 text-orange-800/85">โลโก้ตำแหน่งมุมขวาบนยังไม่ตรง guideline — กรุณาปรับแล้วอัปโหลด mockup ใหม่</div>' +
+            '<div class="text-[12px] mt-1 text-orange-800/85">โลโก้ตำแหน่งมุมขวาบนยังไม่ตรง guideline — กรุณาปรับแล้วอัปโหลด prove ใหม่</div>' +
           '</div>' +
         '</div>';
     } else if (status === 'Done') {
@@ -1356,7 +1356,7 @@ function renderStatusView() {
           '</div>' +
           '<div class="flex-1">' +
             '<div class="text-[13px] font-semibold text-emerald-900">งานนี้เสร็จสมบูรณ์</div>' +
-            '<div class="text-[12px] mt-1 text-emerald-800/85">Reviewer อนุมัติ mockup สุดท้ายแล้ว — ดูตัวอย่าง mockup ที่ถูกอนุมัติด้านล่าง (read-only)</div>' +
+            '<div class="text-[12px] mt-1 text-emerald-800/85">Reviewer อนุมัติ prove สุดท้ายแล้ว — ดูตัวอย่าง prove ที่ถูกอนุมัติด้านล่าง (read-only)</div>' +
           '</div>' +
         '</div>';
     } else {
@@ -1383,8 +1383,8 @@ function renderStatusView() {
       '</div>';
   } else if (status === 'On Process') {
     card.innerHTML =
-      '<h3 class="text-[15px] font-semibold text-[#0B1430] mb-3">การผลิต Mockup</h3>' +
-      '<p class="text-[12.5px] mb-4" style="color:rgba(30,41,59,0.65)">อัปโหลด Mockup เพื่อพิจารณา</p>' +
+      '<h3 class="text-[15px] font-semibold text-[#0B1430] mb-3">การผลิต Prove</h3>' +
+      '<p class="text-[12.5px] mb-4" style="color:rgba(30,41,59,0.65)">อัปโหลด Prove เพื่อพิจารณา</p>' +
       '<div class="mb-3">' +
         '<label class="block text-[11px] font-semibold uppercase tracking-wider mb-1.5" style="color:rgba(30,41,59,0.6)">Google Drive Link</label>' +
         '<div class="relative">' +
@@ -1399,10 +1399,10 @@ function renderStatusView() {
         '<div class="text-[11px] mt-1" style="color:rgba(30,41,59,0.5)">Multiple files · รวมไม่เกิน 50 MB</div>' +
         '<span class="inline-flex mt-3 h-8 px-3 bg-white border border-[#CBD5E1] rounded-md text-[12px] font-medium items-center hover:bg-[#F1F5F9]">Choose File</span>' +
       '</label>' +
-      '<textarea class="w-full px-3 py-2 bg-white border border-[#E2E8F0] rounded-lg text-[13px] focus:outline-none focus:border-[#4790FF] resize-none mb-4" placeholder="หมายเหตุของ mockup version นี้..." rows="2"></textarea>' +
+      '<textarea class="w-full px-3 py-2 bg-white border border-[#E2E8F0] rounded-lg text-[13px] focus:outline-none focus:border-[#4790FF] resize-none mb-4" placeholder="หมายเหตุของ prove version นี้..." rows="2"></textarea>' +
       '<div class="flex flex-wrap gap-2">' +
         '<button onclick="submitMockup()" class="h-9 px-4 bg-[#2D56D2] text-white rounded-lg text-[13px] font-medium hover:bg-[#213268] inline-flex items-center gap-1.5">' +
-          '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m3 11 18-8-8 18-2-8-8-2Z"/></svg><span>Submit Mockup</span>' +
+          '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m3 11 18-8-8 18-2-8-8-2Z"/></svg><span>Submit Prove</span>' +
         '</button>' +
       '</div>';
   } else if (status === 'Revise') {
@@ -1454,7 +1454,7 @@ function renderStatusView() {
       '</label>' +
       '<textarea class="w-full px-3 py-2 bg-white border border-[#E2E8F0] rounded-lg text-[13px] focus:outline-none focus:border-orange-500 resize-none mb-4" placeholder="สรุปการแก้ไขใน version นี้..." rows="2"></textarea>' +
       '<button onclick="resubmitMockup()" class="h-9 px-4 bg-orange-600 text-white rounded-lg text-[13px] font-medium hover:bg-orange-700 inline-flex items-center gap-1.5">' +
-        '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m3 11 18-8-8 18-2-8-8-2Z"/></svg><span>Resubmit Mockup</span>' +
+        '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m3 11 18-8-8 18-2-8-8-2Z"/></svg><span>Resubmit Prove</span>' +
       '</button>';
   } else if (status === 'Review') {
     /* No action card — Reviewer takes action elsewhere */
@@ -1733,7 +1733,7 @@ function renderStatusView() {
       '</div>' +
       '<div class="rounded-lg border border-emerald-200 overflow-hidden mb-4">' +
         '<div class="px-4 py-2.5 bg-emerald-50 border-b border-emerald-200 flex items-center justify-between">' +
-          '<span class="text-[13px] font-semibold text-emerald-800">Mockup v2 (Final Approved)</span>' +
+          '<span class="text-[13px] font-semibold text-emerald-800">Prove v2 (Final Approved)</span>' +
           '<span class="text-[11px] font-mono" style="color:rgba(30,41,59,0.55)">10/05/2026 14:00</span>' +
         '</div>' +
         '<div class="p-3">' +

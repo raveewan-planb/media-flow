@@ -734,7 +734,7 @@ function renderMockupHistorySidebar(status) {
         '<div class="w-7 h-7 rounded-md flex items-center justify-center" style="background:rgba(16,185,129,0.14);color:#047857">' +
           '<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M3.75 21h16.5A2.25 2.25 0 0022.5 18.75V5.25A2.25 2.25 0 0020.25 3H3.75A2.25 2.25 0 001.5 5.25v13.5A2.25 2.25 0 003.75 21z"/></svg>' +
         '</div>' +
-        '<h3 class="text-[14px] font-semibold text-[#0B1430]">Mockup History</h3>' +
+        '<h3 class="text-[14px] font-semibold text-[#0B1430]">Prove History</h3>' +
         '<span class="ml-auto text-[10.5px] font-mono px-1.5 py-0.5 rounded bg-[#F1F5F9]" style="color:rgba(30,41,59,0.6)">' + list.length + ' ver</span>' +
       '</div>' +
       '<div class="space-y-3">';
@@ -946,7 +946,7 @@ function renderStatusView() {
           '</div>' +
           '<div class="flex-1">' +
             '<div class="text-[13px] font-semibold text-orange-900">Reviewer ส่งกลับให้แก้ไข</div>' +
-            '<div class="text-[12px] mt-1 text-orange-800/85">โลโก้ตำแหน่งมุมขวาบนยังไม่ตรง guideline — กรุณาปรับแล้วอัปโหลด mockup ใหม่</div>' +
+            '<div class="text-[12px] mt-1 text-orange-800/85">โลโก้ตำแหน่งมุมขวาบนยังไม่ตรง guideline — กรุณาปรับแล้วอัปโหลด prove ใหม่</div>' +
           '</div>' +
         '</div>';
     } else if (status === 'Done') {
@@ -957,7 +957,7 @@ function renderStatusView() {
           '</div>' +
           '<div class="flex-1">' +
             '<div class="text-[13px] font-semibold text-emerald-900">งานนี้เสร็จสมบูรณ์</div>' +
-            '<div class="text-[12px] mt-1 text-emerald-800/85">Reviewer อนุมัติ mockup สุดท้ายแล้ว — ดูตัวอย่าง mockup ที่ถูกอนุมัติด้านล่าง (read-only)</div>' +
+            '<div class="text-[12px] mt-1 text-emerald-800/85">Reviewer อนุมัติ prove สุดท้ายแล้ว — ดูตัวอย่าง prove ที่ถูกอนุมัติด้านล่าง (read-only)</div>' +
           '</div>' +
         '</div>';
     } else {
@@ -1143,7 +1143,7 @@ function renderStatusView() {
       '</div>' +
       '<div class="rounded-lg border border-emerald-200 overflow-hidden mb-4">' +
         '<div class="px-4 py-2.5 bg-emerald-50 border-b border-emerald-200 flex items-center justify-between">' +
-          '<span class="text-[13px] font-semibold text-emerald-800">Mockup v2 (Final Approved)</span>' +
+          '<span class="text-[13px] font-semibold text-emerald-800">Prove v2 (Final Approved)</span>' +
           '<span class="text-[11px] font-mono" style="color:rgba(30,41,59,0.55)">10/05/2026 14:00</span>' +
         '</div>' +
         '<div class="p-3">' +
@@ -1252,7 +1252,7 @@ function openActionModal(mode) {
   var headerEl  = document.getElementById('action-modal-header');
   if (titleEl) titleEl.textContent = 'JOB-1040-M  ·  Chang Classic 620ml';
   if (mode === 'approve') {
-    if (eyebrowEl) eyebrowEl.textContent = 'Approve Mockup';
+    if (eyebrowEl) eyebrowEl.textContent = 'Approve Prove';
     if (iconEl) { iconEl.style.background = 'rgba(16,185,129,0.18)'; iconEl.style.color = '#047857'; }
     if (headerEl) headerEl.style.background = 'linear-gradient(135deg,#ECFDF5,#fff)';
   } else {

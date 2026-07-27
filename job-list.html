@@ -372,8 +372,8 @@ Clear filter</button>
    2) Assign (Head CG)              — Head CG assigns to a Graphic
    3) Verify (CG)                   — CG verifies brief/spec before starting
    4) Revise (Sale)                 — Sale needs to revise/clarify brief
-   5) On Process (CG)               — Graphic is producing mockup
-   6) Review (Sale)                 — Sale reviews mockup (customer feedback loop)
+   5) On Process (CG)               — Graphic is producing prove
+   6) Review (Sale)                 — Sale reviews prove (customer feedback loop)
    7) Revise (CG)                   — CG revises based on Sale/customer feedback
    8) Final Approve                 — Customer / stakeholders approve
    9) Final Render                  — Final asset rendering
@@ -792,7 +792,7 @@ function renderTable(rows) {
       h+='<tr id="sub-'+t.id+'" class="'+subHiddenCls+'"><td colspan="10" class="p-0">';
       /* note: colspan stays 10 — we added Media Group (+1) and removed Status (-1) so total cols unchanged */
       h+='<div class="bg-[#F8FAFC] border-t border-[#E2E8F0] px-4 py-3">';
-      h+='<table class="w-full text-[12px]"><thead><tr class="text-[10px] uppercase tracking-wide" style="color:rgba(30,41,59,0.45)"><th class="px-3 py-2 text-left font-medium">Job No</th><th class="px-3 py-2 text-left font-medium">Media</th><th class="px-3 py-2 text-left font-medium">Package</th><th class="px-3 py-2 text-left font-medium">Period</th><th class="px-3 py-2 text-left font-medium">Version</th><th class="px-3 py-2 text-left font-medium">Head CG</th><th class="px-3 py-2 text-left font-medium">Graphic</th><th class="px-3 py-2 text-left font-medium">Status</th><th class="px-3 py-2 text-left font-medium">Approve</th><th class="px-3 py-2 text-left font-medium">Mockup</th><th class="px-3 py-2 text-left font-medium">Progress Date</th><th class="px-3 py-2 text-left font-medium">Progress SLA</th></tr></thead><tbody>';
+      h+='<table class="w-full text-[12px]"><thead><tr class="text-[10px] uppercase tracking-wide" style="color:rgba(30,41,59,0.45)"><th class="px-3 py-2 text-left font-medium">Job No</th><th class="px-3 py-2 text-left font-medium">Media</th><th class="px-3 py-2 text-left font-medium">Package</th><th class="px-3 py-2 text-left font-medium">Period</th><th class="px-3 py-2 text-left font-medium">Version</th><th class="px-3 py-2 text-left font-medium">Head CG</th><th class="px-3 py-2 text-left font-medium">Graphic</th><th class="px-3 py-2 text-left font-medium">Status</th><th class="px-3 py-2 text-left font-medium">Approve</th><th class="px-3 py-2 text-left font-medium">Prove</th><th class="px-3 py-2 text-left font-medium">Progress Date</th><th class="px-3 py-2 text-left font-medium">Progress SLA</th></tr></thead><tbody>';
       t.subjobs.forEach(function(sj, sIdx){
         /* Skip non-matching subjobs when a status filter is active
            (preserve original sIdx so JOB-XXXX-NN numbering stays stable). */

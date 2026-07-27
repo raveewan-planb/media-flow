@@ -333,6 +333,16 @@ table th{position:sticky;top:0;z-index:1}
 <div id="mt-dropdown" class="hidden absolute z-20 top-full left-0 right-0 mt-1 bg-white border border-[#E2E8F0] rounded-lg p-1.5 max-h-[260px] overflow-y-auto" style="box-shadow:0 8px 30px rgba(11,20,48,0.12)"></div>
 </div>
 </div>
+<div>
+<label class="block text-[11px] font-medium text-[#0B1430] mb-1">CS Support <span class="text-[10px] font-normal" style="color:rgba(30,41,59,0.5)">(เลือกได้หลายรายการ)</span></label>
+<div class="relative" id="cs-wrap">
+<button type="button" onclick="toggleCS(event)" class="w-full min-h-9 px-3 py-1.5 bg-white border border-[#E2E8F0] rounded-lg text-[13px] text-left flex items-center gap-2 hover:border-[#CBD5E1] focus:outline-none focus:border-[#4790FF] transition-colors">
+<div id="cs-pills" class="flex-1 flex flex-wrap gap-1 items-center"><span class="text-[12px]" style="color:rgba(30,41,59,0.4)">Select CS Support...</span></div>
+<svg id="cs-chev" class="w-3.5 h-3.5 shrink-0 transition-transform" style="color:rgba(30,41,59,0.4)" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</button>
+<div id="cs-dropdown" class="hidden absolute z-20 top-full left-0 right-0 mt-1 bg-white border border-[#E2E8F0] rounded-lg p-1.5 max-h-[260px] overflow-y-auto" style="box-shadow:0 8px 30px rgba(11,20,48,0.12)"></div>
+</div>
+</div>
 </div>
 </div>
 <!-- Loading state (hidden) -->
@@ -521,11 +531,11 @@ function toggleSfItems() {
 
 /* ===== Mock Salesforce Data ===== */
 var SF_DATABASE = {
-  'PB202604521': { sales:'Weera Somboon',   client:'Chang Beer (Thai Beverage Pcl.)', product:'Chang Classic 620ml',  contractStart:'01/05/2026', contractEnd:'31/07/2026', mediaSection:'In-store',        mediaType:'7-Eleven Plus',          mediaGroup:['Retail'] },
-  'PB202604518': { sales:'Natcha Phongprap', client:'Toyota Motor Thailand',           product:'Yaris Ativ 2026',      contractStart:'15/04/2026', contractEnd:'14/10/2026', mediaSection:'Rail',            mediaType:'Digital MRT',            mediaGroup:['Transit','Digital'] },
-  'PB202604490': { sales:'Warin Kittipong',         client:'AIS Thailand',                    product:'5G Pro Max',            contractStart:'01/04/2026', contractEnd:'31/03/2027', mediaSection:'Thai Flight',     mediaType:'Airport Digital Network', mediaGroup:['Airport','Digital'] },
-  'PB202604476': { sales:'Suphap Inthanon',  client:'Toyota Motor Thailand',           product:'Camry HEV 2026',        contractStart:'01/06/2026', contractEnd:'30/11/2026', mediaSection:'BKK Prime',       mediaType:'Rama 9 Connect',         mediaGroup:['Digital'] },
-  'PB202604432': { sales:'Kanya Srichai',    client:'SCB Easy',                         product:'Easy Wallet Campaign',  contractStart:'15/05/2026', contractEnd:'14/08/2026', mediaSection:'BTS',             mediaType:'BTS Skytrain',           mediaGroup:['Transit','Digital'] },
+  'PB202604521': { sales:'Weera Somboon',   client:'Chang Beer (Thai Beverage Pcl.)', product:'Chang Classic 620ml',  contractStart:'01/05/2026', contractEnd:'31/07/2026', mediaSection:'In-store',        mediaType:'7-Eleven Plus',          mediaGroup:['Retail'], csSupport:['Weera Somboon','Kanya Srichai'] },
+  'PB202604518': { sales:'Natcha Phongprap', client:'Toyota Motor Thailand',           product:'Yaris Ativ 2026',      contractStart:'15/04/2026', contractEnd:'14/10/2026', mediaSection:'Rail',            mediaType:'Digital MRT',            mediaGroup:['Transit','Digital'], csSupport:['Natcha Phongprap','Warin Kittipong'] },
+  'PB202604490': { sales:'Warin Kittipong',         client:'AIS Thailand',                    product:'5G Pro Max',            contractStart:'01/04/2026', contractEnd:'31/03/2027', mediaSection:'Thai Flight',     mediaType:'Airport Digital Network', mediaGroup:['Airport','Digital'], csSupport:['Suphap Inthanon','Pornthip Sukjai'] },
+  'PB202604476': { sales:'Suphap Inthanon',  client:'Toyota Motor Thailand',           product:'Camry HEV 2026',        contractStart:'01/06/2026', contractEnd:'30/11/2026', mediaSection:'BKK Prime',       mediaType:'Rama 9 Connect',         mediaGroup:['Digital'], csSupport:['Raveewan Kaewmanee'] },
+  'PB202604432': { sales:'Kanya Srichai',    client:'SCB Easy',                         product:'Easy Wallet Campaign',  contractStart:'15/05/2026', contractEnd:'14/08/2026', mediaSection:'BTS',             mediaType:'BTS Skytrain',           mediaGroup:['Transit','Digital'], csSupport:['Kanya Srichai','Somchai Rattanawong'] },
 };
 
 /* ===== Media Group options + colors (used in SF result + manual form) ===== */
@@ -537,6 +547,13 @@ function renderGroupPillsHTML(groups) {
   return groups.map(function(g) {
     var c = MEDIA_GROUP_COLOR[g] || '#64748B';
     return '<span class="inline-flex items-center text-[11px] px-2 py-0.5 rounded font-semibold mr-1" style="background:' + c + '18;color:' + c + ';border:1px solid ' + c + '33">' + g + '</span>';
+  }).join('');
+}
+
+function renderCSPillsHTML(csList) {
+  if (!csList || !csList.length) return '<span style="color:rgba(30,41,59,0.4)">—</span>';
+  return csList.map(function(name) {
+    return '<span class="inline-flex items-center text-[11px] px-2 py-0.5 rounded font-semibold mr-1" style="background:rgba(16,185,129,.10);color:#059669;border:1px solid rgba(16,185,129,.25)">' + name + '</span>';
   }).join('');
 }
 
@@ -553,6 +570,16 @@ function toggleNoPB() {
   document.getElementById('sf-loading').classList.add('hidden');
   var itemsBox = document.getElementById('sf-items-box');
   if (itemsBox) itemsBox.classList.add('hidden');
+  // Reset CS Support & Media Type selections + Ticket details
+  _selectedCS = [];
+  _selectedSFCS = [];
+  _selectedMT = [];
+  _selectedPK = [];
+  _versionCounters = {};
+  window._cjJobSeq = 0;
+  if (typeof renderCSPills === 'function') renderCSPills();
+  if (typeof renderSFCSPills === 'function') renderSFCSPills();
+  if (typeof renderMTPills === 'function') renderMTPills();
   if (_noPB) {
     track.style.background = '#2D56D2';
     thumb.style.transform = 'translateX(16px)';
@@ -564,26 +591,22 @@ function toggleNoPB() {
     sfMode.classList.remove('hidden');
     manualMode.classList.add('hidden');
   }
-  /* Switch Ticket details section: SF mode shows pre-rendered packs; Manual mode is empty until "Add Job" */
+  /* Both modes use Add Job pattern — show empty state with Add Job button */
   applyTicketDetailsMode();
+  if (typeof updateSummary === 'function') updateSummary();
 }
 function applyTicketDetailsMode() {
   var btn = document.getElementById('cj-add-job-btn');
   var hint = document.getElementById('ticket-details-hint');
   var container = document.getElementById('packs-container');
-  if (_noPB) {
-    btn.classList.remove('hidden');
-    hint.textContent = 'กด "Add Job" เพื่อเพิ่ม Job แบบ Manual';
-    container.innerHTML = '<div id="cj-manual-empty" class="py-10 text-center border-2 border-dashed border-[#E2E8F0] rounded-lg">' +
-      '<div class="w-12 h-12 rounded-full bg-[#F1F5F9] flex items-center justify-center mx-auto mb-3"><svg class="w-6 h-6" style="color:rgba(30,41,59,0.35)" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08"/></svg></div>' +
-      '<div class="text-[13px] font-semibold text-[#0B1430] mb-1">ยังไม่มี Job</div>' +
-      '<div class="text-[12px] mb-4" style="color:rgba(30,41,59,0.55)">กดปุ่ม Add Job มุมขวาบนเพื่อเริ่มกรอกข้อมูล</div>' +
-    '</div>';
-  } else {
-    btn.classList.add('hidden');
-    hint.textContent = 'Add versions inside each media pack';
-    initAllPacks();
-  }
+  // Both SF Pull mode and Manual mode use the same Add Job pattern
+  btn.classList.remove('hidden');
+  hint.textContent = 'กด "Add Job" เพื่อเพิ่ม Job';
+  container.innerHTML = '<div id="cj-manual-empty" class="py-10 text-center border-2 border-dashed border-[#E2E8F0] rounded-lg">' +
+    '<div class="w-12 h-12 rounded-full bg-[#F1F5F9] flex items-center justify-center mx-auto mb-3"><svg class="w-6 h-6" style="color:rgba(30,41,59,0.35)" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08"/></svg></div>' +
+    '<div class="text-[13px] font-semibold text-[#0B1430] mb-1">ยังไม่มี Job</div>' +
+    '<div class="text-[12px] mb-4" style="color:rgba(30,41,59,0.55)">กดปุ่ม Add Job มุมขวาบนเพื่อเริ่มกรอกข้อมูล</div>' +
+  '</div>';
 }
 
 function fmtManualDate(el) {
@@ -650,7 +673,7 @@ function renderMGPills() {
 }
 /* Close dropdown on outside click — includes dynamic Media Code multi-selects */
 document.addEventListener('click', function(e) {
-  ['mg','mt','pk'].forEach(function(pfx){
+  ['mg','mt','cs','pk','sf-cs'].forEach(function(pfx){
     var wrap = document.getElementById(pfx + '-wrap');
     if (wrap && !wrap.contains(e.target)) {
       var dd = document.getElementById(pfx + '-dropdown');
@@ -722,6 +745,120 @@ function renderMTPills(){
     var safe=t.replace(/'/g,"\\'");
     return '<span class="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded font-semibold" style="background:rgba(124,58,237,.10);color:#6D28D9;border:1px solid rgba(124,58,237,.25)">'+
       t+'<button type="button" onclick="removeMT(\''+safe+'\',event)" class="ml-0.5 hover:bg-white/60 rounded-full w-3.5 h-3.5 inline-flex items-center justify-center text-[10px] leading-none">×</button>'+
+    '</span>';
+  }).join('');
+}
+
+/* ===== CS Support multi-select ===== */
+var CS_SUPPORT_OPTIONS = [
+  { name: 'Natcha Phongprap', role: 'CS Manager' },
+  { name: 'Weera Somboon', role: 'CS Coordinator' },
+  { name: 'Warin Kittipong', role: 'CS Support' },
+  { name: 'Suphap Inthanon', role: 'CS Support' },
+  { name: 'Kanya Srichai', role: 'CS Support' },
+  { name: 'Raveewan Kaewmanee', role: 'CS Support' },
+  { name: 'Pornthip Sukjai', role: 'CS Support' },
+  { name: 'Somchai Rattanawong', role: 'CS Support' }
+];
+var _selectedCS = [];
+var _selectedSFCS = []; // separate state for SF mode
+
+/* Manual mode CS Support */
+function toggleCS(e){ if(e)e.stopPropagation();
+  var dd=document.getElementById('cs-dropdown'),chev=document.getElementById('cs-chev');
+  var willOpen=dd.classList.contains('hidden');
+  dd.classList.toggle('hidden');
+  if(chev)chev.style.transform=willOpen?'rotate(180deg)':'';
+  if(willOpen)renderCSOptions();
+}
+function renderCSOptions(){
+  var html='';
+  CS_SUPPORT_OPTIONS.forEach(function(cs){
+    var checked=_selectedCS.indexOf(cs.name)>=0;
+    html+='<label class="flex items-center gap-2 px-2.5 py-1.5 rounded-md cursor-pointer hover:bg-[#F8FAFC] text-[12.5px] transition-colors">'+
+      '<input type="checkbox" '+(checked?'checked':'')+' onchange="toggleCSItem(\''+cs.name.replace(/'/g,"\\'")+'\', event)" class="w-4 h-4 rounded accent-[#2D56D2]"/>'+
+      '<div class="flex-1">'+
+        '<div class="'+(checked?'font-semibold text-[#0B1430]':'')+'" style="'+(checked?'':'color:rgba(30,41,59,.75)')+'">'+cs.name+'</div>'+
+        '<div class="text-[10.5px]" style="color:rgba(30,41,59,0.5)">'+cs.role+'</div>'+
+      '</div>'+
+    '</label>';
+  });
+  document.getElementById('cs-dropdown').innerHTML=html;
+}
+function toggleCSItem(name,e){ if(e)e.stopPropagation();
+  var i=_selectedCS.indexOf(name);
+  if(i>=0)_selectedCS.splice(i,1); else _selectedCS.push(name);
+  _selectedCS.sort(function(a,b){
+    var ia=CS_SUPPORT_OPTIONS.findIndex(function(cs){return cs.name===a;});
+    var ib=CS_SUPPORT_OPTIONS.findIndex(function(cs){return cs.name===b;});
+    return ia-ib;
+  });
+  renderCSPills(); renderCSOptions();
+}
+function removeCS(name,e){ if(e)e.stopPropagation();
+  var i=_selectedCS.indexOf(name);
+  if(i>=0)_selectedCS.splice(i,1);
+  renderCSPills();
+  if(!document.getElementById('cs-dropdown').classList.contains('hidden'))renderCSOptions();
+}
+function renderCSPills(){
+  var el=document.getElementById('cs-pills');
+  if(!el)return; // element not in DOM yet
+  if(!_selectedCS.length){el.innerHTML='<span class="text-[12px]" style="color:rgba(30,41,59,0.4)">Select CS Support...</span>';return;}
+  el.innerHTML=_selectedCS.map(function(name){
+    var safe=name.replace(/'/g,"\\'");
+    return '<span class="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded font-semibold" style="background:rgba(16,185,129,.10);color:#059669;border:1px solid rgba(16,185,129,.25)">'+
+      name+'<button type="button" onclick="removeCS(\''+safe+'\',event)" class="ml-0.5 hover:bg-white/60 rounded-full w-3.5 h-3.5 inline-flex items-center justify-center text-[10px] leading-none">×</button>'+
+    '</span>';
+  }).join('');
+}
+
+/* SF mode CS Support */
+function toggleSFCS(e){ if(e)e.stopPropagation();
+  var dd=document.getElementById('sf-cs-dropdown'),chev=document.getElementById('sf-cs-chev');
+  var willOpen=dd.classList.contains('hidden');
+  dd.classList.toggle('hidden');
+  if(chev)chev.style.transform=willOpen?'rotate(180deg)':'';
+  if(willOpen)renderSFCSOptions();
+}
+function renderSFCSOptions(){
+  var html='';
+  CS_SUPPORT_OPTIONS.forEach(function(cs){
+    var checked=_selectedSFCS.indexOf(cs.name)>=0;
+    html+='<label class="flex items-center gap-2 px-2.5 py-1.5 rounded-md cursor-pointer hover:bg-[#F8FAFC] text-[12.5px] transition-colors">'+
+      '<input type="checkbox" '+(checked?'checked':'')+' onchange="toggleSFCSItem(\''+cs.name.replace(/'/g,"\\'")+'\', event)" class="w-4 h-4 rounded accent-[#2D56D2]"/>'+
+      '<div class="flex-1">'+
+        '<div class="'+(checked?'font-semibold text-[#0B1430]':'')+'" style="'+(checked?'':'color:rgba(30,41,59,.75)')+'">'+cs.name+'</div>'+
+        '<div class="text-[10.5px]" style="color:rgba(30,41,59,0.5)">'+cs.role+'</div>'+
+      '</div>'+
+    '</label>';
+  });
+  document.getElementById('sf-cs-dropdown').innerHTML=html;
+}
+function toggleSFCSItem(name,e){ if(e)e.stopPropagation();
+  var i=_selectedSFCS.indexOf(name);
+  if(i>=0)_selectedSFCS.splice(i,1); else _selectedSFCS.push(name);
+  _selectedSFCS.sort(function(a,b){
+    var ia=CS_SUPPORT_OPTIONS.findIndex(function(cs){return cs.name===a;});
+    var ib=CS_SUPPORT_OPTIONS.findIndex(function(cs){return cs.name===b;});
+    return ia-ib;
+  });
+  renderSFCSPills(); renderSFCSOptions();
+}
+function removeSFCS(name,e){ if(e)e.stopPropagation();
+  var i=_selectedSFCS.indexOf(name);
+  if(i>=0)_selectedSFCS.splice(i,1);
+  renderSFCSPills();
+  if(!document.getElementById('sf-cs-dropdown').classList.contains('hidden'))renderSFCSOptions();
+}
+function renderSFCSPills(){
+  var el=document.getElementById('sf-cs-pills');
+  if(!el)return; // element not in DOM (SF result not yet rendered)
+  if(!_selectedSFCS.length){el.innerHTML='<span class="text-[12px]" style="color:rgba(30,41,59,0.4)">Select CS Support...</span>';return;}
+  el.innerHTML=_selectedSFCS.map(function(name){
+    var safe=name.replace(/'/g,"\\'");
+    return '<span class="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded font-semibold" style="background:rgba(16,185,129,.10);color:#059669;border:1px solid rgba(16,185,129,.25)">'+
+      name+'<button type="button" onclick="removeSFCS(\''+safe+'\',event)" class="ml-0.5 hover:bg-white/60 rounded-full w-3.5 h-3.5 inline-flex items-center justify-center text-[10px] leading-none">×</button>'+
     '</span>';
   }).join('');
 }
@@ -910,8 +1047,43 @@ function pullSFData() {
       var v = f.html ? f.value : '<span class="font-semibold">' + f.value + '</span>';
       html += '<div><div class="text-[11px] uppercase font-medium mb-0.5" style="color:rgba(30,41,59,0.5)">' + f.label + '</div><div class="font-semibold">' + v + '</div></div>';
     });
+    // Add CS Support dropdown as full-width row
+    html += '<div class="col-span-2 mt-2 pt-3 border-t border-emerald-200">';
+    html += '<div class="text-[11px] uppercase font-medium mb-2" style="color:rgba(30,41,59,0.5)">CS Support <span class="font-normal normal-case" style="color:rgba(30,41,59,0.4)">(เลือกได้หลายรายการ)</span></div>';
+    html += '<div class="relative" id="sf-cs-wrap">';
+    html += '<button type="button" onclick="toggleSFCS(event)" class="w-full min-h-9 px-3 py-1.5 bg-white border border-emerald-300 rounded-lg text-[13px] text-left flex items-center gap-2 hover:border-emerald-400 focus:outline-none focus:border-emerald-500 transition-colors">';
+    html += '<div id="sf-cs-pills" class="flex-1 flex flex-wrap gap-1 items-center"><span class="text-[12px]" style="color:rgba(30,41,59,0.4)">Select CS Support...</span></div>';
+    html += '<svg id="sf-cs-chev" class="w-3.5 h-3.5 shrink-0 transition-transform" style="color:rgba(30,41,59,0.4)" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    html += '</button>';
+    html += '<div id="sf-cs-dropdown" class="hidden absolute z-20 top-full left-0 right-0 mt-1 bg-white border border-emerald-200 rounded-lg p-1.5 max-h-[260px] overflow-y-auto" style="box-shadow:0 8px 30px rgba(11,20,48,0.12)"></div>';
+    html += '</div>';
+    html += '</div>';
     grid.innerHTML = html;
     document.getElementById('sf-result').classList.remove('hidden');
+
+    // Load CS Support from SF data into dropdown (after grid is rendered)
+    if (data.csSupport && data.csSupport.length) {
+      _selectedSFCS = data.csSupport.slice(); // copy array
+    } else {
+      _selectedSFCS = [];
+    }
+    // Need to call renderSFCSPills after a tiny delay to ensure DOM is ready
+    setTimeout(function() {
+      if (typeof renderSFCSPills === 'function') renderSFCSPills();
+    }, 10);
+
+    // Populate _selectedMT from SF mediaType so Add Job modal has available packages
+    if (data.mediaType) {
+      _selectedMT = [data.mediaType];
+    } else {
+      _selectedMT = [];
+    }
+
+    // Reset Ticket details to empty state — user must click "Add Job" to add jobs manually
+    _versionCounters = {};
+    _cjJobSeq = 0;
+    applyTicketDetailsMode();
+    updateSummary();
 
     // Show Quotation Items collapse box + populate
     var itemsBox = document.getElementById('sf-items-box');
@@ -1225,7 +1397,8 @@ function clearAllData() {
   if (itemsBox) itemsBox.classList.add('hidden');
   // Reset all media packs
   _versionCounters = {};
-  initAllPacks();
+  _cjJobSeq = 0;
+  applyTicketDetailsMode(); // show empty state with Add Job button
   updateSummary();
   // Clear additional attachment inputs
   var extraInputs = document.querySelectorAll('.lg\\:col-span-2 input[type="text"]');
@@ -1302,8 +1475,8 @@ function selectRefer(quo) {
   }
 }
 
-// Init all media packs
-initAllPacks();
+// Init empty state with Add Job button (both SF & Manual modes)
+applyTicketDetailsMode();
 </script>
     </div>
 
