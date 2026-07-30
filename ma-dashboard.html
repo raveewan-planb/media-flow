@@ -268,7 +268,7 @@ table th{position:sticky;top:0;z-index:1}
   </aside>
 
   <!-- MAIN CONTENT -->
-  <main class="flex-1 lg:ml-64 min-h-screen">
+  <main class="flex-1 min-w-0 lg:ml-64 min-h-screen">
     <!-- Top Bar — White Glass -->
     <header class="topbar-white h-16 shrink-0 sticky top-0 z-20 flex items-center gap-4 px-4 sm:px-6">
       <!-- Collapse / Mobile toggle -->
@@ -305,48 +305,140 @@ table th{position:sticky;top:0;z-index:1}
 <p class="text-[13px]" style="color:rgba(30,41,59,0.55)">Overview of tickets, jobs, and SLA</p>
 </div>
 </div>
-<!-- Row 1: Total KPIs (colorful, interactive) -->
-<div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-<div class="kpi-card rounded-xl p-4 text-white shadow-sm" style="background:linear-gradient(135deg,#7C3AED 0%,#A78BFA 100%)" onclick="flashCard(this)">
-  <div class="flex items-start justify-between">
-    <div>
-      <div class="text-[11px] uppercase font-semibold tracking-wide opacity-90">Total Tickets</div>
-      <div class="text-[28px] font-bold tnum mt-1 leading-none" id="kpi-tk">48</div>
-      <div class="text-[10.5px] mt-1 opacity-90 flex items-center gap-1"><svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941"/></svg>+12% MoM</div>
+<!-- Row 1: Grouped Summary Cards -->
+<!-- Group 1: Overview & Status -->
+<div class="space-y-2">
+  <div class="flex items-center gap-2 px-1">
+    <div class="w-6 h-6 rounded-md flex items-center justify-center" style="background:rgba(124,58,237,0.10);color:#7C3AED">
+      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg>
     </div>
-    <div class="w-10 h-10 rounded-lg bg-white/20 flex items-center justify-center"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 6v.75m0 3v.75m0 3v.75m0 3V18m-9-5.25h5.25M7.5 15h3M3.375 5.25c-.621 0-1.125.504-1.125 1.125v3.026a2.999 2.999 0 010 5.198v3.026c0 .621.504 1.125 1.125 1.125h17.25c.621 0 1.125-.504 1.125-1.125v-3.026a2.999 2.999 0 010-5.198V6.375c0-.621-.504-1.125-1.125-1.125H3.375z"/></svg></div>
+    <h2 class="text-[13px] font-semibold text-[#0B1430]">Overview &amp; Status</h2>
+    <span class="text-[11px]" style="color:rgba(30,41,59,0.5)">ภาพรวมและสถานะ</span>
+    <div class="flex-1 h-px bg-[#E2E8F0]"></div>
+  </div>
+  <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
+    <!-- Total Tickets -->
+    <div class="kpi-card rounded-xl p-3.5 text-white shadow-sm" style="background:linear-gradient(135deg,#7C3AED 0%,#A78BFA 100%)" onclick="flashCard(this)">
+      <div class="text-[10px] uppercase font-semibold tracking-wide opacity-90">Total Tickets</div>
+      <div class="text-[24px] font-bold tnum mt-1 leading-none" id="kpi-tk">48</div>
+      <div class="text-[10px] mt-1 opacity-90 flex items-center gap-1"><svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941"/></svg>+12% MoM</div>
+    </div>
+    <!-- Total Jobs -->
+    <div class="kpi-card rounded-xl p-3.5 text-white shadow-sm" style="background:linear-gradient(135deg,#2D56D2 0%,#5FCBF9 100%)" onclick="flashCard(this)">
+      <div class="text-[10px] uppercase font-semibold tracking-wide opacity-90">Total Jobs</div>
+      <div class="text-[24px] font-bold tnum mt-1 leading-none" id="kpi-jb">142</div>
+      <div class="text-[10px] mt-1 opacity-90 flex items-center gap-1"><svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941"/></svg>+8% WoW</div>
+    </div>
+    <!-- Total Prove -->
+    <div class="kpi-card rounded-xl p-3.5 text-white shadow-sm" style="background:linear-gradient(135deg,#0EA5E9 0%,#38BDF8 100%)" onclick="flashCard(this)">
+      <div class="text-[10px] uppercase font-semibold tracking-wide opacity-90">Total Prove</div>
+      <div class="text-[24px] font-bold tnum mt-1 leading-none" id="kpi-prove">386</div>
+      <div class="text-[10px] mt-1 opacity-90 flex items-center gap-1"><svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>Across all jobs</div>
+    </div>
+    <!-- Approved by Format -->
+    <div class="kpi-card rounded-xl p-3.5 text-white shadow-sm" style="background:linear-gradient(135deg,#10B981 0%,#34D399 100%)" onclick="flashCard(this)">
+      <div class="text-[10px] uppercase font-semibold tracking-wide opacity-90">Approved by Format</div>
+      <div class="text-[24px] font-bold tnum mt-1 leading-none" id="kpi-approved">248</div>
+      <div class="text-[10px] mt-1 opacity-90 flex items-center gap-1"><svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>64% ของ prove</div>
+    </div>
+    <!-- Approved-Ref by Format -->
+    <div class="kpi-card rounded-xl p-3.5 text-white shadow-sm" style="background:linear-gradient(135deg,#0369A1 0%,#38BDF8 100%)" onclick="flashCard(this)">
+      <div class="text-[10px] uppercase font-semibold tracking-wide opacity-90">Approved-Ref by Format</div>
+      <div class="text-[24px] font-bold tnum mt-1 leading-none" id="kpi-approvedref">32</div>
+      <div class="text-[10px] mt-1 opacity-90 flex items-center gap-1"><svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>อนุมัติชั่วคราว</div>
+    </div>
+    <!-- Hold by Format -->
+    <div class="kpi-card rounded-xl p-3.5 text-white shadow-sm" style="background:linear-gradient(135deg,#6B7280 0%,#9CA3AF 100%)" onclick="flashCard(this)">
+      <div class="text-[10px] uppercase font-semibold tracking-wide opacity-90">Hold by Format</div>
+      <div class="text-[24px] font-bold tnum mt-1 leading-none" id="kpi-hold">15</div>
+      <div class="text-[10px] mt-1 opacity-90 flex items-center gap-1"><svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25v13.5m-7.5-13.5v13.5"/></svg>รอเปิดใช้งาน</div>
+    </div>
+    <!-- Cancelled by Format -->
+    <div class="kpi-card rounded-xl p-3.5 text-white shadow-sm" style="background:linear-gradient(135deg,#DC2626 0%,#F87171 100%)" onclick="flashCard(this)">
+      <div class="text-[10px] uppercase font-semibold tracking-wide opacity-90">Cancelled by Format</div>
+      <div class="text-[24px] font-bold tnum mt-1 leading-none" id="kpi-cancelled">9</div>
+      <div class="text-[10px] mt-1 opacity-90 flex items-center gap-1"><svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>ยกเลิกแล้ว</div>
+    </div>
   </div>
 </div>
-<div class="kpi-card rounded-xl p-4 text-white shadow-sm" style="background:linear-gradient(135deg,#2D56D2 0%,#5FCBF9 100%)" onclick="flashCard(this)">
-  <div class="flex items-start justify-between">
-    <div>
-      <div class="text-[11px] uppercase font-semibold tracking-wide opacity-90">Total Jobs</div>
-      <div class="text-[28px] font-bold tnum mt-1 leading-none" id="kpi-jb">142</div>
-      <div class="text-[10.5px] mt-1 opacity-90 flex items-center gap-1"><svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18L9 11.25l4.306 4.307a11.95 11.95 0 015.814-5.519l2.74-1.22m0 0l-5.94-2.28m5.94 2.28l-2.28 5.941"/></svg>+8% WoW</div>
+
+<!-- Group 2 + Group 3: Alerts & Financial (side by side) -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+  <!-- Group 2: Alerts & Exceptions -->
+  <div class="space-y-2">
+    <div class="flex items-center gap-2 px-1">
+      <div class="w-6 h-6 rounded-md flex items-center justify-center" style="background:rgba(245,158,11,0.10);color:#B45309">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>
+      </div>
+      <h2 class="text-[13px] font-semibold text-[#0B1430]">Alerts &amp; Exceptions</h2>
+      <span class="text-[11px]" style="color:rgba(30,41,59,0.5)">รายการที่เกินมาตรฐาน</span>
+      <div class="flex-1 h-px bg-[#E2E8F0]"></div>
     </div>
-    <div class="w-10 h-10 rounded-lg bg-white/20 flex items-center justify-center"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z"/></svg></div>
-  </div>
-</div>
-<div class="kpi-card rounded-xl p-4 text-white shadow-sm" style="background:linear-gradient(135deg,#F59E0B 0%,#FBBF24 100%)" onclick="flashCard(this)">
-  <div class="flex items-start justify-between">
-    <div>
-      <div class="text-[11px] uppercase font-semibold tracking-wide opacity-90">Avg Jobs/Ticket</div>
-      <div class="text-[28px] font-bold tnum mt-1 leading-none" id="kpi-avg">3.0</div>
-      <div class="text-[10.5px] mt-1 opacity-90 flex items-center gap-1"><svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12h-15"/></svg>stable</div>
+    <div class="grid grid-cols-2 gap-3">
+      <!-- High-Version Jobs -->
+      <div class="kpi-card rounded-xl p-3.5 text-white shadow-sm" style="background:linear-gradient(135deg,#EA580C 0%,#FB923C 100%)" onclick="flashCard(this)">
+        <div class="flex items-start justify-between">
+          <div>
+            <div class="text-[10px] uppercase font-semibold tracking-wide opacity-90">High-Version Jobs</div>
+            <div class="text-[10px] opacity-75 mt-0.5">Jobs with >3 versions</div>
+            <div class="text-[24px] font-bold tnum mt-1 leading-none" id="kpi-highver-jobs">14</div>
+            <div class="text-[10px] mt-1 opacity-90 flex items-center gap-1"><svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126z"/></svg>ตรวจสอบ</div>
+          </div>
+          <div class="w-9 h-9 rounded-lg bg-white/20 flex items-center justify-center"><svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192"/></svg></div>
+        </div>
+      </div>
+      <!-- High-Prove Versions -->
+      <div class="kpi-card rounded-xl p-3.5 text-white shadow-sm" style="background:linear-gradient(135deg,#DC2626 0%,#F87171 100%)" onclick="flashCard(this)">
+        <div class="flex items-start justify-between">
+          <div>
+            <div class="text-[10px] uppercase font-semibold tracking-wide opacity-90">High-Prove Versions</div>
+            <div class="text-[10px] opacity-75 mt-0.5">Prove with >3 versions</div>
+            <div class="text-[24px] font-bold tnum mt-1 leading-none" id="kpi-highprove">8</div>
+            <div class="text-[10px] mt-1 opacity-90 flex items-center gap-1"><svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126z"/></svg>เกินขีดจำกัด</div>
+          </div>
+          <div class="w-9 h-9 rounded-lg bg-white/20 flex items-center justify-center"><svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg></div>
+        </div>
+      </div>
     </div>
-    <div class="w-10 h-10 rounded-lg bg-white/20 flex items-center justify-center"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg></div>
   </div>
-</div>
-<div class="kpi-card rounded-xl p-4 text-white shadow-sm" style="background:linear-gradient(135deg,#10B981 0%,#34D399 100%)" onclick="flashCard(this)">
-  <div class="flex items-start justify-between">
-    <div>
-      <div class="text-[11px] uppercase font-semibold tracking-wide opacity-90">Active Graphics</div>
-      <div class="text-[28px] font-bold tnum mt-1 leading-none" id="kpi-gr">7</div>
-      <div class="text-[10.5px] mt-1 opacity-90 flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>all online</div>
+
+  <!-- Group 3: Financial Impact -->
+  <div class="space-y-2">
+    <div class="flex items-center gap-2 px-1">
+      <div class="w-6 h-6 rounded-md flex items-center justify-center" style="background:rgba(16,185,129,0.10);color:#047857">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      </div>
+      <h2 class="text-[13px] font-semibold text-[#0B1430]">Financial Impact</h2>
+      <span class="text-[11px]" style="color:rgba(30,41,59,0.5)">มูลค่าค่าใช้จ่ายส่วนเกิน</span>
+      <div class="flex-1 h-px bg-[#E2E8F0]"></div>
     </div>
-    <div class="w-10 h-10 rounded-lg bg-white/20 flex items-center justify-center"><svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"/></svg></div>
+    <div class="grid grid-cols-2 gap-3">
+      <!-- Extra Proof Surcharge -->
+      <div class="kpi-card rounded-xl p-3.5 text-white shadow-sm" style="background:linear-gradient(135deg,#047857 0%,#10B981 100%)" onclick="flashCard(this)">
+        <div class="flex items-start justify-between">
+          <div>
+            <div class="text-[10px] uppercase font-semibold tracking-wide opacity-90">Extra Proof Surcharge</div>
+            <div class="text-[10px] opacity-75 mt-0.5">ค่าปรับ Proof ส่วนเกิน</div>
+            <div class="text-[24px] font-bold tnum mt-1 leading-none" id="kpi-extra-proof">฿12,500</div>
+            <div class="text-[10px] mt-1 opacity-90 flex items-center gap-1"><svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33"/></svg>THB · 8 jobs</div>
+          </div>
+          <div class="w-9 h-9 rounded-lg bg-white/20 flex items-center justify-center"><svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/></svg></div>
+        </div>
+      </div>
+      <!-- Extra Version Surcharge -->
+      <div class="kpi-card rounded-xl p-3.5 text-white shadow-sm" style="background:linear-gradient(135deg,#059669 0%,#34D399 100%)" onclick="flashCard(this)">
+        <div class="flex items-start justify-between">
+          <div>
+            <div class="text-[10px] uppercase font-semibold tracking-wide opacity-90">Extra Version Surcharge</div>
+            <div class="text-[10px] opacity-75 mt-0.5">ค่าปรับ Version ส่วนเกิน</div>
+            <div class="text-[24px] font-bold tnum mt-1 leading-none" id="kpi-extra-version">฿24,800</div>
+            <div class="text-[10px] mt-1 opacity-90 flex items-center gap-1"><svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33"/></svg>THB · 14 jobs</div>
+          </div>
+          <div class="w-9 h-9 rounded-lg bg-white/20 flex items-center justify-center"><svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
+        </div>
+      </div>
+    </div>
   </div>
-</div>
 </div>
 <!-- Row 2: Tickets & Jobs by Package + Jobs by Status -->
 <div class="grid grid-cols-1 lg:grid-cols-5 gap-4">
@@ -376,12 +468,15 @@ table th{position:sticky;top:0;z-index:1}
 </div>
 <div class="text-[10.5px] mb-2" style="color:rgba(30,41,59,0.55)">คลิกสถานะเพื่อ filter ตาราง Graphic Workload ด้านล่าง</div>
 <div class="grid grid-cols-3 gap-2">
-<button type="button" class="status-chip p-2.5 rounded-lg bg-slate-50 border border-slate-200 text-center text-slate-600" data-status="Unassigned" onclick="filterByStatus('Unassigned')"><div class="text-[20px] font-bold text-slate-700 tnum">18</div><div class="text-[10.5px] font-medium">Unassigned</div></button>
-<button type="button" class="status-chip p-2.5 rounded-lg bg-amber-50 border border-amber-200 text-center text-amber-700" data-status="To Do" onclick="filterByStatus('To Do')"><div class="text-[20px] font-bold tnum">24</div><div class="text-[10.5px] font-medium">To Do</div></button>
-<button type="button" class="status-chip p-2.5 rounded-lg bg-blue-50 border border-blue-200 text-center text-blue-700" data-status="On Process" onclick="filterByStatus('On Process')"><div class="text-[20px] font-bold tnum">38</div><div class="text-[10.5px] font-medium">On Process</div></button>
-<button type="button" class="status-chip p-2.5 rounded-lg bg-rose-50 border border-rose-200 text-center text-rose-700" data-status="Revise" onclick="filterByStatus('Revise')"><div class="text-[20px] font-bold tnum">9</div><div class="text-[10.5px] font-medium">Revise</div></button>
-<button type="button" class="status-chip p-2.5 rounded-lg bg-indigo-50 border border-indigo-200 text-center text-indigo-700" data-status="Final Render" onclick="filterByStatus('Final Render')"><div class="text-[20px] font-bold tnum">11</div><div class="text-[10.5px] font-medium">Final Render</div></button>
-<button type="button" class="status-chip p-2.5 rounded-lg bg-emerald-50 border border-emerald-200 text-center text-emerald-700" data-status="Done" onclick="filterByStatus('Done')"><div class="text-[20px] font-bold tnum">42</div><div class="text-[10.5px] font-medium">Done</div></button>
+<button type="button" class="status-chip p-2.5 rounded-lg bg-amber-50 border border-amber-200 text-center text-amber-700" data-status="Assign (Head CG)" onclick="filterByStatus('Assign (Head CG)')"><div class="text-[20px] font-bold tnum">18</div><div class="text-[10.5px] font-medium leading-tight">Assign (Head CG)</div></button>
+<button type="button" class="status-chip p-2.5 rounded-lg bg-violet-50 border border-violet-200 text-center text-violet-700" data-status="Verify (CG)" onclick="filterByStatus('Verify (CG)')"><div class="text-[20px] font-bold tnum">12</div><div class="text-[10.5px] font-medium leading-tight">Verify (CG)</div></button>
+<button type="button" class="status-chip p-2.5 rounded-lg bg-rose-50 border border-rose-200 text-center text-rose-700" data-status="Revise (Sale)" onclick="filterByStatus('Revise (Sale)')"><div class="text-[20px] font-bold tnum">6</div><div class="text-[10.5px] font-medium leading-tight">Revise (Sale)</div></button>
+<button type="button" class="status-chip p-2.5 rounded-lg bg-blue-50 border border-blue-200 text-center text-blue-700" data-status="On Process (CG)" onclick="filterByStatus('On Process (CG)')"><div class="text-[20px] font-bold tnum">38</div><div class="text-[10.5px] font-medium leading-tight">On Process (CG)</div></button>
+<button type="button" class="status-chip p-2.5 rounded-lg bg-cyan-50 border border-cyan-200 text-center text-cyan-700" data-status="Review (Sale)" onclick="filterByStatus('Review (Sale)')"><div class="text-[20px] font-bold tnum">14</div><div class="text-[10.5px] font-medium leading-tight">Review (Sale)</div></button>
+<button type="button" class="status-chip p-2.5 rounded-lg bg-orange-50 border border-orange-200 text-center text-orange-700" data-status="Revise (CG)" onclick="filterByStatus('Revise (CG)')"><div class="text-[20px] font-bold tnum">9</div><div class="text-[10.5px] font-medium leading-tight">Revise (CG)</div></button>
+<button type="button" class="status-chip p-2.5 rounded-lg bg-emerald-50 border border-emerald-200 text-center text-emerald-700" data-status="Final Approve" onclick="filterByStatus('Final Approve')"><div class="text-[20px] font-bold tnum">21</div><div class="text-[10.5px] font-medium leading-tight">Final Approve</div></button>
+<button type="button" class="status-chip p-2.5 rounded-lg bg-indigo-50 border border-indigo-200 text-center text-indigo-700" data-status="Final Render" onclick="filterByStatus('Final Render')"><div class="text-[20px] font-bold tnum">11</div><div class="text-[10.5px] font-medium leading-tight">Final Render</div></button>
+<button type="button" class="status-chip p-2.5 rounded-lg bg-teal-50 border border-teal-200 text-center text-teal-700" data-status="Done" onclick="filterByStatus('Done')"><div class="text-[20px] font-bold tnum">42</div><div class="text-[10.5px] font-medium leading-tight">Done</div></button>
 </div>
 <!-- Period strip -->
 <div class="border-t border-[#E2E8F0] mt-4 pt-3">
@@ -466,17 +561,28 @@ table th{position:sticky;top:0;z-index:1}
 </div>
 </div>
 <!-- Row 4: Export Report -->
-<div class="bg-white border border-[#E2E8F0] rounded-xl shadow-sm">
-<div class="px-6 py-4 border-b border-[#E2E8F0] flex items-center justify-between">
+<div class="bg-white border border-[#E2E8F0] rounded-xl shadow-sm overflow-hidden">
+<div class="px-6 py-4 border-b border-[#E2E8F0] flex items-center justify-between gap-3 flex-wrap">
 <div>
 <h3 class="text-[15px] font-semibold text-[#0B1430]">Export Report</h3>
-<p class="text-[12px] mt-0.5" style="color:rgba(30,41,59,0.5)">Filter and export job data to Excel</p>
+<p class="text-[12px] mt-0.5" style="color:rgba(30,41,59,0.5)">Filter and export data to Excel</p>
 </div>
+<div class="flex items-center gap-2 flex-wrap">
+<label class="text-[11px] uppercase font-semibold tracking-wider" style="color:rgba(30,41,59,0.5)">Report Type</label>
+<select id="exp-report-type" onchange="switchReport(this.value)" class="h-9 min-w-[180px] pl-3 pr-8 bg-white border border-[#E2E8F0] rounded-lg text-[13px] font-medium text-[#0B1430] focus:outline-none focus:border-[#4790FF]" style="appearance:none;background-image:url('data:image/svg+xml;utf8,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2210%22 height=%2210%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%236b7280%22 stroke-width=%222%22&gt;&lt;path d=%22M6 9l6 6 6-6%22/&gt;&lt;/svg&gt;');background-repeat:no-repeat;background-position:right 8px center">
+<option value="sla">SLA Report</option>
+<option value="transaction">Transaction Report</option>
+<option value="airtime">Airtime Report</option>
+</select>
 <button class="h-9 px-4 bg-emerald-600 text-white rounded-lg text-[13px] font-medium hover:bg-emerald-700 inline-flex items-center gap-1.5" onclick="exportExcel()">
 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24"><path d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
 <span>Export Excel</span>
 </button>
 </div>
+</div>
+
+<!-- ===== SLA Report ===== -->
+<div id="rpt-sla">
 <!-- Filters -->
 <div class="px-6 py-3 border-b border-[#E2E8F0] bg-[#F8FAFC]">
 <div class="flex items-center gap-2 flex-wrap">
@@ -508,6 +614,61 @@ table th{position:sticky;top:0;z-index:1}
 <tbody id="exp-tbody"></tbody>
 </table>
 </div>
+</div>
+
+<!-- ===== Transaction / Airtime Report (shared columns) ===== -->
+<div id="rpt-txn" class="hidden">
+<!-- Filters -->
+<div class="px-6 py-3 border-b border-[#E2E8F0] bg-[#F8FAFC]">
+<div class="flex items-center gap-2 flex-wrap">
+<div class="relative">
+<svg class="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.5" style="color:rgba(30,41,59,0.4)" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/></svg>
+<input id="txn-search" oninput="filterTxn()" placeholder="Search Quote / Company / Product..." class="h-8 pl-8 pr-3 w-[280px] bg-white border border-[#E2E8F0] rounded-lg text-[12px]"/>
+</div>
+<select id="txn-sale-status" onchange="filterTxn()" class="h-8 pl-2.5 pr-6 bg-white border border-[#E2E8F0] rounded-lg text-[12px]" style="appearance:none;background-image:url('data:image/svg+xml;utf8,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2210%22 height=%2210%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%236b7280%22 stroke-width=%222%22&gt;&lt;path d=%22M6 9l6 6 6-6%22/&gt;&lt;/svg&gt;');background-repeat:no-repeat;background-position:right 6px center"><option value="all">All Sale Approve</option><option>Approved</option><option>Pending</option><option>Rejected</option></select>
+<select id="txn-landlord-status" onchange="filterTxn()" class="h-8 pl-2.5 pr-6 bg-white border border-[#E2E8F0] rounded-lg text-[12px]" style="appearance:none;background-image:url('data:image/svg+xml;utf8,&lt;svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2210%22 height=%2210%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%236b7280%22 stroke-width=%222%22&gt;&lt;path d=%22M6 9l6 6 6-6%22/&gt;&lt;/svg&gt;');background-repeat:no-repeat;background-position:right 6px center"><option value="all">All Landlord Approve</option><option>Approved</option><option>Pending</option><option>Rejected</option></select>
+<input class="h-8 w-[120px] px-2 bg-white border border-[#E2E8F0] rounded-lg text-[11px]" id="txn-from" onblur="fmtD(this)" onfocus="this.type='date'" placeholder="From dd/mm/yyyy" type="text"/>
+<input class="h-8 w-[120px] px-2 bg-white border border-[#E2E8F0] rounded-lg text-[11px]" id="txn-to" onblur="fmtD(this)" onfocus="this.type='date'" placeholder="To dd/mm/yyyy" type="text"/>
+<span class="text-[11px] ml-2" id="txn-count" style="color:rgba(30,41,59,0.45)">Showing 0 records</span>
+</div>
+</div>
+<!-- Data Table (wide, horizontal scroll — stays inside card, doesn't overflow page) -->
+<div class="w-full max-w-full overflow-x-auto" style="scrollbar-gutter:stable">
+<table class="text-[11.5px]" style="min-width:2400px">
+<thead class="border-b border-[#E2E8F0] sticky top-0 z-10" style="background:rgba(248,250,252,0.95);backdrop-filter:blur(6px)">
+<tr class="text-[9.5px] uppercase tracking-wide whitespace-nowrap" style="color:rgba(30,41,59,0.55)">
+<th class="px-3 py-2.5 text-left font-medium">Transaction Date</th>
+<th class="px-3 py-2.5 text-left font-medium">Quote No.</th>
+<th class="px-3 py-2.5 text-left font-medium">PB/Memo</th>
+<th class="px-3 py-2.5 text-left font-medium">Company Name</th>
+<th class="px-3 py-2.5 text-left font-medium">Package</th>
+<th class="px-3 py-2.5 text-left font-medium">Media Type</th>
+<th class="px-3 py-2.5 text-left font-medium">Client Product</th>
+<th class="px-3 py-2.5 text-left font-medium">ชื่อ File</th>
+<th class="px-3 py-2.5 text-left font-medium">Version</th>
+<th class="px-3 py-2.5 text-left font-medium">Version (Nick name)</th>
+<th class="px-3 py-2.5 text-right font-medium">Durations</th>
+<th class="px-3 py-2.5 text-right font-medium">Number Spot/Loop (Time)</th>
+<th class="px-3 py-2.5 text-right font-medium">Total (Sec.)</th>
+<th class="px-3 py-2.5 text-left font-medium">Start On-Air</th>
+<th class="px-3 py-2.5 text-left font-medium">End On-Air</th>
+<th class="px-3 py-2.5 text-left font-medium">Start Contract Period</th>
+<th class="px-3 py-2.5 text-left font-medium">End Contract Period</th>
+<th class="px-3 py-2.5 text-left font-medium">Sound</th>
+<th class="px-3 py-2.5 text-left font-medium">Sales</th>
+<th class="px-3 py-2.5 text-left font-medium">Format, Screens</th>
+<th class="px-3 py-2.5 text-left font-medium">Create APP</th>
+<th class="px-3 py-2.5 text-left font-medium">Sale Approve Status</th>
+<th class="px-3 py-2.5 text-left font-medium">Date Sale Approve</th>
+<th class="px-3 py-2.5 text-left font-medium">Landlord Approve Status</th>
+<th class="px-3 py-2.5 text-left font-medium">Date Landlord Approve</th>
+</tr>
+</thead>
+<tbody id="txn-tbody"></tbody>
+</table>
+</div>
+</div>
+
 </div>
 <script>
 var EXP_DATA = [
@@ -561,28 +722,126 @@ function filterExport(){
   tbody.innerHTML=h;
 }
 
-function exportExcel(){
-  var sf=document.getElementById('exp-status').value;
-  var mf=document.getElementById('exp-media').value;
-  var gf=document.getElementById('exp-graphic').value;
-  var rows=EXP_DATA.filter(function(r){
-    if(sf!=='all'&&r.status!==sf) return false;
-    if(mf!=='all'&&r.media!==mf) return false;
-    if(gf!=='all'&&r.graphic!==gf) return false;
+/* ===== Transaction / Airtime report data & rendering ===== */
+var TXN_DATA = [
+  { txnDate:'02/05/2026', quo:'PB202604530', memo:'MEMO-0451', company:'AIS (Advanced Info Service Pcl.)',    pkg:'BTS Skytrain',        mediaType:'BTS Skytrain',            product:'AIS 5G Pro Max',       file:'ais_5g_promax_v3.mp4',       version:'V3', nickname:'Master-Final',   duration:'00:00:30', spots:'8/loop',  totalSec:240, startAir:'15/05/2026', endAir:'14/08/2026', startContract:'15/05/2026', endContract:'14/08/2026', sound:'Yes', sales:'Prapat Thanakit',    format:'MP4, 1920x1080',  createApp:'MediaFlow', saleStatus:'Approved', saleDate:'01/05/2026', llStatus:'Approved', llDate:'03/05/2026' },
+  { txnDate:'01/05/2026', quo:'PB202604525', memo:'MEMO-0450', company:'Coca-Cola (Thailand) Co., Ltd.',       pkg:'PlanBTV 240Full',     mediaType:'Plan B TV',               product:'Coke Zero Summer',      file:'cocacola_summer_v2.mov',    version:'V2', nickname:'Beach-Cut',      duration:'00:00:15', spots:'12/loop', totalSec:180, startAir:'10/05/2026', endAir:'09/08/2026', startContract:'10/05/2026', endContract:'09/08/2026', sound:'Yes', sales:'Sajjaporn Suwanchai', format:'MOV, 3840x2160',  createApp:'MediaFlow', saleStatus:'Approved', saleDate:'29/04/2026', llStatus:'Pending',  llDate:'-' },
+  { txnDate:'30/04/2026', quo:'PB202604521', memo:'MEMO-0449', company:'Thai Beverage Pcl. (Chang Beer)',      pkg:'PlanBTV 240Full',     mediaType:'Plan B TV',               product:'Chang Classic 620ml',   file:'chang_classic_v4.mp4',       version:'V4', nickname:'Songkran',       duration:'00:00:20', spots:'10/loop', totalSec:200, startAir:'01/05/2026', endAir:'31/07/2026', startContract:'01/05/2026', endContract:'31/07/2026', sound:'Yes', sales:'Prapat Thanakit',    format:'MP4, 1920x1080',  createApp:'MediaFlow', saleStatus:'Approved', saleDate:'28/04/2026', llStatus:'Approved', llDate:'29/04/2026' },
+  { txnDate:'28/04/2026', quo:'PB202604518', memo:'MEMO-0448', company:'Suntory PepsiCo Beverage (Thailand)',  pkg:'SiamParagonFacade',   mediaType:'Siam Paragon Facade',     product:'Pepsi Max Zero',        file:'pepsi_max_facade_v1.mp4',    version:'V1', nickname:'Rooftop-Loop',   duration:'00:00:45', spots:'4/loop',  totalSec:180, startAir:'01/05/2026', endAir:'30/06/2026', startContract:'01/05/2026', endContract:'30/06/2026', sound:'No',  sales:'Sajjaporn Suwanchai', format:'MP4, 5760x1080',  createApp:'MediaFlow', saleStatus:'Pending',  saleDate:'-',           llStatus:'Pending',  llDate:'-' },
+  { txnDate:'25/04/2026', quo:'',            memo:'MEMO-0447', company:'Unilever Thai Trading Ltd.',           pkg:'Multimedia',          mediaType:'7-Eleven Plus',           product:'Dove Shampoo',          file:'dove_shampoo_v2.mov',        version:'V2', nickname:'Hair-Care',      duration:'00:00:15', spots:'20/loop', totalSec:300, startAir:'15/04/2026', endAir:'14/07/2026', startContract:'15/04/2026', endContract:'14/07/2026', sound:'Yes', sales:'Sajjaporn Suwanchai', format:'MOV, 1080x1920',  createApp:'MediaFlow', saleStatus:'Approved', saleDate:'23/04/2026', llStatus:'Approved', llDate:'24/04/2026' },
+  { txnDate:'22/04/2026', quo:'PB202604490', memo:'MEMO-0446', company:'Nestle (Thai) Ltd.',                    pkg:'Rama9 Connect',       mediaType:'Rama 9 Connect',          product:'Nescafe Latte',         file:'nescafe_latte_v3.mp4',       version:'V3', nickname:'Morning-Boost',  duration:'00:00:30', spots:'6/loop',  totalSec:180, startAir:'01/04/2026', endAir:'30/06/2026', startContract:'01/04/2026', endContract:'30/06/2026', sound:'Yes', sales:'Sajjaporn Suwanchai', format:'MP4, 3840x1080',  createApp:'MediaFlow', saleStatus:'Approved', saleDate:'20/04/2026', llStatus:'Approved', llDate:'21/04/2026' },
+  { txnDate:'20/03/2026', quo:'PB202604472', memo:'MEMO-0442', company:'Siam Commercial Bank Pcl.',            pkg:'BTS Skytrain',        mediaType:'BTS Skytrain',            product:'SCB Easy 4.0',          file:'scb_easy_v5.mp4',            version:'V5', nickname:'Final-Cut',      duration:'00:00:30', spots:'8/loop',  totalSec:240, startAir:'01/04/2026', endAir:'30/09/2026', startContract:'01/04/2026', endContract:'30/09/2026', sound:'Yes', sales:'Sajjaporn Suwanchai', format:'MP4, 1920x1080',  createApp:'MediaFlow', saleStatus:'Approved', saleDate:'18/03/2026', llStatus:'Approved', llDate:'19/03/2026' },
+  { txnDate:'18/03/2026', quo:'PB202604460', memo:'MEMO-0441', company:'True Corporation Pcl.',                pkg:'PlanBTV Nationwide120', mediaType:'Plan B TV Nationwide',  product:'True 5G',               file:'true_5g_master.mp4',         version:'V4', nickname:'Nationwide',     duration:'00:00:20', spots:'15/loop', totalSec:300, startAir:'15/03/2026', endAir:'14/06/2026', startContract:'15/03/2026', endContract:'14/06/2026', sound:'Yes', sales:'Sajjaporn Suwanchai', format:'MP4, 1920x1080',  createApp:'MediaFlow', saleStatus:'Approved', saleDate:'16/03/2026', llStatus:'Rejected', llDate:'17/03/2026' },
+];
+
+function statusPill(s){
+  if(s==='Approved') return '<span class="text-[10.5px] px-2 py-0.5 rounded-full font-semibold border bg-emerald-50 text-emerald-700 border-emerald-200">Approved</span>';
+  if(s==='Pending')  return '<span class="text-[10.5px] px-2 py-0.5 rounded-full font-semibold border bg-amber-50 text-amber-700 border-amber-200">Pending</span>';
+  if(s==='Rejected') return '<span class="text-[10.5px] px-2 py-0.5 rounded-full font-semibold border bg-rose-50 text-rose-700 border-rose-200">Rejected</span>';
+  return '<span style="color:rgba(30,41,59,0.35)">-</span>';
+}
+
+function filterTxn(){
+  var q=(document.getElementById('txn-search').value||'').toLowerCase();
+  var ss=document.getElementById('txn-sale-status').value;
+  var ls=document.getElementById('txn-landlord-status').value;
+  var rows=TXN_DATA.filter(function(r){
+    if(q && (r.quo+' '+r.company+' '+r.product+' '+r.file+' '+r.pkg+' '+r.mediaType).toLowerCase().indexOf(q)===-1) return false;
+    if(ss!=='all' && r.saleStatus!==ss) return false;
+    if(ls!=='all' && r.llStatus!==ls) return false;
     return true;
   });
-  var csv='Job No,Ticket,Client,Product,Media,Graphic,Status,Feedback SLA,Progress SLA,Create Date\n';
-  rows.forEach(function(r){csv+=r.job+','+r.tk+','+r.client+','+r.product+','+r.media+','+(r.graphic||'-')+','+r.status+','+r.fbSla+','+r.pSla+','+r.date+'\n';});
+  document.getElementById('txn-count').textContent='Showing '+rows.length+' records';
+  var tbody=document.getElementById('txn-tbody');
+  if(!rows.length){tbody.innerHTML='<tr><td colspan="25" class="px-4 py-8 text-center text-[12px]" style="color:rgba(30,41,59,0.4)">No records found</td></tr>';return;}
+  var h='';
+  rows.forEach(function(r){
+    h+='<tr class="border-b border-[#F1F5F9] hover:bg-[#F8FAFC]/60 whitespace-nowrap">';
+    h+='<td class="px-3 py-2.5 font-mono" style="color:rgba(30,41,59,0.6)">'+r.txnDate+'</td>';
+    h+='<td class="px-3 py-2.5 font-mono font-semibold text-[#2D56D2]">'+(r.quo||'<span style="color:rgba(30,41,59,0.3)">-</span>')+'</td>';
+    h+='<td class="px-3 py-2.5 font-mono" style="color:rgba(30,41,59,0.6)">'+r.memo+'</td>';
+    h+='<td class="px-3 py-2.5 font-medium">'+r.company+'</td>';
+    h+='<td class="px-3 py-2.5"><span class="text-[10.5px] px-1.5 py-0.5 rounded font-semibold" style="background:rgba(45,86,210,0.10);color:#2D56D2;border:1px solid rgba(45,86,210,0.25)">'+r.pkg+'</span></td>';
+    h+='<td class="px-3 py-2.5">'+r.mediaType+'</td>';
+    h+='<td class="px-3 py-2.5">'+r.product+'</td>';
+    h+='<td class="px-3 py-2.5 font-mono text-[11px]">'+r.file+'</td>';
+    h+='<td class="px-3 py-2.5 font-mono font-semibold">'+r.version+'</td>';
+    h+='<td class="px-3 py-2.5" style="color:rgba(30,41,59,0.7)">'+r.nickname+'</td>';
+    h+='<td class="px-3 py-2.5 font-mono text-right">'+r.duration+'</td>';
+    h+='<td class="px-3 py-2.5 font-mono text-right">'+r.spots+'</td>';
+    h+='<td class="px-3 py-2.5 font-mono text-right font-semibold">'+r.totalSec+'</td>';
+    h+='<td class="px-3 py-2.5 font-mono">'+r.startAir+'</td>';
+    h+='<td class="px-3 py-2.5 font-mono">'+r.endAir+'</td>';
+    h+='<td class="px-3 py-2.5 font-mono">'+r.startContract+'</td>';
+    h+='<td class="px-3 py-2.5 font-mono">'+r.endContract+'</td>';
+    h+='<td class="px-3 py-2.5">'+(r.sound==='Yes'?'<span class="text-emerald-600 font-medium">Yes</span>':'<span style="color:rgba(30,41,59,0.5)">No</span>')+'</td>';
+    h+='<td class="px-3 py-2.5">'+r.sales+'</td>';
+    h+='<td class="px-3 py-2.5 text-[11px]" style="color:rgba(30,41,59,0.65)">'+r.format+'</td>';
+    h+='<td class="px-3 py-2.5">'+r.createApp+'</td>';
+    h+='<td class="px-3 py-2.5">'+statusPill(r.saleStatus)+'</td>';
+    h+='<td class="px-3 py-2.5 font-mono" style="color:rgba(30,41,59,0.6)">'+r.saleDate+'</td>';
+    h+='<td class="px-3 py-2.5">'+statusPill(r.llStatus)+'</td>';
+    h+='<td class="px-3 py-2.5 font-mono" style="color:rgba(30,41,59,0.6)">'+r.llDate+'</td>';
+    h+='</tr>';
+  });
+  tbody.innerHTML=h;
+}
+
+var _currentReport='sla';
+function switchReport(type){
+  _currentReport=type;
+  document.getElementById('rpt-sla').classList.toggle('hidden', type!=='sla');
+  document.getElementById('rpt-txn').classList.toggle('hidden', type==='sla');
+  if(type!=='sla') filterTxn();
+}
+
+function exportExcel(){
+  if(_currentReport==='sla'){
+    var sf=document.getElementById('exp-status').value;
+    var mf=document.getElementById('exp-media').value;
+    var gf=document.getElementById('exp-graphic').value;
+    var rows=EXP_DATA.filter(function(r){
+      if(sf!=='all'&&r.status!==sf) return false;
+      if(mf!=='all'&&r.media!==mf) return false;
+      if(gf!=='all'&&r.graphic!==gf) return false;
+      return true;
+    });
+    var csv='Job No,Ticket,Client,Product,Media,Graphic,Status,Feedback SLA,Progress SLA,Create Date\n';
+    rows.forEach(function(r){csv+=r.job+','+r.tk+','+r.client+','+r.product+','+r.media+','+(r.graphic||'-')+','+r.status+','+r.fbSla+','+r.pSla+','+r.date+'\n';});
+    downloadCsv(csv, 'sla_report.csv', rows.length);
+  } else {
+    var q=(document.getElementById('txn-search').value||'').toLowerCase();
+    var ss=document.getElementById('txn-sale-status').value;
+    var ls=document.getElementById('txn-landlord-status').value;
+    var rows=TXN_DATA.filter(function(r){
+      if(q && (r.quo+' '+r.company+' '+r.product+' '+r.file+' '+r.pkg+' '+r.mediaType).toLowerCase().indexOf(q)===-1) return false;
+      if(ss!=='all' && r.saleStatus!==ss) return false;
+      if(ls!=='all' && r.llStatus!==ls) return false;
+      return true;
+    });
+    var headers=['Transaction Date','Quote No.','PB/Memo','Company Name','Package','Media Type','Client Product','ชื่อ File','Version','Version (Nick name)','Durations','Number Spot/Loop (Time)','Total (Sec.)','Start On-Air','End On-Air','Start Contract Period','End Contract Period','Sound','Sales','Format, Screens','Create APP','Sale Approve Status','Date Sale Approve','Landlord Approve Status','Date Landlord Approve'];
+    var csv=headers.join(',')+'\n';
+    function esc(v){v=(v==null?'':String(v));return v.indexOf(',')>=0||v.indexOf('"')>=0?'"'+v.replace(/"/g,'""')+'"':v;}
+    rows.forEach(function(r){
+      csv+=[r.txnDate,r.quo,r.memo,r.company,r.pkg,r.mediaType,r.product,r.file,r.version,r.nickname,r.duration,r.spots,r.totalSec,r.startAir,r.endAir,r.startContract,r.endContract,r.sound,r.sales,r.format,r.createApp,r.saleStatus,r.saleDate,r.llStatus,r.llDate].map(esc).join(',')+'\n';
+    });
+    var fname=_currentReport==='transaction'?'transaction_report.csv':'airtime_report.csv';
+    downloadCsv(csv, fname, rows.length);
+  }
+}
+
+function downloadCsv(csv, fname, count){
   var blob=new Blob(['\xEF\xBB\xBF'+csv],{type:'text/csv;charset=utf-8;'});
   var url=URL.createObjectURL(blob);
-  var a=document.createElement('a');a.href=url;a.download='media_approval_report.csv';a.click();
+  var a=document.createElement('a');a.href=url;a.download=fname;a.click();
   URL.revokeObjectURL(url);
   var toast=document.createElement('div');toast.className='fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-[#0B1430] text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3 text-[13px]';
-  toast.innerHTML='<svg class="w-5 h-5 text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg><span>Exported '+rows.length+' records to CSV</span>';
+  toast.innerHTML='<svg class="w-5 h-5 text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg><span>Exported '+count+' records to CSV</span>';
   document.body.appendChild(toast);setTimeout(function(){toast.style.opacity='0';toast.style.transition='opacity 0.3s';setTimeout(function(){toast.remove();},300);},3000);
 }
 
 filterExport();
+filterTxn();
 
 /* ========== Dashboard Widgets: Packages, Workload, SLA ========== */
 var PKG_DATA = [

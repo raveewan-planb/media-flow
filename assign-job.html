@@ -513,8 +513,11 @@ function prioBadge(p) {
 
 function actionButtons(row) {
   /* View — eye icon (heroicons) */
+  var viewHref = 'assign-detail.html?id=' + encodeURIComponent(row.id || '') +
+    '&job=' + encodeURIComponent(row.job || '') +
+    '&ticket=' + encodeURIComponent(row.ticket || '');
   var viewBtn =
-    '<a href="job-detail.html" class="w-7 h-7 rounded-md inline-flex items-center justify-center bg-blue-50 text-blue-600 hover:bg-blue-100 hover:text-blue-700 transition-colors" title="ดูรายละเอียด">' +
+    '<a href="' + viewHref + '" class="w-7 h-7 rounded-md inline-flex items-center justify-center bg-blue-50 text-blue-600 hover:bg-blue-100 hover:text-blue-700 transition-colors" title="ดูรายละเอียด">' +
       '<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>' +
     '</a>';
 
@@ -843,7 +846,7 @@ function openAssignModal(count, ticketId) {
     html +=     '<div><div class="text-[10px] uppercase font-semibold tracking-wider mb-1" style="color:rgba(30,41,59,0.45)">Jobs</div><div class="text-[14px] font-bold tnum text-[#0B1430]">' + ctx.count + ' <span class="text-[11px] font-medium" style="color:rgba(30,41,59,0.5)">job' + (ctx.count!==1?'s':'') + '</span></div></div>';
     html +=     '<div><div class="text-[10px] uppercase font-semibold tracking-wider mb-1" style="color:rgba(30,41,59,0.45)">Package</div><div class="inline-flex items-center"><span class="text-[12px] px-2 py-0.5 rounded font-semibold" style="background:rgba(45,86,210,0.10);color:#2D56D2;border:1px solid rgba(45,86,210,0.25)">' + (ctx.package || '—') + '</span></div></div>';
     html +=     '<div><div class="text-[10px] uppercase font-semibold tracking-wider mb-1" style="color:rgba(30,41,59,0.45)">Media Group</div><div class="inline-flex items-center gap-1.5"><span class="w-2 h-2 rounded-full" style="background:'+gC+'"></span><span class="text-[12px] font-semibold" style="color:'+gC+'">' + (ctx.mediaGroup || '—') + '</span></div></div>';
-    html +=     '<div><div class="text-[10px] uppercase font-semibold tracking-wider mb-1" style="color:rgba(30,41,59,0.45)">Section › Type</div><div class="text-[12px] font-medium text-[#0B1430] leading-tight">' + (ctx.mediaSection || '—') + ' <span style="color:rgba(30,41,59,0.3)">›</span> ' + (ctx.mediaType || '—') + '</div></div>';
+    html +=     '<div><div class="text-[10px] uppercase font-semibold tracking-wider mb-1" style="color:rgba(30,41,59,0.45)">Media Type</div><div class="text-[12px] font-medium text-[#0B1430] leading-tight">' + (ctx.mediaType || '—') + '</div></div>';
     html +=   '</div>';
     html += '</div>';
 

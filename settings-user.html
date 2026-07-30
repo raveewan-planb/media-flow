@@ -140,10 +140,15 @@ window.USER_GROUPS_SEED = USER_GROUPS_SEED;
      ======================================================== -->
 <script type="text/babel" data-presets="react">
 const USER_ROLES = [
-  { id:'sale',       label:'Sale / Sale Co',   color:'#10B981' },
   { id:'head-cg',    label:'Head CG',          color:'#2D56D2' },
   { id:'team-cg',    label:'Team CG',          color:'#7C3AED' },
   { id:'media-mgmt', label:'Media Management', color:'#F59E0B' },
+];
+
+const POSITIONS = [
+  { value:'',           label:'— เลือกตำแหน่ง —' },
+  { value:'sale',       label:'Sale' },
+  { value:'cs-support', label:'CS Support' },
 ];
 
 const DEPARTMENTS = [
@@ -234,7 +239,7 @@ const USERS_SEED = [
     mediaTypes:[], role:null, teamCgIds:[] },
 ];
 
-Object.assign(window, { USER_ROLES, DEPARTMENTS, USERS_SEED, getRoleById, userGroupHasMediaApproval, findTypeChain });
+Object.assign(window, { USER_ROLES, POSITIONS, DEPARTMENTS, USERS_SEED, getRoleById, userGroupHasMediaApproval, findTypeChain });
 </script>
 
 <!-- ========================================================
@@ -592,7 +597,7 @@ function TeamCgPicker({ selectedIds, currentMedia, currentPackages, currentUserI
 }
 
 function UserDrawer({ open, mode, initial, onClose, onSave }) {
-  const blank = { id:'', name:'', department:'Sales', email:'', phone:'', status:'active', userGroupId:'', mediaTypes:[], mediaPackages:[], role:null, teamCgIds:[], setPassword:false, password:'', confirmPassword:'' };
+  const blank = { id:'', name:'', department:'Sales', email:'', phone:'', position:'', status:'active', userGroupId:'', mediaTypes:[], mediaPackages:[], role:null, teamCgIds:[], setPassword:false, password:'', confirmPassword:'' };
   const [form, setForm] = useState(blank);
   const [showPwd, setShowPwd] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
@@ -609,7 +614,7 @@ function UserDrawer({ open, mode, initial, onClose, onSave }) {
 
   const handleGroupChange = (gid) => {
     const hasMA = window.userGroupHasMediaApproval(gid);
-    setForm(f => ({ ...f, userGroupId: gid, role: hasMA ? (f.role || 'sale') : null, teamCgIds: hasMA ? f.teamCgIds : [] }));
+    setForm(f => ({ ...f, userGroupId: gid, role: hasMA ? (f.role || 'head-cg') : null, teamCgIds: hasMA ? f.teamCgIds : [] }));
   };
   const handleRoleChange = (r) => setForm(f => ({ ...f, role: r, teamCgIds: r === 'head-cg' ? f.teamCgIds : [] }));
 
@@ -668,6 +673,10 @@ function UserDrawer({ open, mode, initial, onClose, onSave }) {
                   className="w-full h-9 px-3 bg-surface-50 border border-surface-200 rounded-lg text-[13px] font-mono placeholder:opacity-40" />
               </Field>
             </div>
+
+            <Field label="ตำแหน่ง">
+              <Select value={form.position || ''} onChange={e => update('position', e.target.value)} options={window.POSITIONS} />
+            </Field>
 
             <Field label="สถานะ">
               <div className="flex gap-2">
