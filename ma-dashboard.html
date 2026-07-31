@@ -296,13 +296,31 @@ table th{position:sticky;top:0;z-index:1}
     <div class="p-3 sm:p-6">
     <div class="space-y-5 max-w-[1600px] mx-auto">
 <!-- Header -->
-<div class="flex items-center gap-3 mb-1">
+<div class="flex items-center gap-3 mb-1 flex-wrap">
 <div class="w-12 h-12 rounded-xl flex items-center justify-center shadow-lg" style="background:linear-gradient(135deg,#7C3AED,#A78BFA)">
 <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" stroke-width="1.8" viewbox="0 0 24 24"><path d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
 </div>
 <div>
 <h1 class="text-[22px] font-semibold text-[#0B1430]">Media Approval Dashboard</h1>
 <p class="text-[13px]" style="color:rgba(30,41,59,0.55)">Overview of tickets, jobs, and SLA</p>
+</div>
+<div class="flex-1"></div>
+<!-- Date Range Filter -->
+<div class="flex items-center gap-2 bg-white border border-[#E2E8F0] rounded-xl shadow-sm px-3 py-2">
+  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" style="color:#7C3AED" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>
+  <div class="flex items-center gap-1.5">
+    <input id="dash-from" type="text" onfocus="this.type='date'" onblur="fmtHdrDate(this,'from')" value="01/07/2026" placeholder="dd/mm/yyyy" class="w-[110px] h-8 px-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-md text-[12px] font-mono text-[#0B1430] focus:outline-none focus:border-[#7C3AED]"/>
+    <span class="text-[12px]" style="color:rgba(30,41,59,0.4)">→</span>
+    <input id="dash-to" type="text" onfocus="this.type='date'" onblur="fmtHdrDate(this,'to')" value="31/07/2026" placeholder="dd/mm/yyyy" class="w-[110px] h-8 px-2 bg-[#F8FAFC] border border-[#E2E8F0] rounded-md text-[12px] font-mono text-[#0B1430] focus:outline-none focus:border-[#7C3AED]"/>
+  </div>
+  <div class="w-px h-6 bg-[#E2E8F0] mx-1"></div>
+  <div class="flex items-center gap-1">
+    <button onclick="setDashRange('today')"    class="dash-range-btn px-2 h-7 rounded-md text-[11px] font-medium hover:bg-[#F1F5F9]" style="color:rgba(30,41,59,0.65)">Today</button>
+    <button onclick="setDashRange('week')"     class="dash-range-btn px-2 h-7 rounded-md text-[11px] font-medium hover:bg-[#F1F5F9]" style="color:rgba(30,41,59,0.65)">Week</button>
+    <button onclick="setDashRange('month')"    class="dash-range-btn is-active px-2 h-7 rounded-md text-[11px] font-medium" style="background:rgba(124,58,237,0.10);color:#7C3AED">Month</button>
+    <button onclick="setDashRange('quarter')"  class="dash-range-btn px-2 h-7 rounded-md text-[11px] font-medium hover:bg-[#F1F5F9]" style="color:rgba(30,41,59,0.65)">Quarter</button>
+    <button onclick="setDashRange('year')"     class="dash-range-btn px-2 h-7 rounded-md text-[11px] font-medium hover:bg-[#F1F5F9]" style="color:rgba(30,41,59,0.65)">Year</button>
+  </div>
 </div>
 </div>
 <!-- Row 1: Grouped Summary Cards -->
@@ -382,7 +400,7 @@ table th{position:sticky;top:0;z-index:1}
             <div class="text-[10px] uppercase font-semibold tracking-wide opacity-90">High-Version Jobs</div>
             <div class="text-[10px] opacity-75 mt-0.5">Jobs with >3 versions</div>
             <div class="text-[24px] font-bold tnum mt-1 leading-none" id="kpi-highver-jobs">14</div>
-            <div class="text-[10px] mt-1 opacity-90 flex items-center gap-1"><svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126z"/></svg>ตรวจสอบ</div>
+            <div class="text-[10px] mt-1 opacity-90 flex items-center gap-1"><svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75"/></svg>Jobs</div>
           </div>
           <div class="w-9 h-9 rounded-lg bg-white/20 flex items-center justify-center"><svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192"/></svg></div>
         </div>
@@ -392,9 +410,9 @@ table th{position:sticky;top:0;z-index:1}
         <div class="flex items-start justify-between">
           <div>
             <div class="text-[10px] uppercase font-semibold tracking-wide opacity-90">High-Prove Versions</div>
-            <div class="text-[10px] opacity-75 mt-0.5">Prove with >3 versions</div>
+            <div class="text-[10px] opacity-75 mt-0.5">Version with >3 prove</div>
             <div class="text-[24px] font-bold tnum mt-1 leading-none" id="kpi-highprove">8</div>
-            <div class="text-[10px] mt-1 opacity-90 flex items-center gap-1"><svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126z"/></svg>เกินขีดจำกัด</div>
+            <div class="text-[10px] mt-1 opacity-90 flex items-center gap-1"><svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75"/></svg>Versions</div>
           </div>
           <div class="w-9 h-9 rounded-lg bg-white/20 flex items-center justify-center"><svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg></div>
         </div>
@@ -413,28 +431,28 @@ table th{position:sticky;top:0;z-index:1}
       <div class="flex-1 h-px bg-[#E2E8F0]"></div>
     </div>
     <div class="grid grid-cols-2 gap-3">
-      <!-- Extra Proof Surcharge -->
-      <div class="kpi-card rounded-xl p-3.5 text-white shadow-sm" style="background:linear-gradient(135deg,#047857 0%,#10B981 100%)" onclick="flashCard(this)">
-        <div class="flex items-start justify-between">
-          <div>
-            <div class="text-[10px] uppercase font-semibold tracking-wide opacity-90">Extra Proof Surcharge</div>
-            <div class="text-[10px] opacity-75 mt-0.5">ค่าปรับ Proof ส่วนเกิน</div>
-            <div class="text-[24px] font-bold tnum mt-1 leading-none" id="kpi-extra-proof">฿12,500</div>
-            <div class="text-[10px] mt-1 opacity-90 flex items-center gap-1"><svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33"/></svg>THB · 8 jobs</div>
-          </div>
-          <div class="w-9 h-9 rounded-lg bg-white/20 flex items-center justify-center"><svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/></svg></div>
-        </div>
-      </div>
       <!-- Extra Version Surcharge -->
       <div class="kpi-card rounded-xl p-3.5 text-white shadow-sm" style="background:linear-gradient(135deg,#059669 0%,#34D399 100%)" onclick="flashCard(this)">
         <div class="flex items-start justify-between">
           <div>
             <div class="text-[10px] uppercase font-semibold tracking-wide opacity-90">Extra Version Surcharge</div>
-            <div class="text-[10px] opacity-75 mt-0.5">ค่าปรับ Version ส่วนเกิน</div>
+            <div class="text-[10px] opacity-75 mt-0.5">ค่า Version ส่วนเกิน</div>
             <div class="text-[24px] font-bold tnum mt-1 leading-none" id="kpi-extra-version">฿24,800</div>
             <div class="text-[10px] mt-1 opacity-90 flex items-center gap-1"><svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33"/></svg>THB · 14 jobs</div>
           </div>
           <div class="w-9 h-9 rounded-lg bg-white/20 flex items-center justify-center"><svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></div>
+        </div>
+      </div>
+      <!-- Extra Prove Surcharge -->
+      <div class="kpi-card rounded-xl p-3.5 text-white shadow-sm" style="background:linear-gradient(135deg,#047857 0%,#10B981 100%)" onclick="flashCard(this)">
+        <div class="flex items-start justify-between">
+          <div>
+            <div class="text-[10px] uppercase font-semibold tracking-wide opacity-90">Extra Prove Surcharge</div>
+            <div class="text-[10px] opacity-75 mt-0.5">ค่า Prove ส่วนเกิน</div>
+            <div class="text-[24px] font-bold tnum mt-1 leading-none" id="kpi-extra-proof">฿12,500</div>
+            <div class="text-[10px] mt-1 opacity-90 flex items-center gap-1"><svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33"/></svg>THB · 8 jobs</div>
+          </div>
+          <div class="w-9 h-9 rounded-lg bg-white/20 flex items-center justify-center"><svg class="w-4.5 h-4.5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/></svg></div>
         </div>
       </div>
     </div>
@@ -687,6 +705,29 @@ var EXP_DATA = [
 ];
 
 function fmtD(el){if(el.value){var p=el.value.split('-');if(p.length===3){el.type='text';el.value=p[2]+'/'+p[1]+'/'+p[0];}}else{el.type='text';}}
+
+/* ===== Dashboard date-range filter ===== */
+function fmtHdrDate(el){
+  if(el.value && el.value.indexOf('-')>=0){var p=el.value.split('-');if(p.length===3){el.value=p[2]+'/'+p[1]+'/'+p[0];}}
+  el.type='text';
+}
+function _fmtDMY(d){var dd=String(d.getDate()).padStart(2,'0'),mm=String(d.getMonth()+1).padStart(2,'0');return dd+'/'+mm+'/'+d.getFullYear();}
+function setDashRange(key){
+  var today=new Date(), from=new Date(today), to=new Date(today);
+  if(key==='today'){/* same */}
+  else if(key==='week'){var day=today.getDay()||7;from.setDate(today.getDate()-(day-1));to.setDate(from.getDate()+6);}
+  else if(key==='month'){from=new Date(today.getFullYear(),today.getMonth(),1);to=new Date(today.getFullYear(),today.getMonth()+1,0);}
+  else if(key==='quarter'){var qs=Math.floor(today.getMonth()/3)*3;from=new Date(today.getFullYear(),qs,1);to=new Date(today.getFullYear(),qs+3,0);}
+  else if(key==='year'){from=new Date(today.getFullYear(),0,1);to=new Date(today.getFullYear(),11,31);}
+  document.getElementById('dash-from').value=_fmtDMY(from);
+  document.getElementById('dash-to').value=_fmtDMY(to);
+  document.querySelectorAll('.dash-range-btn').forEach(function(b){
+    var on=b.getAttribute('onclick')==="setDashRange('"+key+"')";
+    b.classList.toggle('is-active',on);
+    b.style.background=on?'rgba(124,58,237,0.10)':'';
+    b.style.color=on?'#7C3AED':'rgba(30,41,59,0.65)';
+  });
+}
 
 function filterExport(){
   var sf=document.getElementById('exp-status').value;
