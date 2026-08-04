@@ -908,13 +908,17 @@ function renderJobs() {
       '</span>';
     }
     html += '</div>';
-    // Row 1: Period (+ Duration นาที/วินาที), Versions, Duration, Assigned To
+    // Row 1: Period (+ Pack, Months·Days, Duration นาที/วินาที), Versions, Duration, Assigned To
     html += '<div class="grid grid-cols-2 sm:grid-cols-4 gap-x-6 gap-y-1.5 text-[12px] mt-2">';
     var durParts = [];
     if (typeof j.durationMin === 'number' && j.durationMin > 0) durParts.push(j.durationMin + ' นาที');
     if (typeof j.durationSec === 'number' && j.durationSec > 0) durParts.push(j.durationSec + ' วินาที');
     var durBadge = durParts.length ? ' <span class="inline-flex items-center gap-1 ml-1 text-[10.5px] font-semibold px-1.5 py-0.5 rounded bg-[#EBF5FF] text-[#2D56D2] border border-[#D6ECFF] tnum align-middle"><svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>' + durParts.join(' ') + '</span>' : '';
-    html += '<div><span style="color:rgba(30,41,59,0.45)">Period:</span> <span class="font-medium font-mono">' + j.period + '</span>' + durBadge + '</div>';
+    var packQtyVal = (typeof j.packQty === 'number' && j.packQty > 0) ? j.packQty : 1;
+    var packBadge = ' <span class="inline-flex items-center ml-1 text-[10.5px] font-semibold px-1.5 py-0.5 rounded-full align-middle" style="background:rgba(45,86,210,0.10);color:#2D56D2;border:1px solid rgba(45,86,210,0.25)">× ' + packQtyVal + ' Pack</span>';
+    var mdText = tdCalcPeriodMD(j.period);
+    var mdBadge = mdText ? ' <span class="inline-flex items-center ml-1 text-[10.5px] font-semibold px-1.5 py-0.5 rounded-full align-middle" style="background:rgba(16,185,129,0.10);color:#047857;border:1px solid rgba(16,185,129,0.25)">' + mdText + '</span>' : '';
+    html += '<div><span style="color:rgba(30,41,59,0.45)">Period:</span> <span class="font-medium font-mono">' + j.period + '</span>' + packBadge + mdBadge + durBadge + '</div>';
     html += '<div><span style="color:rgba(30,41,59,0.45)">Versions:</span> <span class="font-medium">' + j.versions + '</span></div>';
     html += '<div><span style="color:rgba(30,41,59,0.45)">Duration:</span> <span class="font-medium">' + j.duration + '</span></div>';
     html += '<div><span style="color:rgba(30,41,59,0.45)">Assigned To:</span> ';
@@ -2045,6 +2049,62 @@ var _tdVerCounters = {}; // key: jobId  →  int (count of versions added in thi
 var _tdVerOffset = {};   // key: jobId  →  int (max version from existing jobs with same package)
 var _tdFiles = {}; // key: versionId + '_' + kind  → File[]
 
+// Parse "dd/mm/yyyy - dd/mm/yyyy" (or "yyyy-mm-dd - yyyy-mm-dd") into {sd, ed} Date pair, or null.
+// Require whitespace on both sides of the separator so ISO dates (which contain "-") don't split internally.
+function tdParsePeriod(str) {
+  if (!str) return null;
+  var parts = String(str).split(/\s+[-–—]\s+/);
+  if (parts.length !== 2) return null;
+  function one(s) {
+    s = (s || '').trim();
+    if (/^\d{4}-\d{2}-\d{2}$/.test(s)) { var p = s.split('-'); return new Date(+p[0], +p[1]-1, +p[2]); }
+    var m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/);
+    if (!m) return null;
+    var y = +m[3]; if (y < 100) y += 2000;
+    return new Date(y, +m[2]-1, +m[1]);
+  }
+  var sd = one(parts[0]), ed = one(parts[1]);
+  if (!sd || !ed || isNaN(sd) || isNaN(ed)) return null;
+  return { sd: sd, ed: ed };
+}
+
+// Return "X เดือน · Y วัน" from a Period string, or "" if unparseable / end < start.
+function tdCalcPeriodMD(str) {
+  var p = tdParsePeriod(str);
+  if (!p) return '';
+  var sd = p.sd, ed = p.ed;
+  if (ed < sd) return '';
+  var months = (ed.getFullYear() - sd.getFullYear()) * 12 + (ed.getMonth() - sd.getMonth());
+  var days = ed.getDate() - sd.getDate();
+  if (days < 0) { months -= 1; var prev = new Date(ed.getFullYear(), ed.getMonth(), 0); days += prev.getDate(); }
+  var out = [];
+  if (months > 0) out.push(months + ' เดือน');
+  out.push(days + ' วัน');
+  return out.join(' · ');
+}
+
+// Ceil months from Period (used for quota). Returns positive integer or 0.
+function tdCeilMonths(str) {
+  var p = tdParsePeriod(str);
+  if (!p) return 0;
+  var sd = p.sd, ed = p.ed;
+  if (ed < sd) return 0;
+  var months = (ed.getFullYear() - sd.getFullYear()) * 12 + (ed.getMonth() - sd.getMonth());
+  var days = ed.getDate() - sd.getDate();
+  if (days < 0) { months -= 1; var prev = new Date(ed.getFullYear(), ed.getMonth(), 0); days += prev.getDate(); }
+  var cm = months + (days > 0 ? 1 : 0);
+  return cm < 1 ? 1 : cm;
+}
+
+// Quota = (packQty × 3) × ceil(months). Returns null if inputs missing/invalid.
+function tdComputeQuota(packQty, periodStr) {
+  var q = parseInt(packQty, 10);
+  if (!q || q < 1) return null;
+  var m = tdCeilMonths(periodStr);
+  if (!m) return null;
+  return q * 3 * m;
+}
+
 /* ===== Numeric-only input helpers (นาที / วินาที) ===== */
 function tdBlockNonDigit(e) {
   var allowed = ['Backspace','Delete','ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Tab','Home','End','Enter'];
@@ -2169,6 +2229,48 @@ function tdUpdateVersionCount(jid) {
     if (count > 0) { badge.style.background = '#EBF5FF'; badge.style.color = '#2D56D2'; badge.style.borderColor = '#D6ECFF'; }
     else { badge.style.background = 'rgba(248,250,252,0.8)'; badge.style.color = 'rgba(30,41,59,0.45)'; badge.style.borderColor = '#E2E8F0'; }
   }
+  tdUpdateJobQuotaBadge(jid);
+}
+
+// Read Pack qty + Period from the inline job's inputs, then refresh the Quota badge and Period-MD pill.
+function tdUpdateJobQuotaBadge(jid) {
+  var qtyEl = document.getElementById('tdj-' + jid + '-packqty');
+  var sEl = document.getElementById('tdj-' + jid + '-pstart');
+  var eEl = document.getElementById('tdj-' + jid + '-pend');
+  var mdEl = document.getElementById('tdj-' + jid + '-pmd');
+  var qBadge = document.getElementById('tdj-' + jid + '-quota');
+  var s = sEl ? sEl.value : '', e = eEl ? eEl.value : '';
+  // Period-MD pill
+  if (mdEl) {
+    if (s && e) {
+      var mdText = tdCalcPeriodMD(s + ' - ' + e);
+      if (mdText) { mdEl.textContent = mdText; mdEl.classList.remove('hidden'); }
+      else { mdEl.textContent = 'สิ้นสุด < เริ่ม'; mdEl.style.background='rgba(190,18,60,0.10)'; mdEl.style.color='#BE123C'; mdEl.style.borderColor='rgba(190,18,60,0.25)'; mdEl.classList.remove('hidden'); }
+    } else { mdEl.classList.add('hidden'); mdEl.textContent = ''; }
+  }
+  if (!qBadge) return;
+  var packQty = qtyEl ? parseInt(qtyEl.value, 10) : 0;
+  var quota = (s && e) ? tdComputeQuota(packQty, s + ' - ' + e) : null;
+  var used = tdCountJobUsed(jid);
+  if (quota === null) {
+    qBadge.textContent = 'Quota —';
+    qBadge.style.background = 'rgba(248,250,252,0.8)';
+    qBadge.style.color = 'rgba(30,41,59,0.45)';
+    qBadge.style.borderColor = '#E2E8F0';
+    return;
+  }
+  qBadge.textContent = 'Version ' + used + '/' + quota;
+  if (used > quota) { qBadge.style.background='rgba(190,18,60,0.10)'; qBadge.style.color='#BE123C'; qBadge.style.borderColor='rgba(190,18,60,0.25)'; }
+  else if (used === quota) { qBadge.style.background='rgba(245,158,11,0.10)'; qBadge.style.color='#B45309'; qBadge.style.borderColor='rgba(245,158,11,0.25)'; }
+  else { qBadge.style.background='#EBF5FF'; qBadge.style.color='#2D56D2'; qBadge.style.borderColor='#D6ECFF'; }
+}
+
+// Count active versions for this job (offset from existing package + newly added in this job).
+function tdCountJobUsed(jid) {
+  var offset = _tdVerOffset[jid] || 0;
+  var area = document.getElementById('tdj-' + jid + '-versions');
+  var current = area ? area.querySelectorAll(':scope > [id^="tdv-"]').length : 0;
+  return offset + current;
 }
 
 /* Re-label all version cards in a job using current offset */
@@ -2190,6 +2292,7 @@ function tdCheckExistingPackage(jid) {
   var pkg = sel ? (sel.value || '').trim() : '';
   var maxVer = 0;
   var matchedPack = '';
+  var matchedJob = null;
   if (pkg && typeof JOBS !== 'undefined' && Array.isArray(JOBS)) {
     var pk = pkg.toLowerCase();
     JOBS.forEach(function(job) {
@@ -2197,26 +2300,33 @@ function tdCheckExistingPackage(jid) {
       var mp = String(job.mediaPack).toLowerCase();
       // Match: exact OR mediaPack contains package OR package contains mediaPack
       if (mp === pk || mp.indexOf(pk) >= 0 || pk.indexOf(mp) >= 0) {
-        // Use versions count first
+        // Version count from `versions` field or highest mockup ver
         var jobMax = job.versions || 0;
-        // Then check mockups for a higher max ver
         if (Array.isArray(job.mockups)) {
           job.mockups.forEach(function(m) {
             if (m && typeof m.ver === 'number' && m.ver > jobMax) jobMax = m.ver;
           });
         }
-        if (jobMax > maxVer) { maxVer = jobMax; matchedPack = job.mediaPack; }
+        // Prefer the job with the most versions as the autofill source; keep first hit as fallback
+        if (!matchedJob || jobMax > maxVer) {
+          maxVer = jobMax;
+          matchedPack = job.mediaPack;
+          matchedJob = job;
+        }
       }
     });
   }
   _tdVerOffset[jid] = maxVer;
+  // Auto-populate Pack / Start / End / Duration min-sec / Nickname from the matched existing job.
+  if (matchedJob) tdApplyJobDefaults(jid, matchedJob);
   tdRelabelVersions(jid);
+  tdUpdateJobQuotaBadge(jid);
   // Show inline hint about continuing versions
   var hintEl = document.getElementById('tdj-' + jid + '-vhint');
   if (hintEl) {
     if (maxVer > 0) {
       hintEl.innerHTML = '<svg class="w-3 h-3 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>' +
-        '<span>พบ <strong>' + matchedPack + '</strong> มีอยู่แล้ว (Version ล่าสุด: <strong>V' + maxVer + '</strong>) — Version ใหม่จะต่อจาก <strong>V' + (maxVer + 1) + '</strong></span>';
+        '<span>พบ <strong>' + matchedPack + '</strong> มีอยู่แล้ว (Version ล่าสุด: <strong>V' + maxVer + '</strong>) — Version ใหม่จะต่อจาก <strong>V' + (maxVer + 1) + '</strong> · เติมค่าจาก Job เดิมให้อัตโนมัติ</span>';
       hintEl.classList.remove('hidden');
     } else {
       hintEl.classList.add('hidden');
@@ -2225,7 +2335,56 @@ function tdCheckExistingPackage(jid) {
   }
 }
 
-function tdAddVersion(jid) {
+// Fill Pack qty / Period start-end / Duration min-sec / Nickname on the inline Add-Job form
+// from an existing matched JOBS entry. Only overwrites empty fields — user's manual edits win.
+function tdApplyJobDefaults(jid, job) {
+  if (!job) return;
+  function pad2(n) { n = String(n); return n.length < 2 ? '0' + n : n; }
+  function toIsoDate(d) { return d.getFullYear() + '-' + pad2(d.getMonth()+1) + '-' + pad2(d.getDate()); }
+  // Pack qty — existing JOBS may not carry packQty; fall back to 1
+  var pq = (typeof job.packQty === 'number' && job.packQty > 0) ? job.packQty : 1;
+  var pqEl = document.getElementById('tdj-' + jid + '-packqty');
+  if (pqEl && (pqEl.value === '' || pqEl.value === '1')) pqEl.value = pq;
+  // Period — parse "dd/mm/yyyy - dd/mm/yyyy" or ISO into two ISO date strings, then set the two <input type="date">
+  var per = tdParsePeriod(job.period || '');
+  if (per) {
+    var startISO = toIsoDate(per.sd);
+    var endISO   = toIsoDate(per.ed);
+    var sEl = document.getElementById('tdj-' + jid + '-pstart');
+    var eEl = document.getElementById('tdj-' + jid + '-pend');
+    // Set both .value and the attribute — some browsers only reflect one; also try valueAsDate as fallback.
+    if (sEl && !sEl.value) { sEl.value = startISO; sEl.setAttribute('value', startISO); if (!sEl.value) { try { sEl.valueAsDate = per.sd; } catch(e) {} } }
+    if (eEl && !eEl.value) { eEl.value = endISO;   eEl.setAttribute('value', endISO);   if (!eEl.value) { try { eEl.valueAsDate = per.ed; } catch(e) {} } }
+  } else if (job.period) {
+    // Parse failed — log so user can see why in console
+    if (typeof console !== 'undefined' && console.warn) console.warn('[ticket-detail] tdApplyJobDefaults: failed to parse job.period =', JSON.stringify(job.period));
+  }
+  // Duration นาที / วินาที
+  var dmEl = document.getElementById('tdj-' + jid + '-durmin');
+  if (dmEl && dmEl.value === '' && typeof job.durationMin === 'number' && job.durationMin > 0) dmEl.value = String(job.durationMin);
+  var dsEl = document.getElementById('tdj-' + jid + '-dursec');
+  if (dsEl && dsEl.value === '' && typeof job.durationSec === 'number' && job.durationSec > 0) dsEl.value = String(job.durationSec);
+  // Nickname — explicit nickname wins; fall back to jobNo to show provenance
+  var nick = job.nickname || job.jobNo || '';
+  var nkEl = document.getElementById('tdj-' + jid + '-nickname');
+  if (nkEl && nkEl.value === '' && nick) nkEl.value = nick;
+}
+
+function tdAddVersion(jid, opts) {
+  opts = opts || {};
+  if (!opts.bypassQuota) {
+    var qtyEl = document.getElementById('tdj-' + jid + '-packqty');
+    var sEl = document.getElementById('tdj-' + jid + '-pstart');
+    var eEl = document.getElementById('tdj-' + jid + '-pend');
+    var _pq = qtyEl ? parseInt(qtyEl.value, 10) : 0;
+    var _s = sEl ? sEl.value : '', _e = eEl ? eEl.value : '';
+    var _quota = (_s && _e) ? tdComputeQuota(_pq, _s + ' - ' + _e) : null;
+    var _used = tdCountJobUsed(jid);
+    if (_quota !== null && _used >= _quota) {
+      tdShowQuotaPopup(jid, _used, _quota);
+      return;
+    }
+  }
   _tdVerCounters[jid] = (_tdVerCounters[jid] || 0) + 1;
   var vNum = _tdVerCounters[jid];
   var offset = _tdVerOffset[jid] || 0;
@@ -2240,14 +2399,27 @@ function tdAddVersion(jid) {
 
   var ver = document.createElement('div');
   ver.id = 'tdv-' + vid;
-  ver.className = 'border border-[#E2E8F0] rounded-lg overflow-hidden bg-white';
+  ver.className = 'border rounded-lg overflow-hidden bg-white ' + (opts.overQuota ? 'border-amber-300' : 'border-[#E2E8F0]');
+
+  var evBadge = '';
+  if (opts.overQuota) {
+    var evCount = (opts.evidence || []).length;
+    var evNames = (opts.evidence || []).map(function(f){return f.name;}).join(', ').replace(/"/g,'&quot;');
+    evBadge =
+      '<span class="text-[10px] px-1.5 py-0.5 rounded font-semibold" style="background:rgba(245,158,11,0.12);color:#B45309;border:1px solid rgba(245,158,11,0.30)">Over Quota</span>' +
+      '<span class="text-[10px] px-1.5 py-0.5 rounded font-medium inline-flex items-center gap-1" style="background:#fff;color:rgba(30,41,59,0.65);border:1px solid #E2E8F0" title="' + evNames + '">' +
+        '<svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M18.375 12.739l-7.693 7.693a4.5 4.5 0 01-6.364-6.364l10.94-10.94A3 3 0 1119.5 7.372L8.552 18.32"/></svg>' +
+        evCount + ' evidence' +
+      '</span>';
+  }
 
   var h = '';
   // Version header
   h += '<div class="flex items-center justify-between px-4 py-2.5 bg-[#F8FAFC] border-b border-[#E2E8F0]">';
-  h += '<div class="flex items-center gap-2">';
+  h += '<div class="flex items-center gap-2 flex-wrap">';
   h += '<span class="tdv-label text-[13px] font-semibold text-[#0B1430]">Version ' + displayNum + '</span>';
   h += '<span class="text-[10px] px-1.5 py-0.5 rounded bg-[#EBF5FF] text-[#2D56D2] font-medium">Draft</span>';
+  h += evBadge;
   h += '</div>';
   h += '<button onclick="tdRemoveVersion(\'' + vid + '\',\'' + jid + '\')" class="w-6 h-6 rounded hover:bg-rose-50 flex items-center justify-center" style="color:rgba(30,41,59,0.3)"><svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button>';
   h += '</div>';
@@ -2349,27 +2521,29 @@ function addJobInline() {
   // Job meta form
   h += '<div class="bg-white border border-[#E2E8F0] rounded-lg p-4 space-y-3">';
 
-  // Package + Duration (นาที + วินาที) — row
-  h += '<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">';
+  h += '<div class="grid grid-cols-1 sm:grid-cols-[1fr_100px_1fr] gap-3">';
   h += '<div><label class="block text-[10.5px] font-semibold uppercase tracking-wider mb-1" style="color:rgba(30,41,59,0.6)">Package <span class="text-rose-500 normal-case">*</span></label>';
   h += '<select id="tdj-' + jid + '-pack" onchange="tdUpdatePackSel(\'' + jid + '\')" class="w-full h-9 px-3 bg-white border border-[#E2E8F0] rounded-md text-[12px] focus:outline-none focus:border-[#4790FF]">';
   h += '<option value="">— เลือก Package —</option><option value="Metro">Metro</option><option value="7-Eleven">7-Eleven</option><option value="POS">POS</option><option value="Radio">Radio</option>';
   h += '</select></div>';
+  h += '<div><label class="block text-[10.5px] font-semibold uppercase tracking-wider mb-1" style="color:rgba(30,41,59,0.6)">Pack <span class="text-rose-500 normal-case">*</span></label>';
+  h += '<input id="tdj-' + jid + '-packqty" type="number" min="1" step="1" value="1" inputmode="numeric" oninput="tdUpdateJobQuotaBadge(\'' + jid + '\')" class="w-full h-9 px-2 bg-white border border-[#E2E8F0] rounded-md text-[12px] text-center focus:outline-none focus:border-[#4790FF]" />';
+  h += '</div>';
   h += '<div><label class="block text-[10.5px] font-semibold uppercase tracking-wider mb-1" style="color:rgba(30,41,59,0.6)">Duration</label>';
   h += '<div class="flex items-center gap-2">';
-  h += '<input type="text" inputmode="numeric" placeholder="นาที" oninput="tdClampMin(this)" onkeydown="return tdBlockNonDigit(event)" onpaste="tdPasteDigits(event,this)" class="h-9 w-20 px-2 bg-white border border-[#E2E8F0] rounded-md text-[12px] text-center focus:outline-none focus:border-[#4790FF]">';
-  h += '<input type="text" inputmode="numeric" placeholder="วินาที" oninput="tdClampSec(this)" onkeydown="return tdBlockNonDigit(event)" onpaste="tdPasteDigits(event,this,60)" class="h-9 w-20 px-2 bg-white border border-[#E2E8F0] rounded-md text-[12px] text-center focus:outline-none focus:border-[#4790FF]">';
+  h += '<input id="tdj-' + jid + '-durmin" type="text" inputmode="numeric" placeholder="นาที" oninput="tdClampMin(this)" onkeydown="return tdBlockNonDigit(event)" onpaste="tdPasteDigits(event,this)" class="h-9 w-20 px-2 bg-white border border-[#E2E8F0] rounded-md text-[12px] text-center focus:outline-none focus:border-[#4790FF]">';
+  h += '<input id="tdj-' + jid + '-dursec" type="text" inputmode="numeric" placeholder="วินาที" oninput="tdClampSec(this)" onkeydown="return tdBlockNonDigit(event)" onpaste="tdPasteDigits(event,this,60)" class="h-9 w-20 px-2 bg-white border border-[#E2E8F0] rounded-md text-[12px] text-center focus:outline-none focus:border-[#4790FF]">';
   h += '</div>';
   h += '</div>';
   h += '</div>';
 
-  // Period + Nickname
   h += '<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">';
   h += '<div><label class="block text-[10.5px] font-semibold uppercase tracking-wider mb-1" style="color:rgba(30,41,59,0.6)">Period <span class="text-rose-500 normal-case">*</span></label>';
-  h += '<div class="flex items-center gap-2">';
-  h += '<input type="date" class="flex-1 h-9 px-3 bg-white border border-[#E2E8F0] rounded-md text-[12px] focus:outline-none focus:border-[#4790FF]" />';
+  h += '<div class="flex items-center gap-2 flex-wrap">';
+  h += '<input id="tdj-' + jid + '-pstart" type="date" onchange="tdUpdateJobQuotaBadge(\'' + jid + '\')" class="flex-1 min-w-[140px] h-9 px-3 bg-white border border-[#E2E8F0] rounded-md text-[12px] focus:outline-none focus:border-[#4790FF]" />';
   h += '<span class="text-[12px]" style="color:rgba(30,41,59,0.4)">—</span>';
-  h += '<input type="date" class="flex-1 h-9 px-3 bg-white border border-[#E2E8F0] rounded-md text-[12px] focus:outline-none focus:border-[#4790FF]" />';
+  h += '<input id="tdj-' + jid + '-pend" type="date" onchange="tdUpdateJobQuotaBadge(\'' + jid + '\')" class="flex-1 min-w-[140px] h-9 px-3 bg-white border border-[#E2E8F0] rounded-md text-[12px] focus:outline-none focus:border-[#4790FF]" />';
+  h += '<span id="tdj-' + jid + '-pmd" class="text-[10.5px] font-semibold px-1.5 py-0.5 rounded-full hidden" style="background:rgba(16,185,129,0.10);color:#047857;border:1px solid rgba(16,185,129,0.25)"></span>';
   h += '</div></div>';
   h += '<div><label class="block text-[10.5px] font-semibold uppercase tracking-wider mb-1" style="color:rgba(30,41,59,0.6)">Nickname</label>';
   h += '<input id="tdj-' + jid + '-nickname" type="text" placeholder="Nickname" class="w-full h-9 px-3 bg-white border border-[#E2E8F0] rounded-md text-[12px] focus:outline-none focus:border-[#4790FF]" />';
@@ -2378,11 +2552,11 @@ function addJobInline() {
 
   h += '</div>'; // end meta form
 
-  // Versions section
   h += '<div class="mt-4">';
   h += '<div class="flex items-center gap-2 mb-2">';
   h += '<h4 class="text-[12px] font-semibold text-[#0B1430]">Versions</h4>';
   h += '<span id="tdj-' + jid + '-vcount" class="text-[11px] px-2 py-0.5 rounded-full font-medium border" style="background:rgba(248,250,252,0.8);color:rgba(30,41,59,0.45);border-color:#E2E8F0">0 versions</span>';
+  h += '<span id="tdj-' + jid + '-quota" class="text-[11px] px-2 py-0.5 rounded-full font-medium border" style="background:rgba(248,250,252,0.8);color:rgba(30,41,59,0.45);border-color:#E2E8F0" title="Quota = (Pack × 3) × จำนวนเดือน (ปัดขึ้น)">Quota —</span>';
   h += '<button onclick="tdAddVersion(\'' + jid + '\')" class="ml-auto h-8 px-3 bg-[#2D56D2] text-white rounded-lg text-[11px] font-semibold hover:bg-[#213268] inline-flex items-center gap-1 shrink-0"><svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>Add Version</button>';
   h += '</div>';
   // Inline hint that appears when the selected Package already has existing jobs/versions
@@ -2412,6 +2586,88 @@ function addJobInline() {
     jc.textContent = n + ' job' + (n!==1?'s':'');
   }
   card.scrollIntoView({ behavior:'smooth', block:'center' });
+}
+
+/* ===== Over-Quota Version Evidence popup ===== */
+var _tdQuotaCtx = { jid: null, files: [] };
+var TD_QUOTA_MAX = 50 * 1024 * 1024;
+function tdShowQuotaPopup(jid, used, quota) {
+  _tdQuotaCtx = { jid: jid, files: [] };
+  var m = document.getElementById('td-quota-modal');
+  if (!m) return;
+  var info = document.getElementById('td-quota-info');
+  if (info) info.innerHTML = 'Package นี้มี Version Quota = <b>' + quota + '</b> (ใช้ไปแล้ว <b>' + used + '</b>). หากต้องการเพิ่ม Version กรุณาแนบไฟล์หลักฐาน';
+  var inp = document.getElementById('td-quota-file-input'); if (inp) inp.value = '';
+  var reason = document.getElementById('td-quota-reason'); if (reason) reason.value = '';
+  tdQuotaRenderFiles();
+  tdQuotaUpdateConfirm();
+  m.classList.remove('hidden'); m.style.display = 'flex';
+}
+function tdCloseQuotaPopup() {
+  var m = document.getElementById('td-quota-modal');
+  if (m) { m.classList.add('hidden'); m.style.display = ''; }
+  _tdQuotaCtx = { jid: null, files: [] };
+}
+function tdQuotaTotal() { return _tdQuotaCtx.files.reduce(function(s,f){return s+f.size;}, 0); }
+function tdQuotaOnFiles() {
+  var inp = document.getElementById('td-quota-file-input');
+  if (!inp || !inp.files || !inp.files.length) return;
+  var existing = tdQuotaTotal();
+  for (var i = 0; i < inp.files.length; i++) {
+    var f = inp.files[i];
+    if (existing + f.size > TD_QUOTA_MAX) { alert('ไฟล์ "' + f.name + '" ทำให้ขนาดรวมเกิน 50 MB — ข้ามไฟล์นี้'); continue; }
+    existing += f.size;
+    _tdQuotaCtx.files.push(f);
+  }
+  inp.value = '';
+  tdQuotaRenderFiles();
+  tdQuotaUpdateConfirm();
+}
+function tdQuotaRemoveFile(idx) {
+  _tdQuotaCtx.files.splice(idx, 1);
+  tdQuotaRenderFiles();
+  tdQuotaUpdateConfirm();
+}
+function tdQuotaRenderFiles() {
+  var list = document.getElementById('td-quota-file-list');
+  var empty = document.getElementById('td-quota-file-empty');
+  var sizeEl = document.getElementById('td-quota-file-size');
+  if (!list) return;
+  if (!_tdQuotaCtx.files.length) {
+    list.innerHTML = '';
+    if (empty) empty.classList.remove('hidden');
+    if (sizeEl) sizeEl.textContent = '0 / 50 MB';
+    return;
+  }
+  if (empty) empty.classList.add('hidden');
+  list.innerHTML = _tdQuotaCtx.files.map(function(f, i){
+    var safe = (f.name || '').replace(/"/g, '&quot;');
+    return '<div class="flex items-center gap-2 px-2.5 py-1.5 bg-[#F8FAFC] border border-[#E2E8F0] rounded-md">' +
+      '<svg class="w-3.5 h-3.5 shrink-0" style="color:rgba(30,41,59,0.5)" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg>' +
+      '<span class="flex-1 text-[12px] truncate text-[#0B1430]" title="' + safe + '">' + f.name + '</span>' +
+      '<span class="text-[10.5px] tnum" style="color:rgba(30,41,59,0.55)">' + tdBytes(f.size) + '</span>' +
+      '<button type="button" onclick="tdQuotaRemoveFile(' + i + ')" class="w-5 h-5 rounded hover:bg-rose-50 flex items-center justify-center" style="color:rgba(30,41,59,0.4)">' +
+        '<svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>' +
+      '</button>' +
+    '</div>';
+  }).join('');
+  if (sizeEl) sizeEl.textContent = (tdQuotaTotal() / 1024 / 1024).toFixed(2) + ' / 50 MB';
+}
+function tdQuotaUpdateConfirm() {
+  var btn = document.getElementById('td-quota-confirm');
+  if (!btn) return;
+  var enabled = _tdQuotaCtx.files.length > 0;
+  btn.disabled = !enabled;
+  btn.style.opacity = enabled ? '1' : '0.5';
+  btn.style.cursor = enabled ? 'pointer' : 'not-allowed';
+}
+function tdQuotaConfirm() {
+  if (!_tdQuotaCtx.files.length) return;
+  var jid = _tdQuotaCtx.jid;
+  var files = _tdQuotaCtx.files.slice();
+  var reason = (document.getElementById('td-quota-reason') || {}).value || '';
+  tdCloseQuotaPopup();
+  tdAddVersion(jid, { bypassQuota: true, overQuota: true, evidence: files, reason: reason.trim() });
 }
 
 /* ===== Add Job Modal ===== */
@@ -4136,6 +4392,51 @@ document.addEventListener('keydown', function(e){
       <button onclick="confirmCancel()" class="h-9 px-4 rounded-lg text-white text-[12.5px] font-semibold inline-flex items-center gap-1.5 transition-all" style="background:linear-gradient(135deg,#E11D48,#DC2626);box-shadow:0 4px 14px rgba(220,38,38,0.30)">
         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
         ยืนยันยกเลิก
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Over-Quota Version Evidence Modal -->
+<div id="td-quota-modal" class="hidden fixed inset-0 z-[70] items-center justify-center p-4" style="background:rgba(11,20,48,0.45)">
+  <div class="bg-white rounded-xl shadow-xl w-[520px] max-w-[95vw] flex flex-col max-h-[90vh]">
+    <div class="px-6 py-4 border-b border-[#E2E8F0] flex items-start gap-3">
+      <div class="w-10 h-10 rounded-full flex items-center justify-center shrink-0" style="background:rgba(245,158,11,0.12);color:#B45309">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>
+      </div>
+      <div class="flex-1">
+        <h4 class="text-[15px] font-semibold text-[#0B1430] mb-1">Version Quota เต็มแล้ว</h4>
+        <p id="td-quota-info" class="text-[13px]" style="color:rgba(30,41,59,0.65)">—</p>
+      </div>
+      <button onclick="tdCloseQuotaPopup()" class="w-8 h-8 rounded-md hover:bg-[#F1F5F9] flex items-center justify-center" style="color:rgba(30,41,59,0.4)">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="flex-1 overflow-y-auto p-6 space-y-4">
+      <div>
+        <label class="block text-[11px] font-semibold uppercase tracking-wider mb-2" style="color:rgba(30,41,59,0.6)">แนบไฟล์หลักฐาน <span class="text-rose-500 normal-case">*</span></label>
+        <div class="flex items-center gap-2">
+          <label class="h-9 px-3 bg-white border border-[#CBD5E1] rounded-md text-[12px] font-medium hover:bg-[#F8FAFC] inline-flex items-center gap-1.5 cursor-pointer" style="color:rgba(30,41,59,0.6)">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M18.375 12.739l-7.693 7.693a4.5 4.5 0 01-6.364-6.364l10.94-10.94A3 3 0 1119.5 7.372L8.552 18.32"/></svg>
+            Attach Files
+            <input id="td-quota-file-input" type="file" multiple class="hidden" onchange="tdQuotaOnFiles()" />
+          </label>
+          <span class="text-[10.5px]" style="color:rgba(30,41,59,0.5)">อย่างน้อย 1 ไฟล์ · รวมไม่เกิน 50 MB</span>
+          <span id="td-quota-file-size" class="text-[10.5px] font-medium ml-auto" style="color:rgba(30,41,59,0.6)">0 / 50 MB</span>
+        </div>
+        <div id="td-quota-file-list" class="space-y-1 mt-2"></div>
+        <div id="td-quota-file-empty" class="mt-2 text-[11.5px] text-center py-3 border-2 border-dashed border-[#E2E8F0] rounded-md" style="color:rgba(30,41,59,0.4)">ยังไม่ได้แนบไฟล์หลักฐาน</div>
+      </div>
+      <div>
+        <label class="block text-[11px] font-semibold uppercase tracking-wider mb-2" style="color:rgba(30,41,59,0.6)">เหตุผลที่ขอเพิ่ม Version <span class="text-[10px] font-normal normal-case" style="color:rgba(30,41,59,0.5)">(optional)</span></label>
+        <textarea id="td-quota-reason" rows="3" placeholder="ระบุเหตุผล เช่น ลูกค้าขอปรับเพิ่มเติม..." class="w-full px-3 py-2 bg-white border border-[#E2E8F0] rounded-md text-[12px] focus:outline-none focus:border-[#4790FF] resize-none"></textarea>
+      </div>
+    </div>
+    <div class="px-6 py-4 border-t border-[#E2E8F0] flex items-center justify-end gap-2 bg-[#F8FAFC]/50">
+      <button onclick="tdCloseQuotaPopup()" class="h-9 px-4 bg-white border border-[#CBD5E1] text-[#0B1430] rounded-lg text-[13px] font-medium hover:bg-[#F1F5F9]">Cancel</button>
+      <button id="td-quota-confirm" onclick="tdQuotaConfirm()" class="h-9 px-5 bg-[#B45309] text-white rounded-lg text-[13px] font-semibold hover:bg-[#92400E] inline-flex items-center gap-2 shadow-sm" disabled style="opacity:0.5;cursor:not-allowed">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+        ยืนยันเพิ่ม Version
       </button>
     </div>
   </div>
