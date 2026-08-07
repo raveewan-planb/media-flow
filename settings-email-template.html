@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Email Template — Plan-B CRM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config={theme:{extend:{fontFamily:{kanit:['Kanit','sans-serif']},colors:{pb:{900:'#213268',700:'#2D56D2',500:'#4790FF',300:'#5FCBF9',50:'#EBF5FF',100:'#D6ECFF'},ink:{900:'#0B1430',800:'#162040',700:'#1E293B'},surface:{0:'#FFFFFF',50:'#F8FAFC',100:'#F1F5F9',200:'#E2E8F0',300:'#CBD5E1'}}}}}
+</script>
+<style>
+*{font-family:'Kanit',sans-serif;-webkit-font-smoothing:antialiased}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#CBD5E8;border-radius:10px;border:2px solid #F7F9FC}
+::-webkit-scrollbar-thumb:hover{background:#93A4C4}
+.sidebar-scroll::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.06);border:2px solid transparent}
+.sidebar-scroll::-webkit-scrollbar-track{background:transparent}
+/* Sidebar nav items — White theme */
+.sidebar-nav{color:rgba(30,41,59,0.6);transition:all 0.15s;position:relative;font-size:13px}
+.sidebar-nav:hover{color:#0B1430;background:rgba(71,144,255,0.06)}
+.sidebar-nav.active{color:#2D56D2;font-weight:500;background:linear-gradient(90deg,rgba(71,144,255,0.10),rgba(71,144,255,0))}
+.sidebar-nav.active::before{content:'';position:absolute;left:0;top:8px;bottom:8px;width:3px;border-radius:2px;background:#2D56D2}
+/* Sidebar group headers */
+.sidebar-nav-parent{color:rgba(30,41,59,0.4);transition:all 0.15s;font-size:10.5px;text-transform:uppercase;letter-spacing:0.05em;font-weight:600}
+.sidebar-nav-parent:hover{color:rgba(30,41,59,0.7)}
+.sidebar-nav-parent.active{color:rgba(30,41,59,0.7)}
+/* Sidebar sub-items */
+.sidebar-sub{color:rgba(30,41,59,0.55);transition:all 0.15s;position:relative}
+.sidebar-sub:hover{color:#0B1430;background:rgba(71,144,255,0.06)}
+.sidebar-sub.active{color:#2D56D2;font-weight:500;background:linear-gradient(90deg,rgba(71,144,255,0.10),rgba(71,144,255,0))}
+.sidebar-sub.active::before{content:'';position:absolute;left:0;top:6px;bottom:6px;width:3px;border-radius:2px;background:#2D56D2;box-shadow:0 0 8px rgba(45,86,210,0.4)}
+.sidebar-nav.active::before{box-shadow:0 0 8px rgba(45,86,210,0.4)}
+.sidebar-group-icon{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:8px;background:transparent;transition:all .15s;flex-shrink:0;color:rgba(30,41,59,0.55)}
+.sgi-ma{color:#7C3AED}.sgi-rpt{color:#0EA5E9}.sgi-stg{color:#EF4444}
+.nav-parent{border-radius:8px;transition:all .15s}
+.nav-parent:hover{background:#F1F5F9}
+.nav-parent.active:has(.sgi-ma){background:rgba(124,58,237,0.10);color:#7C3AED}
+.nav-parent.active:has(.sgi-ma) .sidebar-group-icon{background:rgba(124,58,237,0.20)}
+.nav-parent.active:has(.sgi-rpt){background:rgba(14,165,233,0.10);color:#0EA5E9}
+.nav-parent.active:has(.sgi-rpt) .sidebar-group-icon{background:rgba(14,165,233,0.20)}
+.nav-parent.active:has(.sgi-stg){background:rgba(239,68,68,0.10);color:#EF4444}
+.nav-parent.active:has(.sgi-stg) .sidebar-group-icon{background:rgba(239,68,68,0.20)}
+#sidebar{background:linear-gradient(180deg,#fff 0%,#fff 60%,#F8FAFC 100%) !important}
+#sidebar-brand{background:linear-gradient(135deg,rgba(45,86,210,0.04),rgba(95,203,249,0.04))}
+/* nav-item for page content compatibility */
+.nav-item{transition:all 0.2s;border-radius:8px}
+.nav-item:hover,.nav-item.active{background:rgba(71,144,255,0.12);color:#4790FF}
+.nav-parent.active{color:#2D56D2;font-weight:500}
+/* Cards & general UI */
+.card-hover{transition:all 0.2s}
+.card-hover:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(33,50,104,0.12)}
+.badge-pulse{animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.7}}
+.status-dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+input:focus,select:focus,textarea:focus{outline:none;border-color:#4790FF;box-shadow:0 0 0 3px rgba(71,144,255,0.15)}
+.tab-btn{transition:all 0.2s}
+.tab-btn.active{color:#2D56D2;border-bottom:2px solid #2D56D2}
+table th{position:sticky;top:0;z-index:1}
+.progress-bar{transition:width 0.6s ease}
+/* Topbar — White glass */
+.topbar-white{background:rgba(255,255,255,0.9);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid #E2E8F0}
+/* Dashboard extras */
+.tnum{font-variant-numeric:tabular-nums}
+.shine{background:linear-gradient(135deg,#2D56D2,#5FCBF9)}
+.shine-soft{background:linear-gradient(135deg,rgba(71,144,255,0.08),rgba(95,203,249,0.08))}
+.ai-border{box-shadow:0 0 0 1px rgba(45,86,210,0.25),0 2px 8px rgba(45,86,210,0.08)}
+.pulse-dot{animation:pulseDot 2s ease-in-out infinite}
+@keyframes pulseDot{0%,100%{transform:scale(1);opacity:.4}50%{transform:scale(1.5);opacity:0}}
+.map-bg{background:linear-gradient(135deg,#F8FAFC 0%,#EBF5FF 100%)}
+.shadow-pop{box-shadow:0 8px 30px rgba(11,20,48,0.12)}
+.shadow-card{box-shadow:0 1px 3px rgba(11,20,48,0.06),0 1px 2px rgba(11,20,48,0.04)}
+/* Sidebar collapse label */
+.sidebar-label{transition:opacity 0.15s;white-space:nowrap;overflow:hidden}
+/* Toggle switch */
+.et-toggle{position:relative;display:inline-block;width:36px;height:20px;vertical-align:middle}
+.et-toggle input{opacity:0;width:0;height:0}
+.et-toggle .slider{position:absolute;cursor:pointer;inset:0;background:#CBD5E1;border-radius:20px;transition:.2s}
+.et-toggle .slider:before{content:"";position:absolute;height:14px;width:14px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s;box-shadow:0 1px 2px rgba(0,0,0,.2)}
+.et-toggle input:checked + .slider{background:#10B981}
+.et-toggle input:checked + .slider:before{transform:translateX(16px)}
+/* Rich-text editor placeholder */
+#et-f-body:empty:before{content:attr(data-placeholder);color:rgba(30,41,59,0.35);pointer-events:none}
+#et-f-body ul{list-style:disc;padding-left:1.5rem;margin:0.25rem 0}
+#et-f-body ol{list-style:decimal;padding-left:1.5rem;margin:0.25rem 0}
+#et-f-body a{color:#2D56D2;text-decoration:underline}
+</style>
+<script src="shared/sidebar.js"></script>
+</head>
+<body class="font-kanit" style="background:#F7F9FC;color:#0B1430">
+
+<div class="min-h-screen flex">
+  <!-- SIDEBAR — Clean White -->
+  <!-- Mobile overlay -->
+  <div id="sidebar-overlay" class="hidden fixed inset-0 bg-black/40 z-20 lg:hidden" onclick="toggleMobile()"></div>
+  <aside id="sidebar" class="w-64 flex flex-col fixed h-full z-30 transition-all duration-200 -translate-x-full lg:translate-x-0 bg-white border-r border-[#E2E8F0]">
+    <!-- Brand -->
+    <div class="px-4 h-16 flex items-center gap-2.5 border-b border-[#E2E8F0]" id="sidebar-brand">
+      <div class="sidebar-label flex items-center gap-2 min-w-0">
+        <img src="logo.jpg" alt="Plan-B Media" class="h-8 w-auto rounded shrink-0" />
+        <span class="text-[11px] font-semibold tracking-wide uppercase border-l border-[#E2E8F0] pl-2 truncate" style="color:rgba(30,41,59,0.55)">Media Flow System</span>
+      </div>
+    </div>
+    <!-- Nav -->
+    <nav class="flex-1 py-3 px-2 overflow-y-auto text-sm sidebar-scroll space-y-0.5">
+
+      <!-- Dashboard -->
+      <a href="dashboard.html" class=" sidebar-nav w-full flex items-center gap-3 h-10 rounded-md px-3 cursor-pointer" data-page="dashboard">
+        <svg class="w-[18px] h-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25a2.25 2.25 0 01-2.25-2.25v-2.25z" /></svg>
+        <span class="flex-1 text-left truncate sidebar-label">Dashboard</span>
+      </a>
+
+      <!-- Inventory -->
+      <a href="inventory.html" class=" sidebar-nav w-full flex items-center gap-3 h-10 rounded-md px-3 cursor-pointer">
+        <svg class="w-[18px] h-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" /></svg>
+        <span class="flex-1 text-left truncate sidebar-label">Inventory</span>
+      </a>
+
+      <!-- Sale -->
+      <a href="sale.html" class=" sidebar-nav w-full flex items-center gap-3 h-10 rounded-md px-3 cursor-pointer">
+        <svg class="w-[18px] h-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z" /></svg>
+        <span class="flex-1 text-left truncate sidebar-label">Sale</span>
+      </a>
+
+      <!-- Media Approval (Expandable) -->
+      <div class="pt-3">
+        <button onclick="toggleMenu('ma')" class="nav-parent sidebar-nav-parent w-full flex items-center gap-3 h-8 px-3 cursor-pointer text-left">
+          <span class="sidebar-group-icon sgi-ma"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></span><span class="flex-1 text-left">Media Approval</span>
+          <svg id="ma-chevron" class="w-3 h-3 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" /></svg>
+        </button>
+        <div id="ma-sub" class="space-y-0.5 hidden">
+          <a href="ma-dashboard.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Dashboard</span>
+          </a>
+          <a href="job-list.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Media Ticket</span>
+            <span class="text-[10px] bg-pb-500 text-white rounded-full px-1.5 min-w-[18px] text-center">12</span>
+          </a>
+          <a href="assign-job.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Assign Ticket</span>
+            <span class="text-[10px] bg-amber-500 text-white rounded-full px-1.5 min-w-[18px] text-center">5</span>
+          </a>
+          <a href="receive-job.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Verify & Production</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Production -->
+      <a href="production.html" class=" sidebar-nav w-full flex items-center gap-3 h-10 rounded-md px-3 cursor-pointer">
+        <svg class="w-[18px] h-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17l-5.1-5.1a2.25 2.25 0 010-3.182l.71-.71a2.25 2.25 0 013.18 0l2.8 2.8 2.8-2.8a2.25 2.25 0 013.18 0l.71.71a2.25 2.25 0 010 3.182l-5.1 5.1a2.25 2.25 0 01-3.18 0z" /></svg>
+        <span class="flex-1 text-left truncate sidebar-label">Production</span>
+      </a>
+
+      <!-- Claim -->
+      <a href="claim.html" class=" sidebar-nav w-full flex items-center gap-3 h-10 rounded-md px-3 cursor-pointer">
+        <svg class="w-[18px] h-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z" /></svg>
+        <span class="flex-1 text-left truncate sidebar-label">Claim</span>
+      </a>
+
+      <!-- Report (Expandable) -->
+      <div class="pt-3">
+        <button onclick="toggleMenu('rpt')" class="nav-parent sidebar-nav-parent w-full flex items-center gap-3 h-8 px-3 cursor-pointer text-left">
+          <span class="sidebar-group-icon sgi-rpt"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg></span><span class="flex-1 text-left">Report</span>
+          <svg id="rpt-chevron" class="w-3 h-3 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" /></svg>
+        </button>
+        <div id="rpt-sub" class="space-y-0.5 hidden">
+          <a href="kpi-dashboard.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">KPI Dashboard</span>
+          </a>
+          <a href="export-airtime.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Export Airtime</span>
+          </a>
+          <a href="report-monthly.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Monthly Report</span>
+          </a>
+          <a href="report-audit.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Audit Log</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Setting (Expandable) -->
+      <div class="pt-3">
+        <button onclick="toggleMenu('stg')" class="nav-parent active sidebar-nav-parent w-full flex items-center gap-3 h-8 px-3 cursor-pointer text-left">
+          <span class="sidebar-group-icon sgi-stg"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75"/></svg></span><span class="flex-1 text-left">Setting</span>
+          <svg id="stg-chevron" class="w-3 h-3 transition-transform duration-200 rotate-90" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" /></svg>
+        </button>
+        <div id="stg-sub" class="space-y-0.5">
+          <a href="settings-user.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">User Management</span>
+          </a>
+          <a href="settings-usergroup.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">User Group Management</span>
+          </a>
+          <a href="settings-email.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Email Setup</span>
+          </a>
+          <a href="settings-email-template.html" class="active sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Email Template</span>
+          </a>
+          <a href="settings-master.html" class=" sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]">
+            <span class="flex-1 text-left truncate">Master Data</span>
+          </a>
+        </div>
+      </div>
+
+    </nav>
+
+    <!-- User Footer -->
+    <div class="p-3 border-t border-[#E2E8F0]">
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-full flex items-center justify-center text-white font-semibold text-[13px] shrink-0" style="background:#4790FF">RK</div>
+        <div class="flex-1 min-w-0 sidebar-label">
+          <div class="text-[13px] font-medium text-[#0B1430] truncate">Raveewan Kaewmanee</div>
+          <div class="text-[11px] truncate" style="color:rgba(30,41,59,0.5)">Admin · Plan-B</div>
+        </div>
+        <a href="login.html" class="transition sidebar-label hover:opacity-80" style="color:rgba(30,41,59,0.4)" title="ออกจากระบบ">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" /></svg>
+        </a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="flex-1 lg:ml-64 min-h-screen">
+    <!-- Top Bar — White Glass -->
+    <header class="topbar-white h-16 shrink-0 sticky top-0 z-20 flex items-center gap-4 px-4 sm:px-6">
+      <!-- Collapse / Mobile toggle -->
+      <button onclick="collapseSidebar()" class="w-9 h-9 rounded-md hover:bg-surface-100 flex items-center justify-center text-ink-700">
+        <svg class="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" /></svg>
+      </button>
+
+      <!-- Breadcrumbs -->
+      <div class="flex items-center gap-1.5 text-[13px]" style="color:rgba(30,41,59,0.6)">
+        <span>Home</span>
+        <svg class="w-3 h-3 opacity-30" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
+        <span class="font-medium" style="color:#0B1430">Email Template</span>
+      </div>
+
+      <div class="flex-1"></div>
+
+      <!-- Ask AI -->
+      <button id="ai-toggle" onclick="toggleAI()" class="h-9 px-3 rounded-lg border flex items-center gap-2 text-[13px] font-medium transition-colors bg-white border-surface-300 text-ink-900 hover:bg-surface-50">
+        <svg class="w-[15px] h-[15px]" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"/></svg>
+        <span>Ask AI</span>
+      </button>
+    </header>
+
+    <!-- Page Content -->
+    <div class="p-3 sm:p-6">
+    <div class="space-y-5 w-full">
+<!-- Header -->
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+  <div>
+    <h1 class="text-[24px] font-semibold text-[#0B1430]">Email Template</h1>
+    <p class="text-[13px] opacity-60 mt-0.5">Manage notification email templates by group and type</p>
+  </div>
+  <button onclick="etOpenCreate()" class="h-9 px-4 bg-[#2D56D2] text-white rounded-lg text-[13px] font-semibold hover:bg-[#213268] inline-flex items-center gap-2 shadow-sm shrink-0">
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+    <span>Create Template</span>
+  </button>
+</div>
+
+<!-- Filters -->
+<div class="bg-white border border-[#E2E8F0] rounded-xl shadow-sm p-3 flex flex-wrap items-center gap-2">
+  <div class="relative flex-1 min-w-[220px]">
+    <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" style="color:rgba(30,41,59,0.4)" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/></svg>
+    <input id="et-search" oninput="etRender()" type="text" placeholder="ค้นหา Subject / Sender / Description..." class="w-full h-9 pl-9 pr-3 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[13px] focus:outline-none focus:border-[#4790FF] focus:bg-white" />
+  </div>
+  <select id="et-filter-group" onchange="etRender()" class="h-9 px-3 bg-white border border-[#E2E8F0] rounded-lg text-[13px] focus:outline-none focus:border-[#4790FF]">
+    <option value="">All Groups</option>
+    <option>Sale</option><option>Media Approval</option><option>Production</option><option>Claim</option><option>System</option>
+  </select>
+  <select id="et-filter-status" onchange="etRender()" class="h-9 px-3 bg-white border border-[#E2E8F0] rounded-lg text-[13px] focus:outline-none focus:border-[#4790FF]">
+    <option value="">All Status</option>
+    <option value="Active">Active</option><option value="Inactive">Inactive</option>
+  </select>
+  <span id="et-count" class="text-[12px] font-medium ml-1" style="color:rgba(30,41,59,0.55)">0 templates</span>
+</div>
+
+<!-- Data Table -->
+<div class="bg-white border border-[#E2E8F0] rounded-xl shadow-sm overflow-hidden">
+  <div class="overflow-x-auto">
+    <table class="w-full text-[13px]">
+      <thead>
+        <tr class="border-b border-[#E2E8F0]" style="background:#F8FAFC">
+          <th class="px-4 py-3 text-left font-semibold text-[11px] uppercase tracking-wider whitespace-nowrap" style="color:rgba(30,41,59,0.6)">Template</th>
+          <th class="px-4 py-3 text-left font-semibold text-[11px] uppercase tracking-wider whitespace-nowrap" style="color:rgba(30,41,59,0.6)">Sender Name</th>
+          <th class="px-4 py-3 text-left font-semibold text-[11px] uppercase tracking-wider" style="color:rgba(30,41,59,0.6)">Subject</th>
+          <th class="px-4 py-3 text-left font-semibold text-[11px] uppercase tracking-wider" style="color:rgba(30,41,59,0.6)">Description</th>
+          <th class="px-4 py-3 text-left font-semibold text-[11px] uppercase tracking-wider whitespace-nowrap" style="color:rgba(30,41,59,0.6)">Status</th>
+          <th class="px-4 py-3 text-right font-semibold text-[11px] uppercase tracking-wider whitespace-nowrap" style="color:rgba(30,41,59,0.6)">Actions</th>
+        </tr>
+      </thead>
+      <tbody id="et-tbody"></tbody>
+    </table>
+  </div>
+  <div id="et-empty" class="hidden px-6 py-12 text-center text-[13px]" style="color:rgba(30,41,59,0.45)">
+    ไม่พบข้อมูล template ที่ตรงกับเงื่อนไข
+  </div>
+</div>
+
+<!-- Create / Edit modal -->
+<div id="et-modal" class="hidden fixed inset-0 z-[60] items-center justify-center p-4" style="background:rgba(11,20,48,0.45)">
+  <div class="bg-white rounded-xl shadow-xl w-[1000px] max-w-[96vw] flex flex-col max-h-[92vh]">
+    <div class="px-6 py-4 border-b border-[#E2E8F0] flex items-center justify-between" style="background:linear-gradient(135deg,#F8FAFC,#fff)">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:rgba(45,86,210,0.10);color:#2D56D2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"/></svg>
+        </div>
+        <h3 id="et-modal-title" class="text-[15px] font-semibold text-[#0B1430]">Create Template</h3>
+      </div>
+      <button onclick="etCloseModal()" class="w-8 h-8 rounded-md hover:bg-[#F1F5F9] flex items-center justify-center" style="color:rgba(30,41,59,0.4)">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="flex-1 overflow-y-auto p-6 space-y-5">
+
+      <!-- Section 1: Template Info -->
+      <section class="border border-[#E2E8F0] rounded-xl">
+        <header class="px-5 py-3 flex items-center gap-3 border-b border-[#E2E8F0] rounded-t-xl" style="background:linear-gradient(135deg,rgba(45,86,210,0.06),rgba(95,203,249,0.04))">
+          <div class="w-8 h-8 rounded-lg flex items-center justify-center text-white shrink-0" style="background:linear-gradient(135deg,#2D56D2,#5FCBF9)"><span class="text-[13px] font-bold">1</span></div>
+          <div class="flex-1">
+            <div class="text-[13.5px] font-semibold text-[#0B1430]">Template Info</div>
+            <div class="text-[11px]" style="color:rgba(30,41,59,0.55)">จัดกลุ่ม template และกำหนดสถานะการใช้งาน</div>
+          </div>
+          <div class="flex items-center gap-2">
+            <label class="et-toggle" title="Toggle status">
+              <input id="et-f-status" type="checkbox" onchange="etOnStatusChange()" checked/>
+              <span class="slider"></span>
+            </label>
+            <span id="et-f-status-label" class="text-[12px] font-semibold" style="color:#047857">Active</span>
+          </div>
+        </header>
+        <div class="p-5 grid grid-cols-1 md:grid-cols-2 gap-x-5 gap-y-4">
+          <div>
+            <label class="block text-[11px] font-semibold uppercase tracking-wider mb-1.5" style="color:rgba(30,41,59,0.6)">Template Group <span class="text-rose-500 normal-case">*</span></label>
+            <select id="et-f-group" onchange="etOnGroupChange()" class="w-full h-9 px-3 bg-white border border-[#E2E8F0] rounded-md text-[13px] focus:outline-none focus:border-[#4790FF]">
+              <option value="">— เลือก Group —</option>
+              <option>Sale</option><option>Media Approval</option><option>Production</option><option>Claim</option><option>System</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-[11px] font-semibold uppercase tracking-wider mb-1.5" style="color:rgba(30,41,59,0.6)">Template Type <span class="text-rose-500 normal-case">*</span></label>
+            <select id="et-f-type" class="w-full h-9 px-3 bg-white border border-[#E2E8F0] rounded-md text-[13px] focus:outline-none focus:border-[#4790FF]">
+              <option value="">— เลือก Group ก่อน —</option>
+            </select>
+          </div>
+          <div class="md:col-span-2">
+            <label class="block text-[11px] font-semibold uppercase tracking-wider mb-1.5" style="color:rgba(30,41,59,0.6)">Description</label>
+            <textarea id="et-f-desc" rows="2" placeholder="รายละเอียดของ template..." class="w-full px-3 py-2 bg-white border border-[#E2E8F0] rounded-md text-[13px] focus:outline-none focus:border-[#4790FF] resize-none"></textarea>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 2: Email Header -->
+      <section class="border border-[#E2E8F0] rounded-xl">
+        <header class="px-5 py-3 flex items-center gap-3 border-b border-[#E2E8F0] rounded-t-xl" style="background:linear-gradient(135deg,rgba(16,185,129,0.08),rgba(16,185,129,0.02))">
+          <div class="w-8 h-8 rounded-lg flex items-center justify-center text-white shrink-0" style="background:linear-gradient(135deg,#10B981,#059669)"><span class="text-[13px] font-bold">2</span></div>
+          <div class="flex-1">
+            <div class="text-[13.5px] font-semibold text-[#0B1430]">Email Header</div>
+            <div class="text-[11px]" style="color:rgba(30,41,59,0.55)">ผู้ส่งและหัวข้ออีเมลที่ผู้รับจะเห็น</div>
+          </div>
+        </header>
+        <div class="p-5 grid grid-cols-1 md:grid-cols-2 gap-x-5 gap-y-4">
+          <div>
+            <label class="block text-[11px] font-semibold uppercase tracking-wider mb-1.5" style="color:rgba(30,41,59,0.6)">Sender Name <span class="text-rose-500 normal-case">*</span></label>
+            <div class="relative">
+              <svg class="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" style="color:rgba(30,41,59,0.4)" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>
+              <input id="et-f-sender" type="text" placeholder="ชื่อผู้ส่ง เช่น Plan-B Media" class="w-full h-9 pl-8 pr-3 bg-white border border-[#E2E8F0] rounded-md text-[13px] focus:outline-none focus:border-[#4790FF]" />
+            </div>
+          </div>
+          <div>
+            <label class="block text-[11px] font-semibold uppercase tracking-wider mb-1.5" style="color:rgba(30,41,59,0.6)">Subject <span class="text-rose-500 normal-case">*</span></label>
+            <input id="et-f-subject" type="text" placeholder="Subject ของอีเมล (รองรับ {{placeholder}})" class="w-full h-9 px-3 bg-white border border-[#E2E8F0] rounded-md text-[13px] focus:outline-none focus:border-[#4790FF]" />
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 3: Recipients -->
+      <section class="border border-[#E2E8F0] rounded-xl">
+        <header class="px-5 py-3 flex items-center gap-3 border-b border-[#E2E8F0] rounded-t-xl" style="background:linear-gradient(135deg,rgba(245,158,11,0.08),rgba(245,158,11,0.02))">
+          <div class="w-8 h-8 rounded-lg flex items-center justify-center text-white shrink-0" style="background:linear-gradient(135deg,#F59E0B,#D97706)"><span class="text-[13px] font-bold">3</span></div>
+          <div class="flex-1">
+            <div class="text-[13.5px] font-semibold text-[#0B1430]">Recipients</div>
+            <div class="text-[11px]" style="color:rgba(30,41,59,0.55)">เลือก User Group ที่จะได้รับอีเมลนี้ (TO / CC / BCC)</div>
+          </div>
+        </header>
+        <div class="p-5 grid grid-cols-1 md:grid-cols-3 gap-x-5 gap-y-4">
+          <div>
+            <div class="flex items-center justify-between mb-1.5">
+              <label class="text-[11px] font-semibold uppercase tracking-wider" style="color:rgba(30,41,59,0.6)">TO</label>
+              <label class="et-toggle" title="ใช้ผู้รับใน TO"><input id="et-en-to" type="checkbox" onchange="etOnMsEnableChange('to')"/><span class="slider"></span></label>
+            </div>
+            <div class="relative" id="et-ms-to-wrap">
+              <button id="et-ms-to-btn" type="button" onclick="etMsToggle('to', event)" class="w-full min-h-9 px-2.5 py-1.5 bg-white border border-[#E2E8F0] rounded-md text-[13px] text-left flex items-center gap-2 hover:border-[#CBD5E1] focus:outline-none focus:border-[#4790FF] transition-colors">
+                <div id="et-ms-to-pills" class="flex-1 flex flex-wrap gap-1 items-center"><span class="text-[12px]" style="color:rgba(30,41,59,0.4)">เลือก user group...</span></div>
+                <svg class="w-3.5 h-3.5 shrink-0 transition-transform" id="et-ms-to-chev" style="color:rgba(30,41,59,0.4)" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+              <div id="et-ms-to-dropdown" class="hidden absolute z-30 top-full left-0 right-0 mt-1 bg-white border border-[#E2E8F0] rounded-md p-1.5 max-h-[220px] overflow-y-auto" style="box-shadow:0 8px 30px rgba(11,20,48,0.12)"></div>
+            </div>
+          </div>
+          <div>
+            <div class="flex items-center justify-between mb-1.5">
+              <label class="text-[11px] font-semibold uppercase tracking-wider" style="color:rgba(30,41,59,0.6)">CC</label>
+              <label class="et-toggle" title="ใช้ผู้รับใน CC"><input id="et-en-cc" type="checkbox" onchange="etOnMsEnableChange('cc')"/><span class="slider"></span></label>
+            </div>
+            <div class="relative" id="et-ms-cc-wrap">
+              <button id="et-ms-cc-btn" type="button" onclick="etMsToggle('cc', event)" class="w-full min-h-9 px-2.5 py-1.5 bg-white border border-[#E2E8F0] rounded-md text-[13px] text-left flex items-center gap-2 hover:border-[#CBD5E1] focus:outline-none focus:border-[#4790FF] transition-colors">
+                <div id="et-ms-cc-pills" class="flex-1 flex flex-wrap gap-1 items-center"><span class="text-[12px]" style="color:rgba(30,41,59,0.4)">เลือก user group...</span></div>
+                <svg class="w-3.5 h-3.5 shrink-0 transition-transform" id="et-ms-cc-chev" style="color:rgba(30,41,59,0.4)" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+              <div id="et-ms-cc-dropdown" class="hidden absolute z-30 top-full left-0 right-0 mt-1 bg-white border border-[#E2E8F0] rounded-md p-1.5 max-h-[220px] overflow-y-auto" style="box-shadow:0 8px 30px rgba(11,20,48,0.12)"></div>
+            </div>
+          </div>
+          <div>
+            <div class="flex items-center justify-between mb-1.5">
+              <label class="text-[11px] font-semibold uppercase tracking-wider" style="color:rgba(30,41,59,0.6)">BCC</label>
+              <label class="et-toggle" title="ใช้ผู้รับใน BCC"><input id="et-en-bcc" type="checkbox" onchange="etOnMsEnableChange('bcc')"/><span class="slider"></span></label>
+            </div>
+            <div class="relative" id="et-ms-bcc-wrap">
+              <button id="et-ms-bcc-btn" type="button" onclick="etMsToggle('bcc', event)" class="w-full min-h-9 px-2.5 py-1.5 bg-white border border-[#E2E8F0] rounded-md text-[13px] text-left flex items-center gap-2 hover:border-[#CBD5E1] focus:outline-none focus:border-[#4790FF] transition-colors">
+                <div id="et-ms-bcc-pills" class="flex-1 flex flex-wrap gap-1 items-center"><span class="text-[12px]" style="color:rgba(30,41,59,0.4)">เลือก user group...</span></div>
+                <svg class="w-3.5 h-3.5 shrink-0 transition-transform" id="et-ms-bcc-chev" style="color:rgba(30,41,59,0.4)" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+              <div id="et-ms-bcc-dropdown" class="hidden absolute z-30 top-full left-0 right-0 mt-1 bg-white border border-[#E2E8F0] rounded-md p-1.5 max-h-[220px] overflow-y-auto" style="box-shadow:0 8px 30px rgba(11,20,48,0.12)"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 4: Mail Body -->
+      <section class="border border-[#E2E8F0] rounded-xl">
+        <header class="px-5 py-3 flex items-center gap-3 border-b border-[#E2E8F0] rounded-t-xl" style="background:linear-gradient(135deg,rgba(124,58,237,0.08),rgba(124,58,237,0.02))">
+          <div class="w-8 h-8 rounded-lg flex items-center justify-center text-white shrink-0" style="background:linear-gradient(135deg,#7C3AED,#6366F1)"><span class="text-[13px] font-bold">4</span></div>
+          <div class="flex-1">
+            <div class="text-[13.5px] font-semibold text-[#0B1430]">Mail Body <span class="text-rose-500 text-[12px] font-normal">*</span></div>
+            <div class="text-[11px]" style="color:rgba(30,41,59,0.55)">เขียนเนื้อหาที่จะส่งออกไป — ใช้ <code class="px-1 py-0.5 rounded bg-[#F1F5F9] text-[10.5px]">{{placeholder}}</code> สำหรับ merge fields</div>
+          </div>
+        </header>
+        <div class="p-5">
+          <div class="border border-[#E2E8F0] rounded-md overflow-hidden focus-within:border-[#4790FF]">
+            <div class="flex items-center gap-1 px-2 py-1.5 border-b border-[#E2E8F0] bg-[#F8FAFC]" role="toolbar">
+              <button type="button" onclick="etEdCmd('bold')" title="Bold" class="w-8 h-7 rounded hover:bg-white flex items-center justify-center text-[13px] font-bold text-[#0B1430]">B</button>
+              <button type="button" onclick="etEdCmd('italic')" title="Italic" class="w-8 h-7 rounded hover:bg-white flex items-center justify-center text-[13px] italic text-[#0B1430]">I</button>
+              <button type="button" onclick="etEdCmd('underline')" title="Underline" class="w-8 h-7 rounded hover:bg-white flex items-center justify-center text-[13px] underline text-[#0B1430]">U</button>
+              <span class="w-px h-5 bg-[#E2E8F0] mx-1"></span>
+              <button type="button" onclick="etEdCmd('insertUnorderedList')" title="Bullet list" class="w-8 h-7 rounded hover:bg-white flex items-center justify-center text-[#0B1430]"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zM3.75 12h.007v.008H3.75V12zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm-.375 5.25h.007v.008H3.75v-.008zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/></svg></button>
+              <button type="button" onclick="etEdCmd('insertOrderedList')" title="Numbered list" class="w-8 h-7 rounded hover:bg-white flex items-center justify-center text-[#0B1430]"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.242 5.992h12m-12 6.003H20.24m-12 5.999h12M4.117 7.495v-3.75H2.99m1.125 3.75H2.99m1.125 0H5.24m-1.87 4.5h1.5V13.5H3.375v1.125h1.5V15.75h-1.5m-1.245-8.995a.375.375 0 11.75 0 .375.375 0 01-.75 0z"/></svg></button>
+              <span class="w-px h-5 bg-[#E2E8F0] mx-1"></span>
+              <button type="button" onclick="etEdLink()" title="Insert link" class="w-8 h-7 rounded hover:bg-white flex items-center justify-center text-[#0B1430]"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244"/></svg></button>
+              <button type="button" onclick="etEdCmd('removeFormat')" title="Clear formatting" class="w-8 h-7 rounded hover:bg-white flex items-center justify-center text-[#0B1430]"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></button>
+            </div>
+            <div id="et-f-body" contenteditable="true" class="min-h-[220px] max-h-[340px] overflow-y-auto px-4 py-3 text-[13px] leading-relaxed focus:outline-none" data-placeholder="เขียนเนื้อหาอีเมลที่นี่..." style="color:#0B1430"></div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+    <div class="px-6 py-4 border-t border-[#E2E8F0] flex items-center justify-end gap-2 bg-[#F8FAFC]/50">
+      <button onclick="etCloseModal()" class="h-9 px-4 bg-white border border-[#CBD5E1] text-[#0B1430] rounded-lg text-[13px] font-medium hover:bg-[#F1F5F9]">Cancel</button>
+      <button id="et-modal-save" onclick="etSave()" class="h-9 px-5 bg-[#2D56D2] text-white rounded-lg text-[13px] font-semibold hover:bg-[#213268] inline-flex items-center gap-2 shadow-sm">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+        <span id="et-modal-save-label">Save Template</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Delete confirm modal -->
+<div id="et-del-modal" class="hidden fixed inset-0 z-[60] items-center justify-center p-4" style="background:rgba(11,20,48,0.45)">
+  <div class="bg-white rounded-xl shadow-xl w-[420px] max-w-[95vw] p-6">
+    <div class="flex items-start gap-3 mb-4">
+      <div class="w-10 h-10 rounded-full flex items-center justify-center shrink-0" style="background:rgba(220,38,38,0.10);color:#DC2626">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>
+      </div>
+      <div class="flex-1">
+        <h4 class="text-[15px] font-semibold text-[#0B1430] mb-1">ลบ Template?</h4>
+        <p class="text-[13px]" style="color:rgba(30,41,59,0.65)">ต้องการลบ template <span id="et-del-name" class="font-semibold text-[#0B1430]">—</span> หรือไม่? การลบไม่สามารถย้อนกลับได้</p>
+      </div>
+    </div>
+    <div class="flex items-center justify-end gap-2 mt-5">
+      <button onclick="etCloseDelete()" class="h-9 px-4 bg-white border border-[#CBD5E1] text-[#0B1430] rounded-lg text-[13px] font-medium hover:bg-[#F1F5F9]">Cancel</button>
+      <button onclick="etConfirmDelete()" class="h-9 px-4 bg-rose-600 text-white rounded-lg text-[13px] font-semibold hover:bg-rose-700">ยืนยันลบ</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ===== Email Templates data + CRUD ===== */
+var ET_DATA = [
+  { id:1, group:'Media Approval', type:'Ticket Created',        sender:'noreply@planbmedia.co.th', subject:'[Ticket #{{ticketNo}}] New Media Ticket Created', description:'แจ้ง Sales เมื่อ Ticket ใหม่ถูกสร้าง', status:'Active'  },
+  { id:2, group:'Media Approval', type:'Version Uploaded',      sender:'noreply@planbmedia.co.th', subject:'[Ticket #{{ticketNo}}] Version {{ver}} Uploaded for Review', description:'แจ้ง CS เมื่อ Graphic ส่ง version ให้ตรวจ', status:'Active'  },
+  { id:3, group:'Media Approval', type:'Customer Feedback',     sender:'noreply@planbmedia.co.th', subject:'[Ticket #{{ticketNo}}] New Feedback from {{client}}', description:'แจ้ง Graphic เมื่อลูกค้ามี feedback',    status:'Active'  },
+  { id:4, group:'Production',     type:'Assign Job',            sender:'production@planbmedia.co.th', subject:'[Job #{{jobNo}}] New Job Assigned to You', description:'แจ้ง Graphic Team เมื่อได้รับมอบหมาย Job',  status:'Active'  },
+  { id:5, group:'Production',     type:'Deadline Reminder',     sender:'production@planbmedia.co.th', subject:'[Job #{{jobNo}}] Deadline in 24 Hours',        description:'เตือน Graphic ก่อน deadline 1 วัน',      status:'Active'  },
+  { id:6, group:'Sale',           type:'Quotation Approved',    sender:'sales@planbmedia.co.th',      subject:'[QU #{{quNo}}] Quotation Approved',            description:'แจ้ง Sales เมื่อลูกค้าอนุมัติ quotation',    status:'Active'  },
+  { id:7, group:'Sale',           type:'Contract Expiring',     sender:'sales@planbmedia.co.th',      subject:'Contract {{contractNo}} expiring soon',        description:'เตือน Sales ก่อนสัญญาหมดอายุ 30 วัน',       status:'Inactive'},
+  { id:8, group:'Claim',          type:'Claim Opened',          sender:'claim@planbmedia.co.th',      subject:'[Claim #{{claimNo}}] New Claim Filed',         description:'แจ้ง Operation เมื่อมี claim ใหม่',        status:'Active'  },
+  { id:9, group:'Claim',          type:'Claim Resolved',        sender:'claim@planbmedia.co.th',      subject:'[Claim #{{claimNo}}] Resolved',                description:'แจ้งลูกค้าเมื่อ claim ถูกปิด',              status:'Active'  },
+  { id:10,group:'System',         type:'Password Reset',        sender:'noreply@planbmedia.co.th',    subject:'Reset your Media Flow password',               description:'ระบบส่งลิงก์ reset password',                status:'Active'  },
+  { id:11,group:'System',         type:'Weekly Digest',         sender:'noreply@planbmedia.co.th',    subject:'Media Flow Weekly Digest',                     description:'สรุป activity รายสัปดาห์',                 status:'Inactive'},
+];
+var _etSeq = ET_DATA.length;
+var _etEditingId = null;
+var _etDeletingId = null;
+
+var ET_GROUP_STYLE = {
+  'Sale':           { bg:'rgba(45,86,210,0.10)',   fg:'#2D56D2', bd:'rgba(45,86,210,0.25)' },
+  'Media Approval': { bg:'rgba(124,58,237,0.10)',  fg:'#7C3AED', bd:'rgba(124,58,237,0.25)' },
+  'Production':     { bg:'rgba(245,158,11,0.10)',  fg:'#B45309', bd:'rgba(245,158,11,0.25)' },
+  'Claim':          { bg:'rgba(220,38,38,0.10)',   fg:'#DC2626', bd:'rgba(220,38,38,0.25)' },
+  'System':         { bg:'rgba(100,116,139,0.10)', fg:'#475569', bd:'rgba(100,116,139,0.25)' }
+};
+
+function etEscape(s) { return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function etRender() {
+  var q = (document.getElementById('et-search').value || '').toLowerCase().trim();
+  var fg = document.getElementById('et-filter-group').value;
+  var fs = document.getElementById('et-filter-status').value;
+  var rows = ET_DATA.filter(function(r){
+    if (fg && r.group !== fg) return false;
+    if (fs && r.status !== fs) return false;
+    if (!q) return true;
+    return (r.subject + ' ' + r.sender + ' ' + r.description + ' ' + r.type).toLowerCase().indexOf(q) >= 0;
+  });
+  var tbody = document.getElementById('et-tbody');
+  var empty = document.getElementById('et-empty');
+  document.getElementById('et-count').textContent = rows.length + ' template' + (rows.length !== 1 ? 's' : '');
+  if (!rows.length) { tbody.innerHTML = ''; empty.classList.remove('hidden'); return; }
+  empty.classList.add('hidden');
+  tbody.innerHTML = rows.map(function(r){
+    var gs = ET_GROUP_STYLE[r.group] || ET_GROUP_STYLE['System'];
+    var isActive = r.status === 'Active';
+    var toggleHtml =
+      '<label class="et-toggle" title="' + (isActive ? 'Active' : 'Inactive') + '">' +
+        '<input type="checkbox" ' + (isActive ? 'checked' : '') + ' onchange="etToggleStatus(' + r.id + ', this.checked)"/>' +
+        '<span class="slider"></span>' +
+      '</label>' +
+      '<span class="ml-2 text-[11.5px] font-semibold align-middle" style="color:' + (isActive ? '#047857' : 'rgba(30,41,59,0.5)') + '">' + (isActive ? 'Active' : 'Inactive') + '</span>';
+    var templateCell =
+      '<div class="flex flex-col gap-1 min-w-[180px]">' +
+        '<span class="inline-flex items-center text-[10.5px] font-semibold px-2 py-0.5 rounded-full self-start" style="background:' + gs.bg + ';color:' + gs.fg + ';border:1px solid ' + gs.bd + '">' + etEscape(r.group) + '</span>' +
+        '<span class="text-[13px] font-semibold text-[#0B1430]">' + etEscape(r.type) + '</span>' +
+      '</div>';
+    return '<tr class="border-b border-[#F1F5F9] hover:bg-[#F8FAFC]">' +
+      '<td class="px-4 py-3 align-top">' + templateCell + '</td>' +
+      '<td class="px-4 py-3 whitespace-nowrap align-top font-mono text-[12px]" style="color:rgba(30,41,59,0.75)">' + etEscape(r.sender) + '</td>' +
+      '<td class="px-4 py-3 align-top"><div class="truncate" title="' + etEscape(r.subject) + '">' + etEscape(r.subject) + '</div></td>' +
+      '<td class="px-4 py-3 align-top"><div class="truncate text-[12px]" style="color:rgba(30,41,59,0.6)" title="' + etEscape(r.description) + '">' + etEscape(r.description) + '</div></td>' +
+      '<td class="px-4 py-3 whitespace-nowrap align-top">' + toggleHtml + '</td>' +
+      '<td class="px-4 py-3 whitespace-nowrap text-right align-top">' +
+        '<button onclick="etOpenEdit(' + r.id + ')" class="w-8 h-8 rounded-md hover:bg-[#EBF5FF] inline-flex items-center justify-center" style="color:#2D56D2" title="แก้ไข"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125"/></svg></button>' +
+        '<button onclick="etDuplicate(' + r.id + ')" class="w-8 h-8 rounded-md hover:bg-emerald-50 inline-flex items-center justify-center ml-1" style="color:#047857" title="Duplicate Email"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75"/></svg></button>' +
+        '<button onclick="etAskDelete(' + r.id + ')" class="w-8 h-8 rounded-md hover:bg-rose-50 inline-flex items-center justify-center ml-1" style="color:#DC2626" title="ลบ"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg></button>' +
+      '</td>' +
+    '</tr>';
+  }).join('');
+}
+
+// Toggle Active/Inactive from the row switch
+function etToggleStatus(id, checked) {
+  var r = ET_DATA.find(function(x){ return x.id === id; });
+  if (!r) return;
+  r.status = checked ? 'Active' : 'Inactive';
+  etRender();
+}
+
+/* ===== Types available per Group + User Groups (mock) ===== */
+var ET_TYPES_BY_GROUP = {
+  'Sale':           ['Quotation Created','Quotation Approved','Contract Signed','Contract Expiring','Payment Received'],
+  'Media Approval': ['Ticket Created','Version Uploaded','Customer Feedback','Approval Requested','Approval Approved'],
+  'Production':     ['Assign Job','Job Started','Deadline Reminder','Job Completed','Delivery Notification'],
+  'Claim':          ['Claim Opened','Claim Assigned','Claim In Progress','Claim Resolved','Claim Closed'],
+  'System':         ['Password Reset','Account Created','Weekly Digest','System Maintenance','Security Alert']
+};
+var ET_USER_GROUPS = ['Sales Team','Media Operations','Graphic Design','Production Team','CS / Support','Admin','Management','IT / Development','Finance','Marketing'];
+
+/* Multi-select state — separate arrays per field */
+var _etMs = { to: [], cc: [], bcc: [] };
+/* Per-field enable flag (Switch in Recipients section) */
+var _etMsEnabled = { to: false, cc: false, bcc: false };
+
+// Enable/disable the whole TO/CC/BCC widget (button, pills, dropdown) based on the switch.
+function etApplyMsEnabled(field) {
+  var on = !!_etMsEnabled[field];
+  var btn = document.getElementById('et-ms-' + field + '-btn');
+  var pills = document.getElementById('et-ms-' + field + '-pills');
+  var dd = document.getElementById('et-ms-' + field + '-dropdown');
+  var chev = document.getElementById('et-ms-' + field + '-chev');
+  if (btn) {
+    btn.disabled = !on;
+    btn.style.opacity = on ? '1' : '0.5';
+    btn.style.cursor = on ? 'pointer' : 'not-allowed';
+    btn.style.background = on ? '#fff' : '#F8FAFC';
+  }
+  if (!on) {
+    if (dd) dd.classList.add('hidden');
+    if (chev) chev.style.transform = '';
+    if (pills) pills.innerHTML = '<span class="text-[12px]" style="color:rgba(30,41,59,0.35)">ไม่ใช้ผู้รับในกล่องนี้</span>';
+  } else {
+    etMsRenderPills(field);
+  }
+}
+
+function etOnMsEnableChange(field) {
+  var cb = document.getElementById('et-en-' + field);
+  _etMsEnabled[field] = !!(cb && cb.checked);
+  // When switching OFF, keep selections in memory so re-enabling restores them
+  etApplyMsEnabled(field);
+}
+
+function etOnGroupChange() {
+  var g = document.getElementById('et-f-group').value;
+  var typeSel = document.getElementById('et-f-type');
+  var opts = ET_TYPES_BY_GROUP[g] || [];
+  var html = '<option value="">— ' + (g ? 'เลือก Type' : 'เลือก Group ก่อน') + ' —</option>';
+  opts.forEach(function(t){ html += '<option>' + t + '</option>'; });
+  typeSel.innerHTML = html;
+}
+
+function etOnStatusChange() {
+  var cb = document.getElementById('et-f-status');
+  var lbl = document.getElementById('et-f-status-label');
+  if (!cb || !lbl) return;
+  if (cb.checked) { lbl.textContent = 'Active'; lbl.style.color = '#047857'; }
+  else { lbl.textContent = 'Inactive'; lbl.style.color = 'rgba(30,41,59,0.5)'; }
+}
+
+/* ===== Multi-select widget (TO / CC / BCC) ===== */
+function etMsToggle(field, e) {
+  if (e) e.stopPropagation();
+  if (!_etMsEnabled[field]) return; // disabled by section switch
+  var dd = document.getElementById('et-ms-' + field + '-dropdown');
+  var chev = document.getElementById('et-ms-' + field + '-chev');
+  var willOpen = dd.classList.contains('hidden');
+  // Close others
+  ['to','cc','bcc'].forEach(function(f){
+    if (f === field) return;
+    var d = document.getElementById('et-ms-' + f + '-dropdown');
+    var c = document.getElementById('et-ms-' + f + '-chev');
+    if (d) d.classList.add('hidden');
+    if (c) c.style.transform = '';
+  });
+  dd.classList.toggle('hidden');
+  if (chev) chev.style.transform = willOpen ? 'rotate(180deg)' : '';
+  if (willOpen) etMsRenderDropdown(field);
+}
+function etMsRenderDropdown(field) {
+  var dd = document.getElementById('et-ms-' + field + '-dropdown');
+  if (!dd) return;
+  var sel = _etMs[field] || [];
+  dd.innerHTML = ET_USER_GROUPS.map(function(g){
+    var checked = sel.indexOf(g) >= 0;
+    var safe = g.replace(/'/g, "\\'");
+    return '<label class="flex items-center gap-2 px-2 py-1.5 rounded-md cursor-pointer hover:bg-[#F8FAFC] text-[12.5px] transition-colors">' +
+      '<input type="checkbox" ' + (checked ? 'checked' : '') + ' onchange="etMsToggleItem(\'' + field + '\',\'' + safe + '\',event)" class="w-3.5 h-3.5 rounded accent-[#2D56D2]"/>' +
+      '<span class="' + (checked ? 'font-semibold text-[#0B1430]' : '') + '" style="' + (checked ? '' : 'color:rgba(30,41,59,0.75)') + '">' + etEscape(g) + '</span>' +
+    '</label>';
+  }).join('');
+}
+function etMsRenderPills(field) {
+  var el = document.getElementById('et-ms-' + field + '-pills');
+  if (!el) return;
+  var sel = _etMs[field] || [];
+  if (!sel.length) {
+    el.innerHTML = '<span class="text-[12px]" style="color:rgba(30,41,59,0.4)">เลือก user group...</span>';
+    return;
+  }
+  el.innerHTML = sel.map(function(g){
+    var safe = g.replace(/'/g, "\\'");
+    return '<span class="inline-flex items-center gap-1 text-[11px] font-semibold px-1.5 py-0.5 rounded" style="background:rgba(45,86,210,0.10);color:#2D56D2;border:1px solid rgba(45,86,210,0.25)">' +
+      etEscape(g) +
+      '<button type="button" onclick="etMsRemove(\'' + field + '\',\'' + safe + '\',event)" class="ml-0.5 w-3.5 h-3.5 inline-flex items-center justify-center rounded-full hover:bg-white/60 text-[10px] leading-none">×</button>' +
+    '</span>';
+  }).join('');
+}
+function etMsToggleItem(field, g, e) {
+  if (e) e.stopPropagation();
+  if (!_etMs[field]) _etMs[field] = [];
+  var i = _etMs[field].indexOf(g);
+  if (i >= 0) _etMs[field].splice(i, 1);
+  else _etMs[field].push(g);
+  _etMs[field].sort(function(a,b){ return ET_USER_GROUPS.indexOf(a) - ET_USER_GROUPS.indexOf(b); });
+  etMsRenderPills(field);
+  etMsRenderDropdown(field);
+}
+function etMsRemove(field, g, e) {
+  if (e) e.stopPropagation();
+  if (!_etMs[field]) return;
+  var i = _etMs[field].indexOf(g);
+  if (i >= 0) _etMs[field].splice(i, 1);
+  etMsRenderPills(field);
+}
+// Close open multi-selects when clicking outside
+document.addEventListener('click', function(e){
+  ['to','cc','bcc'].forEach(function(f){
+    var wrap = document.getElementById('et-ms-' + f + '-wrap');
+    if (!wrap) return;
+    if (!wrap.contains(e.target)) {
+      var dd = document.getElementById('et-ms-' + f + '-dropdown');
+      var chev = document.getElementById('et-ms-' + f + '-chev');
+      if (dd) dd.classList.add('hidden');
+      if (chev) chev.style.transform = '';
+    }
+  });
+});
+
+/* ===== Rich text editor helpers (contenteditable + execCommand) ===== */
+function etEdCmd(cmd) {
+  document.getElementById('et-f-body').focus();
+  try { document.execCommand(cmd, false, null); } catch (e) {}
+}
+function etEdLink() {
+  var url = prompt('ใส่ URL (เช่น https://...)');
+  if (!url) return;
+  document.getElementById('et-f-body').focus();
+  try { document.execCommand('createLink', false, url); } catch (e) {}
+}
+
+/* ===== Open / Edit / Save ===== */
+function etOpenCreate() {
+  _etEditingId = null;
+  document.getElementById('et-modal-title').textContent = 'Create Template';
+  document.getElementById('et-modal-save-label').textContent = 'Save Template';
+  document.getElementById('et-f-group').value = '';
+  etOnGroupChange();
+  document.getElementById('et-f-sender').value = '';
+  document.getElementById('et-f-subject').value = '';
+  document.getElementById('et-f-desc').value = '';
+  document.getElementById('et-f-body').innerHTML = '';
+  document.getElementById('et-f-status').checked = true;
+  etOnStatusChange();
+  _etMs = { to: [], cc: [], bcc: [] };
+  _etMsEnabled = { to: false, cc: false, bcc: false };
+  ['to','cc','bcc'].forEach(function(f){
+    var cb = document.getElementById('et-en-' + f); if (cb) cb.checked = false;
+    etApplyMsEnabled(f);
+  });
+  etShow('et-modal');
+}
+function etOpenEdit(id) {
+  var r = ET_DATA.find(function(x){ return x.id === id; });
+  if (!r) return;
+  _etEditingId = id;
+  document.getElementById('et-modal-title').textContent = 'Edit Template';
+  document.getElementById('et-modal-save-label').textContent = 'Save Changes';
+  document.getElementById('et-f-group').value = r.group;
+  etOnGroupChange();
+  // Ensure the row's type is selectable even if it isn't in the current preset list
+  var typeSel = document.getElementById('et-f-type');
+  var found = false;
+  for (var i = 0; i < typeSel.options.length; i++) if (typeSel.options[i].value === r.type || typeSel.options[i].text === r.type) { found = true; break; }
+  if (!found && r.type) { var opt = document.createElement('option'); opt.text = r.type; typeSel.appendChild(opt); }
+  typeSel.value = r.type;
+  document.getElementById('et-f-sender').value = r.sender || '';
+  document.getElementById('et-f-subject').value = r.subject || '';
+  document.getElementById('et-f-desc').value = r.description || '';
+  document.getElementById('et-f-body').innerHTML = r.mailBody || '';
+  document.getElementById('et-f-status').checked = (r.status === 'Active');
+  etOnStatusChange();
+  _etMs = { to: (r.to || []).slice(), cc: (r.cc || []).slice(), bcc: (r.bcc || []).slice() };
+  // Enable each recipients field if the saved template used it (persisted flag) or has any recipients
+  _etMsEnabled = {
+    to:  !!(r.useTo  || (r.to  && r.to.length)),
+    cc:  !!(r.useCc  || (r.cc  && r.cc.length)),
+    bcc: !!(r.useBcc || (r.bcc && r.bcc.length))
+  };
+  ['to','cc','bcc'].forEach(function(f){
+    var cb = document.getElementById('et-en-' + f); if (cb) cb.checked = _etMsEnabled[f];
+    etApplyMsEnabled(f);
+  });
+  etShow('et-modal');
+}
+function etCloseModal() { etHide('et-modal'); _etEditingId = null; }
+
+function etSave() {
+  var group = document.getElementById('et-f-group').value;
+  var type  = document.getElementById('et-f-type').value.trim();
+  var sender= document.getElementById('et-f-sender').value.trim();
+  var subject = document.getElementById('et-f-subject').value.trim();
+  var desc  = document.getElementById('et-f-desc').value.trim();
+  var body  = document.getElementById('et-f-body').innerHTML.trim();
+  var status = document.getElementById('et-f-status').checked ? 'Active' : 'Inactive';
+  if (!group || !type || !sender || !subject) { alert('กรุณากรอก Group / Type / Sender / Subject ให้ครบ'); return; }
+  var payload = {
+    group: group, type: type, sender: sender, subject: subject,
+    description: desc, mailBody: body, status: status,
+    useTo: !!_etMsEnabled.to, useCc: !!_etMsEnabled.cc, useBcc: !!_etMsEnabled.bcc,
+    to:  _etMsEnabled.to  ? _etMs.to.slice()  : [],
+    cc:  _etMsEnabled.cc  ? _etMs.cc.slice()  : [],
+    bcc: _etMsEnabled.bcc ? _etMs.bcc.slice() : []
+  };
+  if (_etEditingId != null) {
+    var idx = ET_DATA.findIndex(function(x){ return x.id === _etEditingId; });
+    if (idx >= 0) { payload.id = _etEditingId; ET_DATA[idx] = payload; }
+  } else {
+    _etSeq++; payload.id = _etSeq;
+    ET_DATA.unshift(payload);
+  }
+  etCloseModal();
+  etRender();
+}
+
+// Duplicate a template: deep-copy the row, mark as Inactive by default, prepend to list.
+function etDuplicate(id) {
+  var r = ET_DATA.find(function(x){ return x.id === id; });
+  if (!r) return;
+  _etSeq++;
+  var copy = {
+    id: _etSeq,
+    group: r.group,
+    type: (r.type || '') + ' (Copy)',
+    sender: r.sender,
+    subject: r.subject,
+    description: r.description,
+    mailBody: r.mailBody || '',
+    status: 'Inactive',
+    useTo: !!r.useTo, useCc: !!r.useCc, useBcc: !!r.useBcc,
+    to:  (r.to  || []).slice(),
+    cc:  (r.cc  || []).slice(),
+    bcc: (r.bcc || []).slice()
+  };
+  ET_DATA.unshift(copy);
+  etRender();
+}
+
+function etAskDelete(id) {
+  var r = ET_DATA.find(function(x){ return x.id === id; });
+  if (!r) return;
+  _etDeletingId = id;
+  document.getElementById('et-del-name').textContent = r.type + ' (' + r.group + ')';
+  etShow('et-del-modal');
+}
+function etCloseDelete() { etHide('et-del-modal'); _etDeletingId = null; }
+function etConfirmDelete() {
+  if (_etDeletingId == null) return;
+  var idx = ET_DATA.findIndex(function(x){ return x.id === _etDeletingId; });
+  if (idx >= 0) ET_DATA.splice(idx, 1);
+  etCloseDelete();
+  etRender();
+}
+
+function etShow(id) { var m = document.getElementById(id); m.classList.remove('hidden'); m.style.display = 'flex'; }
+function etHide(id) { var m = document.getElementById(id); m.classList.add('hidden'); m.style.display = ''; }
+
+document.addEventListener('DOMContentLoaded', etRender);
+</script>
+    </div>
+
+  </main>
+</div>
+
+<!-- AI Panel -->
+<div id="ai-panel" class="fixed right-0 top-0 bottom-0 w-[420px] bg-white border-l border-surface-200 z-40 flex flex-col translate-x-full transition-transform duration-200" style="box-shadow:-8px 0 30px rgba(11,20,48,0.08)">
+  <div class="h-16 px-5 border-b border-surface-200 flex items-center gap-3">
+    <div class="w-8 h-8 rounded-lg flex items-center justify-center text-white" style="background:linear-gradient(135deg,#2D56D2,#5FCBF9)">
+      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z"/></svg>
+    </div>
+    <div class="flex-1">
+      <div class="text-[14px] font-semibold">Plan-B Copilot</div>
+      <div class="text-[11px] flex items-center gap-1" style="color:rgba(30,41,59,0.6)"><span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>Connected to live CRM data</div>
+    </div>
+    <button onclick="toggleAI()" class="w-8 h-8 rounded-md hover:bg-surface-100 flex items-center justify-center">
+      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+    </button>
+  </div>
+
+  <!-- Messages -->
+  <div id="ai-messages" class="flex-1 overflow-y-auto px-5 py-4 space-y-3">
+    <div><div class="text-[10px] font-medium uppercase tracking-wide mb-1" style="color:rgba(30,41,59,0.5)">Copilot</div><div class="inline-block max-w-[90%] text-[13px] leading-relaxed rounded-xl px-3.5 py-2.5 bg-surface-50 border border-surface-200">Hi — I can summarize occupancy, flag anomalies, draft proposals, or forecast revenue. What are we digging into?</div></div>
+  </div>
+
+  <!-- Suggestions -->
+  <div id="ai-suggestions" class="px-5 pb-2 space-y-2">
+    <div class="text-[10px] uppercase tracking-wide font-semibold" style="color:rgba(30,41,59,0.5)">Try asking</div>
+    <button onclick="aiSend(this.textContent)" class="w-full text-left text-[12px] px-3 py-2 border border-surface-200 rounded-lg hover:border-pb-500 hover:bg-blue-50/30 transition-colors">Forecast May occupancy for BTS inventory</button>
+    <button onclick="aiSend(this.textContent)" class="w-full text-left text-[12px] px-3 py-2 border border-surface-200 rounded-lg hover:border-pb-500 hover:bg-blue-50/30 transition-colors">Summarize this week's claims by severity</button>
+    <button onclick="aiSend(this.textContent)" class="w-full text-left text-[12px] px-3 py-2 border border-surface-200 rounded-lg hover:border-pb-500 hover:bg-blue-50/30 transition-colors">Who are my top 3 clients and where are they underspending?</button>
+    <button onclick="aiSend(this.textContent)" class="w-full text-left text-[12px] px-3 py-2 border border-surface-200 rounded-lg hover:border-pb-500 hover:bg-blue-50/30 transition-colors">Draft a proposal: AIS wants 30-day coverage in Bangkok + Chiang Mai</button>
+  </div>
+
+  <!-- Input -->
+  <div class="p-4 border-t border-surface-200">
+    <div class="rounded-xl bg-white border border-surface-200 focus-within:border-pb-500 transition" style="box-shadow:0 0 0 1px rgba(45,86,210,0.1)">
+      <div class="flex items-end gap-2 p-2">
+        <input id="ai-input" type="text" placeholder="Ask about occupancy, pipeline, claims…" class="flex-1 text-[13px] bg-transparent outline-none px-2 py-1.5 placeholder:opacity-40" onkeydown="if(event.key==='Enter'){event.preventDefault();aiSend()}" />
+        <button onclick="aiSend()" class="w-8 h-8 rounded-md bg-ink-900 hover:bg-ink-700 flex items-center justify-center text-white shrink-0">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 18-8-8 18-2-8-8-2Z"/></svg>
+        </button>
+      </div>
+    </div>
+    <p class="text-[10px] text-center mt-2" style="color:rgba(30,41,59,0.4)">Plan-B Copilot — may hallucinate, verify critical actions</p>
+  </div>
+</div>
+
+<script>
+/* === Expand/collapse sub-menus === */
+function toggleMenu(id){
+  const sub=document.getElementById(id+'-sub');
+  const chevron=document.getElementById(id+'-chevron');
+  if(sub.classList.contains('hidden')){
+    sub.classList.remove('hidden');
+    chevron.classList.add('rotate-90');
+  }else{
+    sub.classList.add('hidden');
+    chevron.classList.remove('rotate-90');
+  }
+}
+
+/* === Mobile sidebar overlay === */
+function toggleMobile(){
+  const sidebar=document.getElementById('sidebar');
+  const overlay=document.getElementById('sidebar-overlay');
+  sidebar.classList.toggle('-translate-x-full');
+  overlay.classList.toggle('hidden');
+}
+
+/* === Desktop collapse sidebar === */
+let _sidebarCollapsed = false;
+function collapseSidebar(){
+  // On mobile, toggle mobile drawer instead
+  if(window.innerWidth < 1024){
+    toggleMobile();
+    return;
+  }
+  _sidebarCollapsed = !_sidebarCollapsed;
+  const sb = document.getElementById('sidebar');
+  const main = document.querySelector('main');
+  const labels = sb.querySelectorAll('.sidebar-label');
+  const groups = sb.querySelectorAll('.sidebar-nav-parent');
+  const subs = sb.querySelectorAll('[id$="-sub"]');
+  const brand = document.getElementById('sidebar-brand');
+
+  if(_sidebarCollapsed){
+    sb.classList.remove('w-64');
+    sb.classList.add('w-[68px]');
+    main.classList.remove('lg:ml-64');
+    main.classList.add('lg:ml-[68px]');
+    labels.forEach(el=>el.classList.add('hidden'));
+    groups.forEach(el=>el.classList.add('hidden'));
+    subs.forEach(el=>el.classList.add('hidden'));
+    if(brand) brand.classList.replace('px-4','px-0');
+    if(brand) brand.classList.add('justify-center');
+  } else {
+    sb.classList.remove('w-[68px]');
+    sb.classList.add('w-64');
+    main.classList.remove('lg:ml-[68px]');
+    main.classList.add('lg:ml-64');
+    labels.forEach(el=>el.classList.remove('hidden'));
+    groups.forEach(el=>el.classList.remove('hidden'));
+    // Re-show sub-menus that were explicitly open (have active items)
+    subs.forEach(el=>{
+      if(el.querySelector('.active')) el.classList.remove('hidden');
+    });
+    if(brand) brand.classList.replace('px-0','px-4');
+    if(brand) brand.classList.remove('justify-center');
+  }
+}
+
+/* === AI Panel === */
+let _aiOpen = false;
+function toggleAI(){
+  _aiOpen = !_aiOpen;
+  const panel = document.getElementById('ai-panel');
+  const btn = document.getElementById('ai-toggle');
+  if(_aiOpen){
+    panel.classList.remove('translate-x-full');
+    btn.classList.remove('bg-white','border-surface-300','text-ink-900','hover:bg-surface-50');
+    btn.classList.add('bg-ink-900','text-white','border-ink-900');
+  } else {
+    panel.classList.add('translate-x-full');
+    btn.classList.remove('bg-ink-900','text-white','border-ink-900');
+    btn.classList.add('bg-white','border-surface-300','text-ink-900','hover:bg-surface-50');
+  }
+}
+
+/* AI demo chat */
+const _aiReplies = [
+  "Based on current data, BTS corridor occupancy is trending at 84% — above the 78% network average. If the pattern holds, May could hit 89% with AIS and TrueMove briefs both targeting Silom.",
+  "This week we have 3 open claims: #1284 (high — LED flicker, 2h remaining SLA), #1282 (critical — content not playing, urgent), and #1283 (med — vinyl peel, within SLA). The critical item needs immediate attention.",
+  "Your top 3 clients YTD: AIS Thailand (฿24.8M, 18 campaigns), TrueMove H (฿18.5M, 14 campaigns), and Toyota Motor (฿15.2M, 9 campaigns). Toyota is underspending on digital LED — they only use 2 of your 5 available LED sites.",
+  "Draft proposal ready: AIS 30-day coverage across 8 Bangkok sites (including Silom LED, Rama IX, Asoke) + 2 Chiang Mai sites. Estimated package: ฿4.2M. Occupancy conflicts on TH-SIL-09 for May 5-12 — recommend offering X-CAYA-FY-1 as substitute.",
+];
+let _aiReplyIdx = 0;
+
+function aiSend(text){
+  const input = document.getElementById('ai-input');
+  const msg = text || input.value.trim();
+  if(!msg) return;
+  input.value = '';
+  document.getElementById('ai-suggestions').style.display='none';
+
+  const box = document.getElementById('ai-messages');
+  // User bubble
+  box.innerHTML += '<div class="text-right"><div class="inline-block max-w-[90%] text-[13px] leading-relaxed rounded-xl px-3.5 py-2.5 bg-ink-900 text-white">'+msg.replace(/</g,'&lt;')+'</div></div>';
+  box.scrollTop = box.scrollHeight;
+
+  // Thinking dots
+  const thinkId = 'ai-think-'+Date.now();
+  box.innerHTML += '<div id="'+thinkId+'" class="flex items-center gap-2 text-[12px]" style="color:rgba(30,41,59,0.6)"><div class="flex gap-1"><span class="w-1.5 h-1.5 bg-pb-500 rounded-full pulse-dot"></span><span class="w-1.5 h-1.5 bg-pb-500 rounded-full pulse-dot" style="animation-delay:.2s"></span><span class="w-1.5 h-1.5 bg-pb-500 rounded-full pulse-dot" style="animation-delay:.4s"></span></div>analyzing CRM data…</div>';
+  box.scrollTop = box.scrollHeight;
+
+  setTimeout(()=>{
+    const el = document.getElementById(thinkId);
+    if(el) el.remove();
+    const reply = _aiReplies[_aiReplyIdx % _aiReplies.length];
+    _aiReplyIdx++;
+    box.innerHTML += '<div><div class="text-[10px] font-medium uppercase tracking-wide mb-1" style="color:rgba(30,41,59,0.5)">Copilot</div><div class="inline-block max-w-[90%] text-[13px] leading-relaxed rounded-xl px-3.5 py-2.5 bg-surface-50 border border-surface-200">'+reply+'</div></div>';
+    box.scrollTop = box.scrollHeight;
+  }, 1500);
+}
+</script>
+</body>
+</html>

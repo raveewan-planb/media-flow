@@ -234,6 +234,7 @@ const SIDEBAR_NAV = [
     { id:'users',  label:'User Management',       href:'settings-user.html' },
     { id:'groups', label:'User Group Management', href:'settings-usergroup.html' },
     { id:'email',  label:'Email Setup',           href:'settings-email.html' },
+    { id:'email-template', label:'Email Template', href:'settings-email-template.html' },
     { id:'master', label:'Master Data',           href:'settings-master.html' },
   ] },
 ];

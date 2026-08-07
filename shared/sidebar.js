@@ -87,6 +87,7 @@
       { label:'User Management',       href:'settings-user.html' },
       { label:'User Group Management', href:'settings-usergroup.html' },
       { label:'Email Setup',           href:'settings-email.html' },
+      { label:'Email Template',        href:'settings-email-template.html' },
       { label:'Master Data',           href:'settings-master.html' }
     ]}
   ];
