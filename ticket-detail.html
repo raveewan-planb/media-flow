@@ -3035,12 +3035,20 @@ function aiSend(text){
 /* ===== State ===== */
 var RS_FORMATS = ['16-9','CSQ','ITT','BTS','Silom','Curve','RBS','4-3','SRD','179'];
 
-/* ===== Existing Airtime Allocation (fetched from Airtime Allocate page) =====
-   Single value for the whole ticket — not per format.
-   Set to null to simulate "no allocation yet" and trigger the warning. */
-var TD_AIRTIME_DATA = { dur:15, spots:120, startDate:'2026-05-01', endDate:'2026-05-31', special:'Prime time 18:00–21:00' };
-function tdGetAirtime(){ return TD_AIRTIME_DATA || null; }
-function tdHasAirtime(){ return !!TD_AIRTIME_DATA; }
+/* ===== Existing Airtime Allocations (fetched from Airtime Allocate page) =====
+   Keyed by Job No. — each job in this ticket may (or may not) have an allocation.
+   JOB-1040-D is intentionally missing to demo the "please allocate first" warning. */
+var TD_AIRTIME_DATA = {
+  'JOB-1040-M': { dur:15, spots:120, startDate:'2026-05-01', endDate:'2026-05-31', special:'Prime time 18:00–21:00' },
+  'JOB-1040-7': { dur:15, spots:200, startDate:'2026-05-01', endDate:'2026-07-31', special:'' },
+  'JOB-1040-S': { dur:15, spots:96,  startDate:'2026-05-01', endDate:'2026-06-30', special:'' },
+  'JOB-1040-P': { dur:15, spots:150, startDate:'2026-05-15', endDate:'2026-07-31', special:'' },
+  'JOB-1040-R': { dur:30, spots:80,  startDate:'2026-06-01', endDate:'2026-07-31', special:'สลับเวอร์ชันทุกวัน' }
+  /* 'JOB-1040-D' — ยังไม่ได้กำหนด → trigger warning ตอน Approve/Approve-ref */
+};
+function tdCurrentJobNo(){ return (typeof _currentReviewJob !== 'undefined' && _currentReviewJob) ? _currentReviewJob : ''; }
+function tdGetAirtime(jobNo){ jobNo = jobNo || tdCurrentJobNo(); return jobNo && TD_AIRTIME_DATA[jobNo] ? TD_AIRTIME_DATA[jobNo] : null; }
+function tdHasAirtime(jobNo){ return !!tdGetAirtime(jobNo); }
 var _rsApproved = {};         // committed approved formats: { fmt: { approved, feedback, at, airtime } }
 var _rsApproveOpen = {};      // formats with Approve checkbox ticked (pending Airtime submit)
 var _rsFeedback = {};         // committed feedback per format
@@ -3592,13 +3600,17 @@ function rsRenderApproveRefPanel(){
       /* Existing Airtime Allocation (read-only) */
       _rsBuildAirtimeReadOnly(sel, 'sky') +
       /* Footer */
-      '<div class="flex items-center justify-end gap-2 pt-2 border-t" style="border-color:#7DD3FC">' +
-        '<button type="button" onclick="rsCancelApproveRef()" class="h-9 px-3.5 bg-white border text-sky-800 rounded-lg text-[12.5px] font-medium hover:bg-sky-50" style="border-color:#7DD3FC">Cancel</button>' +
-        '<button type="button" onclick="rsSubmitApproveRef()" class="h-9 px-4 text-white rounded-lg text-[12.5px] font-semibold inline-flex items-center gap-1.5 shadow-sm hover:brightness-110" style="background:#0369A1">' +
-          '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>' +
-          'Confirm Approve-ref' +
-        '</button>' +
-      '</div>' +
+      (function(){
+        var noAt = !tdHasAirtime(tdCurrentJobNo());
+        var disAttr = noAt ? 'disabled title="ยังไม่มี Airtime Allocate — กรุณาไปกรอกก่อน" style="background:#0369A1;opacity:.45;cursor:not-allowed;pointer-events:none"' : 'style="background:#0369A1"';
+        return '<div class="flex items-center justify-end gap-2 pt-2 border-t" style="border-color:#7DD3FC">' +
+          '<button type="button" onclick="rsCancelApproveRef()" class="h-9 px-3.5 bg-white border text-sky-800 rounded-lg text-[12.5px] font-medium hover:bg-sky-50" style="border-color:#7DD3FC">Cancel</button>' +
+          '<button type="button" onclick="rsSubmitApproveRef()" ' + disAttr + ' class="h-9 px-4 text-white rounded-lg text-[12.5px] font-semibold inline-flex items-center gap-1.5 shadow-sm hover:brightness-110">' +
+            '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>' +
+            'Confirm Approve-ref' +
+          '</button>' +
+        '</div>';
+      })() +
     '</div>';
 }
 function rsCancelApproveRef(){
@@ -3609,15 +3621,16 @@ function rsCancelApproveRef(){
 function rsSubmitApproveRef(){
   var sel = _rsSelectedApproveRefFmts();
   if (!sel.length) return;
-  if (!tdHasAirtime()){
-    alert('ยังไม่มีข้อมูล Airtime Allocate สำหรับ Ticket นี้\nกรุณาไปกำหนดข้อมูล Airtime Allocate ก่อน');
+  var _jn = tdCurrentJobNo();
+  if (!tdHasAirtime(_jn)){
+    alert('ยังไม่มีข้อมูล Airtime Allocate สำหรับ ' + (_jn || 'Job นี้') + '\nกรุณาไปกำหนดข้อมูล Airtime Allocate ก่อน');
     return;
   }
   var d = new Date();
   var dd = String(d.getDate()).padStart(2,'0'), mm = String(d.getMonth()+1).padStart(2,'0');
   var stamp = dd + '/' + mm + '/' + d.getFullYear() + ' ' + d.toTimeString().slice(0,5);
   sel.forEach(function(fmt){
-    var a = tdGetAirtime() || {};
+    var a = tdGetAirtime(_jn) || {};
     _rsApproveRef[fmt] = { at: stamp, airtime: { freq:String(a.spots||''), dur:String(a.dur||''), startDate:a.startDate||'', endDate:a.endDate||'', special:a.special||'' } };
     _rsApproveRefOpen[fmt] = false;
   });
@@ -3922,14 +3935,16 @@ function _rsBuildAirtimeReadOnly(sel, theme){
   var textCol = isSky ? '#075985' : '#065F46';
   var subCol = isSky ? '#0369A1' : '#047857';
 
-  if (!tdHasAirtime()){
+  var jobNo = tdCurrentJobNo();
+  if (!tdHasAirtime(jobNo)){
+    var jobLabel = jobNo ? ('<span class="font-mono">' + _rsEsc(jobNo) + '</span>') : 'Job นี้';
     return (
       '<div class="mb-3 rounded-lg border border-amber-300 bg-amber-50/70 p-3">' +
         '<div class="flex items-start gap-2">' +
           '<svg class="w-5 h-5 mt-0.5 shrink-0 text-amber-600" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>' +
           '<div class="flex-1 min-w-0">' +
-            '<div class="text-[12.5px] font-bold text-amber-900">ยังไม่มีข้อมูล Airtime Allocate สำหรับ Ticket นี้</div>' +
-            '<div class="text-[11.5px] mt-1 text-amber-800/85">กรุณาไปกำหนดข้อมูล Airtime Allocate ก่อน จึงจะ ' + (isSky ? 'Approve-ref' : 'Approve') + ' ได้</div>' +
+            '<div class="text-[12.5px] font-bold text-amber-900">ยังไม่มีข้อมูล Airtime Allocate สำหรับ ' + jobLabel + '</div>' +
+            '<div class="text-[11.5px] mt-1 text-amber-800/85">กรุณาไปกำหนดข้อมูล Airtime Allocate ให้ Job นี้ก่อน จึงจะ ' + (isSky ? 'Approve-ref' : 'Approve') + ' ได้</div>' +
             '<a href="airtime-allocate.html" class="mt-2 inline-flex items-center gap-1.5 h-8 px-3 bg-amber-600 text-white rounded-md text-[12px] font-semibold hover:bg-amber-700"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6l4.5 2.25M12 2.25a9.75 9.75 0 100 19.5 9.75 9.75 0 000-19.5z"/></svg>ไปหน้า Airtime Allocate</a>' +
           '</div>' +
         '</div>' +
@@ -3937,14 +3952,14 @@ function _rsBuildAirtimeReadOnly(sel, theme){
     );
   }
 
-  var a = tdGetAirtime();
+  var a = tdGetAirtime(jobNo);
   var totalSec = (Number(a.dur)||0) * (Number(a.spots)||0);
   var totalMin = Math.floor(totalSec/60), totalRem = totalSec%60;
   return (
     '<div class="mb-3 rounded-lg border overflow-hidden bg-white/60" style="border-color:' + borderCol + '">' +
       '<div class="px-3 py-2 flex items-center gap-2 border-b" style="border-color:' + borderCol + ';background:rgba(255,255,255,0.5)">' +
         '<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" style="color:' + subCol + '"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>' +
-        '<span class="text-[11.5px] font-semibold" style="color:' + subCol + '">Airtime Allocate (ดึงจากระบบ · ใช้ค่าเดียวกันทุก Format)</span>' +
+        '<span class="text-[11.5px] font-semibold" style="color:' + subCol + '">Airtime Allocate — ' + (jobNo ? '<span class="font-mono">' + _rsEsc(jobNo) + '</span>' : 'Job') + ' (ดึงจากระบบ)</span>' +
         '<span class="ml-auto text-[10.5px]" style="color:rgba(30,41,59,0.5)">อ่านอย่างเดียว — แก้ไขได้ที่หน้า Airtime Allocate</span>' +
       '</div>' +
       '<div class="p-3 grid grid-cols-2 sm:grid-cols-4 gap-x-4 gap-y-2 text-[11.5px]" style="color:' + textCol + '">' +
@@ -4008,8 +4023,9 @@ function rsCancelAirtime(){
 function rsSubmitAirtime(){
   var sel = _rsSelectedApproveFmts();
   if (!sel.length) return;
-  if (!tdHasAirtime()){
-    alert('ยังไม่มีข้อมูล Airtime Allocate สำหรับ Ticket นี้\nกรุณาไปกำหนดข้อมูล Airtime Allocate ก่อน');
+  var _jn = tdCurrentJobNo();
+  if (!tdHasAirtime(_jn)){
+    alert('ยังไม่มีข้อมูล Airtime Allocate สำหรับ ' + (_jn || 'Job นี้') + '\nกรุณาไปกำหนดข้อมูล Airtime Allocate ก่อน');
     return;
   }
   /* Manual-entry ticket (no Quotation) → require approval evidence */
@@ -4026,7 +4042,7 @@ function rsSubmitAirtime(){
   var dd = String(d.getDate()).padStart(2,'0'), mm = String(d.getMonth()+1).padStart(2,'0');
   var stamp = dd + '/' + mm + '/' + d.getFullYear() + ' ' + d.toTimeString().slice(0,5);
   sel.forEach(function(fmt){
-    var a = tdGetAirtime() || {};
+    var a = tdGetAirtime(_jn) || {};
     _rsApproved[fmt] = {
       approved: true,
       at: stamp,
@@ -4104,13 +4120,17 @@ function rsRenderApprovePanel(){
         : ''
       ) +
       /* Footer */
-      '<div class="flex items-center justify-end gap-2 pt-2 border-t border-emerald-200">' +
-        '<button type="button" onclick="rsCancelAirtime()" class="h-9 px-3.5 bg-white border border-emerald-300 text-emerald-800 rounded-lg text-[12.5px] font-medium hover:bg-emerald-50">Cancel</button>' +
-        '<button type="button" onclick="rsSubmitAirtime()" class="h-9 px-4 bg-emerald-600 text-white rounded-lg text-[12.5px] font-semibold hover:bg-emerald-700 inline-flex items-center gap-1.5 shadow-sm">' +
-          '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>' +
-          'Confirm Approve' +
-        '</button>' +
-      '</div>' +
+      (function(){
+        var noAt = !tdHasAirtime(tdCurrentJobNo());
+        var disAttr = noAt ? 'disabled title="ยังไม่มี Airtime Allocate — กรุณาไปกรอกก่อน" style="opacity:.45;cursor:not-allowed;pointer-events:none"' : '';
+        return '<div class="flex items-center justify-end gap-2 pt-2 border-t border-emerald-200">' +
+          '<button type="button" onclick="rsCancelAirtime()" class="h-9 px-3.5 bg-white border border-emerald-300 text-emerald-800 rounded-lg text-[12.5px] font-medium hover:bg-emerald-50">Cancel</button>' +
+          '<button type="button" onclick="rsSubmitAirtime()" ' + disAttr + ' class="h-9 px-4 bg-emerald-600 text-white rounded-lg text-[12.5px] font-semibold hover:bg-emerald-700 inline-flex items-center gap-1.5 shadow-sm">' +
+            '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>' +
+            'Confirm Approve' +
+          '</button>' +
+        '</div>';
+      })() +
     '</div>';
   /* After the panel is (re-)rendered, restore the file list UI so files persist across re-renders */
   rsRenderApEvidenceList();
