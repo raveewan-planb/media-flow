@@ -256,6 +256,10 @@ table th{position:sticky;top:0;z-index:1}
 </div>
 <div class="flex items-center gap-2">
 <span class="text-[11px] px-2.5 py-1 rounded-full font-medium border bg-amber-50 text-amber-700 border-amber-200 inline-flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>Draft</span>
+<a href="airtime-allocate.html" class="h-9 px-3.5 bg-white text-[#2D56D2] rounded-lg border border-[#2D56D2] text-sm font-medium hover:bg-[#EBF5FF] inline-flex items-center gap-1.5">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6l4.5 2.25M12 2.25a9.75 9.75 0 100 19.5 9.75 9.75 0 000-19.5z"/></svg>
+<span>Airtime Allocate</span>
+</a>
 <button class="h-9 px-3.5 bg-white text-[#0B1430] rounded-lg border border-[#CBD5E1] text-sm font-medium hover:bg-[#F8FAFC] inline-flex items-center gap-1.5" onclick="toggleHistory()">
 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24"><path d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
 <span>History</span>
@@ -3030,6 +3034,13 @@ function aiSend(text){
 <script>
 /* ===== State ===== */
 var RS_FORMATS = ['16-9','CSQ','ITT','BTS','Silom','Curve','RBS','4-3','SRD','179'];
+
+/* ===== Existing Airtime Allocation (fetched from Airtime Allocate page) =====
+   Single value for the whole ticket — not per format.
+   Set to null to simulate "no allocation yet" and trigger the warning. */
+var TD_AIRTIME_DATA = { dur:15, spots:120, startDate:'2026-05-01', endDate:'2026-05-31', special:'Prime time 18:00–21:00' };
+function tdGetAirtime(){ return TD_AIRTIME_DATA || null; }
+function tdHasAirtime(){ return !!TD_AIRTIME_DATA; }
 var _rsApproved = {};         // committed approved formats: { fmt: { approved, feedback, at, airtime } }
 var _rsApproveOpen = {};      // formats with Approve checkbox ticked (pending Airtime submit)
 var _rsFeedback = {};         // committed feedback per format
@@ -3578,45 +3589,8 @@ function rsRenderApproveRefPanel(){
         '<label class="block text-[10.5px] font-semibold uppercase tracking-wider mb-1.5" style="color:#075985">Format ที่จะ Approve-ref</label>' +
         '<div class="flex flex-wrap gap-1.5">' + chips + '</div>' +
       '</div>' +
-      /* Fields: Durations + Number Spot/Loop */
-      '<div class="grid grid-cols-2 gap-2 mb-3">' +
-        '<div>' +
-          '<label class="block text-[10.5px] font-semibold uppercase tracking-wider mb-1" style="color:#075985">Durations <span class="text-rose-500 normal-case">*</span></label>' +
-          '<div class="relative">' +
-            '<input type="number" min="1" value="' + _rsEsc(at.dur) + '" oninput="rsSaveRefAtField(\'dur\', this.value)" placeholder="เช่น 15" class="w-full h-9 pl-3 pr-12 bg-white border rounded-md text-[12.5px] font-mono tnum focus:outline-none" style="border-color:#7DD3FC" onfocus="this.style.borderColor=\'#0369A1\'" onblur="this.style.borderColor=\'#7DD3FC\'"/>' +
-            '<span class="absolute right-3 top-1/2 -translate-y-1/2 text-[10.5px]" style="color:rgba(30,41,59,0.5)">วินาที</span>' +
-          '</div>' +
-        '</div>' +
-        '<div>' +
-          '<label class="block text-[10.5px] font-semibold uppercase tracking-wider mb-1" style="color:#075985">Number Spot/Loop (Time) <span class="text-rose-500 normal-case">*</span></label>' +
-          '<div class="relative">' +
-            '<input type="number" min="1" value="' + _rsEsc(at.freq) + '" oninput="rsSaveRefAtField(\'freq\', this.value)" placeholder="เช่น 4" class="w-full h-9 pl-3 pr-12 bg-white border rounded-md text-[12.5px] font-mono tnum focus:outline-none" style="border-color:#7DD3FC" onfocus="this.style.borderColor=\'#0369A1\'" onblur="this.style.borderColor=\'#7DD3FC\'"/>' +
-            '<span class="absolute right-3 top-1/2 -translate-y-1/2 text-[10.5px]" style="color:rgba(30,41,59,0.5)">ครั้ง</span>' +
-          '</div>' +
-        '</div>' +
-      '</div>' +
-      /* Start On-Air + End On-Air */
-      '<div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-3">' +
-        '<div>' +
-          '<label class="block text-[10.5px] font-semibold uppercase tracking-wider mb-1" style="color:#075985">Start On-Air <span class="text-rose-500 normal-case">*</span></label>' +
-          '<div class="relative">' +
-            '<svg class="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 pointer-events-none" style="color:#0369A1" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>' +
-            '<input type="date" value="' + _rsEsc(at.startDate) + '" oninput="rsSaveRefAtField(\'startDate\', this.value)" class="w-full h-9 pl-9 pr-3 bg-white border rounded-md text-[12.5px] font-mono focus:outline-none" style="border-color:#7DD3FC" onfocus="this.style.borderColor=\'#0369A1\'" onblur="this.style.borderColor=\'#7DD3FC\'"/>' +
-          '</div>' +
-        '</div>' +
-        '<div>' +
-          '<label class="block text-[10.5px] font-semibold uppercase tracking-wider mb-1" style="color:#075985">End On-Air <span class="text-rose-500 normal-case">*</span></label>' +
-          '<div class="relative">' +
-            '<svg class="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 pointer-events-none" style="color:#0369A1" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>' +
-            '<input type="date" value="' + _rsEsc(at.endDate) + '" oninput="rsSaveRefAtField(\'endDate\', this.value)" class="w-full h-9 pl-9 pr-3 bg-white border rounded-md text-[12.5px] font-mono focus:outline-none" style="border-color:#7DD3FC" onfocus="this.style.borderColor=\'#0369A1\'" onblur="this.style.borderColor=\'#7DD3FC\'"/>' +
-          '</div>' +
-        '</div>' +
-      '</div>' +
-      /* คำสั่งพิเศษ */
-      '<div class="mb-3">' +
-        '<label class="block text-[10.5px] font-semibold uppercase tracking-wider mb-1" style="color:#075985">คำสั่งพิเศษ <span class="font-normal normal-case text-[10px]" style="color:rgba(30,41,59,0.45)">(ไม่บังคับ)</span></label>' +
-        '<textarea rows="3" oninput="rsSaveRefAtField(\'special\', this.value)" placeholder="เช่น เน้น Prime Time 18:00–22:00, หลีกเลี่ยงโฆษณาคู่แข่ง..." class="w-full px-3 py-2 bg-white border rounded-md text-[12.5px] focus:outline-none resize-none" style="border-color:#7DD3FC" onfocus="this.style.borderColor=\'#0369A1\'" onblur="this.style.borderColor=\'#7DD3FC\'">' + _rsEsc(at.special) + '</textarea>' +
-      '</div>' +
+      /* Existing Airtime Allocation (read-only) */
+      _rsBuildAirtimeReadOnly(sel, 'sky') +
       /* Footer */
       '<div class="flex items-center justify-end gap-2 pt-2 border-t" style="border-color:#7DD3FC">' +
         '<button type="button" onclick="rsCancelApproveRef()" class="h-9 px-3.5 bg-white border text-sky-800 rounded-lg text-[12.5px] font-medium hover:bg-sky-50" style="border-color:#7DD3FC">Cancel</button>' +
@@ -3635,31 +3609,21 @@ function rsCancelApproveRef(){
 function rsSubmitApproveRef(){
   var sel = _rsSelectedApproveRefFmts();
   if (!sel.length) return;
-  var at = _rsRefAirtime || {};
-  if (!at.freq || !at.dur || !at.startDate || !at.endDate){
-    alert('กรุณากรอกข้อมูล Airtime Allocate ที่จำเป็น (Durations, Number Spot/Loop, Start/End On-Air)');
+  if (!tdHasAirtime()){
+    alert('ยังไม่มีข้อมูล Airtime Allocate สำหรับ Ticket นี้\nกรุณาไปกำหนดข้อมูล Airtime Allocate ก่อน');
     return;
   }
-  if (at.endDate < at.startDate){
-    alert('End On-Air ต้องอยู่หลัง Start On-Air');
-    return;
-  }
-  var snap = {
-    freq: String(at.freq).trim(),
-    dur: String(at.dur).trim(),
-    startDate: at.startDate, endDate: at.endDate,
-    special: (at.special || '').trim()
-  };
   var d = new Date();
   var dd = String(d.getDate()).padStart(2,'0'), mm = String(d.getMonth()+1).padStart(2,'0');
   var stamp = dd + '/' + mm + '/' + d.getFullYear() + ' ' + d.toTimeString().slice(0,5);
   sel.forEach(function(fmt){
-    _rsApproveRef[fmt] = { at: stamp, airtime: snap };
+    var a = tdGetAirtime() || {};
+    _rsApproveRef[fmt] = { at: stamp, airtime: { freq:String(a.spots||''), dur:String(a.dur||''), startDate:a.startDate||'', endDate:a.endDate||'', special:a.special||'' } };
     _rsApproveRefOpen[fmt] = false;
   });
   _rsRefAirtime = { freq:'', dur:'', startDate:'', endDate:'', special:'' };
   rsBuildRows();
-  alert('Approve-ref สำเร็จ ' + sel.length + ' Format (' + sel.join(', ') + ')\nAirtime: ' + snap.dur + ' วินาที · ' + snap.freq + ' ครั้ง · On-Air ' + snap.startDate + ' → ' + snap.endDate + '\n\n(อนุมัติชั่วคราว — ยัง Feedback ต่อได้)');
+  alert('Approve-ref สำเร็จ ' + sel.length + ' Format (' + sel.join(', ') + ')\n(ดึง Airtime Allocate ที่มีอยู่ในระบบมาใช้)\n\n(อนุมัติชั่วคราว — ยัง Feedback ต่อได้)');
 }
 
 function rsRenderHoldPanel(){
@@ -3948,6 +3912,52 @@ function rsToggleFormatName(){
 /* ===== Airtime Allocate Panel (Approve flow — no popup) ===== */
 function rsSaveAtField(field, val){ _rsAirtime[field] = val || ''; }
 
+/* Build a read-only block that shows existing Airtime allocation per selected format.
+   theme = 'emerald' (Approve, final) | 'sky' (Approve-ref).
+   Also shows a warning + link when any format has no allocation yet. */
+function _rsBuildAirtimeReadOnly(sel, theme){
+  theme = theme || 'emerald';
+  var isSky = theme === 'sky';
+  var borderCol = isSky ? '#7DD3FC' : '#A7F3D0';
+  var textCol = isSky ? '#075985' : '#065F46';
+  var subCol = isSky ? '#0369A1' : '#047857';
+
+  if (!tdHasAirtime()){
+    return (
+      '<div class="mb-3 rounded-lg border border-amber-300 bg-amber-50/70 p-3">' +
+        '<div class="flex items-start gap-2">' +
+          '<svg class="w-5 h-5 mt-0.5 shrink-0 text-amber-600" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>' +
+          '<div class="flex-1 min-w-0">' +
+            '<div class="text-[12.5px] font-bold text-amber-900">ยังไม่มีข้อมูล Airtime Allocate สำหรับ Ticket นี้</div>' +
+            '<div class="text-[11.5px] mt-1 text-amber-800/85">กรุณาไปกำหนดข้อมูล Airtime Allocate ก่อน จึงจะ ' + (isSky ? 'Approve-ref' : 'Approve') + ' ได้</div>' +
+            '<a href="airtime-allocate.html" class="mt-2 inline-flex items-center gap-1.5 h-8 px-3 bg-amber-600 text-white rounded-md text-[12px] font-semibold hover:bg-amber-700"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6l4.5 2.25M12 2.25a9.75 9.75 0 100 19.5 9.75 9.75 0 000-19.5z"/></svg>ไปหน้า Airtime Allocate</a>' +
+          '</div>' +
+        '</div>' +
+      '</div>'
+    );
+  }
+
+  var a = tdGetAirtime();
+  var totalSec = (Number(a.dur)||0) * (Number(a.spots)||0);
+  var totalMin = Math.floor(totalSec/60), totalRem = totalSec%60;
+  return (
+    '<div class="mb-3 rounded-lg border overflow-hidden bg-white/60" style="border-color:' + borderCol + '">' +
+      '<div class="px-3 py-2 flex items-center gap-2 border-b" style="border-color:' + borderCol + ';background:rgba(255,255,255,0.5)">' +
+        '<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" style="color:' + subCol + '"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>' +
+        '<span class="text-[11.5px] font-semibold" style="color:' + subCol + '">Airtime Allocate (ดึงจากระบบ · ใช้ค่าเดียวกันทุก Format)</span>' +
+        '<span class="ml-auto text-[10.5px]" style="color:rgba(30,41,59,0.5)">อ่านอย่างเดียว — แก้ไขได้ที่หน้า Airtime Allocate</span>' +
+      '</div>' +
+      '<div class="p-3 grid grid-cols-2 sm:grid-cols-4 gap-x-4 gap-y-2 text-[11.5px]" style="color:' + textCol + '">' +
+        '<div><div class="text-[10px] uppercase tracking-wider opacity-70">Duration</div><div class="font-semibold tnum">' + a.dur + ' <span class="opacity-60 font-normal">วินาที</span></div></div>' +
+        '<div><div class="text-[10px] uppercase tracking-wider opacity-70">Number Spot/Loop</div><div class="font-semibold tnum">' + a.spots + ' <span class="opacity-60 font-normal">ครั้ง</span></div></div>' +
+        '<div><div class="text-[10px] uppercase tracking-wider opacity-70">Total</div><div class="font-semibold tnum">' + totalMin + ' นาที ' + totalRem + ' วิ</div></div>' +
+        '<div><div class="text-[10px] uppercase tracking-wider opacity-70">Start – End On-Air</div><div class="font-mono">' + _rsEsc(a.startDate) + ' → ' + _rsEsc(a.endDate) + '</div></div>' +
+        (a.special ? '<div class="col-span-2 sm:col-span-4"><div class="text-[10px] uppercase tracking-wider opacity-70">คำสั่งพิเศษ</div><div>' + _rsEsc(a.special) + '</div></div>' : '') +
+      '</div>' +
+    '</div>'
+  );
+}
+
 /* ---- Approval evidence file upload (required when Quotation is missing) ---- */
 function rsApOnEvidenceFiles(input){
   if (!input || !input.files || !input.files.length) return;
@@ -3998,13 +4008,8 @@ function rsCancelAirtime(){
 function rsSubmitAirtime(){
   var sel = _rsSelectedApproveFmts();
   if (!sel.length) return;
-  var at = _rsAirtime || {};
-  if (!at.freq || !at.dur || !at.startDate || !at.endDate){
-    alert('กรุณากรอกข้อมูล Airtime Allocate ที่จำเป็น (Durations, Number Spot/Loop, Start/End On-Air)');
-    return;
-  }
-  if (at.endDate < at.startDate){
-    alert('End On-Air ต้องอยู่หลัง Start On-Air');
+  if (!tdHasAirtime()){
+    alert('ยังไม่มีข้อมูล Airtime Allocate สำหรับ Ticket นี้\nกรุณาไปกำหนดข้อมูล Airtime Allocate ก่อน');
     return;
   }
   /* Manual-entry ticket (no Quotation) → require approval evidence */
@@ -4016,25 +4021,19 @@ function rsSubmitAirtime(){
     if (up) up.scrollIntoView({ behavior:'smooth', block:'center' });
     return;
   }
-  var snap = {
-    freq: String(at.freq).trim(),
-    dur: String(at.dur).trim(),
-    startDate: at.startDate, endDate: at.endDate,
-    special: (at.special || '').trim()
-  };
-  /* Snapshot evidence files (if any) to attach to each approved format */
   var evidenceSnap = _rsApEvidenceFiles.map(function(f){ return { name:f.name, size:_rsBytes(f.size) }; });
   var d = new Date();
   var dd = String(d.getDate()).padStart(2,'0'), mm = String(d.getMonth()+1).padStart(2,'0');
   var stamp = dd + '/' + mm + '/' + d.getFullYear() + ' ' + d.toTimeString().slice(0,5);
   sel.forEach(function(fmt){
+    var a = tdGetAirtime() || {};
     _rsApproved[fmt] = {
       approved: true,
       at: stamp,
-      airtime: snap,
+      airtime: { freq:String(a.spots||''), dur:String(a.dur||''), startDate:a.startDate||'', endDate:a.endDate||'', special:a.special||'' },
       feedback: '',
       feedbackData: null,
-      evidence: evidenceSnap.slice()  // per-format copy of attached evidence
+      evidence: evidenceSnap.slice()
     };
     _rsApproveOpen[fmt] = false;
   });
@@ -4042,7 +4041,7 @@ function rsSubmitAirtime(){
   _rsApEvidenceFiles = [];
   rsBuildRows();
   var evNote = evidenceSnap.length ? ('\nแนบหลักฐานอนุมัติ: ' + evidenceSnap.length + ' ไฟล์') : '';
-  alert('Approve สำเร็จ ' + sel.length + ' Format (' + sel.join(', ') + ')\nAirtime: ' + snap.dur + ' วินาที · ' + snap.freq + ' ครั้ง · On-Air ' + snap.startDate + ' → ' + snap.endDate + evNote);
+  alert('Approve สำเร็จ ' + sel.length + ' Format (' + sel.join(', ') + ')\n(ดึง Airtime Allocate ที่มีอยู่ในระบบมาใช้)' + evNote);
 }
 function rsRenderApprovePanel(){
   var panel = document.getElementById('rs-ap-panel');
@@ -4078,45 +4077,8 @@ function rsRenderApprovePanel(){
         '<label class="block text-[10.5px] font-semibold uppercase tracking-wider mb-1.5 text-emerald-800">Format ที่จะ Approve</label>' +
         '<div class="flex flex-wrap gap-1.5">' + chips + '</div>' +
       '</div>' +
-      /* Fields: Durations + Number Spot/Loop (Time) — Durations first */
-      '<div class="grid grid-cols-2 gap-2 mb-3">' +
-        '<div>' +
-          '<label class="block text-[10.5px] font-semibold uppercase tracking-wider mb-1 text-emerald-800">Durations <span class="text-rose-500 normal-case">*</span></label>' +
-          '<div class="relative">' +
-            '<input type="number" min="1" value="' + _rsEsc(at.dur) + '" oninput="rsSaveAtField(\'dur\', this.value)" placeholder="เช่น 15" class="w-full h-9 pl-3 pr-12 bg-white border border-emerald-200 rounded-md text-[12.5px] font-mono tnum focus:outline-none focus:border-emerald-500"/>' +
-            '<span class="absolute right-3 top-1/2 -translate-y-1/2 text-[10.5px]" style="color:rgba(30,41,59,0.5)">วินาที</span>' +
-          '</div>' +
-        '</div>' +
-        '<div>' +
-          '<label class="block text-[10.5px] font-semibold uppercase tracking-wider mb-1 text-emerald-800">Number Spot/Loop (Time) <span class="text-rose-500 normal-case">*</span></label>' +
-          '<div class="relative">' +
-            '<input type="number" min="1" value="' + _rsEsc(at.freq) + '" oninput="rsSaveAtField(\'freq\', this.value)" placeholder="เช่น 4" class="w-full h-9 pl-3 pr-12 bg-white border border-emerald-200 rounded-md text-[12.5px] font-mono tnum focus:outline-none focus:border-emerald-500"/>' +
-            '<span class="absolute right-3 top-1/2 -translate-y-1/2 text-[10.5px]" style="color:rgba(30,41,59,0.5)">ครั้ง</span>' +
-          '</div>' +
-        '</div>' +
-      '</div>' +
-      /* Start On-Air + End On-Air — calendar */
-      '<div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-3">' +
-        '<div>' +
-          '<label class="block text-[10.5px] font-semibold uppercase tracking-wider mb-1 text-emerald-800">Start On-Air <span class="text-rose-500 normal-case">*</span></label>' +
-          '<div class="relative">' +
-            '<svg class="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-emerald-600 pointer-events-none" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>' +
-            '<input type="date" value="' + _rsEsc(at.startDate) + '" oninput="rsSaveAtField(\'startDate\', this.value)" class="w-full h-9 pl-9 pr-3 bg-white border border-emerald-200 rounded-md text-[12.5px] font-mono focus:outline-none focus:border-emerald-500"/>' +
-          '</div>' +
-        '</div>' +
-        '<div>' +
-          '<label class="block text-[10.5px] font-semibold uppercase tracking-wider mb-1 text-emerald-800">End On-Air <span class="text-rose-500 normal-case">*</span></label>' +
-          '<div class="relative">' +
-            '<svg class="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-emerald-600 pointer-events-none" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>' +
-            '<input type="date" value="' + _rsEsc(at.endDate) + '" oninput="rsSaveAtField(\'endDate\', this.value)" class="w-full h-9 pl-9 pr-3 bg-white border border-emerald-200 rounded-md text-[12.5px] font-mono focus:outline-none focus:border-emerald-500"/>' +
-          '</div>' +
-        '</div>' +
-      '</div>' +
-      /* คำสั่งพิเศษ */
-      '<div class="mb-3">' +
-        '<label class="block text-[10.5px] font-semibold uppercase tracking-wider mb-1 text-emerald-800">คำสั่งพิเศษ <span class="font-normal normal-case text-[10px]" style="color:rgba(30,41,59,0.45)">(ไม่บังคับ)</span></label>' +
-        '<textarea rows="3" oninput="rsSaveAtField(\'special\', this.value)" placeholder="เช่น เน้น Prime Time 18:00–22:00, หลีกเลี่ยงโฆษณาคู่แข่ง..." class="w-full px-3 py-2 bg-white border border-emerald-200 rounded-md text-[12.5px] focus:outline-none focus:border-emerald-500 resize-none">' + _rsEsc(at.special) + '</textarea>' +
-      '</div>' +
+      /* Existing Airtime Allocation (read-only) */
+      _rsBuildAirtimeReadOnly(sel, 'emerald') +
       /* Approval evidence (shown only when Ticket has NO Quotation — manual entry) */
       (((typeof _hasQuotation === 'function') && !_hasQuotation())
         ? (
