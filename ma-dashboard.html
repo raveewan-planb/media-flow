@@ -467,25 +467,37 @@ table th{position:sticky;top:0;z-index:1}
     </div>
   </div>
 </div>
-<!-- Row 2: Tickets & Jobs by Package + Jobs by Status -->
-<div class="grid grid-cols-1 lg:grid-cols-5 gap-4">
+<!-- Row 2: Tickets & Jobs by Package + Job Type Distribution + Jobs by Status -->
+<div class="grid grid-cols-1 lg:grid-cols-6 gap-4">
 <!-- Tickets & Jobs by Package -->
-<div class="lg:col-span-3 bg-white border border-[#E2E8F0] rounded-xl shadow-sm p-5">
+<div class="lg:col-span-2 bg-white border border-[#E2E8F0] rounded-xl shadow-sm p-5">
 <div class="flex items-center justify-between mb-4">
 <div class="flex items-center gap-2">
 <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:linear-gradient(135deg,rgba(124,58,237,0.10),rgba(167,139,250,0.10));color:#7C3AED"><svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.375 19.5h17.25m-17.25 0a1.125 1.125 0 01-1.125-1.125M3.375 19.5h7.5c.621 0 1.125-.504 1.125-1.125m-9.75 0V5.625m0 12.75v-1.5c0-.621.504-1.125 1.125-1.125m18.375 2.625V5.625m0 12.75c0 .621-.504 1.125-1.125 1.125m1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125m0 3.75h-7.5A1.125 1.125 0 0112 18.375m9.75-12.75c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125m19.5 0v1.5c0 .621-.504 1.125-1.125 1.125M2.25 5.625v1.5c0 .621.504 1.125 1.125 1.125m0 0h17.25m-17.25 0h7.5c.621 0 1.125.504 1.125 1.125M3.375 8.25c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125m17.25-3.75h-7.5c-.621 0-1.125.504-1.125 1.125m8.625-1.125c.621 0 1.125.504 1.125 1.125v1.5c0 .621-.504 1.125-1.125 1.125m-17.25 0h7.5m-7.5 0c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125M12 10.875v-1.5m0 1.5c0 .621-.504 1.125-1.125 1.125M12 10.875c0 .621.504 1.125 1.125 1.125m-2.25 0c.621 0 1.125.504 1.125 1.125M13.125 12h7.5m-7.5 0c-.621 0-1.125.504-1.125 1.125M20.625 12c.621 0 1.125.504 1.125 1.125v1.5c0 .621-.504 1.125-1.125 1.125m-17.25 0h7.5M12 14.625v-1.5m0 1.5c0 .621-.504 1.125-1.125 1.125M12 14.625c0 .621.504 1.125 1.125 1.125m-2.25 0c.621 0 1.125.504 1.125 1.125m0 1.5v-1.5m0 0c0-.621.504-1.125 1.125-1.125m0 0h7.5"/></svg></div>
 <h3 class="text-[14px] font-semibold text-[#0B1430]">Tickets &amp; Jobs by Package</h3>
 </div>
 <div class="flex items-center gap-2">
-<span class="text-[11px] px-2 py-0.5 rounded-full bg-[#F1F5F9]" style="color:rgba(30,41,59,0.55)">Top 6 · คลิกเพื่อดู breakdown</span>
 </div>
 </div>
 <div class="collapse-body" id="pkg-body">
-<div class="space-y-2" id="pkg-list"></div>
+<div class="space-y-2 overflow-y-auto pr-1 sidebar-scroll" id="pkg-list" style="max-height:320px"></div>
 </div>
 </div>
-<!-- Jobs by Status -->
+<!-- Job Type Distribution (CG) -->
 <div class="lg:col-span-2 bg-white border border-[#E2E8F0] rounded-xl shadow-sm p-5">
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center gap-2">
+<div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:linear-gradient(135deg,rgba(14,165,233,0.10),rgba(56,189,248,0.10));color:#0EA5E9"><svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg></div>
+<h3 class="text-[14px] font-semibold text-[#0B1430]">Job Type Distribution (CG)</h3>
+</div>
+</div>
+<div class="text-[10.5px] mb-3" style="color:rgba(30,41,59,0.55)">จำนวนงานที่ CG ทำแยกตามประเภท</div>
+<div id="job-type-chart" class="relative" style="height:260px"></div>
+<div id="job-type-legend" class="mt-3 flex flex-wrap gap-2 justify-center text-[10.5px]"></div>
+</div>
+
+<!-- Jobs by Status -->
+<div class="lg:col-span-2 bg-white border border-[#E2E8F0] rounded-xl shadow-sm p-5 flex flex-col">
 <div class="flex items-center justify-between mb-3">
 <div class="flex items-center gap-2">
 <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:linear-gradient(135deg,rgba(45,86,210,0.10),rgba(71,144,255,0.10));color:#2D56D2"><svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z"/></svg></div>
@@ -494,29 +506,16 @@ table th{position:sticky;top:0;z-index:1}
 <span id="status-filter-pill" class="filter-pill hidden" onclick="filterByStatus(null)"><svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg><span id="status-filter-label">All</span></span>
 </div>
 <div class="text-[10.5px] mb-2" style="color:rgba(30,41,59,0.55)">คลิกสถานะเพื่อ filter ตาราง Graphic Workload ด้านล่าง</div>
-<div class="grid grid-cols-3 gap-2">
-<button type="button" class="status-chip p-2.5 rounded-lg bg-amber-50 border border-amber-200 text-center text-amber-700" data-status="Assign (Head CG)" onclick="filterByStatus('Assign (Head CG)')"><div class="text-[20px] font-bold tnum">18</div><div class="text-[10.5px] font-medium leading-tight">Assign (Head CG)</div></button>
-<button type="button" class="status-chip p-2.5 rounded-lg bg-violet-50 border border-violet-200 text-center text-violet-700" data-status="Verify (CG)" onclick="filterByStatus('Verify (CG)')"><div class="text-[20px] font-bold tnum">12</div><div class="text-[10.5px] font-medium leading-tight">Verify (CG)</div></button>
-<button type="button" class="status-chip p-2.5 rounded-lg bg-rose-50 border border-rose-200 text-center text-rose-700" data-status="Revise (Sale)" onclick="filterByStatus('Revise (Sale)')"><div class="text-[20px] font-bold tnum">6</div><div class="text-[10.5px] font-medium leading-tight">Revise (Sale)</div></button>
-<button type="button" class="status-chip p-2.5 rounded-lg bg-blue-50 border border-blue-200 text-center text-blue-700" data-status="On Process (CG)" onclick="filterByStatus('On Process (CG)')"><div class="text-[20px] font-bold tnum">38</div><div class="text-[10.5px] font-medium leading-tight">On Process (CG)</div></button>
-<button type="button" class="status-chip p-2.5 rounded-lg bg-cyan-50 border border-cyan-200 text-center text-cyan-700" data-status="Review (Sale)" onclick="filterByStatus('Review (Sale)')"><div class="text-[20px] font-bold tnum">14</div><div class="text-[10.5px] font-medium leading-tight">Review (Sale)</div></button>
-<button type="button" class="status-chip p-2.5 rounded-lg bg-orange-50 border border-orange-200 text-center text-orange-700" data-status="Revise (CG)" onclick="filterByStatus('Revise (CG)')"><div class="text-[20px] font-bold tnum">9</div><div class="text-[10.5px] font-medium leading-tight">Revise (CG)</div></button>
-<button type="button" class="status-chip p-2.5 rounded-lg bg-emerald-50 border border-emerald-200 text-center text-emerald-700" data-status="Final Approve" onclick="filterByStatus('Final Approve')"><div class="text-[20px] font-bold tnum">21</div><div class="text-[10.5px] font-medium leading-tight">Final Approve</div></button>
-<button type="button" class="status-chip p-2.5 rounded-lg bg-indigo-50 border border-indigo-200 text-center text-indigo-700" data-status="Final Render" onclick="filterByStatus('Final Render')"><div class="text-[20px] font-bold tnum">11</div><div class="text-[10.5px] font-medium leading-tight">Final Render</div></button>
-<button type="button" class="status-chip p-2.5 rounded-lg bg-teal-50 border border-teal-200 text-center text-teal-700" data-status="Done" onclick="filterByStatus('Done')"><div class="text-[20px] font-bold tnum">42</div><div class="text-[10.5px] font-medium leading-tight">Done</div></button>
-</div>
-<!-- Period strip -->
-<div class="border-t border-[#E2E8F0] mt-4 pt-3">
-<div class="flex items-center justify-between mb-2">
-<div class="text-[10.5px] uppercase tracking-wide font-medium" style="color:rgba(30,41,59,0.5)">Jobs by Period</div>
-<div class="text-[10px]" style="color:rgba(30,41,59,0.4)">คลิกเพื่อเปลี่ยน scope</div>
-</div>
-<div class="grid grid-cols-4 gap-2">
-<button type="button" class="period-chip p-2 rounded-lg bg-[#F8FAFC] border border-[#E2E8F0] text-center" data-period="today" onclick="switchPeriod('today')"><div class="text-[15px] font-bold text-[#0B1430] tnum period-num">3</div><div class="text-[9.5px] font-medium period-lbl" style="color:rgba(30,41,59,0.5)">Today</div></button>
-<button type="button" class="period-chip p-2 rounded-lg bg-[#F8FAFC] border border-[#E2E8F0] text-center" data-period="week" onclick="switchPeriod('week')"><div class="text-[15px] font-bold text-[#0B1430] tnum period-num">18</div><div class="text-[9.5px] font-medium period-lbl" style="color:rgba(30,41,59,0.5)">Week</div></button>
-<button type="button" class="period-chip p-2 rounded-lg bg-[#F8FAFC] border border-[#E2E8F0] text-center" data-period="month" onclick="switchPeriod('month')"><div class="text-[15px] font-bold text-[#0B1430] tnum period-num">64</div><div class="text-[9.5px] font-medium period-lbl" style="color:rgba(30,41,59,0.5)">Month</div></button>
-<button type="button" class="period-chip is-active p-2 rounded-lg bg-[#F8FAFC] border border-[#E2E8F0] text-center" data-period="year" onclick="switchPeriod('year')"><div class="text-[15px] font-bold text-[#0B1430] tnum period-num">142</div><div class="text-[9.5px] font-medium period-lbl" style="color:rgba(30,41,59,0.5)">Year</div></button>
-</div>
+<div class="grid grid-cols-3 gap-2 flex-1" style="grid-template-rows:repeat(3,minmax(0,1fr))">
+<button type="button" class="status-chip p-2.5 rounded-lg bg-amber-50 border border-amber-200 text-center text-amber-700 flex flex-col items-center justify-center h-full" data-status="Assign (Head CG)" onclick="filterByStatus('Assign (Head CG)')"><div class="text-[22px] font-bold tnum leading-none">18</div><div class="text-[10.5px] font-medium leading-tight mt-1">Assign (Head CG)</div></button>
+<button type="button" class="status-chip p-2.5 rounded-lg bg-violet-50 border border-violet-200 text-center text-violet-700 flex flex-col items-center justify-center h-full" data-status="Verify (CG)" onclick="filterByStatus('Verify (CG)')"><div class="text-[22px] font-bold tnum leading-none">12</div><div class="text-[10.5px] font-medium leading-tight mt-1">Verify (CG)</div></button>
+<button type="button" class="status-chip p-2.5 rounded-lg bg-rose-50 border border-rose-200 text-center text-rose-700 flex flex-col items-center justify-center h-full" data-status="Revise (Sale)" onclick="filterByStatus('Revise (Sale)')"><div class="text-[22px] font-bold tnum leading-none">6</div><div class="text-[10.5px] font-medium leading-tight mt-1">Revise (Sale)</div></button>
+<button type="button" class="status-chip p-2.5 rounded-lg bg-blue-50 border border-blue-200 text-center text-blue-700 flex flex-col items-center justify-center h-full" data-status="On Process (CG)" onclick="filterByStatus('On Process (CG)')"><div class="text-[22px] font-bold tnum leading-none">38</div><div class="text-[10.5px] font-medium leading-tight mt-1">On Process (CG)</div></button>
+<button type="button" class="status-chip p-2.5 rounded-lg bg-cyan-50 border border-cyan-200 text-center text-cyan-700 flex flex-col items-center justify-center h-full" data-status="Review (Sale)" onclick="filterByStatus('Review (Sale)')"><div class="text-[22px] font-bold tnum leading-none">14</div><div class="text-[10.5px] font-medium leading-tight mt-1">Review (Sale)</div></button>
+<button type="button" class="status-chip p-2.5 rounded-lg bg-orange-50 border border-orange-200 text-center text-orange-700 flex flex-col items-center justify-center h-full" data-status="Revise (CG)" onclick="filterByStatus('Revise (CG)')"><div class="text-[22px] font-bold tnum leading-none">9</div><div class="text-[10.5px] font-medium leading-tight mt-1">Revise (CG)</div></button>
+<button type="button" class="status-chip p-2.5 rounded-lg bg-emerald-50 border border-emerald-200 text-center text-emerald-700 flex flex-col items-center justify-center h-full" data-status="Final Approve" onclick="filterByStatus('Final Approve')"><div class="text-[22px] font-bold tnum leading-none">21</div><div class="text-[10.5px] font-medium leading-tight mt-1">Final Approve</div></button>
+<button type="button" class="status-chip p-2.5 rounded-lg bg-indigo-50 border border-indigo-200 text-center text-indigo-700 flex flex-col items-center justify-center h-full" data-status="Final Render" onclick="filterByStatus('Final Render')"><div class="text-[22px] font-bold tnum leading-none">11</div><div class="text-[10.5px] font-medium leading-tight mt-1">Final Render</div></button>
+<button type="button" class="status-chip p-2.5 rounded-lg bg-teal-50 border border-teal-200 text-center text-teal-700 flex flex-col items-center justify-center h-full" data-status="Done" onclick="filterByStatus('Done')"><div class="text-[22px] font-bold tnum leading-none">42</div><div class="text-[10.5px] font-medium leading-tight mt-1">Done</div></button>
 </div>
 </div>
 </div>
@@ -540,10 +539,14 @@ table th{position:sticky;top:0;z-index:1}
 <table class="w-full text-[12px]">
 <thead><tr class="text-[10px] uppercase tracking-wide border-b border-[#E2E8F0]" style="color:rgba(30,41,59,0.5)">
 <th class="pb-2 pr-2 text-left font-medium">Graphic</th>
-<th class="pb-2 px-1 text-center font-medium">To Do</th>
-<th class="pb-2 px-1 text-center font-medium">On Process</th>
-<th class="pb-2 px-1 text-center font-medium">Revise</th>
-<th class="pb-2 px-1 text-center font-medium">Final Render</th>
+<th class="pb-2 px-1 text-center font-medium">Assign<br/>(Head CG)</th>
+<th class="pb-2 px-1 text-center font-medium">Verify<br/>(CG)</th>
+<th class="pb-2 px-1 text-center font-medium">Revise<br/>(Sale)</th>
+<th class="pb-2 px-1 text-center font-medium">On Process<br/>(CG)</th>
+<th class="pb-2 px-1 text-center font-medium">Review<br/>(Sale)</th>
+<th class="pb-2 px-1 text-center font-medium">Revise<br/>(CG)</th>
+<th class="pb-2 px-1 text-center font-medium">Final<br/>Approve</th>
+<th class="pb-2 px-1 text-center font-medium">Final<br/>Render</th>
 <th class="pb-2 px-1 text-center font-medium">Done</th>
 <th class="pb-2 pl-1 text-center font-medium">Total</th>
 </tr></thead>
@@ -904,13 +907,13 @@ var PKG_DATA = [
 ];
 
 var GRAPHIC_WORKLOAD = [
-  { name:'Kitti Pongtep',     todo:3, onprocess:5, revise:1, finalrender:2, done:8, fb:96, prog:98 },
-  { name:'Preeya Wongsa',     todo:4, onprocess:8, revise:2, finalrender:1, done:6, fb:88, prog:94 },
-  { name:'Napha Saengthong',  todo:5, onprocess:9, revise:1, finalrender:2, done:4, fb:82, prog:91 },
-  { name:'Wutti Chaiyaporn',  todo:2, onprocess:3, revise:0, finalrender:1, done:7, fb:94, prog:97 },
-  { name:'Pim Kanchanawong',  todo:3, onprocess:6, revise:1, finalrender:1, done:5, fb:90, prog:95 },
-  { name:'Somsak Rattanakul', todo:4, onprocess:2, revise:0, finalrender:1, done:6, fb:78, prog:92 },
-  { name:'Anong Thanaphong',  todo:3, onprocess:7, revise:2, finalrender:0, done:6, fb:85, prog:89 }
+  { name:'Kitti Pongtep',     assignHead:2, verifyCG:1, reviseSale:0, onprocess:5, reviewSale:2, reviseCG:1, finalApprove:3, finalrender:2, done:8, fb:96, prog:98 },
+  { name:'Preeya Wongsa',     assignHead:3, verifyCG:2, reviseSale:1, onprocess:8, reviewSale:2, reviseCG:1, finalApprove:2, finalrender:1, done:6, fb:88, prog:94 },
+  { name:'Napha Saengthong',  assignHead:4, verifyCG:2, reviseSale:1, onprocess:9, reviewSale:1, reviseCG:0, finalApprove:3, finalrender:2, done:4, fb:82, prog:91 },
+  { name:'Wutti Chaiyaporn',  assignHead:1, verifyCG:1, reviseSale:0, onprocess:3, reviewSale:2, reviseCG:0, finalApprove:1, finalrender:1, done:7, fb:94, prog:97 },
+  { name:'Pim Kanchanawong',  assignHead:2, verifyCG:2, reviseSale:1, onprocess:6, reviewSale:1, reviseCG:1, finalApprove:2, finalrender:1, done:5, fb:90, prog:95 },
+  { name:'Somsak Rattanakul', assignHead:3, verifyCG:1, reviseSale:2, onprocess:2, reviewSale:2, reviseCG:1, finalApprove:1, finalrender:1, done:6, fb:78, prog:92 },
+  { name:'Anong Thanaphong',  assignHead:3, verifyCG:3, reviseSale:1, onprocess:7, reviewSale:4, reviseCG:5, finalApprove:9, finalrender:0, done:6, fb:85, prog:89 }
 ];
 
 function renderPackages(){
@@ -923,10 +926,9 @@ function renderPackages(){
     var pct=Math.round((p.jobs/maxJobs)*100);
     // mock breakdown derived from jobs
     var todo=Math.round(p.jobs*0.18), proc=Math.round(p.jobs*0.32), rev=Math.round(p.jobs*0.08), fin=Math.round(p.jobs*0.12), done=p.jobs-todo-proc-rev-fin;
-    h+='<div class="pkg-row" data-idx="'+i+'" onclick="togglePackage('+i+')">'+
+    h+='<div class="pkg-row" data-idx="'+i+'">'+
       '<div class="flex items-center justify-between mb-1">'+
         '<div class="flex items-center gap-2 min-w-0">'+
-          '<svg class="w-3 h-3 shrink-0 text-slate-400 transition-transform pkg-chev" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>'+
           '<span class="text-[10px] px-1.5 py-0.5 rounded font-semibold shrink-0" style="background:'+GROUP_BG[p.group]+';color:'+GROUP_TXT[p.group]+'">'+p.group+'</span>'+
           '<span class="text-[12.5px] font-medium text-[#0B1430] truncate">'+p.name+'</span>'+
         '</div>'+
@@ -936,15 +938,6 @@ function renderPackages(){
       '</div>'+
       '<div class="h-2 bg-[#F1F5F9] rounded-full overflow-hidden">'+
         '<div class="h-full rounded-full bar-anim" style="width:'+pct+'%;background:linear-gradient(90deg,'+p.color+'cc,'+p.color+')"></div>'+
-      '</div>'+
-      '<div class="pkg-detail">'+
-        '<div class="grid grid-cols-5 gap-1.5 text-center text-[10px]">'+
-          '<div class="px-1.5 py-1 rounded bg-amber-50 border border-amber-100"><div class="font-bold text-amber-700 tnum text-[12px]">'+todo+'</div><div class="text-amber-700">To Do</div></div>'+
-          '<div class="px-1.5 py-1 rounded bg-blue-50 border border-blue-100"><div class="font-bold text-blue-700 tnum text-[12px]">'+proc+'</div><div class="text-blue-700">On Process</div></div>'+
-          '<div class="px-1.5 py-1 rounded bg-rose-50 border border-rose-100"><div class="font-bold text-rose-700 tnum text-[12px]">'+rev+'</div><div class="text-rose-700">Revise</div></div>'+
-          '<div class="px-1.5 py-1 rounded bg-indigo-50 border border-indigo-100"><div class="font-bold text-indigo-700 tnum text-[12px]">'+fin+'</div><div class="text-indigo-700">Final Render</div></div>'+
-          '<div class="px-1.5 py-1 rounded bg-emerald-50 border border-emerald-100"><div class="font-bold text-emerald-700 tnum text-[12px]">'+done+'</div><div class="text-emerald-700">Done</div></div>'+
-        '</div>'+
       '</div>'+
     '</div>';
   });
@@ -964,7 +957,7 @@ function renderGraphicWorkload(){
   var el=document.getElementById('gw-tbody'); if(!el) return;
   var h='';
   GRAPHIC_WORKLOAD.forEach(function(g,i){
-    var total=g.todo+g.onprocess+g.revise+g.finalrender+g.done;
+    var total=g.assignHead+g.verifyCG+g.reviseSale+g.onprocess+g.reviewSale+g.reviseCG+g.finalApprove+g.finalrender+g.done;
     var initials=g.name.split(' ').map(function(s){return s.charAt(0);}).join('').substring(0,2).toUpperCase();
     var rowBg=i%2===0?'':'bg-[#FBFCFE]';
     function cell(v,bg,tx,statusKey){return '<td class="py-2 px-1 text-center"><span class="gw-cell inline-flex items-center justify-center min-w-[28px] px-1.5 py-0.5 rounded font-semibold tnum '+bg+' '+tx+'" data-status="'+statusKey+'">'+v+'</span></td>';}
@@ -975,11 +968,15 @@ function renderGraphicWorkload(){
           '<span class="text-[12px] font-medium text-[#0B1430] whitespace-nowrap">'+g.name+'</span>'+
         '</div>'+
       '</td>'+
-      cell(g.todo,'bg-amber-50','text-amber-700','To Do')+
-      cell(g.onprocess,'bg-blue-50','text-blue-700','On Process')+
-      cell(g.revise,'bg-rose-50','text-rose-700','Revise')+
+      cell(g.assignHead,'bg-amber-50','text-amber-700','Assign (Head CG)')+
+      cell(g.verifyCG,'bg-violet-50','text-violet-700','Verify (CG)')+
+      cell(g.reviseSale,'bg-rose-50','text-rose-700','Revise (Sale)')+
+      cell(g.onprocess,'bg-blue-50','text-blue-700','On Process (CG)')+
+      cell(g.reviewSale,'bg-cyan-50','text-cyan-700','Review (Sale)')+
+      cell(g.reviseCG,'bg-orange-50','text-orange-700','Revise (CG)')+
+      cell(g.finalApprove,'bg-emerald-50','text-emerald-700','Final Approve')+
       cell(g.finalrender,'bg-indigo-50','text-indigo-700','Final Render')+
-      cell(g.done,'bg-emerald-50','text-emerald-700','Done')+
+      cell(g.done,'bg-teal-50','text-teal-700','Done')+
       '<td class="py-2 pl-1 text-center"><span class="font-bold text-[#0B1430] tnum text-[13px]">'+total+'</span></td>'+
     '</tr>';
   });
@@ -1246,7 +1243,58 @@ populateSLAGraphicSelect();
 renderSLAChart();
 applySLAMode();
 var _slaResizeT;
-window.addEventListener('resize',function(){ clearTimeout(_slaResizeT); _slaResizeT=setTimeout(renderSLAChart,150); });
+window.addEventListener('resize',function(){ clearTimeout(_slaResizeT); _slaResizeT=setTimeout(function(){ renderSLAChart(); renderJobTypeChart(); },150); });
+
+/* ===== Job Type Distribution (CG) ===== */
+var JOB_TYPE_DATA=[
+  {label:'Animate',           value:48, color:'#7C3AED'},
+  {label:'ไฟล์สำเร็จ (Final File)', value:63, color:'#059669'},
+  {label:'มีโปรเจค AE/PR',      value:35, color:'#2D56D2'},
+  {label:'Mockup (เสนอขาย)',   value:27, color:'#F59E0B'},
+  {label:'งานอื่นๆ (Other)',    value:14, color:'#64748B'}
+];
+var JOB_TYPE_SHORT=['Animate','Final File','AE/PR','Mockup','Other'];
+function renderJobTypeChart(){
+  var wrap=document.getElementById('job-type-chart'); if(!wrap) return;
+  var w=wrap.clientWidth||600, h=260;
+  var padL=32, padR=12, padT=16, padB=78;
+  var innerW=w-padL-padR, innerH=h-padT-padB;
+  var max=Math.max.apply(null, JOB_TYPE_DATA.map(function(d){return d.value;}));
+  var step=Math.ceil(max/4/10)*10; if(step<5) step=5;
+  var yMax=step*4;
+  var n=JOB_TYPE_DATA.length;
+  var barW=innerW/n*0.55, gap=innerW/n;
+  var svg='<svg width="'+w+'" height="'+h+'" viewBox="0 0 '+w+' '+h+'" style="overflow:visible">';
+  // gridlines + y labels
+  for(var i=0;i<=4;i++){
+    var y=padT+innerH-(i/4)*innerH;
+    var val=Math.round(yMax*i/4);
+    svg+='<line x1="'+padL+'" y1="'+y+'" x2="'+(w-padR)+'" y2="'+y+'" stroke="#E2E8F0" stroke-width="1" stroke-dasharray="'+(i===0?'0':'3 3')+'"/>';
+    svg+='<text x="'+(padL-8)+'" y="'+(y+3)+'" text-anchor="end" font-size="10" fill="rgba(30,41,59,0.5)" font-family="Kanit">'+val+'</text>';
+  }
+  // bars
+  JOB_TYPE_DATA.forEach(function(d,idx){
+    var cx=padL+gap*(idx+0.5);
+    var bh=(d.value/yMax)*innerH;
+    var bx=cx-barW/2, by=padT+innerH-bh;
+    svg+='<rect x="'+bx+'" y="'+by+'" width="'+barW+'" height="'+bh+'" rx="6" fill="'+d.color+'"><title>'+d.label+': '+d.value+' งาน</title></rect>';
+    svg+='<text x="'+cx+'" y="'+(by-6)+'" text-anchor="middle" font-size="12" font-weight="600" fill="#0B1430" font-family="Kanit">'+d.value+'</text>';
+    // rotated x-label (short) to avoid overlap in narrow columns
+    var lbl=JOB_TYPE_SHORT[idx]||d.label;
+    var y0=padT+innerH+14;
+    svg+='<text x="'+cx+'" y="'+y0+'" text-anchor="end" font-size="10.5" fill="rgba(30,41,59,0.7)" font-family="Kanit" font-weight="500" transform="rotate(-35 '+cx+' '+y0+')">'+lbl+'</text>';
+  });
+  svg+='</svg>';
+  wrap.innerHTML=svg;
+  // legend
+  var lg=document.getElementById('job-type-legend');
+  if(lg){
+    lg.innerHTML=JOB_TYPE_DATA.map(function(d){
+      return '<span class="inline-flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-sm" style="background:'+d.color+'"></span><span style="color:rgba(30,41,59,0.7)">'+d.label+'</span><span class="font-semibold text-[#0B1430] tnum">'+d.value+'</span></span>';
+    }).join('');
+  }
+}
+renderJobTypeChart();
 </script>
     </div>
 

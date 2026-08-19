@@ -1159,6 +1159,26 @@ function renderMockupHistorySidebar(status) {
   el.innerHTML = html;
 }
 
+function _validateAcceptType() {
+  var sel = document.getElementById('accept-job-type');
+  var btn = document.getElementById('accept-btn');
+  var err = document.getElementById('accept-type-error');
+  if (!sel || !btn) return false;
+  var ok = !!sel.value;
+  btn.disabled = !ok;
+  if (ok && err) err.classList.add('hidden');
+  return ok;
+}
+function _tryAccept() {
+  var sel = document.getElementById('accept-job-type');
+  var err = document.getElementById('accept-type-error');
+  if (!sel || !sel.value) {
+    if (err) err.classList.remove('hidden');
+    if (sel) sel.focus();
+    return;
+  }
+  openAcceptModal();
+}
 function openAcceptModal() {
   var old = document.getElementById('accept-modal'); if (old) old.remove();
   var modal = document.createElement('div'); modal.id = 'accept-modal'; modal.className = 'fixed inset-0 z-50 flex items-center justify-center';
@@ -1383,8 +1403,20 @@ function renderStatusView() {
       '<h3 class="text-[15px] font-semibold text-[#0B1430] mb-3">รับงาน</h3>' +
       '<p class="text-[12.5px] mb-4" style="color:rgba(30,41,59,0.65)">งานนี้ยังไม่ได้รับ — กด Accept เพื่อเริ่มทำงาน หรือ Feedback กลับ Sales หากมีข้อมูลไม่ครบ</p>' +
       '<textarea class="w-full px-3 py-2 bg-white border border-[#E2E8F0] rounded-lg text-[13px] focus:outline-none focus:border-[#4790FF] resize-none mb-4" id="feedback-text" placeholder="หมายเหตุ / ข้อสงสัยถึง Sales..." rows="3"></textarea>' +
+      '<div class="mb-4">' +
+        '<label class="block text-[11px] font-semibold uppercase tracking-wider mb-1.5" style="color:rgba(30,41,59,0.6)">ประเภทงาน <span class="text-rose-600">*</span></label>' +
+        '<select id="accept-job-type" onchange="_validateAcceptType()" class="w-full h-9 px-3 bg-white border border-[#E2E8F0] rounded-lg text-[13px] focus:outline-none focus:border-[#4790FF]">' +
+          '<option value="">-- กรุณาเลือกประเภทงาน --</option>' +
+          '<option value="Animate">Animate</option>' +
+          '<option value="Final File">ไฟล์สำเร็จ (Final File)</option>' +
+          '<option value="AE/PR Project">มีโปรเจค AE/PR</option>' +
+          '<option value="Mockup">Mockup (เสนอขาย)</option>' +
+          '<option value="Other">งานอื่นๆ (Other)</option>' +
+        '</select>' +
+        '<p id="accept-type-error" class="hidden text-[11px] text-rose-600 mt-1">กรุณาเลือกประเภทงานก่อนกด Accept</p>' +
+      '</div>' +
       '<div class="flex flex-wrap gap-2">' +
-        '<button class="h-9 px-4 bg-emerald-600 text-white rounded-lg text-[13px] font-medium hover:bg-emerald-700 inline-flex items-center gap-1.5" onclick="openAcceptModal()">' +
+        '<button id="accept-btn" disabled class="h-9 px-4 bg-emerald-600 text-white rounded-lg text-[13px] font-medium hover:bg-emerald-700 inline-flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-emerald-600" onclick="_tryAccept()">' +
           '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg><span>Accept</span>' +
         '</button>' +
         '<button class="h-9 px-4 bg-white text-amber-700 rounded-lg border border-amber-200 text-[13px] font-medium hover:bg-amber-50 inline-flex items-center gap-1.5" onclick="submitFeedback()">' +
