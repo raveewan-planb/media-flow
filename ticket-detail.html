@@ -216,7 +216,7 @@ table th{position:sticky;top:0;z-index:1}
   </aside>
 
   <!-- MAIN CONTENT -->
-  <main class="flex-1 lg:ml-64 min-h-screen">
+  <main id="main-wrap" class="flex-1 lg:ml-64 min-h-screen transition-[margin-right] duration-200">
     <!-- Top Bar — White Glass -->
     <header class="topbar-white h-16 shrink-0 sticky top-0 z-20 flex items-center gap-4 px-4 sm:px-6">
       <!-- Collapse / Mobile toggle -->
@@ -260,6 +260,11 @@ table th{position:sticky;top:0;z-index:1}
 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6l4.5 2.25M12 2.25a9.75 9.75 0 100 19.5 9.75 9.75 0 000-19.5z"/></svg>
 <span>Airtime Allocate</span>
 </a>
+<button type="button" id="sf-items-box" onclick="toggleSfItems()" class="h-9 px-3.5 bg-white text-[#2D56D2] rounded-lg border border-[#D6ECFF] text-sm font-medium hover:bg-[#EBF5FF] inline-flex items-center gap-1.5">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75A2.25 2.25 0 016 4.5h12A2.25 2.25 0 0120.25 6.75v10.5A2.25 2.25 0 0118 19.5H6a2.25 2.25 0 01-2.25-2.25V6.75zM3.75 9.75h16.5M9 4.5v15"/></svg>
+<span>Quotation Items</span>
+<span class="inline-flex items-center justify-center min-w-[20px] h-[18px] px-1 rounded-full bg-[#2D56D2] text-white text-[10.5px] font-bold" id="sf-items-count">0</span>
+</button>
 <button class="h-9 px-3.5 bg-white text-[#0B1430] rounded-lg border border-[#CBD5E1] text-sm font-medium hover:bg-[#F8FAFC] inline-flex items-center gap-1.5" onclick="toggleHistory()">
 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24"><path d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
 <span>History</span>
@@ -386,47 +391,38 @@ table th{position:sticky;top:0;z-index:1}
 
   </div>
 </div>
-<!-- Quotation Items (Collapse) — shows only when Ticket has Quotation No -->
-<div id="sf-items-box" class="bg-white border border-[#E2E8F0] rounded-xl shadow-sm overflow-hidden">
-  <button type="button" onclick="toggleSfItems()" class="w-full px-6 py-4 flex items-center justify-between hover:bg-[#F8FAFC] transition-colors">
-    <div class="flex items-center gap-3">
-      <div class="w-8 h-8 rounded-lg bg-[#EBF5FF] flex items-center justify-center shrink-0">
-        <svg class="w-4 h-4 text-[#2D56D2]" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75A2.25 2.25 0 016 4.5h12A2.25 2.25 0 0120.25 6.75v10.5A2.25 2.25 0 0118 19.5H6a2.25 2.25 0 01-2.25-2.25V6.75zM3.75 9.75h16.5M9 4.5v15"/></svg>
-      </div>
-      <div class="text-left">
-        <div class="text-[15px] font-semibold text-[#0B1430]">Quotation Items</div>
-        <div class="text-[12px]" style="color:rgba(30,41,59,0.6)"><span id="sf-items-count">0</span> items · Total <span id="sf-items-total" class="font-semibold text-[#0B1430]">0.00</span> THB</div>
-      </div>
+<!-- (hidden) Total holder — real total shown in drawer footer -->
+<span id="sf-items-total" class="hidden">0.00</span>
+
+<!-- Quotation Items Drawer (right side · non-modal — form stays interactive) -->
+<aside id="qu-drawer" class="fixed right-0 top-0 bottom-0 bg-white border-l border-[#E2E8F0] z-40 flex flex-col translate-x-full transition-transform duration-200" style="box-shadow:-8px 0 30px rgba(11,20,48,0.14);width:30vw;min-width:420px">
+  <header class="h-14 px-5 border-b border-[#E2E8F0] flex items-center shrink-0">
+    <div class="w-8 h-8 rounded-lg bg-[#EBF5FF] flex items-center justify-center shrink-0 mr-2">
+      <svg class="w-4 h-4 text-[#2D56D2]" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75A2.25 2.25 0 016 4.5h12A2.25 2.25 0 0120.25 6.75v10.5A2.25 2.25 0 0118 19.5H6a2.25 2.25 0 01-2.25-2.25V6.75zM3.75 9.75h16.5M9 4.5v15"/></svg>
     </div>
-    <div class="flex items-center gap-3">
-      <span id="sf-items-toggle-label" class="text-[12px] font-medium text-[#2D56D2]">Show details</span>
-      <svg id="sf-items-chev" class="w-5 h-5 transition-transform" style="color:rgba(30,41,59,0.5)" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
+    <div class="flex-1 min-w-0">
+      <div class="text-[15px] font-semibold text-[#0B1430] leading-tight">Quotation Items</div>
+      <div class="text-[11px]" style="color:rgba(30,41,59,0.55)"><span id="qu-drawer-count">0</span> items · Total <span id="qu-drawer-total" class="font-semibold text-[#0B1430]">0.00</span> THB</div>
     </div>
-  </button>
-  <div id="sf-items-body" class="hidden border-t border-[#E2E8F0] overflow-x-auto">
+    <button onclick="toggleSfItems()" class="w-8 h-8 rounded-md hover:bg-[#F1F5F9] flex items-center justify-center" style="color:rgba(30,41,59,0.5)"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button>
+  </header>
+  <div class="flex-1 overflow-auto">
     <table class="w-full text-[12px]">
-      <thead>
+      <thead class="sticky top-0 z-10">
         <tr class="border-b border-[#E2E8F0]" style="background:#F8FAFC">
-          <th class="px-4 py-3 text-left font-semibold text-[11px] uppercase tracking-wider whitespace-nowrap" style="color:rgba(30,41,59,0.6)">No</th>
-          <th class="px-4 py-3 text-left font-semibold text-[11px] uppercase tracking-wider" style="color:rgba(30,41,59,0.6)">Description</th>
-          <th class="px-4 py-3 text-left font-semibold text-[11px] uppercase tracking-wider whitespace-nowrap" style="color:rgba(30,41,59,0.6)">Quantity</th>
-          <th class="px-4 py-3 text-left font-semibold text-[11px] uppercase tracking-wider whitespace-nowrap" style="color:rgba(30,41,59,0.6)">Period</th>
-          <th class="px-4 py-3 text-right font-semibold text-[11px] uppercase tracking-wider whitespace-nowrap" style="color:rgba(30,41,59,0.6)">Fee (THB)</th>
-          <th class="px-4 py-3 text-right font-semibold text-[11px] uppercase tracking-wider whitespace-nowrap" style="color:rgba(30,41,59,0.6)">Disc%</th>
-          <th class="px-4 py-3 text-right font-semibold text-[11px] uppercase tracking-wider whitespace-nowrap" style="color:rgba(30,41,59,0.6)">Net Fee (THB)</th>
-          <th class="px-4 py-3 text-right font-semibold text-[11px] uppercase tracking-wider whitespace-nowrap" style="color:rgba(30,41,59,0.6)">Total Net Fee (THB)</th>
+          <th class="px-3 py-2 text-left font-semibold text-[10.5px] uppercase tracking-wider whitespace-nowrap" style="color:rgba(30,41,59,0.6)">No</th>
+          <th class="px-3 py-2 text-left font-semibold text-[10.5px] uppercase tracking-wider" style="color:rgba(30,41,59,0.6)">Description · Qty · Period</th>
+          <th class="px-3 py-2 text-right font-semibold text-[10.5px] uppercase tracking-wider whitespace-nowrap" style="color:rgba(30,41,59,0.6)">Fee / Disc / Net / Total</th>
         </tr>
       </thead>
       <tbody id="sf-items-tbody"></tbody>
-      <tfoot>
-        <tr class="border-t-2 border-[#E2E8F0]" style="background:#F8FAFC">
-          <td colspan="7" class="px-4 py-3 text-right font-semibold text-[12px] text-[#0B1430]">Grand Total</td>
-          <td class="px-4 py-3 text-right font-bold text-[13px] text-[#2D56D2] tnum" id="sf-items-grand-total">0.00</td>
-        </tr>
-      </tfoot>
     </table>
   </div>
-</div>
+  <footer class="border-t-2 border-[#E2E8F0] px-5 py-3 flex items-center justify-between shrink-0" style="background:#F8FAFC">
+    <span class="text-[12px] font-semibold text-[#0B1430]">Grand Total</span>
+    <span class="text-[15px] font-bold text-[#2D56D2] tnum" id="sf-items-grand-total">0.00</span>
+  </footer>
+</aside>
 <script>
 /* ===== Mock Quotation Items (shown when Ticket has Quotation No) ===== */
 var SF_QUOTATION_ITEMS = [
@@ -448,14 +444,22 @@ function renderSfItemsTable(){
   SF_QUOTATION_ITEMS.forEach(function(item){
     totalSum += item.total;
     html += '<tr class="border-b border-[#F1F5F9] hover:bg-[#F8FAFC]">'
-      + '<td class="px-4 py-3 font-mono text-[11px] align-top whitespace-nowrap" style="color:rgba(30,41,59,0.75)">' + item.no + '</td>'
-      + '<td class="px-4 py-3 align-top"><div class="font-medium text-[#0B1430]">' + item.desc + '</div><div class="text-[11px] mt-0.5" style="color:rgba(30,41,59,0.5)">Period : ' + item.period + '</div></td>'
-      + '<td class="px-4 py-3 tnum align-top whitespace-nowrap" style="color:rgba(30,41,59,0.75)">' + item.qty + '</td>'
-      + '<td class="px-4 py-3 tnum align-top whitespace-nowrap" style="color:rgba(30,41,59,0.75)">' + item.dur + '</td>'
-      + '<td class="px-4 py-3 tnum text-right align-top whitespace-nowrap">' + fmtQuoNum(item.fee) + '</td>'
-      + '<td class="px-4 py-3 tnum text-right align-top whitespace-nowrap">' + item.disc.toFixed(2) + '</td>'
-      + '<td class="px-4 py-3 tnum text-right align-top font-medium whitespace-nowrap">' + fmtQuoNum(item.net) + '</td>'
-      + '<td class="px-4 py-3 tnum text-right align-top font-semibold text-[#0B1430] whitespace-nowrap">' + fmtQuoNum(item.total) + '</td>'
+      + '<td class="px-3 py-2.5 font-mono text-[10.5px] align-top whitespace-nowrap" style="color:rgba(30,41,59,0.75)">' + item.no + '</td>'
+      + '<td class="px-3 py-2.5 align-top">'
+        + '<div class="font-medium text-[12px] text-[#0B1430] leading-snug">' + item.desc + '</div>'
+        + '<div class="text-[10.5px] mt-1 flex flex-wrap gap-x-2 gap-y-0.5" style="color:rgba(30,41,59,0.55)">'
+          + '<span><span class="opacity-70">Qty:</span> <span class="tnum">' + item.qty + '</span></span>'
+          + '<span><span class="opacity-70">Dur:</span> <span class="tnum">' + item.dur + '</span></span>'
+          + '<span><span class="opacity-70">Period:</span> <span class="tnum">' + item.period + '</span></span>'
+        + '</div>'
+      + '</td>'
+      + '<td class="px-3 py-2.5 text-right align-top whitespace-nowrap">'
+        + '<div class="font-semibold text-[12.5px] text-[#2D56D2] tnum">' + fmtQuoNum(item.total) + '</div>'
+        + '<div class="text-[10.5px] mt-0.5 flex flex-col items-end gap-0 tnum" style="color:rgba(30,41,59,0.55)">'
+          + '<span><span class="opacity-70">Net:</span> ' + fmtQuoNum(item.net) + '</span>'
+          + '<span><span class="opacity-70">Fee:</span> ' + fmtQuoNum(item.fee) + ' · <span class="opacity-70">-' + item.disc.toFixed(2) + '%</span></span>'
+        + '</div>'
+      + '</td>'
       + '</tr>';
   });
   tbody.innerHTML = html;
@@ -463,13 +467,17 @@ function renderSfItemsTable(){
   if (c) c.textContent = SF_QUOTATION_ITEMS.length;
   if (t) t.textContent = fmtQuoNum(totalSum);
   if (g) g.textContent = fmtQuoNum(totalSum);
+  var dc = document.getElementById('qu-drawer-count'), dt = document.getElementById('qu-drawer-total');
+  if (dc) dc.textContent = SF_QUOTATION_ITEMS.length;
+  if (dt) dt.textContent = fmtQuoNum(totalSum);
 }
 function toggleSfItems(){
-  var body=document.getElementById('sf-items-body'), chev=document.getElementById('sf-items-chev'), label=document.getElementById('sf-items-toggle-label');
-  var willOpen = body.classList.contains('hidden');
-  body.classList.toggle('hidden');
-  if (chev) chev.style.transform = willOpen ? 'rotate(180deg)' : '';
-  if (label) label.textContent = willOpen ? 'Hide details' : 'Show details';
+  var drawer = document.getElementById('qu-drawer');
+  var main = document.getElementById('main-wrap');
+  if (!drawer) return;
+  var willOpen = drawer.classList.contains('translate-x-full');
+  drawer.classList.toggle('translate-x-full');
+  if (main) main.style.marginRight = willOpen ? '30vw' : '';
 }
 /* Show/hide box based on Quotation presence (manual-entry tickets hide it) */
 (function(){

@@ -214,7 +214,7 @@ table th{position:sticky;top:0;z-index:1}
   </aside>
 
   <!-- MAIN CONTENT -->
-  <main class="flex-1 lg:ml-64 min-h-screen">
+  <main id="main-wrap" class="flex-1 lg:ml-64 min-h-screen transition-[margin-right] duration-200">
     <!-- Top Bar — White Glass -->
     <header class="topbar-white h-16 shrink-0 sticky top-0 z-20 flex items-center gap-4 px-4 sm:px-6">
       <!-- Collapse / Mobile toggle -->
@@ -250,6 +250,11 @@ table th{position:sticky;top:0;z-index:1}
 <button class="h-9 px-3.5 bg-white text-rose-600 rounded-lg border border-rose-200 text-sm font-medium hover:bg-rose-50 inline-flex items-center gap-1.5" onclick="clearAllData()">
 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24"><path d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" stroke-linecap="round" stroke-linejoin="round"></path></svg>
 <span>Clear All</span>
+</button>
+<button type="button" id="sf-items-box" onclick="toggleSfItems()" class="hidden h-9 px-3.5 bg-white text-[#2D56D2] rounded-lg border border-[#D6ECFF] text-sm font-medium hover:bg-[#EBF5FF] inline-flex items-center gap-1.5">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75A2.25 2.25 0 016 4.5h12A2.25 2.25 0 0120.25 6.75v10.5A2.25 2.25 0 0118 19.5H6a2.25 2.25 0 01-2.25-2.25V6.75zM3.75 9.75h16.5M9 4.5v15"/></svg>
+<span>Quotation Items</span>
+<span class="inline-flex items-center justify-center min-w-[20px] h-[18px] px-1 rounded-full bg-[#2D56D2] text-white text-[10.5px] font-bold" id="sf-items-count">0</span>
 </button>
 <a class="h-9 px-3.5 bg-white text-[#0B1430] rounded-lg border border-[#CBD5E1] text-sm font-medium hover:bg-[#F8FAFC] inline-flex items-center gap-1.5" href="job-list.html">
 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24"><path d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
@@ -317,7 +322,17 @@ table th{position:sticky;top:0;z-index:1}
 <div id="m-contract-period" class="w-full h-9 px-3 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[13px] flex items-center" style="color:rgba(30,41,59,0.5)">—</div>
 </div>
 <div>
-<label class="block text-[11px] font-medium text-[#0B1430] mb-1">Media Group <span class="text-[10px] font-normal" style="color:rgba(30,41,59,0.5)">(เลือกได้หลายรายการ)</span></label>
+<label class="block text-[11px] font-medium text-[#0B1430] mb-1">Media Category <span class="text-[10px] font-normal" style="color:rgba(30,41,59,0.5)">(เลือกได้หลายรายการ)</span></label>
+<div class="relative" id="mc-wrap">
+<button type="button" onclick="toggleMC(event)" class="w-full min-h-9 px-3 py-1.5 bg-white border border-[#E2E8F0] rounded-lg text-[13px] text-left flex items-center gap-2 hover:border-[#CBD5E1] focus:outline-none focus:border-[#4790FF] transition-colors">
+<div id="mc-pills" class="flex-1 flex flex-wrap gap-1 items-center"><span class="text-[12px]" style="color:rgba(30,41,59,0.4)">Select media category(s)...</span></div>
+<svg id="mc-chev" class="w-3.5 h-3.5 shrink-0 transition-transform" style="color:rgba(30,41,59,0.4)" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</button>
+<div id="mc-dropdown" class="hidden absolute z-20 top-full left-0 right-0 mt-1 bg-white border border-[#E2E8F0] rounded-lg p-1.5 max-h-[240px] overflow-y-auto" style="box-shadow:0 8px 30px rgba(11,20,48,0.12)"></div>
+</div>
+</div>
+<div>
+<label class="block text-[11px] font-medium text-[#0B1430] mb-1">Media Group <span class="text-[10px] font-normal" style="color:rgba(30,41,59,0.5)">(เลือกได้หลายรายการ · ขึ้นกับ Category)</span></label>
 <div class="relative" id="mg-wrap">
 <button type="button" onclick="toggleMG(event)" class="w-full min-h-9 px-3 py-1.5 bg-white border border-[#E2E8F0] rounded-lg text-[13px] text-left flex items-center gap-2 hover:border-[#CBD5E1] focus:outline-none focus:border-[#4790FF] transition-colors">
 <div id="mg-pills" class="flex-1 flex flex-wrap gap-1 items-center"><span class="text-[12px]" style="color:rgba(30,41,59,0.4)">Select media group(s)...</span></div>
@@ -374,47 +389,8 @@ table th{position:sticky;top:0;z-index:1}
 </div>
 </div>
 </div>
-<!-- Quotation Items (Collapse) — shows only after SF pull -->
-<div id="sf-items-box" class="hidden bg-white border border-[#E2E8F0] rounded-xl shadow-sm overflow-hidden">
-  <button type="button" onclick="toggleSfItems()" class="w-full px-6 py-4 flex items-center justify-between hover:bg-[#F8FAFC] transition-colors">
-    <div class="flex items-center gap-3">
-      <div class="w-8 h-8 rounded-lg bg-[#EBF5FF] flex items-center justify-center shrink-0">
-        <svg class="w-4 h-4 text-[#2D56D2]" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75A2.25 2.25 0 016 4.5h12A2.25 2.25 0 0120.25 6.75v10.5A2.25 2.25 0 0118 19.5H6a2.25 2.25 0 01-2.25-2.25V6.75zM3.75 9.75h16.5M9 4.5v15"/></svg>
-      </div>
-      <div class="text-left">
-        <div class="text-[15px] font-semibold text-[#0B1430]">Quotation Items</div>
-        <div class="text-[12px]" style="color:rgba(30,41,59,0.6)"><span id="sf-items-count">0</span> items · Total <span id="sf-items-total" class="font-semibold text-[#0B1430]">0.00</span> THB</div>
-      </div>
-    </div>
-    <div class="flex items-center gap-3">
-      <span id="sf-items-toggle-label" class="text-[12px] font-medium text-[#2D56D2]">Show details</span>
-      <svg id="sf-items-chev" class="w-5 h-5 transition-transform" style="color:rgba(30,41,59,0.5)" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
-    </div>
-  </button>
-  <div id="sf-items-body" class="hidden border-t border-[#E2E8F0] overflow-x-auto">
-    <table class="w-full text-[12px]">
-      <thead>
-        <tr class="border-b border-[#E2E8F0]" style="background:#F8FAFC">
-          <th class="px-4 py-3 text-left font-semibold text-[11px] uppercase tracking-wider whitespace-nowrap" style="color:rgba(30,41,59,0.6)">No</th>
-          <th class="px-4 py-3 text-left font-semibold text-[11px] uppercase tracking-wider" style="color:rgba(30,41,59,0.6)">Description</th>
-          <th class="px-4 py-3 text-left font-semibold text-[11px] uppercase tracking-wider whitespace-nowrap" style="color:rgba(30,41,59,0.6)">Quantity</th>
-          <th class="px-4 py-3 text-left font-semibold text-[11px] uppercase tracking-wider whitespace-nowrap" style="color:rgba(30,41,59,0.6)">Period</th>
-          <th class="px-4 py-3 text-right font-semibold text-[11px] uppercase tracking-wider whitespace-nowrap" style="color:rgba(30,41,59,0.6)">Fee (THB)</th>
-          <th class="px-4 py-3 text-right font-semibold text-[11px] uppercase tracking-wider whitespace-nowrap" style="color:rgba(30,41,59,0.6)">Disc%</th>
-          <th class="px-4 py-3 text-right font-semibold text-[11px] uppercase tracking-wider whitespace-nowrap" style="color:rgba(30,41,59,0.6)">Net Fee (THB)</th>
-          <th class="px-4 py-3 text-right font-semibold text-[11px] uppercase tracking-wider whitespace-nowrap" style="color:rgba(30,41,59,0.6)">Total Net Fee (THB)</th>
-        </tr>
-      </thead>
-      <tbody id="sf-items-tbody"></tbody>
-      <tfoot>
-        <tr class="border-t-2 border-[#E2E8F0]" style="background:#F8FAFC">
-          <td colspan="7" class="px-4 py-3 text-right font-semibold text-[12px] text-[#0B1430]">Grand Total</td>
-          <td class="px-4 py-3 text-right font-bold text-[13px] text-[#2D56D2] tnum" id="sf-items-grand-total">0.00</td>
-        </tr>
-      </tfoot>
-    </table>
-  </div>
-</div>
+<!-- (hidden) Quotation Items counts — kept in drawer, updated via JS -->
+<span id="sf-items-total" class="hidden">0.00</span>
 <!-- Step 2: Ticket Details — All Media Packs shown -->
 <div class="bg-white border border-[#E2E8F0] rounded-xl shadow-sm p-6">
 <div class="mb-5 flex items-start justify-between gap-4">
@@ -628,14 +604,22 @@ function renderSfItemsTable() {
   SF_QUOTATION_ITEMS.forEach(function(item) {
     totalSum += item.total;
     html += '<tr class="border-b border-[#F1F5F9] hover:bg-[#F8FAFC]">';
-    html += '<td class="px-4 py-3 font-mono text-[11px] align-top whitespace-nowrap" style="color:rgba(30,41,59,0.75)">' + item.no + '</td>';
-    html += '<td class="px-4 py-3 align-top"><div class="font-medium text-[#0B1430]">' + item.desc + '</div><div class="text-[11px] mt-0.5" style="color:rgba(30,41,59,0.5)">Period : ' + item.period + '</div></td>';
-    html += '<td class="px-4 py-3 tnum align-top whitespace-nowrap" style="color:rgba(30,41,59,0.75)">' + item.qty + '</td>';
-    html += '<td class="px-4 py-3 tnum align-top whitespace-nowrap" style="color:rgba(30,41,59,0.75)">' + item.dur + '</td>';
-    html += '<td class="px-4 py-3 tnum text-right align-top whitespace-nowrap">' + fmtNum(item.fee) + '</td>';
-    html += '<td class="px-4 py-3 tnum text-right align-top whitespace-nowrap">' + item.disc.toFixed(2) + '</td>';
-    html += '<td class="px-4 py-3 tnum text-right align-top font-medium whitespace-nowrap">' + fmtNum(item.net) + '</td>';
-    html += '<td class="px-4 py-3 tnum text-right align-top font-semibold text-[#0B1430] whitespace-nowrap">' + fmtNum(item.total) + '</td>';
+    html += '<td class="px-3 py-2.5 font-mono text-[10.5px] align-top whitespace-nowrap" style="color:rgba(30,41,59,0.75)">' + item.no + '</td>';
+    html += '<td class="px-3 py-2.5 align-top">'
+      + '<div class="font-medium text-[12px] text-[#0B1430] leading-snug">' + item.desc + '</div>'
+      + '<div class="text-[10.5px] mt-1 flex flex-wrap gap-x-2 gap-y-0.5" style="color:rgba(30,41,59,0.55)">'
+        + '<span><span class="opacity-70">Qty:</span> <span class="tnum">' + item.qty + '</span></span>'
+        + '<span><span class="opacity-70">Dur:</span> <span class="tnum">' + item.dur + '</span></span>'
+        + '<span><span class="opacity-70">Period:</span> <span class="tnum">' + item.period + '</span></span>'
+      + '</div>'
+    + '</td>';
+    html += '<td class="px-3 py-2.5 text-right align-top whitespace-nowrap">'
+      + '<div class="font-semibold text-[12.5px] text-[#2D56D2] tnum">' + fmtNum(item.total) + '</div>'
+      + '<div class="text-[10.5px] mt-0.5 flex flex-col items-end gap-0 tnum" style="color:rgba(30,41,59,0.55)">'
+        + '<span><span class="opacity-70">Net:</span> ' + fmtNum(item.net) + '</span>'
+        + '<span><span class="opacity-70">Fee:</span> ' + fmtNum(item.fee) + ' · <span class="opacity-70">-' + item.disc.toFixed(2) + '%</span></span>'
+      + '</div>'
+    + '</td>';
     html += '</tr>';
   });
   tbody.innerHTML = html;
@@ -645,16 +629,19 @@ function renderSfItemsTable() {
   if (countEl) countEl.textContent = SF_QUOTATION_ITEMS.length;
   if (totalEl) totalEl.textContent = fmtNum(totalSum);
   if (grandEl) grandEl.textContent = fmtNum(totalSum);
+  var dCount = document.getElementById('qu-drawer-count');
+  var dTotal = document.getElementById('qu-drawer-total');
+  if (dCount) dCount.textContent = SF_QUOTATION_ITEMS.length;
+  if (dTotal) dTotal.textContent = fmtNum(totalSum);
 }
 
 function toggleSfItems() {
-  var body = document.getElementById('sf-items-body');
-  var chev = document.getElementById('sf-items-chev');
-  var label = document.getElementById('sf-items-toggle-label');
-  var willOpen = body.classList.contains('hidden');
-  body.classList.toggle('hidden');
-  if (chev) chev.style.transform = willOpen ? 'rotate(180deg)' : '';
-  if (label) label.textContent = willOpen ? 'Hide details' : 'Show details';
+  var drawer = document.getElementById('qu-drawer');
+  var main = document.getElementById('main-wrap');
+  if (!drawer) return;
+  var willOpen = drawer.classList.contains('translate-x-full');
+  drawer.classList.toggle('translate-x-full');
+  if (main) main.style.marginRight = willOpen ? '30vw' : '';
 }
 
 /* ===== Mock Salesforce Data ===== */
@@ -744,6 +731,87 @@ function fmtManualDate(el) {
   } else { el.type = 'text'; }
 }
 
+/* ===== Media Category multi-select (parent tier, cascade to Group) ===== */
+var MEDIA_CATEGORIES = [
+  { id:'OOH',    label:'Outdoor OOH',        color:'#2D56D2', groups:['Digital','Classic'] },
+  { id:'TRANS',  label:'Transit & Airport',  color:'#7C3AED', groups:['Transit','Airport'] },
+  { id:'RETAIL', label:'Retail',             color:'#10B981', groups:['Retail'] },
+];
+var _selectedMC = [];
+function toggleMC(e) {
+  if (e) e.stopPropagation();
+  var dd = document.getElementById('mc-dropdown');
+  var chev = document.getElementById('mc-chev');
+  var willOpen = dd.classList.contains('hidden');
+  dd.classList.toggle('hidden');
+  if (chev) chev.style.transform = willOpen ? 'rotate(180deg)' : '';
+  if (willOpen) renderMCOptions();
+}
+function renderMCOptions() {
+  var dd = document.getElementById('mc-dropdown');
+  var html = '';
+  MEDIA_CATEGORIES.forEach(function(c) {
+    var checked = _selectedMC.indexOf(c.id) >= 0;
+    html += '<label class="flex items-center gap-2 px-2.5 py-1.5 rounded-md cursor-pointer hover:bg-[#F8FAFC] text-[12.5px] transition-colors">' +
+      '<input type="checkbox" ' + (checked?'checked':'') + ' onchange="toggleMCItem(\'' + c.id + '\', event)" class="w-4 h-4 rounded accent-[#2D56D2]"/>' +
+      '<span class="w-2.5 h-2.5 rounded-full" style="background:' + c.color + '"></span>' +
+      '<span class="' + (checked?'font-semibold text-[#0B1430]':'') + '" style="' + (checked?'':'color:rgba(30,41,59,.75)') + '">' + c.label + '</span>' +
+    '</label>';
+  });
+  dd.innerHTML = html;
+}
+function toggleMCItem(id, e) {
+  if (e) e.stopPropagation();
+  var i = _selectedMC.indexOf(id);
+  if (i >= 0) _selectedMC.splice(i, 1);
+  else _selectedMC.push(id);
+  // Cascade: remove selected groups that are no longer under any active category
+  var allowed = _allowedGroups();
+  _selectedMG = _selectedMG.filter(function(g){ return allowed.indexOf(g) >= 0; });
+  renderMCPills();
+  renderMCOptions();
+  renderMGPills();
+  // if MG dropdown is open, refresh its options
+  var mgDD = document.getElementById('mg-dropdown');
+  if (mgDD && !mgDD.classList.contains('hidden')) renderMGOptions();
+}
+function removeMC(id, e) {
+  if (e) e.stopPropagation();
+  var i = _selectedMC.indexOf(id);
+  if (i >= 0) _selectedMC.splice(i, 1);
+  var allowed = _allowedGroups();
+  _selectedMG = _selectedMG.filter(function(g){ return allowed.indexOf(g) >= 0; });
+  renderMCPills();
+  renderMGPills();
+  if (!document.getElementById('mc-dropdown').classList.contains('hidden')) renderMCOptions();
+  var mgDD = document.getElementById('mg-dropdown');
+  if (mgDD && !mgDD.classList.contains('hidden')) renderMGOptions();
+}
+function renderMCPills() {
+  var el = document.getElementById('mc-pills');
+  if (!el) return;
+  if (!_selectedMC.length) {
+    el.innerHTML = '<span class="text-[12px]" style="color:rgba(30,41,59,0.4)">Select media category(s)...</span>';
+    return;
+  }
+  el.innerHTML = _selectedMC.map(function(id) {
+    var c = MEDIA_CATEGORIES.find(function(x){ return x.id === id; });
+    if (!c) return '';
+    return '<span class="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded font-semibold" style="background:' + c.color + '18;color:' + c.color + ';border:1px solid ' + c.color + '33">' + c.label +
+      '<button type="button" onclick="removeMC(\'' + c.id + '\', event)" class="w-3.5 h-3.5 rounded-full hover:bg-black/10 flex items-center justify-center ml-0.5"><svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button>' +
+    '</span>';
+  }).join('');
+}
+function _allowedGroups() {
+  if (!_selectedMC.length) return [];
+  var set = {};
+  _selectedMC.forEach(function(id){
+    var c = MEDIA_CATEGORIES.find(function(x){ return x.id === id; });
+    if (c) c.groups.forEach(function(g){ set[g] = true; });
+  });
+  return Object.keys(set);
+}
+
 /* ===== Media Group multi-select (manual entry) ===== */
 var _selectedMG = [];
 function toggleMG(e) {
@@ -757,8 +825,14 @@ function toggleMG(e) {
 }
 function renderMGOptions() {
   var dd = document.getElementById('mg-dropdown');
+  var allowed = _allowedGroups();
+  if (!allowed.length) {
+    dd.innerHTML = '<div class="px-3 py-4 text-center text-[12px]" style="color:rgba(30,41,59,0.45)">กรุณาเลือก Media Category ก่อน</div>';
+    return;
+  }
   var html = '';
   MEDIA_GROUPS.forEach(function(g) {
+    if (allowed.indexOf(g) < 0) return;
     var checked = _selectedMG.indexOf(g) >= 0;
     var c = MEDIA_GROUP_COLOR[g];
     html += '<label class="flex items-center gap-2 px-2.5 py-1.5 rounded-md cursor-pointer hover:bg-[#F8FAFC] text-[12.5px] transition-colors">' +
@@ -801,7 +875,7 @@ function renderMGPills() {
 }
 /* Close dropdown on outside click — includes dynamic Media Code multi-selects */
 document.addEventListener('click', function(e) {
-  ['mg','mt','cs','pk','sf-cs'].forEach(function(pfx){
+  ['mc','mg','mt','cs','pk','sf-cs'].forEach(function(pfx){
     var wrap = document.getElementById(pfx + '-wrap');
     if (wrap && !wrap.contains(e.target)) {
       var dd = document.getElementById(pfx + '-dropdown');
@@ -2401,5 +2475,36 @@ function aiSend(text){
   }, 1500);
 }
 </script>
+
+<!-- Quotation Items Drawer (right side · non-modal — form stays interactive) -->
+<aside id="qu-drawer" class="fixed right-0 top-0 bottom-0 bg-white border-l border-[#E2E8F0] z-40 flex flex-col translate-x-full transition-transform duration-200" style="box-shadow:-8px 0 30px rgba(11,20,48,0.14);width:30vw;min-width:420px">
+  <header class="h-14 px-5 border-b border-[#E2E8F0] flex items-center shrink-0">
+    <div class="w-8 h-8 rounded-lg bg-[#EBF5FF] flex items-center justify-center shrink-0 mr-2">
+      <svg class="w-4 h-4 text-[#2D56D2]" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75A2.25 2.25 0 016 4.5h12A2.25 2.25 0 0120.25 6.75v10.5A2.25 2.25 0 0118 19.5H6a2.25 2.25 0 01-2.25-2.25V6.75zM3.75 9.75h16.5M9 4.5v15"/></svg>
+    </div>
+    <div class="flex-1 min-w-0">
+      <div class="text-[15px] font-semibold text-[#0B1430] leading-tight">Quotation Items</div>
+      <div class="text-[11px]" style="color:rgba(30,41,59,0.55)"><span id="qu-drawer-count">0</span> items · Total <span id="qu-drawer-total" class="font-semibold text-[#0B1430]">0.00</span> THB</div>
+    </div>
+    <button onclick="toggleSfItems()" class="w-8 h-8 rounded-md hover:bg-[#F1F5F9] flex items-center justify-center" style="color:rgba(30,41,59,0.5)"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button>
+  </header>
+  <div class="flex-1 overflow-auto">
+    <table class="w-full text-[12px]">
+      <thead class="sticky top-0 z-10">
+        <tr class="border-b border-[#E2E8F0]" style="background:#F8FAFC">
+          <th class="px-3 py-2 text-left font-semibold text-[10.5px] uppercase tracking-wider whitespace-nowrap" style="color:rgba(30,41,59,0.6)">No</th>
+          <th class="px-3 py-2 text-left font-semibold text-[10.5px] uppercase tracking-wider" style="color:rgba(30,41,59,0.6)">Description · Qty · Period</th>
+          <th class="px-3 py-2 text-right font-semibold text-[10.5px] uppercase tracking-wider whitespace-nowrap" style="color:rgba(30,41,59,0.6)">Fee / Disc / Net / Total</th>
+        </tr>
+      </thead>
+      <tbody id="sf-items-tbody"></tbody>
+    </table>
+  </div>
+  <footer class="border-t-2 border-[#E2E8F0] px-5 py-3 flex items-center justify-between shrink-0" style="background:#F8FAFC">
+    <span class="text-[12px] font-semibold text-[#0B1430]">Grand Total</span>
+    <span class="text-[15px] font-bold text-[#2D56D2] tnum" id="sf-items-grand-total">0.00</span>
+  </footer>
+</aside>
+
 </body>
 </html>

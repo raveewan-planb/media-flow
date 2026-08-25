@@ -221,16 +221,45 @@ const MEDIA_GROUPS_SEED = [
   },
 ];
 
+// Media Categories — หมวดใหญ่สุด parent ของ Media Group
+const MEDIA_CATEGORIES_SEED = [
+  { id:'OOH',    nameTh:'สื่อกลางแจ้ง',        nameEn:'Outdoor OOH',       color:'#2D56D2', groupIds:['DIG','CLS'] },
+  { id:'TRANS',  nameTh:'สื่อขนส่ง / สนามบิน',  nameEn:'Transit & Airport', color:'#7C3AED', groupIds:['TRN','AIR'] },
+  { id:'RETAIL', nameTh:'สื่อรีเทล',            nameEn:'Retail',            color:'#10B981', groupIds:['RTL'] },
+];
+
+// Inject mock Media Segments + Sub Segments for each Media Type
+MEDIA_GROUPS_SEED.forEach(g => g.types.forEach(t => {
+  if (!t.segments) {
+    t.segments = [
+      { id: t.id + '-SEG-A', nameTh: t.nameTh + ' — โซน A', nameEn: t.nameEn + ' — Zone A',
+        subSegments: [
+          { id: t.id + '-SEG-A-01', nameTh: t.nameTh + ' A · จุด 1', nameEn: t.nameEn + ' A · Spot 1' },
+          { id: t.id + '-SEG-A-02', nameTh: t.nameTh + ' A · จุด 2', nameEn: t.nameEn + ' A · Spot 2' },
+        ] },
+      { id: t.id + '-SEG-B', nameTh: t.nameTh + ' — โซน B', nameEn: t.nameEn + ' — Zone B',
+        subSegments: [
+          { id: t.id + '-SEG-B-01', nameTh: t.nameTh + ' B · จุด 1', nameEn: t.nameEn + ' B · Spot 1' },
+        ] },
+    ];
+  }
+}));
+
 function mediaStatus(id) { return MEDIA_STATUSES.find(s => s.id === id); }
-function aggregateMedia(groups) {
-  let types = 0, active = 0;
+function aggregateMedia(groups, categories) {
+  let types = 0, active = 0, segments = 0, subSegments = 0;
   groups.forEach(g => {
     types += g.types.length;
-    g.types.forEach(t => { if (t.status === undefined || t.status === 'active') active++; });
+    g.types.forEach(t => {
+      if (t.status === undefined || t.status === 'active') active++;
+      const segs = t.segments || [];
+      segments += segs.length;
+      segs.forEach(s => { subSegments += (s.subSegments || []).length; });
+    });
   });
-  return { groups: groups.length, types, active, inactive: types - active };
+  return { categories: (categories || []).length, groups: groups.length, types, segments, subSegments, active, inactive: types - active };
 }
-Object.assign(window, { MEDIA_GROUPS_SEED, MEDIA_STATUSES, MEDIA_PACKAGES, mediaStatus, aggregateMedia });
+Object.assign(window, { MEDIA_GROUPS_SEED, MEDIA_CATEGORIES_SEED, MEDIA_STATUSES, MEDIA_PACKAGES, mediaStatus, aggregateMedia });
 </script>
 
 <!-- ========================================================
@@ -340,20 +369,27 @@ function MediaDrawer({ open, mode, level, initial, context, onClose, onSave }) {
   });
   const submit = (e) => { e.preventDefault(); if (!form.id || !form.nameTh) return; onSave(form); };
   const titles = {
-    group: mode === 'create' ? 'เพิ่ม Media Group ใหม่' : 'แก้ไข Media Group',
-    type:  mode === 'create' ? 'เพิ่ม Media Type ใหม่'  : 'แก้ไข Media Type',
+    category:   mode === 'create' ? 'เพิ่ม Media Category ใหม่'    : 'แก้ไข Media Category',
+    group:      mode === 'create' ? 'เพิ่ม Media Group ใหม่'       : 'แก้ไข Media Group',
+    type:       mode === 'create' ? 'เพิ่ม Media Type ใหม่'        : 'แก้ไข Media Type',
+    segment:    mode === 'create' ? 'เพิ่ม Media Segment ใหม่'     : 'แก้ไข Media Segment',
+    subsegment: mode === 'create' ? 'เพิ่ม Sub Media Segment ใหม่' : 'แก้ไข Sub Media Segment',
   };
   const codeHint = {
-    group: '2–4 ตัวอักษร · เช่น DGT, AIR, RTL',
-    type:  'รหัสเฉพาะ · เช่น PBTV, BTS-SKY',
+    category:   '2–6 ตัวอักษร · เช่น OOH, TRANS, RETAIL',
+    group:      '2–4 ตัวอักษร · เช่น DGT, AIR, RTL',
+    type:       'รหัสเฉพาะ · เช่น PBTV, BTS-SKY',
+    segment:    'รหัสเฉพาะ',
+    subsegment: 'รหัสเฉพาะ',
   };
   const codePh = {
-    group: 'เช่น DGT',
-    type:  'เช่น PBTV',
+    category:'เช่น OOH', group:'เช่น DGT', type:'เช่น PBTV', segment:'เช่น SEG-A', subsegment:'เช่น SEG-A-01',
   };
   const namePh = {
-    group: 'เช่น ดิจิทัล',
-    type:  'เช่น Plan B TV',
+    category:'เช่น สื่อกลางแจ้ง', group:'เช่น ดิจิทัล', type:'เช่น Plan B TV', segment:'เช่น โซน A', subsegment:'เช่น โซน A · จุด 1',
+  };
+  const levelLabel = {
+    category:'Category', group:'Group', type:'Type', segment:'Segment', subsegment:'Sub-Segment',
   };
   const COLORS = ['#2D56D2','#F59E0B','#10B981','#7C3AED','#06B6D4','#EF4444','#0EA5E9'];
   return (
@@ -371,20 +407,20 @@ function MediaDrawer({ open, mode, level, initial, context, onClose, onSave }) {
             <Icon name="x" size={16} />
           </button>
         </header>
-        {context && (level !== 'group') && (
+        {context && (level !== 'group' && level !== 'category') && (
           <div className="px-5 py-3 bg-pb-50/40 border-b border-surface-200 text-[11px] text-ink-700/65 flex items-center gap-1.5 flex-wrap">
-            <span className="font-medium">{context.groupLabel}</span>
+            <span className="font-medium">{context.segmentLabel || context.typeLabel || context.groupLabel || context.categoryLabel}</span>
           </div>
         )}
         <form onSubmit={submit} className="flex-1 overflow-y-auto p-5 space-y-4">
-          <Field label={`รหัส (${level === 'group' ? 'Group' : 'Type'} Code)`} hint={codeHint[level]}>
+          <Field label={`รหัส (${levelLabel[level]} Code)`} hint={codeHint[level]}>
             <input ref={firstRef} value={form.id}
-              onChange={e => update('id', e.target.value.toUpperCase().slice(0, 8))}
+              onChange={e => update('id', e.target.value.toUpperCase().slice(0, 12))}
               disabled={mode === 'edit'} required
               placeholder={codePh[level]}
               className="w-full h-9 px-3 bg-surface-50 border border-surface-200 rounded-lg text-[14px] font-mono font-semibold uppercase tracking-wider disabled:bg-surface-100 disabled:text-ink-700/50 placeholder:opacity-40 placeholder:normal-case" />
           </Field>
-          <Field label={`ชื่อ (${level === 'group' ? 'Group Name' : 'Type Name'})`}>
+          <Field label={`ชื่อ (${levelLabel[level]} Name)`}>
             <input value={form.nameTh} onChange={e => update('nameTh', e.target.value)} required
               placeholder={namePh[level]}
               className="w-full h-9 px-3 bg-surface-50 border border-surface-200 rounded-lg text-[13px] placeholder:opacity-40" />
@@ -408,7 +444,7 @@ function MediaDrawer({ open, mode, level, initial, context, onClose, onSave }) {
                 className="w-full h-9 px-3 bg-surface-50 border border-surface-200 rounded-lg text-[13px] font-mono placeholder:opacity-40" />
             </Field>
           )}
-          {level === 'group' && (
+          {(level === 'group' || level === 'category') && (
             <Field label="สี (สำหรับ tag)">
               <div className="flex gap-2 flex-wrap">
                 {COLORS.map(c => (
@@ -743,49 +779,99 @@ function MStatTile({ icon, label, value, tone='#2D56D2' }) {
 
 function MasterDataMediaScreen() {
   const [groups, setGroups] = useState(() => JSON.parse(JSON.stringify(window.MEDIA_GROUPS_SEED)));
+  const [categories, setCategories] = useState(() => JSON.parse(JSON.stringify(window.MEDIA_CATEGORIES_SEED)));
   const [collapsed, setCollapsed] = useState(false);
   const [globalSearch, setGlobalSearch] = useState('');
+  const [cSearch, setCSearch] = useState('');
   const [gSearch, setGSearch] = useState('');
   const [tSearch, setTSearch] = useState('');
+  const [sSearch, setSSearch] = useState('');
+  const [ssSearch, setSsSearch] = useState('');
+  const [selectedCategoryId, setSelectedCategoryId] = useState('OOH');
   const [selectedGroupId, setSelectedGroupId] = useState('DIG');
+  const [selectedTypeId, setSelectedTypeId] = useState(null);
+  const [selectedSegmentId, setSelectedSegmentId] = useState(null);
   const [drawerState, setDrawerState] = useState({ open:false, mode:'create', level:'group', initial:null, context:null });
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [aiOpen, setAiOpen] = useState(false);
   const [importOpen, setImportOpen] = useState(false);
 
-  const filteredGroups = useMemo(() => {
-    return groups.filter(g => {
-      if (gSearch && !(g.nameTh.includes(gSearch) || (g.nameEn||'').toLowerCase().includes(gSearch.toLowerCase()) || g.id.toLowerCase().includes(gSearch.toLowerCase()))) return false;
-      if (globalSearch) {
-        const q = globalSearch.toLowerCase();
-        const hits = g.id.toLowerCase().includes(q) || g.nameTh.includes(globalSearch) || (g.nameEn||'').toLowerCase().includes(q) ||
-          g.types.some(t => t.id.toLowerCase().includes(q) || t.nameTh.includes(globalSearch) || (t.nameEn||'').toLowerCase().includes(q));
-        if (!hits) return false;
-      }
+  // Categories filter
+  const filteredCategories = useMemo(() => {
+    return categories.filter(c => {
+      if (cSearch && !(c.nameTh.includes(cSearch) || (c.nameEn||'').toLowerCase().includes(cSearch.toLowerCase()) || c.id.toLowerCase().includes(cSearch.toLowerCase()))) return false;
       return true;
     });
-  }, [groups, gSearch, globalSearch]);
+  }, [categories, cSearch]);
+  const selectedCategory = filteredCategories.find(c => c.id === selectedCategoryId) || filteredCategories[0];
+
+  // Groups filter — cascade from selectedCategory
+  const filteredGroups = useMemo(() => {
+    const allowed = selectedCategory ? new Set(selectedCategory.groupIds) : new Set();
+    return groups.filter(g => {
+      if (!allowed.has(g.id)) return false;
+      if (gSearch && !(g.nameTh.includes(gSearch) || (g.nameEn||'').toLowerCase().includes(gSearch.toLowerCase()) || g.id.toLowerCase().includes(gSearch.toLowerCase()))) return false;
+      return true;
+    });
+  }, [groups, gSearch, selectedCategory]);
 
   const selectedGroup = filteredGroups.find(g => g.id === selectedGroupId) || filteredGroups[0];
+  useEffect(() => {
+    if (selectedGroup && selectedGroup.id !== selectedGroupId) setSelectedGroupId(selectedGroup.id);
+  }, [selectedGroup]);
+
   const types = selectedGroup ? selectedGroup.types : [];
   const filteredTypes = useMemo(() => {
     if (!tSearch) return types;
     return types.filter(t => t.nameTh.includes(tSearch) || (t.nameEn||'').toLowerCase().includes(tSearch.toLowerCase()) || t.id.toLowerCase().includes(tSearch.toLowerCase()));
   }, [types, tSearch]);
 
-  const stats = useMemo(() => window.aggregateMedia(groups), [groups]);
+  const selectedType = filteredTypes.find(t => t.id === selectedTypeId) || null;
+  const segments = selectedType ? (selectedType.segments || []) : [];
+  const filteredSegments = useMemo(() => {
+    if (!sSearch) return segments;
+    return segments.filter(s => s.nameTh.includes(sSearch) || (s.nameEn||'').toLowerCase().includes(sSearch.toLowerCase()) || s.id.toLowerCase().includes(sSearch.toLowerCase()));
+  }, [segments, sSearch]);
+
+  const selectedSegment = filteredSegments.find(s => s.id === selectedSegmentId) || null;
+  const subSegments = selectedSegment ? (selectedSegment.subSegments || []) : [];
+  const filteredSubSegments = useMemo(() => {
+    if (!ssSearch) return subSegments;
+    return subSegments.filter(s => s.nameTh.includes(ssSearch) || (s.nameEn||'').toLowerCase().includes(ssSearch.toLowerCase()) || s.id.toLowerCase().includes(ssSearch.toLowerCase()));
+  }, [subSegments, ssSearch]);
+
+  const stats = useMemo(() => window.aggregateMedia(groups, categories), [groups, categories]);
   const openCreate = (level, ctx) => setDrawerState({ open:true, mode:'create', level, initial:null, context: ctx });
   const openEdit = (level, item, ctx) => setDrawerState({ open:true, mode:'edit', level, initial: { ...item }, context: ctx });
   const closeDrawer = () => setDrawerState(s => ({ ...s, open:false }));
 
   const saveEntity = (data) => {
     const { level, mode, initial } = drawerState;
+    if (level === 'category') {
+      setCategories(prev => {
+        const next = prev.map(c => ({ ...c, groupIds: [...c.groupIds] }));
+        if (mode === 'create') {
+          if (next.find(c => c.id === data.id)) { alert(`รหัส ${data.id} มีอยู่แล้ว`); return prev; }
+          next.push({ id: data.id, nameTh: data.nameTh, nameEn: data.nameEn || '', color: data.color, groupIds: [] });
+          setSelectedCategoryId(data.id);
+        } else {
+          const c = next.find(x => x.id === initial.id);
+          if (c) { c.nameTh = data.nameTh; c.nameEn = data.nameEn; c.color = data.color; }
+        }
+        return next;
+      });
+      closeDrawer();
+      return;
+    }
     setGroups(prev => {
-      const next = prev.map(g => ({ ...g, types: g.types.map(t => ({ ...t })) }));
+      const next = prev.map(g => ({ ...g, types: g.types.map(t => ({ ...t, segments: (t.segments || []).map(s => ({ ...s, subSegments: [...(s.subSegments || [])] })) })) }));
       if (level === 'group') {
         if (mode === 'create') {
           if (next.find(g => g.id === data.id)) { alert(`รหัส ${data.id} มีอยู่แล้ว`); return prev; }
           next.push({ id: data.id, nameTh: data.nameTh, nameEn: data.nameEn || '', color: data.color, types: [] });
+          // attach to current category
+          const catId = drawerState.context?.categoryId || selectedCategoryId;
+          setCategories(cats => cats.map(c => c.id === catId ? { ...c, groupIds: [...c.groupIds, data.id] } : c));
           setSelectedGroupId(data.id);
         } else {
           const g = next.find(g => g.id === initial.id);
@@ -797,10 +883,35 @@ function MasterDataMediaScreen() {
         const pCount = data.panelCount === '' || data.panelCount == null ? null : Number(data.panelCount);
         if (mode === 'create') {
           if (parentG.types.find(t => t.id === data.id)) { alert(`รหัส ${data.id} มีอยู่แล้ว`); return prev; }
-          parentG.types.push({ id: data.id, nameTh: data.nameTh, nameEn: data.nameEn || '', status:'active', panelCount: pCount, hasPackage: !!data.hasPackage, packageIds: data.packageIds || [] });
+          parentG.types.push({ id: data.id, nameTh: data.nameTh, nameEn: data.nameEn || '', status:'active', panelCount: pCount, hasPackage: !!data.hasPackage, packageIds: data.packageIds || [], segments: [] });
         } else {
           const t = parentG.types.find(t => t.id === initial.id);
           if (t) Object.assign(t, { nameTh: data.nameTh, nameEn: data.nameEn, panelCount: pCount, hasPackage: !!data.hasPackage, packageIds: data.packageIds || [] });
+        }
+      }
+      if (level === 'segment') {
+        const parentG = next.find(g => g.id === drawerState.context.groupId);
+        const parentT = parentG.types.find(t => t.id === drawerState.context.typeId);
+        if (!parentT.segments) parentT.segments = [];
+        if (mode === 'create') {
+          if (parentT.segments.find(s => s.id === data.id)) { alert(`รหัส ${data.id} มีอยู่แล้ว`); return prev; }
+          parentT.segments.push({ id: data.id, nameTh: data.nameTh, nameEn: data.nameEn || '', subSegments: [] });
+        } else {
+          const s = parentT.segments.find(x => x.id === initial.id);
+          if (s) Object.assign(s, { nameTh: data.nameTh, nameEn: data.nameEn });
+        }
+      }
+      if (level === 'subsegment') {
+        const parentG = next.find(g => g.id === drawerState.context.groupId);
+        const parentT = parentG.types.find(t => t.id === drawerState.context.typeId);
+        const parentS = parentT.segments.find(s => s.id === drawerState.context.segmentId);
+        if (!parentS.subSegments) parentS.subSegments = [];
+        if (mode === 'create') {
+          if (parentS.subSegments.find(x => x.id === data.id)) { alert(`รหัส ${data.id} มีอยู่แล้ว`); return prev; }
+          parentS.subSegments.push({ id: data.id, nameTh: data.nameTh, nameEn: data.nameEn || '' });
+        } else {
+          const s = parentS.subSegments.find(x => x.id === initial.id);
+          if (s) Object.assign(s, { nameTh: data.nameTh, nameEn: data.nameEn });
         }
       }
       return next;
@@ -810,10 +921,18 @@ function MasterDataMediaScreen() {
 
   const confirmDelete = () => {
     const t = deleteTarget; if (!t) return;
+    if (t.level === 'category') {
+      setCategories(prev => prev.filter(c => c.id !== t.id));
+      if (selectedCategoryId === t.id) setSelectedCategoryId(null);
+      setDeleteTarget(null);
+      return;
+    }
     setGroups(prev => {
-      const next = prev.map(g => ({ ...g, types: [...g.types] }));
-      if (t.level === 'group') { const idx = next.findIndex(g => g.id === t.id); if (idx > -1) next.splice(idx, 1); setSelectedGroupId(next[0]?.id); }
+      const next = prev.map(g => ({ ...g, types: g.types.map(tt => ({ ...tt, segments: (tt.segments || []).map(s => ({ ...s, subSegments: [...(s.subSegments || [])] })) })) }));
+      if (t.level === 'group') { const idx = next.findIndex(g => g.id === t.id); if (idx > -1) next.splice(idx, 1); setSelectedGroupId(next[0]?.id); setCategories(cats => cats.map(c => ({ ...c, groupIds: c.groupIds.filter(id => id !== t.id) }))); }
       if (t.level === 'type') { const g = next.find(g => g.id === t.parentGId); const idx = g.types.findIndex(tt => tt.id === t.id); if (idx > -1) g.types.splice(idx, 1); }
+      if (t.level === 'segment') { const g = next.find(g => g.id === t.parentGId); const tt = g.types.find(x => x.id === t.parentTId); const idx = tt.segments.findIndex(s => s.id === t.id); if (idx > -1) tt.segments.splice(idx, 1); }
+      if (t.level === 'subsegment') { const g = next.find(g => g.id === t.parentGId); const tt = g.types.find(x => x.id === t.parentTId); const s = tt.segments.find(x => x.id === t.parentSId); const idx = s.subSegments.findIndex(x => x.id === t.id); if (idx > -1) s.subSegments.splice(idx, 1); }
       return next;
     });
     setDeleteTarget(null);
@@ -842,7 +961,7 @@ function MasterDataMediaScreen() {
               <div>
                 <h2 className="text-[22px] font-semibold text-ink-900 tracking-tight">ประเภทสื่อ · Master Data</h2>
                 <p className="text-[12px] text-ink-700/55 mt-0.5">
-                  จัดการประเภทสื่อตามโครงสร้าง 2 ระดับ: <b>Media Group → Media Type</b>
+                  จัดการประเภทสื่อตามโครงสร้าง 5 ระดับ: <b>Media Category → Media Group → Media Type → Media Segment → Sub Media Segment</b>
                 </p>
               </div>
               <div className="flex gap-2">
@@ -851,9 +970,12 @@ function MasterDataMediaScreen() {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <MStatTile icon="squares-2x2" label="Media Groups" value={stats.groups} tone="#2D56D2" />
-              <MStatTile icon="archive-box" label="Media Types"  value={stats.types}  tone="#7C3AED" />
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+              <MStatTile icon="squares-2x2" label="Media Categories"    value={stats.categories}  tone="#2D56D2" />
+              <MStatTile icon="squares-2x2" label="Media Groups"        value={stats.groups}      tone="#7C3AED" />
+              <MStatTile icon="archive-box" label="Media Types"         value={stats.types}       tone="#0EA5E9" />
+              <MStatTile icon="archive-box" label="Media Segments"      value={stats.segments}    tone="#F59E0B" />
+              <MStatTile icon="archive-box" label="Sub Media Segments"  value={stats.subSegments} tone="#10B981" />
             </div>
 
             <div className="bg-white border border-surface-200 rounded-xl p-3"
@@ -866,13 +988,27 @@ function MasterDataMediaScreen() {
               </div>
             </div>
 
-            <div className="grid gap-3 flex-1" style={{ gridTemplateColumns: 'minmax(280px, 1fr) minmax(280px, 1.6fr)', minHeight: 480 }}>
-              <Pane title="Media Group" count={filteredGroups.length} subtitle="หมวดใหญ่ของสื่อ"
-                onAdd={() => openCreate('group', null)} search={gSearch} onSearch={setGSearch} empty="ไม่พบ Group">
+            <div className="grid gap-3 flex-1" style={{ gridTemplateColumns: 'repeat(5, minmax(220px, 1fr))', minHeight: 480 }}>
+              <Pane title="Media Category" count={filteredCategories.length} subtitle="หมวดใหญ่สุด"
+                onAdd={() => openCreate('category', null)} search={cSearch} onSearch={setCSearch} empty="ไม่พบ Category">
+                {filteredCategories.map(c => (
+                  <PaneRow key={c.id} item={c} dot={c.color} meta={c.groupIds.length} secondary={`${c.id} · ${c.nameEn}`}
+                    active={selectedCategory?.id === c.id}
+                    onSelect={() => { setSelectedCategoryId(c.id); setSelectedTypeId(null); setSelectedSegmentId(null); }}
+                    onEdit={() => openEdit('category', c, null)}
+                    onDelete={() => setDeleteTarget({ level:'category', id:c.id, label: `Category ${c.nameTh} (${c.id})` })} />
+                ))}
+              </Pane>
+
+              <Pane title="Media Group" count={filteredGroups.length}
+                subtitle={selectedCategory ? `ใน ${selectedCategory.nameTh}` : 'เลือก Category ก่อน'}
+                onAdd={() => selectedCategory && openCreate('group', { categoryId: selectedCategory.id, categoryLabel: selectedCategory.nameTh })}
+                search={gSearch} onSearch={setGSearch}
+                empty={selectedCategory ? 'ไม่พบ Group ใน Category นี้' : 'เลือก Category ก่อน'}>
                 {filteredGroups.map(g => (
                   <PaneRow key={g.id} item={g} dot={g.color} meta={g.types.length} secondary={`${g.id} · ${g.nameEn}`}
                     active={selectedGroup?.id === g.id}
-                    onSelect={() => setSelectedGroupId(g.id)}
+                    onSelect={() => { setSelectedGroupId(g.id); setSelectedTypeId(null); setSelectedSegmentId(null); }}
                     onEdit={() => openEdit('group', g, null)}
                     onDelete={() => setDeleteTarget({ level:'group', id:g.id, label: `Group ${g.nameTh} (${g.id})`,
                       warning: g.types.length > 0 ? `จะลบ ${g.types.length} Types ใน Group นี้ด้วย` : null })} />
@@ -886,11 +1022,42 @@ function MasterDataMediaScreen() {
                 empty={selectedGroup ? 'ยังไม่มี Type ในกลุ่มนี้ — กด "เพิ่ม"' : 'เลือก Group ก่อน'}>
                 {filteredTypes.map(t => (
                   <PaneRow key={t.id} item={t}
-                    meta={t.panelCount != null ? `${t.panelCount} panels` : '—'}
+                    meta={t.panelCount != null ? `${t.panelCount} panels` : (t.segments?.length + ' seg')}
                     secondary={`${t.id} · ${t.nameEn}`}
-                    active={false} onSelect={() => {}}
+                    active={selectedType?.id === t.id}
+                    onSelect={() => { setSelectedTypeId(t.id); setSelectedSegmentId(null); }}
                     onEdit={() => openEdit('type', t, { groupId: selectedGroup.id, groupLabel: selectedGroup.nameTh })}
                     onDelete={() => setDeleteTarget({ level:'type', id:t.id, parentGId: selectedGroup.id, label: `Type ${t.nameTh} (${t.id})` })} />
+                ))}
+              </Pane>
+
+              <Pane title="Media Segment" count={filteredSegments.length}
+                subtitle={selectedType ? `ใน ${selectedType.nameTh}` : 'เลือก Type ก่อน'}
+                onAdd={() => selectedType && openCreate('segment', { groupId: selectedGroup.id, typeId: selectedType.id, typeLabel: selectedType.nameTh })}
+                search={sSearch} onSearch={setSSearch}
+                empty={selectedType ? 'ยังไม่มี Segment' : 'เลือก Type ก่อน'}>
+                {filteredSegments.map(s => (
+                  <PaneRow key={s.id} item={s}
+                    meta={(s.subSegments || []).length}
+                    secondary={`${s.id} · ${s.nameEn}`}
+                    active={selectedSegment?.id === s.id}
+                    onSelect={() => setSelectedSegmentId(s.id)}
+                    onEdit={() => openEdit('segment', s, { groupId: selectedGroup.id, typeId: selectedType.id, typeLabel: selectedType.nameTh })}
+                    onDelete={() => setDeleteTarget({ level:'segment', id:s.id, parentGId: selectedGroup.id, parentTId: selectedType.id, label: `Segment ${s.nameTh} (${s.id})` })} />
+                ))}
+              </Pane>
+
+              <Pane title="Sub Media Segment" count={filteredSubSegments.length}
+                subtitle={selectedSegment ? `ใน ${selectedSegment.nameTh}` : 'เลือก Segment ก่อน'}
+                onAdd={() => selectedSegment && openCreate('subsegment', { groupId: selectedGroup.id, typeId: selectedType.id, segmentId: selectedSegment.id, segmentLabel: selectedSegment.nameTh })}
+                search={ssSearch} onSearch={setSsSearch}
+                empty={selectedSegment ? 'ยังไม่มี Sub-Segment' : 'เลือก Segment ก่อน'}>
+                {filteredSubSegments.map(s => (
+                  <PaneRow key={s.id} item={s}
+                    secondary={`${s.id} · ${s.nameEn}`}
+                    active={false} onSelect={() => {}}
+                    onEdit={() => openEdit('subsegment', s, { groupId: selectedGroup.id, typeId: selectedType.id, segmentId: selectedSegment.id, segmentLabel: selectedSegment.nameTh })}
+                    onDelete={() => setDeleteTarget({ level:'subsegment', id:s.id, parentGId: selectedGroup.id, parentTId: selectedType.id, parentSId: selectedSegment.id, label: `Sub-Segment ${s.nameTh} (${s.id})` })} />
                 ))}
               </Pane>
             </div>

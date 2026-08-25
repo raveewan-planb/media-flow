@@ -115,6 +115,14 @@ MEDIA_GROUPS_SEED.forEach(g => g.sections.forEach(s => s.types.forEach(t => {
   }
 })));
 window.MEDIA_GROUPS_SEED = MEDIA_GROUPS_SEED;
+
+// Media Categories (parent-tier ของ Media Group)
+const MEDIA_CATEGORIES_SEED = [
+  { id:'OOH',    nameTh:'สื่อกลางแจ้ง',      nameEn:'Outdoor OOH',    color:'#2D56D2', groupIds:['DGT','CLS'] },
+  { id:'TRANS',  nameTh:'สื่อขนส่ง / สนามบิน', nameEn:'Transit & Airport', color:'#7C3AED', groupIds:['TRN','AIR'] },
+  { id:'RETAIL', nameTh:'สื่อรีเทล',          nameEn:'Retail',         color:'#10B981', groupIds:['RTL'] },
+];
+window.MEDIA_CATEGORIES_SEED = MEDIA_CATEGORIES_SEED;
 </script>
 
 <!-- ========================================================
@@ -329,8 +337,26 @@ function RoleChip({ roleId }) {
 
 function MediaPicker({ selected, onChange, selectedPackages, onChangePackages, mode }) {
   const pickerMode = mode || 'full';
-  const groups = window.MEDIA_GROUPS_SEED || [];
+  const allGroups = window.MEDIA_GROUPS_SEED || [];
+  const categories = window.MEDIA_CATEGORIES_SEED || [];
+  const [selectedCategories, setSelectedCategories] = useState(categories.map(c => c.id));
+  const toggleCategory = (id) => {
+    setSelectedCategories(selectedCategories.includes(id)
+      ? selectedCategories.filter(x => x !== id)
+      : [...selectedCategories, id]);
+  };
+  const selectAllCategories = () => setSelectedCategories(categories.map(c => c.id));
+  const clearAllCategories  = () => setSelectedCategories([]);
+  // Cascade: Groups filtered by union of selected Categories' groupIds
+  const allowedGroupIds = new Set(categories.filter(c => selectedCategories.includes(c.id)).flatMap(c => c.groupIds));
+  const groups = allGroups.filter(g => allowedGroupIds.has(g.id));
   const [activeGroup, setActiveGroup] = useState(groups[0]?.id);
+
+  useEffect(() => {
+    if (!groups.some(g => g.id === activeGroup)) {
+      setActiveGroup(groups[0]?.id);
+    }
+  }, [selectedCategories]);
 
   const groupObj = groups.find(g => g.id === activeGroup) || groups[0];
   // Flatten all types under the group (skip Section level for display)
@@ -411,16 +437,38 @@ function MediaPicker({ selected, onChange, selectedPackages, onChangePackages, m
     </div>
   );
 
-  // Mode: group-only — แสดง Media Group อย่างเดียว (สำหรับ user ที่ไม่ใช่ MA หรือ MA + Sales)
+  // Mode: group-only — แสดง Media Category ▸ Media Group (cascade)
   if (pickerMode === 'group-only') {
-    const selectedGroupCount = groups.filter(g => groupState(g) === 'all').length;
-    const partialGroupCount  = groups.filter(g => groupState(g) === 'some').length;
+    const selectedGroupCount = allGroups.filter(g => groupState(g) === 'all').length;
+    const partialGroupCount  = allGroups.filter(g => groupState(g) === 'some').length;
     return (
       <div className="border border-surface-200 rounded-lg overflow-hidden">
-        <div className="bg-surface-50/40 flex flex-col" style={{ height: 280 }}>
+        <div className="grid grid-cols-2 divide-x divide-surface-200" style={{ height: 280 }}>
+          {/* Col 1 — Media Category (multi-select) */}
+          <div className="flex flex-col bg-surface-50/40">
+            <ColHeader title="Media Category" onSelectAll={selectAllCategories} onClearAll={clearAllCategories} />
+            <div className="flex-1 overflow-y-auto p-2 space-y-1">
+              {categories.map(c => {
+                const checked = selectedCategories.includes(c.id);
+                return (
+                  <label key={c.id}
+                    className={`flex items-center gap-2.5 px-3 py-2 rounded-lg cursor-pointer text-[12.5px] transition-colors border ${checked ? 'bg-pb-50 border-pb-200 text-ink-900 font-medium' : 'bg-white border-surface-200 hover:bg-surface-50 text-ink-700/85'}`}>
+                    <input type="checkbox" checked={checked} onChange={() => toggleCategory(c.id)}
+                      className="w-4 h-4 rounded shrink-0 accent-[#2D56D2]" />
+                    <span className="w-2 h-2 rounded-full shrink-0" style={{ background: c.color }} />
+                    <span className="flex-1 leading-snug break-words">{c.nameEn}</span>
+                  </label>
+                );
+              })}
+            </div>
+          </div>
+          {/* Col 2 — Media Group (filtered by Category) */}
+          <div className="bg-white flex flex-col">
           <ColHeader title="Media Group" onSelectAll={selectAllGroups} onClearAll={clearAllGroups} />
           <div className="flex-1 overflow-y-auto p-2 space-y-1">
-            {groups.map(g => {
+            {groups.length === 0 ? (
+              <div className="px-3 py-6 text-center text-[11px] text-ink-700/40">เลือก Category ก่อน</div>
+            ) : groups.map(g => {
               const st = groupState(g);
               return (
                 <label key={g.id}
@@ -432,6 +480,7 @@ function MediaPicker({ selected, onChange, selectedPackages, onChangePackages, m
                 </label>
               );
             })}
+          </div>
           </div>
         </div>
         <div className="px-3 py-2 border-t border-surface-200 bg-surface-50 flex items-center gap-3 text-[11.5px] flex-wrap">
@@ -446,15 +495,35 @@ function MediaPicker({ selected, onChange, selectedPackages, onChangePackages, m
     );
   }
 
-  // Mode: full — Media Group ▸ Media Type ▸ Package (3 columns, ข้าม Section)
+  // Mode: full — Media Category ▸ Media Group ▸ Media Type ▸ Package (4 columns, cascade)
   return (
     <div className="border border-surface-200 rounded-lg overflow-hidden">
-      <div className="grid grid-cols-3 divide-x divide-surface-200" style={{ height: 320 }}>
+      <div className="grid grid-cols-4 divide-x divide-surface-200" style={{ height: 320 }}>
+        {/* Col 0 — Media Category (multi-select) */}
+        <div className="flex flex-col bg-surface-50/60">
+          <ColHeader title="Media Category" onSelectAll={selectAllCategories} onClearAll={clearAllCategories} />
+          <div className="flex-1 overflow-y-auto p-1 space-y-0.5">
+            {categories.map(c => {
+              const checked = selectedCategories.includes(c.id);
+              return (
+                <label key={c.id}
+                  className={`flex items-center gap-2 px-2 py-1.5 rounded cursor-pointer text-[12px] transition-colors ${checked ? 'bg-pb-50 text-ink-900 font-medium' : 'hover:bg-surface-100 text-ink-700/85'}`}>
+                  <input type="checkbox" checked={checked} onChange={() => toggleCategory(c.id)}
+                    className="w-4 h-4 rounded shrink-0 accent-[#2D56D2]" />
+                  <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: c.color }} />
+                  <span className="flex-1 leading-snug break-words">{c.nameEn}</span>
+                </label>
+              );
+            })}
+          </div>
+        </div>
         {/* Col 1 — Media Group */}
         <div className="flex flex-col bg-surface-50/40">
-          <ColHeader title="Media Group" onSelectAll={selectAllGroups} onClearAll={clearAllGroups} />
+          <ColHeader title="Media Group" onSelectAll={selectAllGroups} onClearAll={clearAllGroups} disabled={groups.length === 0} />
           <div className="flex-1 overflow-y-auto p-1 space-y-0.5">
-            {groups.map(g => {
+            {groups.length === 0 ? (
+              <div className="px-3 py-6 text-center text-[11px] text-ink-700/40">เลือก Category ก่อน</div>
+            ) : groups.map(g => {
               const st = groupState(g);
               return (
                 <div key={g.id} onClick={() => setActiveGroup(g.id)}

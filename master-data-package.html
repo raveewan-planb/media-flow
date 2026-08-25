@@ -138,7 +138,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#4790FF;box-sh
           <div>
             <div class="text-[10.5px] font-semibold tracking-wide uppercase mb-0.5" style="color:rgba(30,41,59,0.5)">Master Data</div>
             <h1 class="text-[24px] font-semibold">Package Management</h1>
-            <p class="text-[13px] mt-0.5" style="color:rgba(30,41,59,0.6)">Manage Package พร้อมประเภทย่อย (Full Pack / Half Pack / By Panel / Customize) และ Media Type ภายในแต่ละ Package</p>
+            <p class="text-[13px] mt-0.5" style="color:rgba(30,41,59,0.6)">Manage Package พร้อมประเภทย่อย (Full Pack / Customize) และ Media Type ภายในแต่ละ Package</p>
           </div>
         </div>
         <button onclick="openAddPackage()" class="h-10 px-4 rounded-lg acc-bg text-white text-[13px] font-medium flex items-center gap-2 hover:opacity-90 shadow-card">
@@ -177,7 +177,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#4790FF;box-sh
           <option value="">สถานะทั้งหมด</option><option value="active">Active</option><option value="inactive">Inactive</option>
         </select>
         <select id="filter-type" onchange="renderTable()" class="h-10 px-3 bg-white border border-surface-200 rounded-lg text-[13px]">
-          <option value="">ประเภททั้งหมด</option><option value="full">Full Pack</option><option value="half">Half Pack</option><option value="panel">By Panel</option><option value="customize">Customize</option>
+          <option value="">ประเภททั้งหมด</option><option value="full">Full Pack</option><option value="customize">Customize</option>
         </select>
       </div>
 
@@ -234,14 +234,6 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#4790FF;box-sh
         <label class="flex items-center gap-2.5 px-3 py-2 border border-surface-200 rounded-lg cursor-pointer hover:bg-surface-50 has-[:checked]:border-amber-300 has-[:checked]:bg-amber-50/40">
           <input type="radio" name="f-pkgtype" id="f-full" class="w-4 h-4 accent-amber-500"/>
           <span class="chip chip-amber">Full Pack</span><span class="text-[12px]" style="color:rgba(30,41,59,0.6)">— ครอบคลุมทั้งจอ</span>
-        </label>
-        <label class="flex items-center gap-2.5 px-3 py-2 border border-surface-200 rounded-lg cursor-pointer hover:bg-surface-50 has-[:checked]:border-amber-300 has-[:checked]:bg-amber-50/40">
-          <input type="radio" name="f-pkgtype" id="f-half" class="w-4 h-4 accent-amber-500"/>
-          <span class="chip chip-sky">Half Pack</span><span class="text-[12px]" style="color:rgba(30,41,59,0.6)">— ครอบครึ่งจอ</span>
-        </label>
-        <label class="flex items-center gap-2.5 px-3 py-2 border border-surface-200 rounded-lg cursor-pointer hover:bg-surface-50 has-[:checked]:border-amber-300 has-[:checked]:bg-amber-50/40">
-          <input type="radio" name="f-pkgtype" id="f-panel" class="w-4 h-4 accent-amber-500"/>
-          <span class="chip chip-violet">By Panel</span><span class="text-[12px]" style="color:rgba(30,41,59,0.6)">— เลือกตาม Panel</span>
         </label>
         <label class="flex items-center gap-2.5 px-3 py-2 border border-surface-200 rounded-lg cursor-pointer hover:bg-surface-50 has-[:checked]:border-amber-300 has-[:checked]:bg-amber-50/40">
           <input type="radio" name="f-pkgtype" id="f-customize" class="w-4 h-4 accent-amber-500"/>
@@ -418,22 +410,10 @@ let PACKAGES = [
     {id:'M3', code:'MT-DIG-003', name:'Digital Airport', section:'Digital'},
     {id:'M4', code:'MT-DIG-004', name:'Digital Mall', section:'Digital'},
   ]},
-  {id:'P2', code:'PKG-HALF-01', name:'Static Half Pack', types:{full:false,half:true,panel:false}, active:true, mediaTypes:[
-    {id:'M5', code:'MT-STA-001', name:'Billboard 6-Sheet', section:'Static'},
-    {id:'M6', code:'MT-STA-002', name:'Bus Stop Shelter', section:'Static'},
-  ]},
-  {id:'P3', code:'PKG-PANEL-01', name:'Custom By Panel', types:{full:false,half:false,panel:true}, active:true, mediaTypes:[
-    {id:'M7', code:'MT-TRA-001', name:'Bus Body Wrap', section:'Transit'},
-    {id:'M8', code:'MT-TRA-002', name:'BTS Train Wrap', section:'Transit'},
-    {id:'M9', code:'MT-TRA-003', name:'MRT Train Wrap', section:'Transit'},
-  ]},
-  {id:'P4', code:'PKG-MIX-01', name:'Mixed Premium', types:{full:true,half:false,panel:false,customize:false}, active:true, mediaTypes:[
+  {id:'P4', code:'PKG-MIX-01', name:'Mixed Premium', types:{full:true,customize:false}, active:true, mediaTypes:[
     {id:'M10', code:'MT-DIG-005', name:'Digital Office Tower', section:'Digital'},
     {id:'M11', code:'MT-STA-003', name:'Mega Billboard Bangna', section:'Static'},
     {id:'M12', code:'MT-OOH-001', name:'Wallscape Sukhumvit', section:'OOH'},
-  ]},
-  {id:'P5', code:'PKG-LITE-01', name:'Starter Lite', types:{full:false,half:false,panel:true,customize:false}, active:false, mediaTypes:[
-    {id:'M13', code:'MT-STA-004', name:'Lamp Post Banner', section:'Static'},
   ]},
   {id:'P6', code:'PKG-CUST-01', name:'Client Tailored Bundle', types:{full:false,half:false,panel:false,customize:true}, active:true, mediaTypes:[
     {id:'M14', code:'MT-DIG-003', name:'Plan B TV Nationwide', section:'Digital'},
@@ -451,8 +431,6 @@ const toast = m => { const t=$('toast'); t.textContent=m; t.classList.remove('hi
 function typeChips(t){
   let h='';
   if(t.full) h+='<span class="chip chip-amber">Full Pack</span>';
-  if(t.half) h+='<span class="chip chip-sky">Half Pack</span>';
-  if(t.panel) h+='<span class="chip chip-violet">By Panel</span>';
   if(t.customize) h+='<span class="chip chip-rose">Customize</span>';
   if(!h) h='<span class="text-[11px]" style="color:rgba(30,41,59,0.4)">—</span>';
   return '<div class="flex items-center gap-1 flex-wrap">'+h+'</div>';
@@ -523,7 +501,7 @@ function openAddPackage(){
   editingPkgId = null;
   $('pkg-modal-title').textContent = 'Add Package';
   $('f-code').value=''; $('f-name').value='';
-  $('f-full').checked=false; $('f-half').checked=false; $('f-panel').checked=false; $('f-customize').checked=false;
+  $('f-full').checked=false; $('f-customize').checked=false;
   $('f-active').checked=true;
   $('pkg-overlay').classList.remove('hidden');
   $('pkg-drawer').classList.add('open');
@@ -534,7 +512,7 @@ function openEdit(id){
   editingPkgId = id;
   $('pkg-modal-title').textContent = 'แก้ไข Package';
   $('f-code').value=p.code; $('f-name').value=p.name;
-  $('f-full').checked=!!p.types.full; $('f-half').checked=!!p.types.half; $('f-panel').checked=!!p.types.panel; $('f-customize').checked=!!p.types.customize;
+  $('f-full').checked=!!p.types.full; $('f-customize').checked=!!p.types.customize;
   $('f-active').checked=p.active;
   $('pkg-overlay').classList.remove('hidden');
   $('pkg-drawer').classList.add('open');
@@ -544,7 +522,7 @@ function savePackage(){
   const code = $('f-code').value.trim();
   const name = $('f-name').value.trim();
   if(!code || !name){ toast('กรุณากรอก Code และ Name'); return; }
-  const types = {full:$('f-full').checked, half:$('f-half').checked, panel:$('f-panel').checked, customize:$('f-customize').checked};
+  const types = {full:$('f-full').checked, customize:$('f-customize').checked};
   const active = $('f-active').checked;
   if(editingPkgId){
     const p = PACKAGES.find(x=>x.id===editingPkgId);
