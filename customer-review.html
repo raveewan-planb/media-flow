@@ -41,6 +41,80 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#4790FF;box-sh
 </head>
 <body>
 
+<!-- PIN Lock Overlay -->
+<div id="pin-lock" class="fixed inset-0 z-[100] flex items-center justify-center p-6" style="background:linear-gradient(135deg,rgba(15,23,42,0.85),rgba(45,86,210,0.85));backdrop-filter:blur(8px)">
+  <div class="bg-white rounded-2xl w-full max-w-[420px] p-6 sm:p-7" style="box-shadow:0 30px 80px rgba(11,20,48,.35)">
+    <div class="flex flex-col items-center text-center mb-5">
+      <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-3 text-white" style="background:linear-gradient(135deg,#2D56D2,#4F7FE8)">
+        <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/></svg>
+      </div>
+      <div class="text-[16px] font-semibold text-[#0B1430]">กรุณากรอก PIN 6 หลัก</div>
+      <div class="text-[12px] text-[#64748B] mt-1">เพื่อเข้าดูหน้า Customer Review</div>
+    </div>
+    <div class="flex items-center justify-center gap-2 mb-3" id="pin-boxes">
+      <input class="pin-cell w-11 h-13 sm:w-12 sm:h-14 text-center text-[22px] font-mono font-bold rounded-lg border-2 border-[#CBD5E1] focus:border-[#2D56D2] focus:outline-none focus:ring-4 focus:ring-[#2D56D2]/15" type="text" inputmode="numeric" maxlength="1" data-i="0"/>
+      <input class="pin-cell w-11 h-13 sm:w-12 sm:h-14 text-center text-[22px] font-mono font-bold rounded-lg border-2 border-[#CBD5E1] focus:border-[#2D56D2] focus:outline-none focus:ring-4 focus:ring-[#2D56D2]/15" type="text" inputmode="numeric" maxlength="1" data-i="1"/>
+      <input class="pin-cell w-11 h-13 sm:w-12 sm:h-14 text-center text-[22px] font-mono font-bold rounded-lg border-2 border-[#CBD5E1] focus:border-[#2D56D2] focus:outline-none focus:ring-4 focus:ring-[#2D56D2]/15" type="text" inputmode="numeric" maxlength="1" data-i="2"/>
+      <span class="w-2 h-0.5 bg-[#CBD5E1] rounded"></span>
+      <input class="pin-cell w-11 h-13 sm:w-12 sm:h-14 text-center text-[22px] font-mono font-bold rounded-lg border-2 border-[#CBD5E1] focus:border-[#2D56D2] focus:outline-none focus:ring-4 focus:ring-[#2D56D2]/15" type="text" inputmode="numeric" maxlength="1" data-i="3"/>
+      <input class="pin-cell w-11 h-13 sm:w-12 sm:h-14 text-center text-[22px] font-mono font-bold rounded-lg border-2 border-[#CBD5E1] focus:border-[#2D56D2] focus:outline-none focus:ring-4 focus:ring-[#2D56D2]/15" type="text" inputmode="numeric" maxlength="1" data-i="4"/>
+      <input class="pin-cell w-11 h-13 sm:w-12 sm:h-14 text-center text-[22px] font-mono font-bold rounded-lg border-2 border-[#CBD5E1] focus:border-[#2D56D2] focus:outline-none focus:ring-4 focus:ring-[#2D56D2]/15" type="text" inputmode="numeric" maxlength="1" data-i="5"/>
+    </div>
+    <div id="pin-error" class="hidden text-center text-[12px] text-red-600 font-medium mb-2">PIN ไม่ถูกต้อง กรุณาลองใหม่</div>
+    <button id="pin-submit" onclick="pinSubmit()" class="w-full h-11 rounded-lg text-[13.5px] font-semibold text-white bg-[#2D56D2] hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed transition" disabled>ยืนยัน PIN</button>
+    <div class="text-center text-[11px] text-[#94A3B8] mt-3">หากไม่ทราบ PIN กรุณาติดต่อทีมงาน Plan-B</div>
+  </div>
+</div>
+<script>
+(function(){
+  var body = document.body;
+  body.style.overflow = 'hidden';
+  var cells = document.querySelectorAll('#pin-lock .pin-cell');
+  function currentPin(){ var s=''; cells.forEach(function(c){ s+=c.value; }); return s; }
+  function refresh(){ document.getElementById('pin-submit').disabled = currentPin().length !== 6; }
+  cells.forEach(function(cell, idx){
+    cell.addEventListener('input', function(e){
+      cell.value = cell.value.replace(/\D/g,'').slice(0,1);
+      if (cell.value && idx < cells.length - 1) cells[idx+1].focus();
+      document.getElementById('pin-error').classList.add('hidden');
+      refresh();
+    });
+    cell.addEventListener('keydown', function(e){
+      if (e.key === 'Backspace' && !cell.value && idx > 0) cells[idx-1].focus();
+      if (e.key === 'Enter' && currentPin().length === 6) pinSubmit();
+    });
+    cell.addEventListener('paste', function(e){
+      var t = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g,'').slice(0,6);
+      if (!t) return;
+      e.preventDefault();
+      for (var i=0; i<cells.length; i++) cells[i].value = t[i] || '';
+      (cells[Math.min(t.length, cells.length-1)]).focus();
+      refresh();
+    });
+  });
+  setTimeout(function(){ cells[0].focus(); }, 50);
+  window.pinSubmit = function(){
+    var p = currentPin();
+    if (p.length !== 6) return;
+    // Accept URL ?pin=... or any 6-digit for demo
+    var qs = new URLSearchParams(location.search);
+    var expected = qs.get('pin');
+    if (expected && expected !== p) {
+      document.getElementById('pin-error').classList.remove('hidden');
+      cells.forEach(function(c){ c.value=''; });
+      cells[0].focus(); refresh();
+      var box = document.querySelector('#pin-lock > div');
+      box.animate([{transform:'translateX(0)'},{transform:'translateX(-8px)'},{transform:'translateX(8px)'},{transform:'translateX(0)'}], {duration:280});
+      return;
+    }
+    var lock = document.getElementById('pin-lock');
+    lock.style.transition = 'opacity .25s';
+    lock.style.opacity = '0';
+    setTimeout(function(){ lock.remove(); body.style.overflow=''; }, 260);
+  };
+})();
+</script>
+
 <!-- Header -->
 <header class="bg-white border-b border-surface-200 sticky top-0 z-30">
 <div class="max-w-[1280px] mx-auto px-4 sm:px-6 h-16 flex items-center gap-4">

@@ -693,6 +693,95 @@ function toggleSfItems(){
   </div>
 </div>
 
+<!-- For Customer Modal (Pin + Email) -->
+<div class="hidden fixed inset-0 bg-black/40 z-40" id="fc-overlay" onclick="closeForCustomerModal()"></div>
+<div class="hidden fixed inset-0 z-50 flex items-center justify-center pointer-events-none p-6" id="fc-modal">
+  <div class="bg-white rounded-2xl border border-[#E2E8F0] pointer-events-auto w-full max-w-[560px] flex flex-col max-h-[90vh] overflow-hidden" style="box-shadow:0 24px 60px rgba(11,20,48,.18)">
+    <header class="h-14 px-5 border-b border-[#E2E8F0] flex items-center justify-between shrink-0" style="background:linear-gradient(135deg,#EEF2FF,#fff)">
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-lg flex items-center justify-center text-white" style="background:#2D56D2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.5 20.1a7.5 7.5 0 0115 0"/></svg>
+        </div>
+        <div>
+          <div class="text-[14px] font-semibold text-[#0B1430]">For Customer</div>
+          <div class="text-[11px] text-[#64748B]" id="fc-sub">Prove v1</div>
+        </div>
+      </div>
+      <button class="w-8 h-8 rounded-md hover:bg-[#F1F5F9] flex items-center justify-center" onclick="closeForCustomerModal()">
+        <svg class="w-4 h-4 text-[#64748B]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </header>
+    <div class="flex-1 overflow-y-auto p-5 space-y-5">
+      <!-- Section 1: PIN -->
+      <section class="border border-[#E2E8F0] rounded-xl p-4">
+        <div class="flex items-center justify-between mb-3">
+          <div class="flex items-center gap-2">
+            <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-[#2D56D2] text-white text-[11px] font-bold">1</span>
+            <span class="text-[13px] font-semibold text-[#0B1430]">ระบุ PIN (6 หลัก)</span>
+          </div>
+          <div id="fc-pin-meta" class="hidden text-[10.5px] text-[#64748B]"></div>
+        </div>
+        <!-- Existing PIN display -->
+        <div id="fc-pin-existing" class="hidden mb-3 p-3 rounded-lg bg-[#F8FAFC] border border-[#E2E8F0]">
+          <div class="flex items-center justify-between">
+            <div>
+              <div class="text-[10.5px] uppercase tracking-wider text-[#64748B] font-semibold mb-1">PIN ปัจจุบัน</div>
+              <div class="text-[20px] font-mono font-bold text-[#0B1430] tracking-[0.3em]" id="fc-pin-display">------</div>
+              <div class="text-[10.5px] text-[#64748B] mt-1" id="fc-pin-updated"></div>
+            </div>
+            <button type="button" onclick="fcEditPin()" class="h-8 px-3 rounded-md text-[11.5px] font-semibold text-[#2D56D2] bg-white border border-[#CBD5E1] hover:bg-[#F1F5F9]">แก้ไข PIN</button>
+          </div>
+        </div>
+        <!-- PIN editor -->
+        <div id="fc-pin-editor">
+          <label class="text-[11px] font-medium text-[#334155] block mb-1.5">กรอก PIN 6 หลัก</label>
+          <div class="flex items-center gap-2">
+            <input type="text" inputmode="numeric" maxlength="6" id="fc-pin-input" placeholder="######" class="flex-1 h-10 px-3 rounded-md border border-[#CBD5E1] text-[16px] font-mono tracking-[0.3em] text-center focus:outline-none focus:border-[#2D56D2] focus:ring-2 focus:ring-[#2D56D2]/20" oninput="this.value=this.value.replace(/\D/g,'').slice(0,6);fcOnPinInput()"/>
+            <button type="button" onclick="fcSavePin()" id="fc-save-pin-btn" class="h-10 px-4 rounded-md text-[12.5px] font-semibold text-white bg-[#2D56D2] hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed" disabled>บันทึก PIN</button>
+          </div>
+          <div class="text-[10.5px] text-[#94A3B8] mt-1.5">ลูกค้าจะใช้ PIN นี้เพื่อเปิดหน้ารีวิว</div>
+        </div>
+        <!-- Actions (only enabled when PIN exists) -->
+        <div class="flex items-center gap-2 mt-3 pt-3 border-t border-[#E2E8F0]" id="fc-pin-actions">
+          <button type="button" onclick="fcCopyLink()" id="fc-copy-btn" class="flex-1 inline-flex items-center justify-center gap-1.5 h-9 px-3 rounded-md text-[12px] font-semibold text-[#0B1430] bg-white border border-[#CBD5E1] hover:bg-[#F1F5F9] disabled:opacity-40 disabled:cursor-not-allowed" disabled>
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244"/></svg>
+            Copy Link
+          </button>
+          <button type="button" onclick="fcOpenReview()" id="fc-open-btn" class="flex-1 inline-flex items-center justify-center gap-1.5 h-9 px-3 rounded-md text-[12px] font-semibold text-white bg-[#2D56D2] hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed" disabled>
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/></svg>
+            Open Review (ทดสอบ)
+          </button>
+        </div>
+      </section>
+      <!-- Section 2: Email -->
+      <section class="border border-[#E2E8F0] rounded-xl p-4">
+        <div class="flex items-center gap-2 mb-3">
+          <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-[#2D56D2] text-white text-[11px] font-bold">2</span>
+          <span class="text-[13px] font-semibold text-[#0B1430]">ส่งอีเมลถึงลูกค้า</span>
+        </div>
+        <div id="fc-email-warn" class="hidden mb-2 p-2 rounded-md bg-amber-50 border border-amber-200 text-[11px] text-amber-800">กรุณาบันทึก PIN ก่อนจึงจะส่งอีเมลได้</div>
+        <label class="text-[11px] font-medium text-[#334155] block mb-1.5">Email Address</label>
+        <div class="flex items-center gap-2">
+          <input type="email" id="fc-email-input" placeholder="customer@example.com" class="flex-1 h-10 px-3 rounded-md border border-[#CBD5E1] text-[13px] focus:outline-none focus:border-[#2D56D2] focus:ring-2 focus:ring-[#2D56D2]/20" oninput="fcOnEmailInput()"/>
+          <button type="button" onclick="fcSendEmail()" id="fc-send-btn" class="h-10 px-4 rounded-md text-[12.5px] font-semibold text-white bg-[#2D56D2] hover:brightness-110 disabled:opacity-40 disabled:cursor-not-allowed inline-flex items-center gap-1.5" disabled>
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"/></svg>
+            Send Email
+          </button>
+        </div>
+        <!-- Email History (collapsible) -->
+        <div id="fc-email-history-wrap" class="hidden mt-3 border-t border-[#E2E8F0] pt-3">
+          <button type="button" onclick="fcToggleEmailHistory()" class="w-full flex items-center gap-2 text-left group">
+            <svg id="fc-email-history-chev" class="w-3.5 h-3.5 text-[#64748B] transition-transform" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
+            <span class="text-[11.5px] font-semibold text-[#0B1430] group-hover:text-[#2D56D2]">ประวัติการส่งอีเมล</span>
+            <span id="fc-email-count" class="text-[10.5px] font-mono px-1.5 py-0.5 rounded bg-[#F1F5F9] text-[#64748B]"></span>
+          </button>
+          <div id="fc-email-history" class="hidden mt-2 rounded-lg border border-[#E2E8F0] bg-[#F8FAFC] max-h-[180px] overflow-y-auto divide-y divide-[#E2E8F0]"></div>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+
 <!-- Re-Edit Modal -->
 <div class="hidden fixed inset-0 bg-black/40 z-40" id="reedit-overlay" onclick="closeReEditModal()"></div>
 <div class="hidden fixed inset-0 z-50 flex items-center justify-center pointer-events-none p-6" id="reedit-modal">
@@ -1262,13 +1351,9 @@ function openMockupPanel(jobNo) {
         var safeLink = String(m.refLink).replace(/'/g, "\\'");
         var reviewUrl = 'customer-review.html?job=' + encodeURIComponent(_currentReviewJob || '') + '&ver=' + encodeURIComponent(m.ver);
         html += '<span class="inline-flex items-center gap-1.5 ml-1 flex-wrap">'
-              + '<a href="' + reviewUrl + '" target="_blank" rel="noopener" title="เปิดหน้า Customer Review ในแท็บใหม่" class="inline-flex items-center gap-1 h-6 px-2 rounded-md text-[10.5px] font-semibold text-white shadow-sm transition hover:brightness-110" style="background:#2D56D2">'
-              + '<svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/></svg>'
-              + '<span>Open Review</span>'
-              + '</a>'
-              + '<button type="button" onclick="copyRefLink(event,\'' + safeLink + '\')" title="Copy Link Reference (' + m.refLink + ')" class="inline-flex items-center gap-1 h-6 px-2 rounded-md text-[10.5px] font-semibold text-[#0B1430] bg-white border border-[#CBD5E1] shadow-sm transition hover:bg-[#F1F5F9] hover:border-[#94A3B8]">'
-              + '<svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5a1.125 1.125 0 01-1.125-1.125v-1.5a3.375 3.375 0 00-3.375-3.375H9.75"/></svg>'
-              + '<span>Copy Link</span>'
+              + '<button type="button" onclick="openForCustomerModal(event,\'' + (_currentReviewJob || '') + '\',' + m.ver + ',\'' + safeLink + '\')" title="เปิด For Customer" class="inline-flex items-center gap-1 h-6 px-2 rounded-md text-[10.5px] font-semibold text-white shadow-sm transition hover:brightness-110" style="background:#2D56D2">'
+              + '<svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>'
+              + '<span>For Customer</span>'
               + '</button>';
         /* ---- Customer Review status chip (Reviewed vs Awaiting) ---- */
         if (m.customerReview) {
@@ -1276,15 +1361,11 @@ function openMockupPanel(jobNo) {
           var pinsTotal = ((cr.artworkComments && cr.artworkComments.length) || 0)
                        + ((cr.capturedFrames || []).reduce(function(a,f){ return a + ((f.comments && f.comments.length) || 0); }, 0));
           var attTotal = (cr.attachments && cr.attachments.length) || 0;
-          html += '<span class="inline-flex items-center gap-1 h-6 px-2 rounded-md text-[10.5px] font-semibold bg-emerald-50 border border-emerald-300 text-emerald-800" title="Customer submitted review at ' + cr.submittedAt + '">'
+          html += '<button type="button" onclick="openCustomerFeedbackPanel(\'' + (_currentReviewJob || '') + '\',' + m.ver + ')" title="ดู Feedback จาก Customer" class="inline-flex items-center gap-1 h-6 px-2 rounded-md text-[10.5px] font-semibold bg-emerald-50 border border-emerald-300 text-emerald-800 hover:bg-emerald-100 transition cursor-pointer">'
                 + '<span class="relative flex w-2 h-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-60"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span></span>'
                 + '<span>Customer Reviewed</span>'
                 + '<span class="opacity-70 font-mono font-normal">· ' + cr.submittedAt + '</span>'
-                + '</span>'
-                + '<button type="button" onclick="openCustomerFeedbackPanel(\'' + (_currentReviewJob || '') + '\',' + m.ver + ')" title="ดู Feedback จาก Customer" class="inline-flex items-center gap-1 h-6 px-2 rounded-md text-[10.5px] font-semibold text-white shadow-sm transition hover:brightness-110" style="background:linear-gradient(135deg,#F59E0B,#FBBF24)">'
-                + '<svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z"/></svg>'
-                + '<span>View Feedback</span>'
-                + '<span class="inline-flex items-center justify-center min-w-[16px] h-4 px-1 rounded-full bg-white/25 text-white text-[9.5px] font-bold tnum">' + pinsTotal + '</span>'
+                + '<span class="inline-flex items-center justify-center min-w-[16px] h-4 px-1 rounded-full bg-emerald-600 text-white text-[9.5px] font-bold tnum">' + pinsTotal + '</span>'
                 + '</button>';
         } else {
           html += '<span class="inline-flex items-center gap-1 h-6 px-2 rounded-md text-[10.5px] font-semibold bg-amber-50 border border-amber-200 text-amber-800" title="ยังไม่ได้รับ Feedback จาก Customer">'
@@ -1385,6 +1466,11 @@ function openCustomerFeedbackPanel(jobNo, ver){
        +       'Reviewed'
        +     '</span>'
        +     '<span class="text-[11px] font-mono" style="color:rgba(30,41,59,0.55)">' + _crfEsc(cr.submittedAt || '') + '</span>'
+       +     '<div class="flex-1"></div>'
+       +     '<button type="button" onclick="confirmCustomerFeedback(\'' + _crfEsc(jobNo) + '\',' + m.ver + ')" id="crf-confirm-btn" class="inline-flex items-center gap-1.5 h-7 px-3 rounded-md text-[11.5px] font-semibold text-white shadow-sm transition hover:brightness-110" style="background:linear-gradient(135deg,#059669,#10B981)">'
+       +       '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>'
+       +       '<span>Confirm</span>'
+       +     '</button>'
        +   '</div>'
        +   '<div class="grid grid-cols-3 gap-2">'
        +     '<div class="rounded-lg border border-[#E2E8F0] bg-[#F8FAFC] px-2.5 py-2 text-center">'
@@ -1890,6 +1976,141 @@ function copyRefLink(ev, link) {
   } else {
     try { var ta=document.createElement('textarea'); ta.value=link; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); done(); } catch(e){ fail(); }
   }
+}
+
+/* ===== For Customer Modal (PIN + Email) ===== */
+window._fcPinStore = window._fcPinStore || {};
+window._fcEmailLog = window._fcEmailLog || {};
+function confirmCustomerFeedback(jobNo, ver){
+  showReviewToast('Confirmed · ' + jobNo + ' Prove v' + ver, '#047857');
+  var btn = document.getElementById('crf-confirm-btn');
+  if (btn){
+    btn.disabled = true;
+    btn.style.background = '#94A3B8';
+    btn.innerHTML = '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg><span>Confirmed</span>';
+  }
+}
+function fcToggleEmailHistory(){
+  var box = document.getElementById('fc-email-history');
+  var chev = document.getElementById('fc-email-history-chev');
+  var open = !box.classList.contains('hidden');
+  if (open){ box.classList.add('hidden'); chev.style.transform=''; }
+  else { box.classList.remove('hidden'); chev.style.transform='rotate(90deg)'; }
+}
+function fcRenderEmailHistory(){
+  var wrap = document.getElementById('fc-email-history-wrap');
+  var box = document.getElementById('fc-email-history');
+  var cnt = document.getElementById('fc-email-count');
+  var arr = window._fcEmailLog[_fcKey()] || [];
+  if (!arr.length){ wrap.classList.add('hidden'); box.innerHTML=''; return; }
+  wrap.classList.remove('hidden');
+  cnt.textContent = arr.length + ' ครั้ง';
+  box.innerHTML = arr.slice().reverse().map(function(r){
+    return '<div class="flex items-center gap-2 px-2.5 py-2">'
+         +   '<svg class="w-3.5 h-3.5 text-[#2D56D2] shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"/></svg>'
+         +   '<div class="flex-1 min-w-0"><div class="text-[11.5px] font-mono text-[#0B1430] truncate">' + r.email + '</div>'
+         +   '<div class="text-[10px] text-[#64748B]">' + r.sentAt + ' · โดย ' + r.sentBy + ' · PIN ' + r.pin + '</div></div>'
+         +   '<span class="text-[9.5px] font-semibold px-1.5 py-0.5 rounded bg-emerald-50 border border-emerald-200 text-emerald-700 shrink-0">Sent</span>'
+         + '</div>';
+  }).join('');
+}
+var _fcCtx = { job:'', ver:0, link:'' };
+function openForCustomerModal(ev, job, ver, link) {
+  if (ev) { ev.preventDefault(); ev.stopPropagation(); }
+  _fcCtx = { job: job || '', ver: ver || 0, link: link || '' };
+  document.getElementById('fc-sub').textContent = 'Prove v' + ver + (job ? ' · ' + job : '');
+  document.getElementById('fc-pin-input').value = '';
+  document.getElementById('fc-email-input').value = '';
+  document.getElementById('fc-save-pin-btn').disabled = true;
+  document.getElementById('fc-send-btn').disabled = true;
+  fcRenderPinState();
+  fcRenderEmailHistory();
+  document.getElementById('fc-overlay').classList.remove('hidden');
+  document.getElementById('fc-modal').classList.remove('hidden');
+}
+function closeForCustomerModal() {
+  document.getElementById('fc-overlay').classList.add('hidden');
+  document.getElementById('fc-modal').classList.add('hidden');
+}
+function _fcKey(){ return _fcCtx.job + '::' + _fcCtx.ver; }
+function fcRenderPinState() {
+  var rec = window._fcPinStore[_fcKey()];
+  var exist = document.getElementById('fc-pin-existing');
+  var editor = document.getElementById('fc-pin-editor');
+  var actions = document.getElementById('fc-pin-actions');
+  var warn = document.getElementById('fc-email-warn');
+  var copyBtn = document.getElementById('fc-copy-btn');
+  var openBtn = document.getElementById('fc-open-btn');
+  if (rec && rec.pin) {
+    exist.classList.remove('hidden');
+    editor.classList.add('hidden');
+    document.getElementById('fc-pin-display').textContent = rec.pin;
+    document.getElementById('fc-pin-updated').textContent = 'อัปเดตล่าสุด: ' + rec.updatedAt + ' โดย ' + rec.updatedBy;
+    copyBtn.disabled = false; openBtn.disabled = false;
+    warn.classList.add('hidden');
+    fcOnEmailInput();
+  } else {
+    exist.classList.add('hidden');
+    editor.classList.remove('hidden');
+    copyBtn.disabled = true; openBtn.disabled = true;
+    warn.classList.remove('hidden');
+    document.getElementById('fc-send-btn').disabled = true;
+  }
+}
+function fcEditPin() {
+  document.getElementById('fc-pin-existing').classList.add('hidden');
+  document.getElementById('fc-pin-editor').classList.remove('hidden');
+  var inp = document.getElementById('fc-pin-input');
+  var rec = window._fcPinStore[_fcKey()];
+  inp.value = (rec && rec.pin) || '';
+  fcOnPinInput();
+  inp.focus();
+}
+function fcOnPinInput() {
+  var v = document.getElementById('fc-pin-input').value;
+  document.getElementById('fc-save-pin-btn').disabled = !(v && v.length === 6);
+}
+function fcOnEmailInput() {
+  var em = document.getElementById('fc-email-input').value.trim();
+  var rec = window._fcPinStore[_fcKey()];
+  var okEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em);
+  document.getElementById('fc-send-btn').disabled = !(okEmail && rec && rec.pin);
+}
+function fcSavePin() {
+  var v = document.getElementById('fc-pin-input').value;
+  if (!/^\d{6}$/.test(v)) return;
+  var now = new Date();
+  var pad = function(n){ return n<10 ? '0'+n : n; };
+  var stamp = now.getFullYear() + '-' + pad(now.getMonth()+1) + '-' + pad(now.getDate()) + ' ' + pad(now.getHours()) + ':' + pad(now.getMinutes());
+  window._fcPinStore[_fcKey()] = { pin: v, updatedAt: stamp, updatedBy: (window._currentUser || 'You') };
+  showReviewToast('บันทึก PIN แล้ว', '#047857');
+  fcRenderPinState();
+}
+function fcCopyLink() {
+  var rec = window._fcPinStore[_fcKey()]; if (!rec) return;
+  var url = _fcCtx.link || ('customer-review.html?job=' + encodeURIComponent(_fcCtx.job) + '&ver=' + encodeURIComponent(_fcCtx.ver));
+  var full = url + (url.indexOf('?')>=0 ? '&' : '?') + 'pin=' + encodeURIComponent(rec.pin);
+  copyRefLink(null, full);
+}
+function fcOpenReview() {
+  var rec = window._fcPinStore[_fcKey()]; if (!rec) return;
+  var url = 'customer-review.html?job=' + encodeURIComponent(_fcCtx.job) + '&ver=' + encodeURIComponent(_fcCtx.ver) + '&pin=' + encodeURIComponent(rec.pin);
+  window.open(url, '_blank', 'noopener');
+}
+function fcSendEmail() {
+  var em = document.getElementById('fc-email-input').value.trim();
+  var rec = window._fcPinStore[_fcKey()];
+  if (!rec || !em) return;
+  var now = new Date();
+  var pad = function(n){ return n<10 ? '0'+n : n; };
+  var stamp = now.getFullYear() + '-' + pad(now.getMonth()+1) + '-' + pad(now.getDate()) + ' ' + pad(now.getHours()) + ':' + pad(now.getMinutes());
+  var k = _fcKey();
+  window._fcEmailLog[k] = window._fcEmailLog[k] || [];
+  window._fcEmailLog[k].push({ email: em, sentAt: stamp, sentBy: (window._currentUser || 'You'), pin: rec.pin });
+  showReviewToast('ส่งอีเมลถึง ' + em + ' แล้ว', '#2D56D2');
+  document.getElementById('fc-email-input').value = '';
+  fcOnEmailInput();
+  fcRenderEmailHistory();
 }
 
 function _showMockupModal() {
