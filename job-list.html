@@ -272,16 +272,6 @@ table th{position:sticky;top:0;z-index:1}
 </div>
 </div>
 <div class="flex items-center gap-2">
-<div class="inline-flex rounded-lg border border-[#E2E8F0] overflow-hidden bg-white" id="view-toggle">
-<button class="h-9 px-3.5 text-[12px] font-medium flex items-center gap-1.5 border-r border-[#E2E8F0] bg-[#2D56D2] text-white" data-view="table" onclick="setView('table')">
-<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24"><path d="M3.375 19.5h17.25m-17.25 0a1.125 1.125 0 01-1.125-1.125M3.375 19.5h7.5c.621 0 1.125-.504 1.125-1.125m-9.75 0V5.625m0 12.75v-1.5c0-.621.504-1.125 1.125-1.125m18.375 2.625V5.625m0 12.75c0 .621-.504 1.125-1.125 1.125m1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-<span>Table</span>
-</button>
-<button class="h-9 px-3.5 text-[12px] font-medium flex items-center gap-1.5 text-[#0B1430] hover:bg-[#F8FAFC]" data-view="board" onclick="setView('board')">
-<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24"><path d="M9 4.5v15m6-15v15m-10.875 0h15.75c.621 0 1.125-.504 1.125-1.125V5.625c0-.621-.504-1.125-1.125-1.125H4.125c-.621 0-1.125.504-1.125 1.125v12.75c0 .621.504 1.125 1.125 1.125z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-<span>Board</span>
-</button>
-</div>
 <a class="h-9 px-4 bg-[#2D56D2] text-white rounded-lg text-[13px] font-semibold hover:bg-[#213268] inline-flex items-center gap-2 shadow-sm" href="create-job.html">
 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M12 4.5v15m7.5-7.5h-15" stroke-linecap="round" stroke-linejoin="round"></path></svg>
 <span>Create Ticket</span>
@@ -360,12 +350,6 @@ Clear filter</button>
 <button class="mf-pag-btn" aria-label="Next">&rsaquo;</button>
 </div>
 </div>
-</div>
-</div>
-<!-- BOARD VIEW -->
-<div class="hidden" id="view-board">
-<div class="overflow-x-auto pb-4 -mx-1">
-<div class="inline-flex gap-3 min-w-full px-1" id="board-columns"></div>
 </div>
 </div>
 <script>
@@ -738,7 +722,7 @@ function getFiltered() {
   }
   return result;
 }
-function filterTickets() { var f=getFiltered(); renderKPIs(TICKETS); renderTable(f); renderBoard(f); }
+function filterTickets() { var f=getFiltered(); renderKPIs(TICKETS); renderTable(f); }
 function resetFilters() { document.getElementById('tk-search').value=''; document.getElementById('tk-status').value='all'; _statusFilter=null; _sortKey=null; _sortAsc=true; document.getElementById('kpi-clear-btn').classList.add('hidden'); ['id','client','status','date'].forEach(function(k){var e=document.getElementById('sort-'+k);if(e)e.textContent='';}); filterTickets(); }
 
 /* ===== TABLE ===== */
@@ -835,40 +819,6 @@ function toggleExpand(id) {
   if (!sub) return;
   sub.classList.toggle('hidden');
   if (chev) chev.style.transform = sub.classList.contains('hidden') ? '' : 'rotate(90deg)';
-}
-
-/* ===== BOARD ===== */
-function renderBoard(rows) {
-  var cols=document.getElementById('board-columns'); var h='';
-  STATUSES.forEach(function(st){
-    var sc=STATUS_COLORS[st]; var cards=rows.filter(function(t){return t.status===st;});
-    h+='<div class="w-[220px] shrink-0 flex flex-col rounded-xl border '+sc.border+' bg-white overflow-hidden" style="min-height:400px">';
-    h+='<div class="px-3 py-2.5 '+sc.headerBg+' border-b '+sc.border+' flex items-center justify-between"><div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full '+sc.dot+'"></span><span class="text-[12px] font-semibold '+sc.text+'">'+st+'</span></div><span class="text-[11px] px-1.5 py-0.5 rounded-md '+sc.bg+' '+sc.text+' font-semibold border '+sc.border+'">'+cards.length+'</span></div>';
-    h+='<div class="flex-1 p-2 space-y-2 overflow-y-auto" style="max-height:480px">';
-    if(!cards.length) { h+='<div class="py-8 text-center text-[11px]" style="color:rgba(30,41,59,0.25)">No tickets</div>'; }
-    cards.forEach(function(t){
-      var assignee = (t.subjobs && t.subjobs[0] && t.subjobs[0].graphic) || 'Unassigned';
-      h+='<div onclick="window.location.href=\'ticket-detail.html\'+('+(t.manual?'\'?manual=1\'':'\'\'')+')" class="bg-white border border-[#E2E8F0] border-l-[3px] rounded-lg p-2.5 hover:shadow-lg transition-all cursor-pointer" style="border-left-color:'+sc.hex+'">';
-      h+='<div class="mb-1.5 flex items-center gap-1.5"><span class="text-[10px] font-mono font-semibold text-[#2D56D2]">'+t.id+'</span>'+(t.status==='Draft'?'<span class="inline-flex items-center gap-0.5 text-[9px] px-1.5 py-0.5 rounded font-semibold border bg-amber-50 text-amber-800 border-amber-300"><svg class="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke-width="2.4" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg>Draft</span>':'')+'</div>';
-      h+='<div class="text-[12px] font-semibold text-[#0B1430] mb-0.5 leading-tight">'+t.client+'</div>';
-      h+='<div class="text-[11px] mb-2 leading-snug truncate" style="color:rgba(30,41,59,0.5)">'+t.desc+'</div>';
-      h+='<div class="flex items-center justify-between"><span class="text-[10px]" style="color:rgba(30,41,59,0.55)">'+assignee+'</span><span class="text-[10px] font-mono" style="color:rgba(30,41,59,0.35)">'+t.date+'</span></div>';
-      h+='</div>';
-    });
-    h+='</div></div>';
-  });
-  cols.innerHTML=h;
-}
-
-/* ===== VIEW TOGGLE ===== */
-var _currentView='table';
-function setView(v) {
-  _currentView=v;
-  document.getElementById('view-table').className=v==='table'?'':'hidden';
-  document.getElementById('view-board').className=v==='board'?'':'hidden';
-  var btns=document.getElementById('view-toggle').querySelectorAll('button');
-  btns.forEach(function(b){ if(b.getAttribute('data-view')===v){b.className=b.className.replace(/text-\[#0B1430\] hover:bg-\[#F8FAFC\]/g,'').replace(/bg-\[#2D56D2\] text-white/g,'');b.className+=' bg-[#2D56D2] text-white';}else{b.className=b.className.replace(/bg-\[#2D56D2\] text-white/g,'');b.className+=' text-[#0B1430] hover:bg-[#F8FAFC]';} });
-  filterTickets();
 }
 
 /* Init */

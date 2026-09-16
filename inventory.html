@@ -59,7 +59,16 @@ html,body{overflow-x:hidden}
 input:focus,select:focus,textarea:focus{outline:none;border-color:#4790FF;box-shadow:0 0 0 3px rgba(71,144,255,0.15)}
 .tab-btn{transition:all 0.2s}
 .tab-btn.active{color:#2D56D2;border-bottom:2px solid #2D56D2}
+.btn-soft{height:32px;padding:0 12px;border-radius:6px;font-size:12.5px;font-weight:500;display:inline-flex;align-items:center;gap:6px;border:1px solid;transition:all .15s;cursor:pointer;text-decoration:none;font-family:'Kanit',sans-serif}
+.btn-import{background:rgba(16,185,129,.10);border-color:rgba(16,185,129,.30);color:#047857}
+.btn-import:hover{background:rgba(16,185,129,.18);border-color:rgba(16,185,129,.45)}
+.btn-export{background:rgba(245,158,11,.12);border-color:rgba(245,158,11,.32);color:#B45309}
+.btn-export:hover{background:rgba(245,158,11,.20);border-color:rgba(245,158,11,.48)}
+.btn-rate{background:rgba(124,58,237,.10);border-color:rgba(124,58,237,.28);color:#6D28D9}
+.btn-rate:hover{background:rgba(124,58,237,.18);border-color:rgba(124,58,237,.44)}
 table th{position:sticky;top:0;z-index:1}
+#inv-table-scroll{min-height:160px;overscroll-behavior:contain}
+#inv-table-scroll thead th{background:#F4F7FC}
 .progress-bar{transition:width 0.6s ease}
 /* Topbar — White glass */
 .topbar-white{background:rgba(255,255,255,0.9);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid #E2E8F0}
@@ -352,15 +361,19 @@ th.sortable.sort-active .sort-ind{opacity:1;color:#2D56D2}
 <span class="text-[12px]" style="color:rgba(30,41,59,0.55)" id="header-count"></span>
 </div>
 <div class="flex items-center gap-1.5">
-<a href="inventory-import.html" class="h-8 px-3 bg-white text-[#0B1430] rounded-md border border-[#E2E8F0] text-[12.5px] font-medium hover:bg-[#F8FAFC] inline-flex items-center gap-1.5">
+<a href="inventory-import.html" class="btn-soft btn-import">
 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24"><path d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
 <span>Import</span>
 </a>
-<button class="h-8 px-3 bg-white text-[#0B1430] rounded-md border border-[#E2E8F0] text-[12.5px] font-medium hover:bg-[#F8FAFC] inline-flex items-center gap-1.5">
+<button class="btn-soft btn-export">
 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24"><path d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12M12 16.5V3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
 <span>Export</span>
 </button>
-<a href="inventory-create.html" class="h-8 px-3 bg-[#2D56D2] text-white rounded-md text-[12.5px] font-medium hover:bg-[#213268] inline-flex items-center gap-1.5">
+<a href="rate-card.html" class="btn-soft btn-rate">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24"><path d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span>Rate Card</span>
+</a>
+<a href="media-create.html" class="h-8 px-3 bg-[#2D56D2] text-white rounded-md text-[12.5px] font-medium hover:bg-[#213268] inline-flex items-center gap-1.5">
 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M12 4.5v15m7.5-7.5h-15" stroke-linecap="round" stroke-linejoin="round"></path></svg>
 <span>New Media</span>
 </a>
@@ -431,7 +444,7 @@ th.sortable.sort-active .sort-ind{opacity:1;color:#2D56D2}
 
 <!-- Table -->
 <div class="bg-white border border-[#E2E8F0] rounded-xl shadow-sm overflow-hidden max-w-full">
-<div class="overflow-x-auto w-full">
+<div id="inv-table-scroll" class="overflow-auto w-full">
 <table id="inv-table" class="w-full text-[13px]">
 <thead class="bg-[#F8FAFC]/80 border-b border-[#E2E8F0]">
 <tr class="text-left" id="inv-thead">
@@ -891,7 +904,11 @@ function refreshSortIndicators(){
 }
 
 function goPage(p){ _page = p; filterInventory(); window.scrollTo({ top: document.querySelector('table').offsetTop - 90, behavior:'smooth' }); }
-function setPageSize(s){ _pageSize = Number(s) || 10; _page = 1; filterInventory(); }
+var _pageSizeAuto = true;
+function setPageSize(s){
+  if(String(s).toLowerCase() === 'auto'){ _pageSizeAuto = true; _page = 1; fitTableHeight(); filterInventory(); return; }
+  _pageSizeAuto = false; _pageSize = Number(s) || 10; _page = 1; filterInventory();
+}
 
 function renderPagination(total){
   var el = document.getElementById('inv-pagination');
@@ -930,7 +947,8 @@ function renderPagination(total){
     '<div class="flex items-center gap-2 text-[12.5px]" style="color:rgba(30,41,59,0.65)">' +
       '<span>ต่อหน้า</span>' +
       '<select onchange="setPageSize(this.value)" class="h-8 px-2 pr-7 bg-white border border-[#E2E8F0] rounded-md text-[12.5px] focus:outline-none focus:border-[#4790FF]">' +
-        ['10','25','50','100'].map(function(n){ return '<option ' + (Number(n) === _pageSize ? 'selected' : '') + '>' + n + '</option>'; }).join('') +
+        '<option value="auto"' + (_pageSizeAuto ? ' selected' : '') + '>Auto</option>' +
+        ['10','25','50','100'].map(function(n){ return '<option ' + (!_pageSizeAuto && Number(n) === _pageSize ? 'selected' : '') + '>' + n + '</option>'; }).join('') +
       '</select>' +
     '</div>';
 }
@@ -1055,7 +1073,7 @@ function actionButtons(code){
   '</div>';
 }
 function invView(code){ console.log('View', code); }
-function invEdit(code){ window.location.href = 'inventory-edit.html'; }
+function invEdit(code){ window.location.href = 'media-edit.html'; }
 
 function renderList(allRows) {
   var tbody = document.getElementById('inv-table-body');
@@ -1138,6 +1156,7 @@ function filterInventory() {
   }
   renderPagination(rows.length);
   refreshSortIndicators();
+  if(typeof fitTableHeight === 'function') fitTableHeight();
   renderGroupStats(); // re-sync active card highlight with current group filter
 }
 
@@ -1361,6 +1380,41 @@ function aiSend(text){
     box.scrollTop = box.scrollHeight;
   }, 1500);
 }
+
+/* Fit table viewport height — fills the screen, recalculated on resize / zoom */
+var _fitBusy = false;
+function fitTableHeight(){
+  var box = document.getElementById('inv-table-scroll');
+  if(!box || _fitBusy) return;
+  var pag = document.getElementById('inv-pagination');
+  var top = box.getBoundingClientRect().top + (window.scrollY || 0);
+  var pagH = pag ? pag.offsetHeight : 0;
+  var h = Math.max(180, window.innerHeight - top - pagH - 20);
+  box.style.height = h + 'px';
+  box.style.maxHeight = h + 'px';
+  if(_pageSizeAuto){
+    var thead = box.querySelector('thead');
+    var row = box.querySelector('#inv-table-body tr');
+    var rowH = row ? row.getBoundingClientRect().height : 38;
+    var headH = thead ? thead.getBoundingClientRect().height : 38;
+    if(rowH > 8){
+      var n = Math.max(5, Math.floor((h - headH) / rowH));
+      if(n !== _pageSize){
+        _pageSize = n;
+        _fitBusy = true;
+        try { filterInventory(); } finally { _fitBusy = false; }
+      }
+    }
+  }
+}
+window.addEventListener('resize', fitTableHeight);
+if(window.visualViewport) window.visualViewport.addEventListener('resize', fitTableHeight);
+document.addEventListener('DOMContentLoaded', function(){
+  fitTableHeight();
+  setTimeout(fitTableHeight, 120);
+  var main = document.querySelector('main');
+  if(window.ResizeObserver && main){ new ResizeObserver(fitTableHeight).observe(main); }
+});
 </script>
 
 <!-- Go to top button -->

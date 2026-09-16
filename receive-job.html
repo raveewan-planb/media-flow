@@ -272,16 +272,6 @@ table th{position:sticky;top:0;z-index:1}
 </div>
 </div>
 <div class="flex items-center gap-2">
-<div class="inline-flex rounded-lg border border-[#E2E8F0] overflow-hidden bg-white" id="pr-view-toggle">
-<button class="h-9 px-3.5 text-[12px] font-medium flex items-center gap-1.5 border-r border-[#E2E8F0] bg-[#2D56D2] text-white" data-view="table" onclick="setPRView('table')">
-<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24"><path d="M3.375 19.5h17.25m-17.25 0a1.125 1.125 0 01-1.125-1.125M3.375 19.5h7.5c.621 0 1.125-.504 1.125-1.125m-9.75 0V5.625m0 12.75v-1.5c0-.621.504-1.125 1.125-1.125m18.375 2.625V5.625m0 12.75c0 .621-.504 1.125-1.125 1.125m1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-<span>Table</span>
-</button>
-<button class="h-9 px-3.5 text-[12px] font-medium flex items-center gap-1.5 text-[#0B1430] hover:bg-[#F8FAFC]" data-view="board" onclick="setPRView('board')">
-<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24"><path d="M9 4.5v15m6-15v15m-10.875 0h15.75c.621 0 1.125-.504 1.125-1.125V5.625c0-.621-.504-1.125-1.125-1.125H4.125c-.621 0-1.125.504-1.125 1.125v12.75c0 .621.504 1.125 1.125 1.125z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-<span>Board</span>
-</button>
-</div>
 </div>
 </div>
 <!-- Status Summary -->
@@ -362,10 +352,6 @@ table th{position:sticky;top:0;z-index:1}
 </div>
 </div>
 </div>
-</div>
-<!-- BOARD VIEW -->
-<div class="hidden" id="pr-view-board">
-<div class="grid grid-cols-3 gap-4" id="pr-board-cols"></div>
 </div>
 <script>
 /* ===== Status flow (8 stages, role-tagged) — mirrors job-list.html scheme =====
@@ -591,7 +577,7 @@ function getFilteredPR() {
     return true;
   });
 }
-function filterPR() { var f=getFilteredPR(); renderPRKPIs(f); renderPRTable(f); renderPRBoard(f); }
+function filterPR() { var f=getFilteredPR(); renderPRKPIs(f); renderPRTable(f); }
 function resetPRFilters() { document.getElementById('pr-search').value=''; document.getElementById('pr-status').value='all'; document.getElementById('pr-media').value='all'; filterPR(); }
 
 /* Table */
@@ -685,48 +671,6 @@ function renderPRTable(rows) {
   });
   tbody.innerHTML = h;
   pag.textContent = rows.length;
-}
-
-/* Board */
-function renderPRBoard(rows) {
-  var cols = document.getElementById('pr-board-cols');
-  var h = '';
-  PR_STATUSES.forEach(function(st) {
-    var sc = PR_COLORS[st];
-    var cards = rows.filter(function(r){ return r.status===st; });
-    h += '<div class="flex flex-col rounded-xl border '+sc.border+' bg-white overflow-hidden" style="min-height:400px">';
-    h += '<div class="px-3 py-2.5 '+sc.headerBg+' border-b '+sc.border+' flex items-center justify-between"><div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full '+sc.dot+'"></span><span class="text-[12px] font-semibold '+sc.text+'">'+st+'</span></div><span class="text-[11px] px-1.5 py-0.5 rounded-md '+sc.bg+' '+sc.text+' font-semibold border '+sc.border+'">'+cards.length+'</span></div>';
-    h += '<div class="flex-1 p-2 space-y-2 overflow-y-auto" style="max-height:480px">';
-    if (!cards.length) { h += '<div class="py-8 text-center text-[11px]" style="color:rgba(30,41,59,0.25)">No tickets</div>'; }
-    cards.forEach(function(r) {
-      var pSla = getProgressSLA(r.acceptDate);
-      var slaCls = r.feedbackSla==='Overdue'||pSla==='Overdue'?'text-rose-600':'text-emerald-600';
-      var slaLabel = pSla!=='-'?pSla:r.feedbackSla;
-      var boardLink = 'job-detail.html?status=' + encodeURIComponent(r.status) + '&job=' + encodeURIComponent(r.job);
-      h += '<a href="' + boardLink + '" class="block bg-white border border-[#E2E8F0] border-l-[3px] rounded-lg p-2.5 hover:shadow-lg transition-all cursor-pointer" style="border-left-color:'+sc.hex+'">';
-      h += '<div class="flex items-center justify-between mb-1.5"><span class="text-[10px] font-mono font-semibold text-[#2D56D2]">'+r.id+'</span><span class="text-[10px] font-semibold '+slaCls+'">'+slaLabel+'</span></div>';
-      h += '<div class="text-[12px] font-semibold text-[#0B1430] mb-0.5 leading-tight">'+r.product+'</div>';
-      h += '<div class="text-[11px] mb-2" style="color:rgba(30,41,59,0.5)">'+r.mediaType+' &middot; '+r.job+' &middot; v'+r.version+'</div>';
-      h += '<div class="flex items-center justify-between"><span class="text-[10px]" style="color:rgba(30,41,59,0.5)">by '+r.assignBy+'</span><span class="text-[10px] font-mono" style="color:rgba(30,41,59,0.35)">'+r.assignDate.split(' ')[0]+'</span></div>';
-      h += '</a>';
-    });
-    h += '</div></div>';
-  });
-  cols.innerHTML = h;
-}
-
-/* View Toggle */
-var _prView = 'table';
-function setPRView(v) {
-  _prView = v;
-  document.getElementById('pr-view-table').className = v==='table'?'':'hidden';
-  document.getElementById('pr-view-board').className = v==='board'?'':'hidden';
-  var btns = document.getElementById('pr-view-toggle').querySelectorAll('button');
-  btns.forEach(function(b) {
-    if (b.getAttribute('data-view')===v) { b.className=b.className.replace(/text-\[#0B1430\] hover:bg-\[#F8FAFC\]/g,'').replace(/bg-\[#2D56D2\] text-white/g,''); b.className+=' bg-[#2D56D2] text-white'; }
-    else { b.className=b.className.replace(/bg-\[#2D56D2\] text-white/g,''); b.className+=' text-[#0B1430] hover:bg-[#F8FAFC]'; }
-  });
-  filterPR();
 }
 
 /* Init */
