@@ -69,6 +69,24 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#4790FF;box-sh
 table th{position:sticky;top:0;z-index:1}
 #inv-table-scroll{min-height:160px;overscroll-behavior:contain}
 #inv-table-scroll thead th{background:#F4F7FC}
+.iv-drawer{transform:translateX(100%);transition:transform .26s ease;width:50vw;max-width:100vw}
+@media(max-width:900px){.iv-drawer{width:100vw}}
+.iv-drawer.open{transform:translateX(0)}
+.iv-hero{padding:18px 20px;background:linear-gradient(135deg,rgba(45,86,210,.07),rgba(95,203,249,.07));border-bottom:1px solid #E2E8F0}
+.iv-code{font-family:ui-monospace,monospace;font-size:12px;font-weight:700;letter-spacing:.03em;color:#2D56D2;background:rgba(45,86,210,.10);padding:3px 9px;border-radius:6px;display:inline-block}
+.iv-name{font-size:17px;font-weight:600;color:#0B1430;line-height:1.3;margin-top:8px}
+.iv-sub{font-size:12px;color:rgba(30,41,59,.6);margin-top:3px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.iv-sec{font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:rgba(30,41,59,.55);display:flex;align-items:center;gap:8px;margin:0 0 10px}
+.iv-sec::before{content:'';width:3px;height:13px;border-radius:99px;background:#2D56D2;opacity:.65}
+.iv-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px 16px}
+.iv-f{min-width:0}
+.iv-f-k{font-size:10.5px;font-weight:500;color:rgba(30,41,59,.5);margin-bottom:2px}
+.iv-f-v{font-size:13px;color:#0B1430;word-break:break-word}
+.iv-f-v.mono{font-family:ui-monospace,monospace;font-size:12px}
+.iv-f.full{grid-column:1/-1}
+.iv-map{height:150px;border-radius:10px;border:1px solid #E2E8F0;overflow:hidden;background:linear-gradient(135deg,#F8FAFC,#EBF5FF)}
+.iv-map iframe{width:100%;height:100%;border:0;display:block}
+.inv-row-active{background:rgba(45,86,210,.06)!important}
 .progress-bar{transition:width 0.6s ease}
 /* Topbar — White glass */
 .topbar-white{background:rgba(255,255,255,0.9);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid #E2E8F0}
@@ -125,7 +143,7 @@ table th{position:sticky;top:0;z-index:1}
 #inv-thead th.col-location{width:180px}
 #inv-thead th.col-group{width:118px}
 #inv-thead th.col-type{width:130px}
-#inv-thead th.col-branding{width:130px}
+#inv-thead th.col-category{width:118px}
 #inv-thead th.col-package{width:110px}
 #inv-thead th.col-mstatus{width:118px}
 #inv-thead th.col-bstatus{width:96px}
@@ -449,14 +467,14 @@ th.sortable.sort-active .sort-ind{opacity:1;color:#2D56D2}
 <thead class="bg-[#F8FAFC]/80 border-b border-[#E2E8F0]">
 <tr class="text-left" id="inv-thead">
 <th class="col-action text-center">Action</th>
-<th class="col-code sortable" data-sort="code">Media Code<span class="sort-ind"></span></th>
+<th class="col-code sortable" data-sort="code">Code Product<span class="sort-ind"></span></th>
 <th class="col-equip sortable" data-sort="epicorCode">Equipment ID<span class="sort-ind"></span></th>
 <th class="col-desc sortable" data-sort="name">Description<span class="sort-ind"></span></th>
 <th class="col-location sortable" data-sort="locationText">Location<span class="sort-ind"></span></th>
+<th class="col-category sortable" data-sort="category">Media Category<span class="sort-ind"></span></th>
 <th class="col-group sortable" data-sort="group">Media Group<span class="sort-ind"></span></th>
 <th class="col-type sortable" data-sort="type">Media Type<span class="sort-ind"></span></th>
-<th class="col-branding sortable" data-sort="branding">Media Branding<span class="sort-ind"></span></th>
-<th class="col-package sortable" data-sort="package">Package<span class="sort-ind"></span></th>
+<th class="col-package sortable" data-sort="package">Sale Package<span class="sort-ind"></span></th>
 <th class="col-mstatus sortable" data-sort="mediaStatus">Media Status<span class="sort-ind"></span></th>
 <th class="col-bstatus sortable" data-sort="bookingStatus">Booking<span class="sort-ind"></span></th>
 <th class="col-province sortable" data-sort="province">Province<span class="sort-ind"></span></th>
@@ -471,6 +489,30 @@ th.sortable.sort-active .sort-ind{opacity:1;color:#2D56D2}
 <!-- Pagination -->
 <div id="inv-pagination" class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-4 py-3 border-t border-[#E2E8F0] bg-[#F8FAFC]/40"></div>
 </div>
+
+<!-- Inventory preview drawer -->
+<div id="iv-overlay" class="hidden fixed inset-0 bg-black/40 z-40" onclick="invCloseView()"></div>
+<aside id="iv-drawer" class="iv-drawer fixed top-0 right-0 h-full bg-white shadow-pop z-50 flex flex-col">
+  <div class="px-5 py-3.5 border-b border-[#E2E8F0] flex items-center gap-3 shrink-0">
+    <div class="w-9 h-9 rounded-lg flex items-center justify-center shrink-0" style="background:rgba(45,86,210,.10);color:#2D56D2">
+      <svg class="w-[18px] h-[18px]" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+    </div>
+    <div class="flex-1 min-w-0">
+      <div class="text-[10.5px] font-semibold tracking-wide uppercase" style="color:#2D56D2">Media Preview</div>
+      <div class="text-[13px] font-medium text-[#0B1430]">รายละเอียดสื่อ</div>
+    </div>
+    <button onclick="invCloseView()" class="w-8 h-8 rounded-md hover:bg-[#F1F5F9] flex items-center justify-center shrink-0" style="color:rgba(30,41,59,.5)"><svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button>
+  </div>
+  <div id="iv-body" class="flex-1 overflow-y-auto"></div>
+  <div class="px-5 py-3 border-t border-[#E2E8F0] flex items-center gap-2 shrink-0">
+    <div class="flex-1 text-[11.5px]" style="color:rgba(30,41,59,.5)">ดูข้อมูลอย่างเดียว</div>
+    <button onclick="invCloseView()" class="h-9 px-4 rounded-md border border-[#E2E8F0] bg-white text-[12.5px] font-medium hover:bg-[#F8FAFC]">Close</button>
+    <button id="iv-edit-btn" class="h-9 px-4 bg-[#2D56D2] text-white rounded-md text-[12.5px] font-medium hover:bg-[#213268] inline-flex items-center gap-1.5">
+      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125"/></svg>
+      <span>Edit</span>
+    </button>
+  </div>
+</aside>
 
 <!-- Hidden placeholders (kept so legacy JS refs don't error) -->
 <div class="hidden" id="view-grid"><div id="inv-grid-body"></div></div>
@@ -597,8 +639,20 @@ const MEDIA_STATUS_BY_STATUS = { live:'Active', maint:'Under Process', vac:'Inac
 const BOOKING_STATUS_BY_STATUS = { live:'จอง', maint:'งดจอง', vac:'ว่าง' };
 const TAKEDOWN_STATUS_BY_STATUS = { live:'รอก่อน', maint:'รื้อได้เลย', vac:'รื้อได้เลย' };
 
+const TYPE_TO_MEDIA_GROUP = {
+  'Plan B TV':'Digital', 'Plan B TV Nationwide':'Digital', 'Customize BKK':'Digital',
+  'Bangkok Jams':'Digital', 'Rama 9 Connect':'Digital', 'The District EM':'Digital',
+  'Siam Paragon Facade':'Digital', 'So-BKK':'Digital', 'Bravo BKK':'Digital',
+  'Airtraveller Series':'Airport Digital', 'Don Mueang Digital Network':'Airport Digital',
+  'Airport Digital Network':'Airport Digital',
+  'Central Network':'Retail', '7-Eleven Plus':'Retail',
+  'Digital MRT':'Transit', 'BTS Skytrain':'BTS Cityline', 'BTS Concourse':'BTS Cityline', 'BTS Cityline':'BTS Cityline',
+  'Cookie & Cream':'Static Media',
+};
+
 LOCATIONS.forEach(function(l, i){
-  l.group         = TYPE_TO_GROUP[l.type] || 'Other';
+  l.category      = TYPE_TO_GROUP[l.type] || 'Other';
+  l.group         = TYPE_TO_MEDIA_GROUP[l.type] || 'Other';
   l.branding      = TYPE_TO_BRANDING[l.type] || '—';
   l.package       = TYPE_TO_PACKAGE[l.type] || 'Standard';
   l.province      = CITY_TO_PROVINCE[l.city] || l.city;
@@ -1072,7 +1126,63 @@ function actionButtons(code){
     '</button>' +
   '</div>';
 }
-function invView(code){ console.log('View', code); }
+/* ===== Media preview drawer ===== */
+function _ivF(k,v,cls){ return '<div class="iv-f'+(cls||'')+'"><div class="iv-f-k">'+k+'</div><div class="iv-f-v'+(cls&&cls.indexOf('mono')>-1?' mono':'')+'">'+(v==null||v===''?'<span style="color:rgba(30,41,59,.35)">—</span>':v)+'</div></div>'; }
+function invView(code){
+  var r = LOCATIONS.filter(function(x){ return x.code===code; })[0]; if(!r) return;
+  var mapSrc = 'https://www.openstreetmap.org/export/embed.html?bbox='+(r.lng-0.006)+'%2C'+(r.lat-0.006)+'%2C'+(r.lng+0.006)+'%2C'+(r.lat+0.006)+'&layer=mapnik&marker='+r.lat+'%2C'+r.lng;
+  $iv('iv-body').innerHTML =
+    '<div class="iv-hero">'+
+      '<span class="iv-code">'+r.code+'</span>'+
+      '<div class="iv-name">'+r.name+'</div>'+
+      '<div class="iv-sub">'+groupChip(r.category)+'<span style="opacity:.4">·</span>'+r.group+'<span style="opacity:.4">·</span>'+r.type+'</div>'+
+      '<div class="iv-sub" style="margin-top:8px">'+mediaStatusChip(r.mediaStatus)+bookingStatusChip(r.bookingStatus)+'</div>'+
+    '</div>'+
+    '<div class="px-5 py-4 space-y-5">'+
+      '<div><div class="iv-sec">ข้อมูลสื่อ</div><div class="iv-grid">'+
+        _ivF('Code Product', r.code, ' mono')+
+        _ivF('Equipment ID', r.epicorCode, ' mono')+
+        _ivF('Media Category', r.category)+
+        _ivF('Media Group', r.group)+
+        _ivF('Media Type', r.type)+
+        _ivF('Sale Package', r.package)+
+        _ivF('Product Owner', r.productOwner)+
+        _ivF('Old Code', r.oldCode, ' mono')+
+      '</div></div>'+
+      '<div><div class="iv-sec">ตำแหน่งที่ตั้ง</div><div class="iv-grid">'+
+        _ivF('Location', r.locationText, ' full')+
+        _ivF('District', r.district)+
+        _ivF('Province', r.province)+
+        _ivF('Region', r.region)+
+        _ivF('Lat & Long', r.lat+', '+r.lng, ' mono')+
+      '</div>'+
+      '<div class="iv-map" style="margin-top:10px"><iframe loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="'+mapSrc+'"></iframe></div>'+
+      '<div class="text-[11px] mt-1.5" style="color:rgba(30,41,59,.45)"><a href="https://www.google.com/maps?q='+r.lat+','+r.lng+'" target="_blank" rel="noopener" style="color:#2D56D2">เปิดใน Google Maps</a></div>'+
+      '</div>'+
+      '<div><div class="iv-sec">สถานะการขาย</div><div class="iv-grid">'+
+        _ivF('Media Status', mediaStatusChip(r.mediaStatus))+
+        _ivF('Booking Status', bookingStatusChip(r.bookingStatus))+
+        _ivF('Take Down', r.takedownStatus)+
+      '</div></div>'+
+    '</div>';
+  var eb = $iv('iv-edit-btn');
+  if(eb) eb.onclick = function(){ invEdit(code); };
+  document.querySelectorAll('#inv-table-body tr').forEach(function(tr){ tr.classList.remove('inv-row-active'); });
+  var cell = Array.prototype.filter.call(document.querySelectorAll('#inv-table-body tr'), function(tr){
+    return tr.textContent.indexOf(code) > -1; })[0];
+  if(cell) cell.classList.add('inv-row-active');
+  $iv('iv-overlay').classList.remove('hidden');
+  $iv('iv-drawer').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function invCloseView(){
+  $iv('iv-overlay').classList.add('hidden');
+  $iv('iv-drawer').classList.remove('open');
+  document.body.style.overflow='';
+  document.querySelectorAll('#inv-table-body tr').forEach(function(tr){ tr.classList.remove('inv-row-active'); });
+}
+function $iv(id){ return document.getElementById(id); }
+document.addEventListener('keydown', function(e){ if(e.key==='Escape') invCloseView(); });
 function invEdit(code){ window.location.href = 'media-edit.html'; }
 
 function renderList(allRows) {
@@ -1091,9 +1201,9 @@ function renderList(allRows) {
       '<td><span class="text-[11px] font-mono" style="color:rgba(30,41,59,0.55)">' + r.epicorCode + '</span></td>' +
       '<td class="cell-ellipsis"><span class="text-[12.5px] font-medium text-[#0B1430]" title="' + r.name + '">' + r.name + '</span></td>' +
       '<td class="cell-ellipsis"><span class="text-[11.5px]" style="color:rgba(30,41,59,0.75)" title="' + r.locationText + '">' + r.locationText + '</span></td>' +
-      '<td>' + groupChip(r.group) + '</td>' +
+      '<td>' + groupChip(r.category) + '</td>' +
+      '<td><span class="text-[11.5px]" style="color:rgba(30,41,59,0.78)">' + r.group + '</span></td>' +
       '<td>' + typeBadgeMini(r.type) + '</td>' +
-      '<td class="cell-ellipsis"><span class="text-[11.5px]" style="color:rgba(30,41,59,0.75)" title="' + r.branding + '">' + r.branding + '</span></td>' +
       '<td class="cell-ellipsis"><span class="text-[11.5px]" style="color:rgba(30,41,59,0.75)" title="' + r.package + '">' + r.package + '</span></td>' +
       '<td>' + mediaStatusChip(r.mediaStatus) + '</td>' +
       '<td>' + bookingStatusChip(r.bookingStatus) + '</td>' +

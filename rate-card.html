@@ -131,6 +131,24 @@ th.rc-sortable.sort-active .sort-ind{opacity:1;color:#2D56D2}
 .flatpickr-current-month .flatpickr-monthDropdown-months,.flatpickr-current-month input.cur-year{color:#0B1430 !important;font-weight:600 !important}
 .flatpickr-weekday{color:rgba(30,41,59,0.5) !important;font-weight:500 !important;font-size:11.5px !important}
 /* Map preview placeholder */
+.pkg-view-btn{height:38px;padding:0 12px;border-radius:8px;border:1px solid rgba(124,58,237,.28);background:rgba(124,58,237,.10);color:#6D28D9;font-size:12px;font-weight:600;display:inline-flex;align-items:center;gap:6px;cursor:pointer;transition:all .15s;flex:0 0 auto;font-family:'Kanit',sans-serif}
+.pkg-view-btn:hover:not(:disabled){background:rgba(124,58,237,.18);border-color:rgba(124,58,237,.45)}
+.pkg-view-btn:disabled{opacity:.45;cursor:not-allowed}
+.pkg-view-btn svg{width:14px;height:14px}
+.dz{border:1.5px dashed #CBD5E1;border-radius:12px;background:#FCFDFE;padding:22px 16px;text-align:center;cursor:pointer;transition:all .15s}
+.dz:hover{border-color:#4790FF;background:rgba(71,144,255,.04)}
+.dz.drag{border-color:#2D56D2;background:rgba(45,86,210,.07)}
+.dz-icn{width:26px;height:26px;margin:0 auto 8px;color:rgba(30,41,59,.4)}
+.dz.drag .dz-icn{color:#2D56D2}
+.dz-title{font-size:13px;color:rgba(30,41,59,.75)}
+.dz-sub{font-size:11.5px;color:rgba(30,41,59,.45);margin-top:3px}
+.dz-list{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+.dz-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border:1px solid #E2E8F0;border-radius:9px;background:#fff}
+.dz-ic{width:30px;height:30px;border-radius:7px;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;background:rgba(45,86,210,.10);color:#2D56D2;font-size:10px;font-weight:700;text-transform:uppercase}
+.dz-nm{font-size:12.5px;color:#0B1430;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dz-sz{font-size:11px;color:rgba(30,41,59,.5);margin-left:auto;flex:0 0 auto;font-variant-numeric:tabular-nums}
+.dz-rm{width:26px;height:26px;border-radius:6px;border:0;background:rgba(225,29,72,.10);color:#BE123C;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;flex:0 0 auto;transition:background-color .15s}
+.dz-rm:hover{background:rgba(225,29,72,.2)}
 .mcb-box{min-height:38px;border:1px solid #E2E8F0;border-radius:8px;background:#FCFDFE;padding:5px 6px;display:flex;flex-wrap:wrap;gap:5px;align-items:center;cursor:text;transition:all .15s}
 .mcb-box:hover{background:#fff;border-color:#CBD5E8}
 .mcb-box.focus{background:#fff;border-color:#4790FF;box-shadow:0 0 0 3px rgba(71,144,255,.18)}
@@ -152,6 +170,15 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
 .cbx-opt.sel{color:#2D56D2;font-weight:500;background:rgba(71,144,255,.08)}
 .cbx-opt mark{background:rgba(71,144,255,.22);color:inherit;border-radius:3px;padding:0 1px}
 .cbx-empty{padding:10px;font-size:12px;color:rgba(30,41,59,.5);text-align:center}
+.rcf-view #rcf-save,.rcf-view .rate-add-btn,.rcf-view #rcf-dz,.rcf-view #mcb-clear,.rcf-view .rate-icon-btn.danger,.rcf-view .rcf-req,.rcf-view .mcb-tag button{display:none!important}
+.rcf-view .rcf-input,.rcf-view .rcf-select,.rcf-view .cbx-input,.rcf-view .mcb-box,.rcf-view .rate-year-chip{background:#F8FAFC!important;color:rgba(11,20,48,.8);cursor:default}
+.rcf-view .rcf-input:focus,.rcf-view .rcf-select:focus,.rcf-view .cbx-input:focus{box-shadow:none;border-color:#E2E8F0}
+.rcf-view .rcf-pill{cursor:default;opacity:.85}
+.rcf-view .mcb-input{display:none}
+.rcf-view .dz-rm{display:none}
+.rcf-view #rcf-cancel{display:none}
+.rcf-badge-view{display:none;align-items:center;gap:5px;height:22px;padding:0 9px;border-radius:99px;font-size:10.5px;font-weight:600;background:rgba(14,165,233,.12);color:#0284C7;text-transform:uppercase;letter-spacing:.04em}
+.rcf-view .rcf-badge-view{display:inline-flex}
 .rcf-drawer{transform:translateX(100%);transition:transform .28s ease;width:50vw;max-width:none}
 @media(max-width:900px){.rcf-drawer{width:100vw}}
 .rcf-drawer.open{transform:translateX(0)}
@@ -502,7 +529,7 @@ th.sortable.sort-active .sort-ind{opacity:1;color:#2D56D2}
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12M12 16.5V3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
             <span>Export</span>
           </button>
-          <button class="h-8 px-3 bg-[#2D56D2] text-white rounded-md text-[12.5px] font-medium hover:bg-[#213268] inline-flex items-center gap-1.5" onclick="rcOpenForm()">
+          <button class="h-8 px-3 bg-[#2D56D2] text-white rounded-md text-[12.5px] font-medium hover:bg-[#213268] inline-flex items-center gap-1.5" onclick="rcNewForm()">
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 4.5v15m7.5-7.5h-15" stroke-linecap="round" stroke-linejoin="round"></path></svg>
             <span>New Rate Card</span>
           </button>
@@ -574,9 +601,9 @@ th.sortable.sort-active .sort-ind{opacity:1;color:#2D56D2}
       <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
     </div>
     <div class="flex-1 min-w-0">
-      <div class="text-[10.5px] font-semibold tracking-wide uppercase" style="color:#D97706">Rate Card</div>
-      <h3 class="text-[16px] font-semibold leading-tight">New Rate Card</h3>
-      <p class="text-[12px] mt-0.5" style="color:rgba(30,41,59,.55)">กรอกข้อมูลสื่อและช่วงราคา — สถานะจะอัปเดตอัตโนมัติตามวันที่</p>
+      <div class="flex items-center gap-2"><div class="text-[10.5px] font-semibold tracking-wide uppercase" style="color:#D97706">Rate Card</div><span class="rcf-badge-view">View only</span></div>
+      <h3 id="rcf-title" class="text-[16px] font-semibold leading-tight">New Rate Card</h3>
+      <p id="rcf-sub" class="text-[12px] mt-0.5" style="color:rgba(30,41,59,.55)">กรอกข้อมูลสื่อและช่วงราคา — สถานะจะอัปเดตอัตโนมัติตามวันที่</p>
     </div>
     <button onclick="rcCloseForm()" class="w-8 h-8 rounded-md hover:bg-[#F1F5F9] flex items-center justify-center shrink-0" style="color:rgba(30,41,59,.5)"><svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button>
   </div>
@@ -600,10 +627,10 @@ th.sortable.sort-active .sort-ind{opacity:1;color:#2D56D2}
           <label class="rcf-label">Media Type <span class="rcf-req">*</span></label>
           <select id="rcf-mtype" class="rcf-select" onchange="rcfSyncCodes()"><option value="">— เลือก —</option><option>Unipole Billboard</option><option>Splash Billboard</option><option>Billboard Nationwide</option><option>Building Wrap</option><option>Plan B TV</option><option>Bangkok Jams</option><option>The Skyline</option><option>NCA Bus Wrap</option><option>Muvads - Lightbox</option><option>BTS On Station</option><option>Airport Traveller Series</option><option>MBK LED</option></select>
         </div>
-        <div>
-          <label class="rcf-label">Code Product <span class="rcf-req">*</span></label>
-          <select id="rcf-code" class="rcf-select font-mono" disabled><option value="">— เลือก Media Group / Type ก่อน —</option></select>
-          <div id="rcf-code-multi" class="hidden">
+        <div id="rcf-code-block">
+          <label class="rcf-label">Code Product <span class="rcf-req">*</span> <span class="text-[11px] font-normal" style="color:rgba(30,41,59,.5)">(เลือกได้มากกว่า 1)</span></label>
+          <select id="rcf-code" class="rcf-select font-mono hidden" disabled><option value=""></option></select>
+          <div id="rcf-code-multi">
             <div class="relative">
               <div id="mcb-box" class="mcb-box" onclick="mcbFocus(event)"><input id="mcb-input" class="mcb-input font-mono" placeholder="เลือก Media Group / Type ก่อน" autocomplete="off" disabled /></div>
               <div id="mcb-panel" class="cbx-panel" hidden></div>
@@ -611,14 +638,34 @@ th.sortable.sort-active .sort-ind{opacity:1;color:#2D56D2}
           </div>
           <div class="flex items-center justify-between mt-1.5 gap-2">
             <div class="text-[11px]" id="rcf-code-hint" style="color:rgba(30,41,59,.5)">กรองรายการตาม Media Group และ Media Type</div>
-            <button type="button" id="mcb-clear" class="hidden text-[11px] hover:underline" style="color:#2D56D2" onclick="mcbClear()">ล้างทั้งหมด</button>
+            <button type="button" id="mcb-clear" class="text-[11px] hover:underline" style="color:#2D56D2" onclick="mcbClear()">ล้างทั้งหมด</button>
           </div>
         </div>
-        <div>
-          <label class="rcf-label">Sale Package</label>
-          <select id="rcf-pkg" class="rcf-select"><option value="">— เลือก —</option><option>Single</option><option>Network</option><option>Bundle</option></select>
+        <div id="rcf-pkg-block" class="hidden">
+          <label class="rcf-label">Sale Package <span class="rcf-req">*</span></label>
+          <div class="flex items-center gap-2">
+            <div class="flex-1 min-w-0">
+              <select id="rcf-pkg" class="rcf-select" onchange="rcfOnPkgChange()"><option value="">— เลือก —</option></select>
+            </div>
+            <button type="button" id="rcf-pkg-view" class="pkg-view-btn" onclick="rcPkgPopup()" disabled>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+              <span>ดู Product</span>
+            </button>
+          </div>
+          <div class="text-[11px] mt-1.5" id="rcf-pkg-hint" style="color:rgba(30,41,59,.5)">เลือก Package เพื่อดูรายการ Product ที่อยู่ภายใน</div>
         </div>
       </div>
+    </div>
+
+    <div>
+      <div class="rcf-sec">Rate Card Image</div>
+      <div id="rcf-dz" class="dz" ondragover="rcDzOver(event)" ondragleave="rcDzLeave(event)" ondrop="rcDzDrop(event)" onclick="document.getElementById('rcf-file').click()">
+        <input type="file" id="rcf-file" multiple class="hidden" onchange="rcDzPick(event)" />
+        <svg class="dz-icn" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/></svg>
+        <div class="dz-title">ลากไฟล์มาวางที่นี่ หรือ <span style="color:#2D56D2;font-weight:600">คลิกเพื่อเลือกไฟล์</span></div>
+        <div class="dz-sub">รองรับ JPG, PNG, PDF · ขนาดไม่เกิน 10 MB ต่อไฟล์</div>
+      </div>
+      <div id="rcf-files" class="dz-list"></div>
     </div>
 
     <div>
@@ -646,11 +693,12 @@ th.sortable.sort-active .sort-ind{opacity:1;color:#2D56D2}
   </div>
 
   <div class="px-5 py-3 border-t border-[#E2E8F0] flex items-center gap-2 shrink-0">
-    <div class="flex-1 text-[11.5px]" style="color:rgba(30,41,59,.5)"><span class="rcf-req">*</span> ข้อมูลที่จำเป็น</div>
-    <button onclick="rcCloseForm()" class="h-9 px-4 rounded-md border border-[#E2E8F0] bg-white text-[12.5px] font-medium hover:bg-[#F8FAFC]">Cancel</button>
-    <button onclick="rcSaveForm()" class="h-9 px-4 bg-[#2D56D2] text-white rounded-md text-[12.5px] font-medium hover:bg-[#213268] inline-flex items-center gap-1.5">
+    <div id="rcf-foot-note" class="flex-1 text-[11.5px]" style="color:rgba(30,41,59,.5)"><span class="rcf-req">*</span> ข้อมูลที่จำเป็น</div>
+    <button id="rcf-cancel" onclick="rcCloseForm()" class="h-9 px-4 rounded-md border border-[#E2E8F0] bg-white text-[12.5px] font-medium hover:bg-[#F8FAFC]">Cancel</button>
+    <button id="rcf-close-view" onclick="rcCloseForm()" class="hidden h-9 px-4 bg-[#2D56D2] text-white rounded-md text-[12.5px] font-medium hover:bg-[#213268] inline-flex items-center gap-1.5"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg><span>Close</span></button>
+    <button id="rcf-save" onclick="rcSaveForm()" class="h-9 px-4 bg-[#2D56D2] text-white rounded-md text-[12.5px] font-medium hover:bg-[#213268] inline-flex items-center gap-1.5">
       <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
-      <span>Save Rate Card</span>
+      <span id="rcf-save-label">Save Rate Card</span>
     </button>
   </div>
 </aside>
@@ -846,8 +894,8 @@ function rcRender(){
     tb.innerHTML = rows.map(function(r){
       return '<tr>'+
         '<td class="text-center"><div class="inline-flex items-center gap-1">'+
-          '<button class="rc-act rc-act-pv" title="Preview" onclick="rcPreview('+r.id+')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5s8.573 3.01 9.964 7.183c.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5s-8.573-3.01-9.964-7.178z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg></button>'+
-          '<button class="rc-act rc-act-ed" title="Edit" onclick="rcToast(\'แก้ไข '+esc(r.code)+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125"/></svg></button>'+
+          '<button class="rc-act rc-act-pv" title="Preview" onclick="rcViewRate('+r.id+')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5s8.573 3.01 9.964 7.183c.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5s-8.573-3.01-9.964-7.178z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg></button>'+
+          '<button class="rc-act rc-act-ed" title="Edit" onclick="rcEditRate('+r.id+')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125"/></svg></button>'+
           '<button class="rc-act rc-act-dl" title="Delete" onclick="rcDelete('+r.id+')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166M18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg></button>'+
         '</div></td>'+
         '<td>'+ (r.codes && r.codes.length>1
@@ -907,16 +955,16 @@ window.addEventListener('resize', rcFit);
 if(window.visualViewport) window.visualViewport.addEventListener('resize', rcFit);
 
 function rcPreview(id){
-  var r = RATES.find(function(x){return x.id===id}); if(!r) return;
-  $rc('rc-pv-title').textContent = r.code;
-  var rows = [['Code Product',(r.codes||[r.code]).join(', ')],['Media Group',r.group],['Media Type',r.type],['Sale Package',r.pkg],
-    ['Location',r.location],['Province',r.province],['Announcement Date',r.date],
-    ['Price',baht(r.price)+' บาท'],['Type',r.kind==='unit'?'By Unit':'By Pack']];
-  $rc('rc-pv-body').innerHTML = rows.map(function(kv){
-    return '<div class="flex items-start gap-3 py-2.5 border-b border-[#F1F5F9]"><div class="w-[140px] shrink-0 text-[11.5px] font-medium" style="color:rgba(30,41,59,0.5)">'+kv[0]+'</div><div class="flex-1 text-[13px]">'+esc(kv[1])+'</div></div>';
-  }).join('');
-  $rc('rc-overlay').classList.remove('hidden');
-  $rc('rc-drawer').classList.add('open');
+  var r = RATES.filter(function(x){ return x.id===id; })[0]; if(!r) return;
+  var cur = (r.rows||[]).filter(function(x){ return x.date && x.price; });
+  var pick = cur.length ? cur[cur.length-1] : null;
+  openRatePreview({
+    record: r,
+    price: pick ? pick.price : r.price,
+    unit: pick ? pick.unit : (r.kind==='pack' ? 'Package per Month' : 'Month'),
+    date: pick ? pick.date : (String(r.date).slice(8,10)+'/'+String(r.date).slice(5,7)+'/'+String(r.date).slice(0,4)),
+    status: 'Current'
+  });
 }
 function rcClosePreview(){ $rc('rc-overlay').classList.add('hidden'); $rc('rc-drawer').classList.remove('open'); }
 function rcDelete(id){
@@ -1006,7 +1054,7 @@ function rcfSyncCodes(){
     sel.disabled=true; sel.innerHTML='<option value="">— เลือก Media Group / Type ก่อน —</option>';
     hint.textContent='กรองรายการตาม Media Group และ Media Type';
     rcSyncCombos();
-    if(rcfType()==='pack'){ MCB_SEL=[]; mcbTags(); mcbHint(); }
+    MCB_SEL=[]; mcbTags(); mcbHint();
     return;
   }
   var list=CODE_CATALOG.filter(function(c){ return c.group===g && c.type===t; });
@@ -1022,7 +1070,7 @@ function rcfSyncCodes(){
   }).join('');
   hint.textContent='พบ '+list.length+' รายการ สำหรับ '+g+' / '+t;
   rcSyncCombos();
-  if(rcfType()==='pack'){ MCB_SEL = MCB_SEL.filter(function(c){ return mcbPool().some(function(x){return x.code===c}); }); mcbTags(); mcbHint(); }
+  MCB_SEL = MCB_SEL.filter(function(c){ return mcbPool().some(function(x){return x.code===c}); }); mcbTags(); mcbHint();
 }
 
 
@@ -1031,8 +1079,21 @@ function rcfSyncCodes(){
 
 /* seed By Pack rows with their member Code Products */
 function seedPackCodes(){
+  var PKG_BY_GT = {};
+  SALE_PACKAGES.forEach(function(p){ PKG_BY_GT[p.group+'|'+p.type] = p.name; });
   RATES.forEach(function(r){
-    if(r.kind!=='pack') return;
+    /* rate history rows (mock) */
+    var base = r.price, y = Number(String(r.date).slice(0,4)) || 2026;
+    var unit = r.kind==='pack' ? 'Package per Month' : 'Month';
+    r.rows = [
+      { date:'01/01/'+(y-2), price:Math.round(base*0.78/1000)*1000, unit:unit },
+      { date:'01/01/'+(y-1), price:Math.round(base*0.9/1000)*1000, unit:unit },
+      { date:String(r.date).slice(8,10)+'/'+String(r.date).slice(5,7)+'/'+y, price:base, unit:unit }
+    ];
+    if(r.id % 3 === 0) r.rows.push({ date:'01/01/'+(y+1), price:Math.round(base*1.12/1000)*1000, unit:unit });
+    if(r.kind!=='pack'){ r.pkg = '—'; return; }
+    var byGroup = SALE_PACKAGES.filter(function(x){ return x.group===r.group; })[0];
+    r.pkg = PKG_BY_GT[r.group+'|'+r.type] || (byGroup ? byGroup.name : r.pkg);
     var pool = CODE_CATALOG.filter(function(c){ return c.group===r.group && c.type===r.type; });
     if(!pool.length) pool = CODE_CATALOG.filter(function(c){ return c.group===r.group; });
     var n = Math.min(pool.length, 3 + (r.id % 4));
@@ -1081,16 +1142,18 @@ var RC_BRAND = {
 function _rcFmt(n){ return (Number(n)||0).toLocaleString('en-US'); }
 function buildRatePreview(o){
   o = o || {};
-  var group = $rc('rcf-group').value;
-  var kind = rcfType();
-  var codes = kind==='pack' ? MCB_SEL.slice() : ($rc('rcf-code').value ? [$rc('rcf-code').value] : []);
+  var rec = o.record;
+  var group = rec ? rec.group : $rc('rcf-group').value;
+  var kind  = rec ? rec.kind  : rcfType();
+  var codes = rec ? (rec.codes || [rec.code]).slice()
+                  : (kind==='pack' ? pkgMembers($rc('rcf-pkg').value).map(function(c){ return c.code; }) : MCB_SEL.slice());
   var cat = CODE_CATALOG.filter(function(c){ return c.code===codes[0]; })[0] || {};
   var brand = RC_BRAND[group] || RC_BRAND[''];
-  var region = RC_REGION[cat.province] || 'AREA';
+  var region = RC_REGION[cat.province || (rec?rec.province:'')] || 'AREA';
 
   var mediaCode = codes.length>1 ? codes[0]+' +'+(codes.length-1) : (codes[0] || 'M-CODE-000');
-  var titleTh   = cat.titleTh || '— กรุณาเลือก Code Product —';
-  var locTh     = cat.location || '';
+  var titleTh   = cat.titleTh || (rec ? rec.type : '— กรุณาเลือก Code Product —');
+  var locTh     = cat.location || (rec ? rec.location : '');
   var descTh    = cat.viewableFrom || '';
   var eyeballs  = cat.eyeballs || '';
   var viewH     = cat.sizeH, viewW = cat.sizeW;
@@ -1122,6 +1185,9 @@ function buildRatePreview(o){
         '<div class="rc-title-th" style="color:'+brand.color+';border-color:'+brand.color+'">'+esc(titleTh)+'</div>'+
       '</div>'+
       '<div class="rc-info">'+
+        row('Type', kind==='pack' ? 'By Pack' : 'By Unit')+
+        row('Sale Package', esc(rec ? (rec.pkg||'—') : (kind==='pack' ? ($rc('rcf-pkg').value||'') : '—')))+
+        row('Code Product', codes.length ? (codes.length>1 ? esc(codes.join(', ')) : esc(codes[0])) : '')+
         row('Location', esc(locTh))+
         row('Viewable From', esc(descTh))+
         row('Eyeballs/Month', eyeballs ? _rcFmt(eyeballs) : '')+
@@ -1153,7 +1219,9 @@ function closeRatePreview(){
 function openRowRatePreview(btn){
   var row = btn.closest('.rate-row'); if(!row) return openRatePreview();
   var badge = row.querySelector('.rate-badge');
+  var rec = _rcEditId ? RATES.filter(function(x){ return x.id===_rcEditId; })[0] : null;
   openRatePreview({
+    record: rec,
     price: row.querySelector('.rate-price') ? row.querySelector('.rate-price').value : '',
     unit:  row.querySelector('.rate-unit')  ? row.querySelector('.rate-unit').value  : '',
     date:  row.querySelector('.js-date')    ? row.querySelector('.js-date').value    : '',
@@ -1161,6 +1229,176 @@ function openRowRatePreview(btn){
   });
 }
 document.addEventListener('keydown', function(e){ if(e.key==='Escape'){ closeRatePreview(); rcCodesClose(); } });
+
+
+
+
+/* ===== View-only mode ===== */
+var _rcViewMode = false;
+function rcSetView(on){
+  _rcViewMode = !!on;
+  var d = $rc('rcf-drawer');
+  d.classList.toggle('rcf-view', _rcViewMode);
+  $rc('rcf-close-view').classList.toggle('hidden', !_rcViewMode);
+  $rc('rcf-foot-note').innerHTML = _rcViewMode
+    ? 'ดูข้อมูลอย่างเดียว · กด Preview ในแต่ละแถวเพื่อดู Rate Card'
+    : '<span class="rcf-req">*</span> ข้อมูลที่จำเป็น';
+  rcApplyView();
+}
+function rcApplyView(){
+  var d = $rc('rcf-drawer'); if(!d) return;
+  d.querySelectorAll('input, select, textarea').forEach(function(el){
+    if(el.id === 'rcf-file') return;
+    if(_rcViewMode){
+      if(el.type === 'radio' || el.type === 'checkbox'){ el.disabled = true; }
+      else { el.readOnly = true; el.setAttribute('data-ro','1'); if(el.tagName==='SELECT') el.disabled = true; }
+      if(el._flatpickr) el._flatpickr.set('clickOpens', false);
+    } else {
+      if(el.type === 'radio' || el.type === 'checkbox'){ el.disabled = false; }
+      else {
+        el.readOnly = false; el.removeAttribute('data-ro');
+        if(el.tagName==='SELECT' && el.id!=='rcf-code') el.disabled = false;
+      }
+      if(el._flatpickr) el._flatpickr.set('clickOpens', true);
+    }
+  });
+  if(_rcViewMode){ mcbClose(); }
+}
+function rcViewRate(id){
+  rcEditRate(id);
+  var r = RATES.filter(function(x){ return x.id===id; })[0];
+  $rc('rcf-title').textContent = 'Preview Rate Card';
+  $rc('rcf-sub').textContent = (r ? r.code + ' · ' : '') + 'ดูข้อมูลอย่างเดียว (แก้ไขไม่ได้)';
+  rcSetView(true);
+}
+
+/* ===== Edit existing rate card ===== */
+var _rcEditId = null;
+function _rcSetSelect(sel, v){
+  if(!sel || !v) return;
+  var has = Array.prototype.some.call(sel.options, function(o){ return (o.value||o.textContent.trim())===v; });
+  if(!has) sel.add(new Option(v, v));
+  sel.value = v;
+}
+function rcEditRate(id){
+  var r = RATES.filter(function(x){ return x.id===id; })[0]; if(!r) return;
+  _rcEditId = id;
+  rcSetView(false);
+  rcOpenForm();
+  $rc('rcf-title').textContent = 'Edit Rate Card';
+  $rc('rcf-sub').textContent = r.code + ' · แก้ไขข้อมูลและช่วงราคา';
+  $rc('rcf-save-label').textContent = 'Update Rate Card';
+  /* type */
+  var radio = document.querySelector('input[name="rcf-type"][value="'+(r.kind==='pack'?'pack':'unit')+'"]');
+  if(radio){ radio.checked = true; }
+  rcfOnTypeChange();
+  /* group / type */
+  _rcSetSelect($rc('rcf-group'), r.group);
+  _rcSetSelect($rc('rcf-mtype'), r.type);
+  rcfSyncCodes();
+  if(r.kind==='pack'){
+    rcfInitPackages();
+    var names = SALE_PACKAGES.map(function(p){ return p.name; });
+    $rc('rcf-pkg').value = names.indexOf(r.pkg)>-1 ? r.pkg : '';
+    rcfOnPkgChange();
+  } else {
+    MCB_SEL = (r.codes || [r.code]).filter(function(c){ return mcbPool().some(function(x){ return x.code===c; }); });
+    if(!MCB_SEL.length) MCB_SEL = (r.codes||[r.code]).slice();
+    mcbTags(); mcbHint();
+  }
+  rcSyncCombos();
+  /* rate rows */
+  var list = $rc('rate-list');
+  Array.prototype.slice.call(list.querySelectorAll('.rate-row')).forEach(function(n){ n.remove(); });
+  (r.rows && r.rows.length ? r.rows : [{date:'', price:r.price, unit:''}]).forEach(function(row){
+    var el = addRateRow();
+    var d = el.querySelector('.js-date');
+    if(d && row.date){ if(d._flatpickr) d._flatpickr.setDate(row.date, false); else d.value = row.date; }
+    el.querySelector('.rate-price').value = row.price || '';
+    var u = el.querySelector('.rate-unit');
+    if(u && row.unit && Array.prototype.some.call(u.options, function(o){ return o.value===row.unit; })) u.value = row.unit;
+  });
+  refreshRateStatuses();
+  rcApplyView();
+}
+function rcResetFormMeta(){
+  _rcEditId = null;
+  rcSetView(false);
+  $rc('rcf-title').textContent = 'New Rate Card';
+  $rc('rcf-sub').textContent = 'กรอกข้อมูลสื่อและช่วงราคา — สถานะจะอัปเดตอัตโนมัติตามวันที่';
+  $rc('rcf-save-label').textContent = 'Save Rate Card';
+}
+
+/* ===== Sale Packages ===== */
+var SALE_PACKAGES = [
+  {name:'PlanBTV 240Full', group:'Digital', type:'Plan B TV', n:8, desc:'จอดิจิทัลเครือข่ายทั่วกรุงเทพฯ 240 วินาที/ชั่วโมง'},
+  {name:'Bangkok Jams Network', group:'Digital', type:'Bangkok Jams', n:6, desc:'จอดิจิทัลบนเส้นทางจราจรหนาแน่นในกรุงเทพฯ'},
+  {name:'Billboard Nationwide 40', group:'Billboard', type:'Billboard Nationwide', n:7, desc:'บิลบอร์ดขนาดใหญ่ทั่วประเทศ'},
+  {name:'Unipole Premium', group:'Billboard', type:'Unipole Billboard', n:5, desc:'ยูนิโพลทำเลเกรด A ในเขตเมือง'},
+  {name:'BTS Cityline Pack', group:'BTS Cityline', type:'BTS On Station', n:6, desc:'สื่อบนสถานี BTS สายสุขุมวิทและสีลม'},
+  {name:'Airport Gateway Pack', group:'Airport Digital', type:'Airport Traveller Series', n:5, desc:'สื่อดิจิทัลในสนามบินหลัก'},
+  {name:'Transit Fleet Bundle', group:'Transit', type:'NCA Bus Wrap', n:6, desc:'รถโดยสารประจำทางหุ้มโฆษณาเต็มคัน'},
+  {name:'Retail Mall Bundle', group:'Retail', type:'MBK LED', n:5, desc:'จอ LED ภายในศูนย์การค้า'}
+];
+function pkgMembers(name){
+  var pk = SALE_PACKAGES.filter(function(x){ return x.name===name; })[0];
+  if(!pk) return [];
+  var pool = CODE_CATALOG.filter(function(c){ return c.group===pk.group && c.type===pk.type; });
+  if(pool.length < pk.n) pool = pool.concat(CODE_CATALOG.filter(function(c){ return c.group===pk.group && pool.indexOf(c)<0; }));
+  return pool.slice(0, pk.n);
+}
+function rcfInitPackages(){
+  var sel = $rc('rcf-pkg'); if(!sel || sel.options.length>1) return;
+  sel.innerHTML = '<option value="">— เลือก —</option>' + SALE_PACKAGES.map(function(p){ return '<option>'+esc(p.name)+'</option>'; }).join('');
+}
+function rcfOnPkgChange(){
+  var name = $rc('rcf-pkg').value;
+  var members = name ? pkgMembers(name) : [];
+  $rc('rcf-pkg-view').disabled = !members.length;
+  var pk = SALE_PACKAGES.filter(function(x){ return x.name===name; })[0];
+  $rc('rcf-pkg-hint').textContent = pk ? (pk.desc + ' · ' + members.length + ' Products') : 'เลือก Package เพื่อดูรายการ Product ที่อยู่ภายใน';
+}
+function rcPkgPopup(){
+  var name = $rc('rcf-pkg').value; if(!name) return;
+  var pk = SALE_PACKAGES.filter(function(x){ return x.name===name; })[0] || {};
+  var members = pkgMembers(name);
+  $rc('cm-title').textContent = name;
+  $rc('cm-sub').textContent = (pk.desc||'') + ' · ทั้งหมด ' + members.length + ' Products';
+  $rc('cm-body').innerHTML = members.map(function(c,i){
+    return '<div class="cm-row"><span class="cm-idx">'+(i+1)+'</span><span class="cm-code">'+esc(c.code)+'</span>'+
+           '<span class="cm-loc">'+esc(c.location)+' · '+esc(c.province)+'</span></div>';
+  }).join('');
+  $rc('rc-codes-modal').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+
+/* ===== Attachments (drag & drop) ===== */
+var RC_FILES = [];
+function rcDzOver(e){ e.preventDefault(); $rc('rcf-dz').classList.add('drag'); }
+function rcDzLeave(e){ e.preventDefault(); $rc('rcf-dz').classList.remove('drag'); }
+function rcDzDrop(e){ e.preventDefault(); $rc('rcf-dz').classList.remove('drag'); rcDzAdd(e.dataTransfer.files); }
+function rcDzPick(e){ rcDzAdd(e.target.files); e.target.value=''; }
+function rcDzAdd(list){
+  Array.prototype.forEach.call(list||[], function(f){
+    if(RC_FILES.some(function(x){ return x.name===f.name && x.size===f.size; })) return;
+    RC_FILES.push({name:f.name, size:f.size});
+  });
+  rcDzRender();
+}
+function rcDzRemove(i, e){ if(e){ e.stopPropagation(); } RC_FILES.splice(i,1); rcDzRender(); }
+function _rcFileSize(b){
+  if(b < 1024) return b + ' B';
+  if(b < 1048576) return (b/1024).toFixed(1) + ' KB';
+  return (b/1048576).toFixed(1) + ' MB';
+}
+function rcDzRender(){
+  $rc('rcf-files').innerHTML = RC_FILES.map(function(f,i){
+    var ext = (f.name.split('.').pop()||'file').slice(0,4);
+    return '<div class="dz-item"><span class="dz-ic">'+esc(ext)+'</span><span class="dz-nm">'+esc(f.name)+'</span>'+
+      '<span class="dz-sz">'+_rcFileSize(f.size)+'</span>'+
+      '<button type="button" class="dz-rm" title="ลบไฟล์" onclick="rcDzRemove('+i+',event)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" d="M6 18L18 6M6 6l12 12"/></svg></button></div>';
+  }).join('');
+}
 
 /* ===== Type-dependent behaviour (By Unit / By Pack) ===== */
 var UNIT_OPTS = { unit:['Month','Day'], pack:['Package per Month','Package per Day'] };
@@ -1180,11 +1418,11 @@ function rcfRefreshUnits(){
 }
 function rcfOnTypeChange(){
   var pack = rcfType()==='pack';
-  $rc('rcf-code').parentNode.classList.toggle('hidden', pack);       /* cbx-wrap of single select */
-  $rc('rcf-code-multi').classList.toggle('hidden', !pack);
-  $rc('mcb-clear').classList.toggle('hidden', !pack);
+  $rc('rcf-code-block').classList.toggle('hidden', pack);
+  $rc('rcf-pkg-block').classList.toggle('hidden', !pack);
   rcfRefreshUnits();
-  rcfSyncCodes();
+  if(pack){ rcfInitPackages(); rcfOnPkgChange(); }
+  else { rcfSyncCodes(); }
 }
 
 /* ===== Multi-select combobox for Code Product (By Pack) ===== */
@@ -1235,7 +1473,6 @@ function mcbToggle(code){
 function mcbRemove(code,e){ if(e){e.preventDefault();e.stopPropagation();} MCB_SEL=MCB_SEL.filter(function(c){return c!==code}); mcbTags(); mcbDraw(); mcbHint(); }
 function mcbClear(){ MCB_SEL=[]; mcbTags(); mcbDraw(); mcbHint(); }
 function mcbHint(){
-  if(rcfType()!=='pack') return;
   var pool=mcbPool();
   $rc('rcf-code-hint').textContent = pool.length
     ? 'เลือกแล้ว '+MCB_SEL.length+' จาก '+pool.length+' รายการ'
@@ -1316,8 +1553,8 @@ function rcCombo(sel){
   panel.addEventListener('mousedown',function(e){ var o=e.target.closest('.cbx-opt'); if(!o) return; e.preventDefault(); commit(o.dataset.v); inp.focus(); });
   sync();
 }
-function rcInitCombos(){ ['rcf-group','rcf-mtype','rcf-code','rcf-pkg'].forEach(function(id){ rcCombo($rc(id)); }); }
-function rcSyncCombos(){ ['rcf-group','rcf-mtype','rcf-code','rcf-pkg'].forEach(function(id){ var e=$rc(id); if(e && e._cbxSync) e._cbxSync(); }); }
+function rcInitCombos(){ rcfInitPackages(); ['rcf-group','rcf-mtype','rcf-pkg'].forEach(function(id){ rcCombo($rc(id)); }); }
+function rcSyncCombos(){ ['rcf-group','rcf-mtype','rcf-pkg'].forEach(function(id){ var e=$rc(id); if(e && e._cbxSync) e._cbxSync(); }); }
 
 /* ===== New Rate Card form panel ===== */
 function rcOpenForm(){
@@ -1326,6 +1563,16 @@ function rcOpenForm(){
   rcfRefreshUnits();
   $rc('rcf-overlay').classList.remove('hidden');
   $rc('rcf-drawer').classList.add('open');
+}
+function rcNewForm(){
+  rcResetFormMeta();
+  MCB_SEL=[]; RC_FILES=[];
+  var radio=document.querySelector('input[name="rcf-type"][value="unit"]'); if(radio) radio.checked=true;
+  $rc('rcf-group').value=''; $rc('rcf-mtype').value=''; if($rc('rcf-pkg')) $rc('rcf-pkg').value='';
+  var list=$rc('rate-list');
+  Array.prototype.slice.call(list.querySelectorAll('.rate-row')).forEach(function(n){ n.remove(); });
+  rcOpenForm();
+  rcDzRender();
 }
 function rcCloseForm(){ $rc('rcf-overlay').classList.add('hidden'); $rc('rcf-drawer').classList.remove('open'); }
 
@@ -1389,6 +1636,7 @@ function addRateRow(){
   list.appendChild(row);
   rcInitDatePicker(row.querySelector('.js-date'));
   refreshRateStatuses();
+  return row;
 }
 function rcInitDatePicker(el){
   if(!el) return;
@@ -1412,27 +1660,37 @@ function removeRateRow(btn){
   refreshRateStatuses();
 }
 function rcSaveForm(){
+  if(_rcViewMode) return;
   var kind = (document.querySelector('input[name="rcf-type"]:checked')||{}).value || 'unit';
   var group = $rc('rcf-group').value, mtype = $rc('rcf-mtype').value;
-  var pkg = $rc('rcf-pkg').value;
-  var codes = kind==='pack' ? MCB_SEL.slice() : ($rc('rcf-code').value ? [$rc('rcf-code').value] : []);
+  var pkg = kind==='pack' ? $rc('rcf-pkg').value : '';
+  var codes = kind==='pack' ? pkgMembers(pkg).map(function(c){ return c.code; }) : MCB_SEL.slice();
   if(!group || !mtype){ rcToast('กรุณาเลือก Media Group และ Media Type'); return; }
-  if(!codes.length){ rcToast('กรุณาเลือก Code Product'); return; }
+  if(kind==='pack' && !pkg){ rcToast('กรุณาเลือก Sale Package'); return; }
+  if(!codes.length){ rcToast(kind==='pack' ? 'Package นี้ไม่มี Product' : 'กรุณาเลือก Code Product'); return; }
   var code = codes.length>1 ? codes[0]+' +'+(codes.length-1) : codes[0];
   var cat = CODE_CATALOG.filter(function(c){ return c.code===codes[0]; })[0] || {};
   var rows = Array.prototype.slice.call(document.querySelectorAll('#rate-list .rate-row'));
   var priced = rows.map(function(r){
     return { date:r.querySelector('.js-date').value.trim(), price:Math.max(0, Number(r.querySelector('.rate-price').value)||0),
-             status:(r.querySelector('.rate-badge').textContent||'').trim() };
+             unit:(r.querySelector('.rate-unit')||{}).value||'', status:(r.querySelector('.rate-badge').textContent||'').trim() };
   }).filter(function(x){ return x.date && x.price; });
   if(!priced.length){ rcToast('กรุณากรอกอย่างน้อย 1 รายการราคา (วันที่ + ราคา)'); return; }
   var cur = priced.filter(function(x){return x.status==='Current'})[0] || priced[0];
   var dmy = cur.date.split('/');
-  RATES.unshift({ id: Math.max.apply(null, RATES.map(function(r){return r.id}).concat([0]))+1,
-    code:codes[0], codes:codes, group:group, type:mtype, pkg:pkg||'Single', location: codes.length>1 ? (codes.length+' Code Products · '+(cat.location||'')) : (cat.location||'—'), province:cat.province||'—',
-    date: dmy[2]+'-'+dmy[1]+'-'+dmy[0], price:cur.price, kind:kind });
-  MCB_SEL=[]; mcbTags();
-  rcCloseForm(); _rcPage=1; rcRender(); rcToast('บันทึก '+code+' เรียบร้อย');
+  var payload = { code:codes[0], codes:codes, group:group, type:mtype, pkg: kind==='pack' ? (pkg||'—') : '—',
+    location: codes.length>1 ? (codes.length+' Code Products · '+(cat.location||'')) : (cat.location||'—'),
+    province:cat.province||'—', date: dmy[2]+'-'+dmy[1]+'-'+dmy[0], price:cur.price, kind:kind,
+    rows: priced.map(function(x){ return {date:x.date, price:x.price, unit:x.unit}; }) };
+  if(_rcEditId){
+    var target = RATES.filter(function(r){ return r.id===_rcEditId; })[0];
+    if(target) Object.keys(payload).forEach(function(k){ target[k] = payload[k]; });
+  } else {
+    payload.id = Math.max.apply(null, RATES.map(function(r){return r.id}).concat([0]))+1;
+    RATES.unshift(payload);
+  }
+  MCB_SEL=[]; mcbTags(); RC_FILES=[]; rcDzRender();
+  var wasEdit=!!_rcEditId; rcResetFormMeta(); rcCloseForm(); if(!wasEdit) _rcPage=1; rcRender(); rcToast((wasEdit?'อัปเดต ':'บันทึก ')+code+' เรียบร้อย');
 }
 
 document.addEventListener('DOMContentLoaded', function(){
