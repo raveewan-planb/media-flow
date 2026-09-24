@@ -64,6 +64,27 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#4790FF;box-sh
 .btn-import:hover{background:rgba(16,185,129,.18);border-color:rgba(16,185,129,.45)}
 .btn-export{background:rgba(245,158,11,.12);border-color:rgba(245,158,11,.32);color:#B45309}
 .btn-export:hover{background:rgba(245,158,11,.20);border-color:rgba(245,158,11,.48)}
+.btn-cols{background:rgba(45,86,210,.09);border-color:rgba(45,86,210,.26);color:#2D56D2;position:relative}
+.cols-wrap{position:relative}
+.cols-panel{position:absolute;right:0;top:calc(100% + 6px);z-index:60;width:238px;background:#fff;border:1px solid #E2E8F0;border-radius:10px;box-shadow:0 12px 34px rgba(11,20,48,.14);padding:6px}
+.cols-panel[hidden]{display:none}
+.cols-head{display:flex;align-items:center;justify-content:space-between;padding:6px 8px 7px;border-bottom:1px solid #F1F5F9;margin-bottom:4px}
+.cols-head span{font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:rgba(30,41,59,.55)}
+.cols-head button{font-size:11px;color:#2D56D2;background:none;border:0;cursor:pointer;padding:2px 4px;border-radius:4px;font-family:'Kanit',sans-serif}
+.cols-head button:hover{background:rgba(45,86,210,.08)}
+.cols-list{max-height:320px;overflow-y:auto}
+.cols-item{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:7px;font-size:12.5px;color:#0B1430;cursor:pointer}
+.cols-item .cols-grip{width:13px;height:13px;color:rgba(30,41,59,.3);flex-shrink:0;cursor:grab}
+.cols-item:hover .cols-grip{color:rgba(30,41,59,.55)}
+.cols-item.locked .cols-grip{visibility:hidden}
+.cols-item.dragging{opacity:.4}
+.cols-item.drop-before{box-shadow:inset 0 2px 0 #2D56D2}
+.cols-item.drop-after{box-shadow:inset 0 -2px 0 #2D56D2}
+.cols-item span.lbl{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cols-item:hover{background:#F8FAFC}
+.cols-item input{width:15px;height:15px;accent-color:#2D56D2;margin:0;cursor:pointer}
+.cols-item.locked{color:rgba(30,41,59,.45);cursor:not-allowed}
+.cols-count{display:inline-flex;align-items:center;justify-content:center;min-width:17px;height:17px;padding:0 5px;border-radius:99px;background:#2D56D2;color:#fff;font-size:10px;font-weight:600}
 .btn-rate{background:rgba(124,58,237,.10);border-color:rgba(124,58,237,.28);color:#6D28D9}
 .btn-rate:hover{background:rgba(124,58,237,.18);border-color:rgba(124,58,237,.44)}
 table th{position:sticky;top:0;z-index:1}
@@ -387,6 +408,13 @@ th.sortable.sort-active .sort-ind{opacity:1;color:#2D56D2}
 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24"><path d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12M12 16.5V3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
 <span>Export</span>
 </button>
+<div class="cols-wrap">
+<button type="button" class="btn-soft btn-cols" onclick="colsToggle(event)">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24"><path d="M3.75 4.5h16.5v15H3.75zM9.75 4.5v15m4.5-15v15" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<span>Columns</span><span class="cols-count" id="cols-count">0</span>
+</button>
+<div class="cols-panel" id="cols-panel" hidden></div>
+</div>
 <a href="rate-card.html" class="btn-soft btn-rate">
 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.5" viewbox="0 0 24 24"><path d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z" stroke-linecap="round" stroke-linejoin="round"></path></svg>
 <span>Rate Card</span>
@@ -1188,7 +1216,7 @@ function invEdit(code){ window.location.href = 'media-edit.html'; }
 function renderList(allRows) {
   var tbody = document.getElementById('inv-table-body');
   if (!allRows.length) {
-    tbody.innerHTML = '<tr><td colspan="13" class="px-4 py-12 text-center text-[13px]" style="color:rgba(30,41,59,0.5)">No matching assets found</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="'+(typeof colsVisibleCount==='function'?colsVisibleCount():13)+'" class="px-4 py-12 text-center text-[13px]" style="color:rgba(30,41,59,0.5)">No matching assets found</td></tr>';
     return;
   }
   // Page slice
@@ -1196,21 +1224,22 @@ function renderList(allRows) {
   var rows = allRows.slice(start, start + _pageSize);
   tbody.innerHTML = rows.map(function(r) {
     return '<tr class="cursor-pointer">' +
-      '<td class="text-center">' + actionButtons(r.code) + '</td>' +
-      '<td><span class="text-[11.5px] font-mono font-semibold" style="color:#0B1430">' + r.code + '</span></td>' +
-      '<td><span class="text-[11px] font-mono" style="color:rgba(30,41,59,0.55)">' + r.epicorCode + '</span></td>' +
-      '<td class="cell-ellipsis"><span class="text-[12.5px] font-medium text-[#0B1430]" title="' + r.name + '">' + r.name + '</span></td>' +
-      '<td class="cell-ellipsis"><span class="text-[11.5px]" style="color:rgba(30,41,59,0.75)" title="' + r.locationText + '">' + r.locationText + '</span></td>' +
-      '<td>' + groupChip(r.category) + '</td>' +
-      '<td><span class="text-[11.5px]" style="color:rgba(30,41,59,0.78)">' + r.group + '</span></td>' +
-      '<td>' + typeBadgeMini(r.type) + '</td>' +
-      '<td class="cell-ellipsis"><span class="text-[11.5px]" style="color:rgba(30,41,59,0.75)" title="' + r.package + '">' + r.package + '</span></td>' +
-      '<td>' + mediaStatusChip(r.mediaStatus) + '</td>' +
-      '<td>' + bookingStatusChip(r.bookingStatus) + '</td>' +
-      '<td><span class="text-[11.5px]" style="color:rgba(30,41,59,0.75)">' + r.province + '</span></td>' +
-      '<td class="cell-ellipsis"><span class="text-[12px] font-medium" style="color:rgba(30,41,59,0.85)" title="' + r.productOwner + '">' + r.productOwner + '</span></td>' +
+      '<td class="col-action text-center">' + actionButtons(r.code) + '</td>' +
+      '<td class="col-code"><span class="text-[11.5px] font-mono font-semibold" style="color:#0B1430">' + r.code + '</span></td>' +
+      '<td class="col-equip"><span class="text-[11px] font-mono" style="color:rgba(30,41,59,0.55)">' + r.epicorCode + '</span></td>' +
+      '<td class="col-desc cell-ellipsis"><span class="text-[12.5px] font-medium text-[#0B1430]" title="' + r.name + '">' + r.name + '</span></td>' +
+      '<td class="col-location cell-ellipsis"><span class="text-[11.5px]" style="color:rgba(30,41,59,0.75)" title="' + r.locationText + '">' + r.locationText + '</span></td>' +
+      '<td class="col-category">' + groupChip(r.category) + '</td>' +
+      '<td class="col-group"><span class="text-[11.5px]" style="color:rgba(30,41,59,0.78)">' + r.group + '</span></td>' +
+      '<td class="col-type">' + typeBadgeMini(r.type) + '</td>' +
+      '<td class="col-package cell-ellipsis"><span class="text-[11.5px]" style="color:rgba(30,41,59,0.75)" title="' + r.package + '">' + r.package + '</span></td>' +
+      '<td class="col-mstatus">' + mediaStatusChip(r.mediaStatus) + '</td>' +
+      '<td class="col-bstatus">' + bookingStatusChip(r.bookingStatus) + '</td>' +
+      '<td class="col-province"><span class="text-[11.5px]" style="color:rgba(30,41,59,0.75)">' + r.province + '</span></td>' +
+      '<td class="col-owner cell-ellipsis"><span class="text-[12px] font-medium" style="color:rgba(30,41,59,0.85)" title="' + r.productOwner + '">' + r.productOwner + '</span></td>' +
       '</tr>';
   }).join('');
+  if(typeof colsApply === 'function') colsApply();
 }
 
 function renderGrid(rows) {
@@ -1493,6 +1522,106 @@ function aiSend(text){
 
 /* Fit table viewport height — fills the screen, recalculated on resize / zoom */
 var _fitBusy = false;
+
+/* ===== Column chooser ===== */
+var COLS = [
+  {k:'action',   label:'Action', locked:true},
+  {k:'code',     label:'Code Product'},
+  {k:'equip',    label:'Equipment ID'},
+  {k:'desc',     label:'Description'},
+  {k:'location', label:'Location'},
+  {k:'category', label:'Media Category'},
+  {k:'group',    label:'Media Group'},
+  {k:'type',     label:'Media Type'},
+  {k:'package',  label:'Sale Package'},
+  {k:'mstatus',  label:'Media Status'},
+  {k:'bstatus',  label:'Booking'},
+  {k:'province', label:'Province'},
+  {k:'owner',    label:'Product Owner'}
+];
+var COLS_OFF = {};
+function colsVisibleCount(){ return COLS.filter(function(c){ return !COLS_OFF[c.k]; }).length; }
+function colsApply(){
+  colsApplyOrder();
+  COLS.forEach(function(c){
+    var hide = !!COLS_OFF[c.k];
+    document.querySelectorAll('#inv-table .col-'+c.k).forEach(function(el){ el.style.display = hide ? 'none' : ''; });
+  });
+  var n = document.getElementById('cols-count');
+  if(n) n.textContent = colsVisibleCount();
+  if(typeof fitTableHeight === 'function') fitTableHeight();
+}
+function colsDraw(){
+  var p = document.getElementById('cols-panel'); if(!p) return;
+  var grip = '<svg class="cols-grip" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.7"/><circle cx="15" cy="6" r="1.7"/><circle cx="9" cy="12" r="1.7"/><circle cx="15" cy="12" r="1.7"/><circle cx="9" cy="18" r="1.7"/><circle cx="15" cy="18" r="1.7"/></svg>';
+  p.innerHTML =
+    '<div class="cols-head"><span>คอลัมน์ · ลากเพื่อจัดลำดับ</span><div><button type="button" onclick="colsAll(true)">ทั้งหมด</button><button type="button" onclick="colsAll(false)">ล้าง</button></div></div>'+
+    '<div class="cols-list" id="cols-list">'+ COLS.map(function(c){
+      var on = !COLS_OFF[c.k];
+      return '<label class="cols-item'+(c.locked?' locked':'')+'" data-k="'+c.k+'"'+(c.locked?'':' draggable="true"')+'>'+grip+
+        '<input type="checkbox" '+(on?'checked':'')+(c.locked?' disabled':'')+' onchange="colsSet(\''+c.k+'\',this.checked)"/><span class="lbl">'+c.label+'</span></label>';
+    }).join('') + '</div>';
+  colsBindDrag();
+}
+var _colsDragK = null;
+function colsBindDrag(){
+  document.querySelectorAll('#cols-list .cols-item[draggable]').forEach(function(el){
+    el.addEventListener('dragstart', function(e){ _colsDragK = el.dataset.k; el.classList.add('dragging'); e.dataTransfer.effectAllowed='move'; try{e.dataTransfer.setData('text/plain', el.dataset.k);}catch(x){} });
+    el.addEventListener('dragend', function(){ _colsDragK=null; el.classList.remove('dragging'); colsClearMarks(); });
+    el.addEventListener('dragover', function(e){
+      if(!_colsDragK || _colsDragK===el.dataset.k) return;
+      e.preventDefault(); e.dataTransfer.dropEffect='move';
+      var r = el.getBoundingClientRect(); var after = (e.clientY - r.top) > r.height/2;
+      colsClearMarks(); el.classList.add(after?'drop-after':'drop-before');
+    });
+    el.addEventListener('dragleave', function(){ el.classList.remove('drop-before','drop-after'); });
+    el.addEventListener('drop', function(e){
+      if(!_colsDragK || _colsDragK===el.dataset.k) return;
+      e.preventDefault();
+      var r = el.getBoundingClientRect(); var after = (e.clientY - r.top) > r.height/2;
+      colsMove(_colsDragK, el.dataset.k, after);
+    });
+  });
+}
+function colsClearMarks(){ document.querySelectorAll('#cols-list .cols-item').forEach(function(x){ x.classList.remove('drop-before','drop-after'); }); }
+function colsMove(fromK, toK, after){
+  var fi = COLS.findIndex(function(c){ return c.k===fromK; });
+  if(fi < 0) return;
+  var item = COLS.splice(fi,1)[0];
+  var ti = COLS.findIndex(function(c){ return c.k===toK; });
+  if(ti < 0){ COLS.push(item); } else { COLS.splice(after ? ti+1 : ti, 0, item); }
+  if(COLS[0].k !== 'action'){
+    var ai = COLS.findIndex(function(c){ return c.k==='action'; });
+    COLS.unshift(COLS.splice(ai,1)[0]);
+  }
+  colsDraw(); colsApply();
+}
+function colsApplyOrder(){
+  var hr = document.getElementById('inv-thead');
+  if(hr){ COLS.forEach(function(c){ var th = hr.querySelector('.col-'+c.k); if(th) hr.appendChild(th); }); }
+  document.querySelectorAll('#inv-table-body tr').forEach(function(tr){
+    if(tr.children.length < COLS.length) return;
+    COLS.forEach(function(c){ var td = tr.querySelector('.col-'+c.k); if(td) tr.appendChild(td); });
+  });
+}
+function colsSet(k, on){ if(on) delete COLS_OFF[k]; else COLS_OFF[k] = true; colsApply(); }
+function colsAll(on){
+  COLS.forEach(function(c){ if(c.locked) return; if(on) delete COLS_OFF[c.k]; else COLS_OFF[c.k]=true; });
+  colsDraw(); colsApply();
+}
+function colsToggle(e){
+  e.stopPropagation();
+  var p = document.getElementById('cols-panel'); if(!p) return;
+  if(p.hidden){ colsDraw(); p.hidden = false; } else { p.hidden = true; }
+}
+document.addEventListener('click', function(e){
+  var p = document.getElementById('cols-panel');
+  if(p && !p.hidden && !e.target.closest('.cols-wrap')) p.hidden = true;
+});
+document.addEventListener('keydown', function(e){
+  if(e.key==='Escape'){ var p=document.getElementById('cols-panel'); if(p) p.hidden = true; }
+});
+
 function fitTableHeight(){
   var box = document.getElementById('inv-table-scroll');
   if(!box || _fitBusy) return;
@@ -1520,6 +1649,7 @@ function fitTableHeight(){
 window.addEventListener('resize', fitTableHeight);
 if(window.visualViewport) window.visualViewport.addEventListener('resize', fitTableHeight);
 document.addEventListener('DOMContentLoaded', function(){
+  colsApply();
   fitTableHeight();
   setTimeout(fitTableHeight, 120);
   var main = document.querySelector('main');

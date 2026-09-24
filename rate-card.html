@@ -149,6 +149,39 @@ th.rc-sortable.sort-active .sort-ind{opacity:1;color:#2D56D2}
 .dz-sz{font-size:11px;color:rgba(30,41,59,.5);margin-left:auto;flex:0 0 auto;font-variant-numeric:tabular-nums}
 .dz-rm{width:26px;height:26px;border-radius:6px;border:0;background:rgba(225,29,72,.10);color:#BE123C;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;flex:0 0 auto;transition:background-color .15s}
 .dz-rm:hover{background:rgba(225,29,72,.2)}
+.rg-menu{position:absolute;right:0;top:calc(100% + 6px);z-index:80;min-width:210px;background:#fff;border:1px solid #E2E8F0;border-radius:10px;box-shadow:0 10px 32px rgba(11,20,48,.14);padding:4px}
+.rg-menu[hidden]{display:none}
+.rg-menu button{width:100%;text-align:left;padding:8px 10px;border-radius:7px;border:0;background:transparent;font-size:13px;color:#0B1430;cursor:pointer;font-family:'Kanit',sans-serif;display:flex;align-items:center;gap:8px}
+.rg-menu button:hover:not(:disabled){background:#F1F5F9}
+.rg-menu button:disabled{color:rgba(30,41,59,.35);cursor:not-allowed}
+.rg-menu button .tick{margin-left:auto;font-size:10.5px;color:rgba(30,41,59,.4)}
+.rg-empty{border:1.5px dashed #CBD5E1;border-radius:12px;padding:22px 16px;text-align:center;font-size:12.5px;color:rgba(30,41,59,.55);background:#FCFDFE}
+.rg-card{border:1px solid #E2E8F0;border-radius:12px;background:#fff;overflow:hidden}
+.rg-head{display:flex;align-items:center;gap:9px;padding:7px 10px;background:#F8FAFC;border-bottom:1px solid #E2E8F0}
+.rg-unit{display:inline-flex;align-items:center;gap:5px;height:23px;padding:0 10px;border-radius:99px;font-size:12px;font-weight:600;background:rgba(45,86,210,.10);color:#2D56D2}
+.rg-cur{font-size:12px;color:rgba(30,41,59,.6);display:flex;align-items:center;gap:6px}
+.rg-cur b{font-size:13.5px;color:#0B1430;font-variant-numeric:tabular-nums}
+.rg-del{margin-left:auto;width:25px;height:25px;border-radius:6px;border:0;background:rgba(225,29,72,.10);color:#BE123C;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;flex:0 0 auto;transition:background-color .15s}
+.rg-del:hover{background:rgba(225,29,72,.2)}
+.rg-rows{padding:5px 10px 6px}
+.rg-foot{padding:0 10px 8px}
+.rg-add-row{width:100%;height:27px;border-radius:8px;border:1px dashed #CBD5E1;background:#FCFDFE;color:#2D56D2;font-size:12px;font-weight:500;display:inline-flex;align-items:center;justify-content:center;gap:6px;cursor:pointer;transition:all .15s;font-family:'Kanit',sans-serif}
+.rg-add-row:hover{border-color:#4790FF;background:rgba(71,144,255,.06)}
+.rate-head{display:none}
+.rg-card .rate-row .rcf-input{height:30px;font-size:12.5px;padding:0 10px;border-radius:7px}
+.rg-card .rate-row .fld-date-wrap .rcf-input{padding-right:28px}
+.rg-card .rate-row .fld-date-wrap .cal-icn{right:9px;width:13px;height:13px}
+.rg-card .rate-row .rcf-suffix .sfx{right:9px;font-size:10.5px}
+.rg-card .rate-row .rate-price{padding-right:22px!important}
+.rg-card .rate-year-chip{height:30px;min-width:44px;padding:0 7px;font-size:11.5px;border-radius:7px}
+.rg-card .rate-badge{min-width:0;width:100%;max-width:78px;padding:2px 7px;font-size:10px}
+.rg-card .rate-icon-btn{width:26px;height:26px;border-radius:5px}
+.rg-card .rate-icon-btn svg{width:13px;height:13px}
+.rg-card .rate-actions{gap:3px}
+.rg-card .rate-row{border:0;border-radius:0;background:transparent}
+.rg-card .rate-row + .rate-row{border-top:1px solid #F1F5F9}
+.rg-card .rate-row:hover{background:#F8FAFC}
+.rcf-view .rg-del,.rcf-view .rg-add-row,.rcf-view #rg-add-btn{display:none!important}
 .mcb-box{min-height:38px;border:1px solid #E2E8F0;border-radius:8px;background:#FCFDFE;padding:5px 6px;display:flex;flex-wrap:wrap;gap:5px;align-items:center;cursor:text;transition:all .15s}
 .mcb-box:hover{background:#fff;border-color:#CBD5E8}
 .mcb-box.focus{background:#fff;border-color:#4790FF;box-shadow:0 0 0 3px rgba(71,144,255,.18)}
@@ -203,20 +236,12 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
 .rate-hint{font-size:11.5px;color:rgba(30,41,59,.55);padding:0 2px}
 .rate-list{display:flex;flex-direction:column;gap:7px}
 .rate-head{display:none}
-.rate-row{display:grid;grid-template-columns:1fr;gap:10px;padding:12px;border:1px solid #E2E8F0;border-radius:10px;background:#fff;transition:all .15s}
+.rate-row{display:grid;grid-template-columns:1fr;gap:8px;padding:10px;border:1px solid #E2E8F0;border-radius:10px;background:#fff;transition:all .15s}
 .rate-row:hover{border-color:#CBD5E1}
-.rate-mobile-label{font-size:11px;font-weight:600;color:rgba(30,41,59,.55);text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px}
+.rate-mobile-label{font-size:10px;font-weight:600;color:rgba(30,41,59,.55);text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px}
 .rate-status-cell,.rate-actions{display:flex;gap:5px}
 .rate-status-cell{flex-direction:column}
 .rate-actions{flex-direction:row;align-items:center}
-@media(min-width:760px){
-  .rate-head{display:grid;grid-template-columns:minmax(120px,1.2fr) 66px minmax(100px,1fr) minmax(110px,1fr) 100px 76px;align-items:center;gap:10px;padding:0 12px 2px;font-size:10.5px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:rgba(30,41,59,.55)}
-  .rate-head .text-center{text-align:center}
-  .rate-row{grid-template-columns:minmax(120px,1.2fr) 66px minmax(100px,1fr) minmax(110px,1fr) 100px 76px;align-items:center;gap:10px;padding:9px 12px}
-  .rate-row .rate-mobile-label{display:none}
-  .rate-status-cell{flex-direction:row;justify-content:center}
-  .rate-actions{justify-content:flex-end}
-}
 .rate-year-chip{display:inline-flex;align-items:center;justify-content:center;height:34px;min-width:58px;padding:0 10px;border-radius:8px;background:#F1F5F9;color:#0B1430;font-weight:600;font-size:12.5px;font-variant-numeric:tabular-nums;border:1px solid #E2E8F0}
 .rate-badge{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:99px;font-size:11px;font-weight:600;justify-content:center;min-width:74px}
 .rate-badge::before{content:'';width:5px;height:5px;border-radius:99px;background:currentColor}
@@ -224,6 +249,13 @@ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
 .rate-badge.history{background:rgba(100,116,139,.10);color:#475569}
 .rate-badge.advance{background:rgba(45,86,210,.10);color:#2D56D2}
 .rate-badge.draft{background:rgba(148,163,184,.15);color:rgba(30,41,59,.55)}
+@media(min-width:720px){
+  .rate-head{display:grid;grid-template-columns:minmax(104px,1.1fr) 50px minmax(92px,1fr) 78px 54px;align-items:center;gap:8px;padding:0 2px 3px;font-size:9.5px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:rgba(30,41,59,.5)}
+  .rate-row{grid-template-columns:minmax(104px,1.1fr) 50px minmax(92px,1fr) 78px 54px;align-items:center;gap:8px;padding:4px 2px}
+  .rate-row .rate-mobile-label{display:none}
+  .rate-status-cell{flex-direction:row;justify-content:center}
+  .rate-actions{justify-content:flex-end}
+}
 .rate-icon-btn{width:32px;height:32px;border-radius:6px;border:0;background:transparent;display:inline-flex;align-items:center;justify-content:center;transition:background-color .15s;cursor:pointer;flex-shrink:0}
 .rate-icon-btn.preview{background:rgba(14,165,233,.10);color:#0284C7}
 .rate-icon-btn.preview:hover{background:rgba(14,165,233,.20)}
@@ -677,16 +709,19 @@ th.sortable.sort-active .sort-ind{opacity:1;color:#2D56D2}
             <span class="rate-badge current">Current</span>
             <span class="rate-badge history">History</span>
           </div>
-          <button type="button" onclick="addRateRow()" class="rate-add-btn">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
-            <span>เพิ่มรายการราคา</span>
-          </button>
-        </div>
-        <div class="rate-hint">ปีคำนวณจากวันที่อัตโนมัติ · เรียงลำดับ Advance → Current → History</div>
-        <div id="rate-list" class="rate-list">
-          <div class="rate-head">
-            <div>Announcement Date</div><div class="text-center">Year</div><div>Price</div><div>Price Per Unit</div><div class="text-center">Status</div><div></div>
+          <div class="relative">
+            <button type="button" id="rg-add-btn" onclick="rgToggleMenu(event)" class="rate-add-btn">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+              <span>เพิ่มหน่วยราคา</span>
+            </button>
+            <div id="rg-menu" class="rg-menu" hidden></div>
           </div>
+        </div>
+        <div class="rate-hint">แยกราคาตาม <b style="color:rgba(30,41,59,.7)">Price Per Unit</b> — แต่ละหน่วยมีสถานะ Current ของตัวเอง · ปีคำนวณจากวันที่อัตโนมัติ</div>
+        <div id="rate-groups" class="space-y-2"></div>
+        <div id="rg-empty" class="rg-empty">
+          <svg class="w-6 h-6 mx-auto mb-2" style="color:rgba(30,41,59,.3)" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+          ยังไม่มีราคาขาย — กด <b>เพิ่มหน่วยราคา</b> เพื่อเริ่มกรอก
         </div>
       </div>
     </div>
@@ -721,10 +756,10 @@ th.sortable.sort-active .sort-ind{opacity:1;color:#2D56D2}
 .rc-sheet{width:100%;max-width:1100px;aspect-ratio:16/9;background:#fff;border:6px solid #7B1FA2;border-radius:4px;position:relative;font-family:'Kanit',sans-serif;color:#0B1430;display:grid;grid-template-rows:auto 1fr;overflow:hidden;box-shadow:0 8px 30px rgba(11,20,48,0.15)}
 /* Top brand row */
 .rc-brandbar{display:flex;align-items:center;padding:10px 24px 12px;border-bottom:0;background:#fff}
-.rc-brand{display:flex;align-items:flex-end;gap:0}
+.rc-brand{display:flex;align-items:center;gap:14px}
 .rc-brand-text{font-size:22px;font-weight:700;color:#7B1FA2;line-height:1;letter-spacing:-.01em;font-family:'Kanit',sans-serif}
 .rc-brand-text .small{display:block;font-size:13px;font-weight:500;color:#7B1FA2;line-height:1.1}
-.rc-region-badge{width:64px;height:64px;border-radius:50%;background:#7B1FA2;color:#fff;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;letter-spacing:.02em;margin-left:-10px;flex-shrink:0;border:3px solid #fff;box-shadow:0 0 0 2px #7B1FA2}
+.rc-region-badge{width:64px;height:64px;border-radius:50%;background:#7B1FA2;color:#fff;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;letter-spacing:.02em;margin-left:0;flex-shrink:0;border:3px solid #fff;box-shadow:0 0 0 2px #7B1FA2}
 /* Body grid */
 .rc-body{display:grid;grid-template-columns:1fr 1.15fr;gap:0;padding:0 24px 16px}
 .rc-left{display:flex;flex-direction:column;gap:0}
@@ -1152,7 +1187,7 @@ function buildRatePreview(o){
   var region = RC_REGION[cat.province || (rec?rec.province:'')] || 'AREA';
 
   var mediaCode = codes.length>1 ? codes[0]+' +'+(codes.length-1) : (codes[0] || 'M-CODE-000');
-  var titleTh   = cat.titleTh || (rec ? rec.type : '— กรุณาเลือก Code Product —');
+  var titleTh   = cat.titleTh || (rec ? rec.type : '— กรุณากรอก Description (TH) —');
   var locTh     = cat.location || (rec ? rec.location : '');
   var descTh    = cat.viewableFrom || '';
   var eyeballs  = cat.eyeballs || '';
@@ -1185,9 +1220,6 @@ function buildRatePreview(o){
         '<div class="rc-title-th" style="color:'+brand.color+';border-color:'+brand.color+'">'+esc(titleTh)+'</div>'+
       '</div>'+
       '<div class="rc-info">'+
-        row('Type', kind==='pack' ? 'By Pack' : 'By Unit')+
-        row('Sale Package', esc(rec ? (rec.pkg||'—') : (kind==='pack' ? ($rc('rcf-pkg').value||'') : '—')))+
-        row('Code Product', codes.length ? (codes.length>1 ? esc(codes.join(', ')) : esc(codes[0])) : '')+
         row('Location', esc(locTh))+
         row('Viewable From', esc(descTh))+
         row('Eyeballs/Month', eyeballs ? _rcFmt(eyeballs) : '')+
@@ -1223,7 +1255,7 @@ function openRowRatePreview(btn){
   openRatePreview({
     record: rec,
     price: row.querySelector('.rate-price') ? row.querySelector('.rate-price').value : '',
-    unit:  row.querySelector('.rate-unit')  ? row.querySelector('.rate-unit').value  : '',
+    unit:  rowUnit(row),
     date:  row.querySelector('.js-date')    ? row.querySelector('.js-date').value    : '',
     status: badge ? badge.textContent.trim() : ''
   });
@@ -1307,16 +1339,18 @@ function rcEditRate(id){
     mcbTags(); mcbHint();
   }
   rcSyncCombos();
-  /* rate rows */
-  var list = $rc('rate-list');
-  Array.prototype.slice.call(list.querySelectorAll('.rate-row')).forEach(function(n){ n.remove(); });
-  (r.rows && r.rows.length ? r.rows : [{date:'', price:r.price, unit:''}]).forEach(function(row){
-    var el = addRateRow();
+  /* rate rows grouped by unit */
+  rgClear();
+  var defUnit = UNIT_OPTS[rcfType()][0];
+  var src = (r.rows && r.rows.length) ? r.rows : [{date:'', price:r.price, unit:defUnit}];
+  src.forEach(function(row){
+    var unit = UNIT_OPTS[rcfType()].indexOf(row.unit)>-1 ? row.unit : defUnit;
+    var card = Array.prototype.filter.call(document.querySelectorAll('#rate-groups .rg-card'), function(c){ return c.dataset.unit===unit; })[0];
+    if(!card) card = rgAdd(unit, true);
+    var el = addRateRow(card);
     var d = el.querySelector('.js-date');
     if(d && row.date){ if(d._flatpickr) d._flatpickr.setDate(row.date, false); else d.value = row.date; }
     el.querySelector('.rate-price').value = row.price || '';
-    var u = el.querySelector('.rate-unit');
-    if(u && row.unit && Array.prototype.some.call(u.options, function(o){ return o.value===row.unit; })) u.value = row.unit;
   });
   refreshRateStatuses();
   rcApplyView();
@@ -1410,11 +1444,12 @@ function rcfUnitOptionsHtml(kind, selected){
   }).join('');
 }
 function rcfRefreshUnits(){
-  var kind = rcfType();
-  document.querySelectorAll('#rate-list .rate-unit').forEach(function(sel){
-    var keep = UNIT_OPTS[kind].indexOf(sel.value)>-1 ? sel.value : '';
-    sel.innerHTML = rcfUnitOptionsHtml(kind, keep);
+  var allowed = UNIT_OPTS[rcfType()];
+  document.querySelectorAll('#rate-groups .rg-card').forEach(function(card){
+    if(allowed.indexOf(card.dataset.unit) < 0) card.remove();
   });
+  rgSyncEmpty();
+  var m = document.getElementById('rg-menu'); if(m) m.hidden = true;
 }
 function rcfOnTypeChange(){
   var pack = rcfType()==='pack';
@@ -1559,8 +1594,7 @@ function rcSyncCombos(){ ['rcf-group','rcf-mtype','rcf-pkg'].forEach(function(id
 /* ===== New Rate Card form panel ===== */
 function rcOpenForm(){
   rcfOnTypeChange();
-  if(!document.querySelectorAll('#rate-list .rate-row').length) addRateRow();
-  rcfRefreshUnits();
+  rgSyncEmpty();
   $rc('rcf-overlay').classList.remove('hidden');
   $rc('rcf-drawer').classList.add('open');
 }
@@ -1569,8 +1603,7 @@ function rcNewForm(){
   MCB_SEL=[]; RC_FILES=[];
   var radio=document.querySelector('input[name="rcf-type"][value="unit"]'); if(radio) radio.checked=true;
   $rc('rcf-group').value=''; $rc('rcf-mtype').value=''; if($rc('rcf-pkg')) $rc('rcf-pkg').value='';
-  var list=$rc('rate-list');
-  Array.prototype.slice.call(list.querySelectorAll('.rate-row')).forEach(function(n){ n.remove(); });
+  rgClear();
   rcOpenForm();
   rcDzRender();
 }
@@ -1582,35 +1615,6 @@ function _parseDMY(v){
   var d = new Date(+m[3], +m[2]-1, +m[1]);
   return isNaN(d.getTime()) ? null : d;
 }
-function refreshRateStatuses(doSort){
-  var list = $rc('rate-list'); if(!list) return;
-  var rows = Array.prototype.slice.call(list.querySelectorAll('.rate-row'));
-  var today = new Date(); today.setHours(0,0,0,0);
-  var data = rows.map(function(r){ return {row:r, date:_parseDMY(r.querySelector('.js-date') && r.querySelector('.js-date').value)}; });
-  var curIdx = -1, latest = -Infinity;
-  data.forEach(function(d,i){ if(d.date && d.date.getTime()<=today.getTime() && d.date.getTime()>latest){ latest=d.date.getTime(); curIdx=i; } });
-  data.forEach(function(d,i){
-    var chip=d.row.querySelector('.rate-year-chip'); if(chip) chip.textContent = d.date ? d.date.getFullYear() : '—';
-    var badge=d.row.querySelector('.rate-badge'); var st='draft', label='—';
-    if(d.date){
-      if(d.date.getTime()>today.getTime()){ st='advance'; label='Advance'; }
-      else if(i===curIdx){ st='current'; label='Current'; }
-      else { st='history'; label='History'; }
-    }
-    d.status=st;
-    if(badge){ badge.className='rate-badge '+st; badge.textContent=label; }
-  });
-  if(doSort===false) return;
-  var rank={draft:0,advance:1,current:2,history:3};
-  data.sort(function(a,b){
-    var ra=rank[a.status], rb=rank[b.status];
-    if(ra!==rb) return ra-rb;
-    return (b.date?b.date.getTime():0)-(a.date?a.date.getTime():0);
-  });
-  var head=list.querySelector('.rate-head');
-  data.forEach(function(d){ list.appendChild(d.row); });
-  if(head) list.insertBefore(head, list.firstChild);
-}
 function _rcDateMask(inp){
   var d = inp.value.replace(/\D/g,'').slice(0,8);
   var out = d.slice(0,2);
@@ -1618,33 +1622,13 @@ function _rcDateMask(inp){
   if(d.length>4) out += '/'+d.slice(4,8);
   inp.value = out;
 }
-function addRateRow(){
-  var list = $rc('rate-list'); if(!list) return;
-  var row = document.createElement('div');
-  row.className = 'rate-row';
-  row.innerHTML =
-    '<div><div class="rate-mobile-label">Announcement Date</div>'+
-      '<div class="fld-date-wrap"><input type="text" class="rcf-input tnum js-date" placeholder="dd/mm/yyyy" onchange="refreshRateStatuses()" /><svg class="cal-icn" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg></div></div>'+
-    '<div><div class="rate-mobile-label">Year</div><div class="rate-year-chip tnum">—</div></div>'+
-    '<div><div class="rate-mobile-label">Price</div><div class="rcf-suffix">'+
-      '<input type="number" min="0" step="1" class="rcf-input tnum rate-price" placeholder="0" style="padding-right:26px" oninput="rcClampPrice(this)" onkeydown="if([\'-\',\'e\',\'E\',\'+\'].indexOf(event.key)>-1) event.preventDefault()" /><span class="sfx">฿</span></div></div>'+
-    '<div><div class="rate-mobile-label">Price Per Unit</div>'+
-      '<select class="rcf-select rate-unit">'+rcfUnitOptionsHtml(rcfType())+'</select></div>'+
-    '<div class="rate-status-cell"><div class="rate-mobile-label">Status</div><span class="rate-badge draft">—</span></div>'+
-    '<div class="rate-actions">'+'<button type="button" onclick="openRowRatePreview(this)" class="rate-icon-btn preview" title="Preview Rate Card">'+'<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg></button>'+'<button type="button" onclick="removeRateRow(this)" class="rate-icon-btn danger" title="ลบรายการ">'+
-      '<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166M18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg></button></div>';
-  list.appendChild(row);
-  rcInitDatePicker(row.querySelector('.js-date'));
-  refreshRateStatuses();
-  return row;
-}
 function rcInitDatePicker(el){
   if(!el) return;
   if(typeof flatpickr !== 'undefined'){
     flatpickr(el, { dateFormat:'d/m/Y', allowInput:true, disableMobile:true, onChange:function(){ refreshRateStatuses(); } });
   } else {
     el.setAttribute('inputmode','numeric'); el.setAttribute('maxlength','10');
-    el.addEventListener('input', function(){ _rcDateMask(this); refreshRateStatuses(false); });
+    el.addEventListener('input', function(){ _rcDateMask(this); });
     el.addEventListener('blur', function(){ refreshRateStatuses(); });
   }
 }
@@ -1655,9 +1639,139 @@ function rcClampPrice(inp){
   if(!isFinite(n) || n < 0){ inp.value = '0'; return; }
   if(v.indexOf('-') > -1) inp.value = String(Math.abs(n));
 }
+
+/* ===== Unit groups ===== */
+function rgUsedUnits(){
+  return Array.prototype.map.call(document.querySelectorAll('#rate-groups .rg-card'), function(c){ return c.dataset.unit; });
+}
+function rgToggleMenu(e){
+  if(e) e.stopPropagation();
+  var m = $rc('rg-menu');
+  if(!m.hidden){ m.hidden = true; return; }
+  var used = rgUsedUnits();
+  m.innerHTML = UNIT_OPTS[rcfType()].map(function(u){
+    var on = used.indexOf(u)>-1;
+    return '<button type="button" '+(on?'disabled':'onclick="rgAdd(\''+u+'\')"')+'>'+
+      '<span>'+esc(u)+'</span>'+(on?'<span class="tick">เพิ่มแล้ว</span>':'')+'</button>';
+  }).join('');
+  m.hidden = false;
+}
+document.addEventListener('mousedown', function(e){
+  var m = document.getElementById('rg-menu');
+  if(m && !m.hidden && !e.target.closest('#rg-menu') && !e.target.closest('#rg-add-btn')) m.hidden = true;
+});
+function rgAdd(unit, silent){
+  var wrap = $rc('rate-groups'); if(!wrap) return null;
+  if(rgUsedUnits().indexOf(unit)>-1){ $rc('rg-menu').hidden = true; return null; }
+  var card = document.createElement('div');
+  card.className = 'rg-card';
+  card.dataset.unit = unit;
+  card.innerHTML =
+    '<div class="rg-head">'+
+      '<span class="rg-unit"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>'+esc(unit)+'</span>'+
+      '<span class="rg-cur">ราคาปัจจุบัน <b class="rg-cur-v">—</b></span>'+
+      '<button type="button" class="rg-del" title="ลบหน่วยราคานี้" onclick="rgRemove(this)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166M18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg></button>'+
+    '</div>'+
+    '<div class="rg-rows">'+
+      '<div class="rate-head"><div>Announcement Date</div><div class="text-center">Year</div><div>Price</div><div class="text-center">Status</div><div></div></div>'+
+      '<div class="rg-list"></div>'+
+    '</div>'+
+    '<div class="rg-foot"><button type="button" class="rg-add-row" onclick="addRateRow(this.closest(\'.rg-card\'))">'+
+      '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>เพิ่มช่วงราคา</button></div>';
+  wrap.appendChild(card);
+  $rc('rg-menu').hidden = true;
+  if(!silent) addRateRow(card);
+  rgSyncEmpty(); rcApplyView();
+  return card;
+}
+function rgRemove(btn){
+  var card = btn.closest('.rg-card'); if(!card) return;
+  card.remove(); rgSyncEmpty(); refreshRateStatuses();
+}
+function rgSyncEmpty(){
+  var n = document.querySelectorAll('#rate-groups .rg-card').length;
+  var e = $rc('rg-empty'); if(e) e.hidden = n>0;
+}
+function rgClear(){
+  var wrap = $rc('rate-groups'); if(wrap) wrap.innerHTML='';
+  rgSyncEmpty();
+}
+
+function addRateRow(card){
+  card = card || document.querySelectorAll('#rate-groups .rg-card')[0];
+  if(!card){ var u = UNIT_OPTS[rcfType()][0]; card = rgAdd(u, true); if(!card) return null; }
+  var list = card.querySelector('.rg-list');
+  var row = document.createElement('div');
+  row.className = 'rate-row vs-row';
+  row.innerHTML =
+    '<div><div class="rate-mobile-label">Announcement Date</div>'+
+      '<div class="fld-date-wrap"><input type="text" class="rcf-input tnum js-date" placeholder="dd/mm/yyyy" onchange="refreshRateStatuses()" /><svg class="cal-icn" fill="none" stroke="currentColor" stroke-width="1.7" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg></div></div>'+
+    '<div><div class="rate-mobile-label">Year</div><div class="rate-year-chip tnum">—</div></div>'+
+    '<div><div class="rate-mobile-label">Price</div><div class="rcf-suffix">'+
+      '<input type="number" min="0" step="1" class="rcf-input tnum rate-price" placeholder="0" style="padding-right:26px" oninput="rcClampPrice(this);refreshRateStatuses(false)" onchange="refreshRateStatuses()" onblur="refreshRateStatuses()" onkeydown="if([\'-\',\'e\',\'E\',\'+\'].indexOf(event.key)>-1) event.preventDefault()" /><span class="sfx">฿</span></div></div>'+
+    '<div class="rate-status-cell"><div class="rate-mobile-label">Status</div><span class="rate-badge draft">—</span></div>'+
+    '<div class="rate-actions">'+
+      '<button type="button" onclick="openRowRatePreview(this)" class="rate-icon-btn preview" title="Preview Rate Card"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg></button>'+
+      '<button type="button" onclick="removeRateRow(this)" class="rate-icon-btn danger" title="ลบรายการ"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166M18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/></svg></button>'+
+    '</div>';
+  list.appendChild(row);
+  rcInitDatePicker(row.querySelector('.js-date'));
+  refreshRateStatuses();
+  rcApplyView();
+  return row;
+}
 function removeRateRow(btn){
   var row = btn.closest('.rate-row'); if(row) row.remove();
   refreshRateStatuses();
+}
+function rowUnit(row){
+  var c = row.closest('.rg-card');
+  return c ? c.dataset.unit : '';
+}
+function refreshRateStatuses(doSort){
+  var today = new Date(); today.setHours(0,0,0,0);
+  document.querySelectorAll('#rate-groups .rg-card').forEach(function(card){
+    var list = card.querySelector('.rg-list');
+    var rows = Array.prototype.slice.call(list.querySelectorAll('.rate-row'));
+    var data = rows.map(function(r){ return {row:r, date:_parseDMY(r.querySelector('.js-date') && r.querySelector('.js-date').value)}; });
+    var curIdx = -1, latest = -Infinity;
+    data.forEach(function(d,i){ if(d.date && d.date.getTime()<=today.getTime() && d.date.getTime()>latest){ latest=d.date.getTime(); curIdx=i; } });
+    var curPrice = '';
+    data.forEach(function(d,i){
+      var chip=d.row.querySelector('.rate-year-chip'); if(chip) chip.textContent = d.date ? d.date.getFullYear() : '—';
+      var badge=d.row.querySelector('.rate-badge'); var st='draft', label='—';
+      if(d.date){
+        if(d.date.getTime()>today.getTime()){ st='advance'; label='Advance'; }
+        else if(i===curIdx){ st='current'; label='Current'; curPrice = d.row.querySelector('.rate-price').value; }
+        else { st='history'; label='History'; }
+      }
+      d.status=st;
+      if(badge){ badge.className='rate-badge '+st; badge.textContent=label; }
+    });
+    var cv = card.querySelector('.rg-cur-v');
+    if(cv) cv.textContent = curPrice ? (Number(curPrice).toLocaleString('en-US')+' ฿') : '—';
+    if(doSort===false) return;
+    var rank={draft:0,advance:1,current:2,history:3};
+    data.sort(function(a,b){
+      var ra=rank[a.status], rb=rank[b.status];
+      if(ra!==rb) return ra-rb;
+      return (b.date?b.date.getTime():0)-(a.date?a.date.getTime():0);
+    });
+    data.forEach(function(d){ list.appendChild(d.row); });
+  });
+}
+function rcCollectRates(){
+  var out = [];
+  document.querySelectorAll('#rate-groups .rg-card').forEach(function(card){
+    card.querySelectorAll('.rate-row').forEach(function(r){
+      var date = r.querySelector('.js-date').value.trim();
+      var price = Math.max(0, Number(r.querySelector('.rate-price').value)||0);
+      if(!date || !price) return;
+      out.push({ date:date, price:price, unit:card.dataset.unit,
+                 status:(r.querySelector('.rate-badge').textContent||'').trim() });
+    });
+  });
+  return out;
 }
 function rcSaveForm(){
   if(_rcViewMode) return;
@@ -1670,11 +1784,7 @@ function rcSaveForm(){
   if(!codes.length){ rcToast(kind==='pack' ? 'Package นี้ไม่มี Product' : 'กรุณาเลือก Code Product'); return; }
   var code = codes.length>1 ? codes[0]+' +'+(codes.length-1) : codes[0];
   var cat = CODE_CATALOG.filter(function(c){ return c.code===codes[0]; })[0] || {};
-  var rows = Array.prototype.slice.call(document.querySelectorAll('#rate-list .rate-row'));
-  var priced = rows.map(function(r){
-    return { date:r.querySelector('.js-date').value.trim(), price:Math.max(0, Number(r.querySelector('.rate-price').value)||0),
-             unit:(r.querySelector('.rate-unit')||{}).value||'', status:(r.querySelector('.rate-badge').textContent||'').trim() };
-  }).filter(function(x){ return x.date && x.price; });
+  var priced = rcCollectRates();
   if(!priced.length){ rcToast('กรุณากรอกอย่างน้อย 1 รายการราคา (วันที่ + ราคา)'); return; }
   var cur = priced.filter(function(x){return x.status==='Current'})[0] || priced[0];
   var dmy = cur.date.split('/');
@@ -1689,7 +1799,7 @@ function rcSaveForm(){
     payload.id = Math.max.apply(null, RATES.map(function(r){return r.id}).concat([0]))+1;
     RATES.unshift(payload);
   }
-  MCB_SEL=[]; mcbTags(); RC_FILES=[]; rcDzRender();
+  MCB_SEL=[]; mcbTags(); RC_FILES=[]; rcDzRender(); rgClear();
   var wasEdit=!!_rcEditId; rcResetFormMeta(); rcCloseForm(); if(!wasEdit) _rcPage=1; rcRender(); rcToast((wasEdit?'อัปเดต ':'บันทึก ')+code+' เรียบร้อย');
 }
 
