@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Import Inventory — Plan-B CRM</title>
+<title>Update Inventory — Plan-B CRM</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com"></script>
@@ -176,6 +176,38 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#4790FF;box-sh
 .tpl-select:hover{border-color:#4790FF;background-color:#FBFCFE}
 .tpl-select:focus{outline:none;border-color:#2D56D2;box-shadow:0 0 0 3px rgba(45,86,210,0.15)}
 
+
+/* Template field picker */
+.fp-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px}
+.fp-head .lbl{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:rgba(30,41,59,.55)}
+.fp-head .acts{display:flex;gap:4px}
+.fp-head .acts button{font-size:11px;color:#2D56D2;background:none;border:0;cursor:pointer;padding:2px 6px;border-radius:5px;font-family:inherit}
+.fp-head .acts button:hover{background:rgba(45,86,210,.08)}
+.fp-search{position:relative;margin-bottom:8px}
+.fp-search input{width:100%;height:32px;padding:0 11px 0 30px;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;font-size:12.5px;font-family:inherit;transition:.15s}
+.fp-search input:hover{background:#fff;border-color:#CBD5E8}
+.fp-search svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);width:13px;height:13px;color:rgba(30,41,59,.4);pointer-events:none}
+.fp-box{border:1px solid #E2E8F0;border-radius:10px;background:#FCFDFE;max-height:252px;overflow-y:auto;padding:5px}
+.fp-sec{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:rgba(30,41,59,.42);padding:7px 8px 4px;display:flex;align-items:center;gap:6px}
+.fp-sec::after{content:'';flex:1;height:1px;background:#EEF2F7}
+.fp-item{display:flex;align-items:center;gap:9px;padding:6px 8px;border-radius:7px;font-size:12.5px;color:#0B1430;cursor:pointer;transition:background-color .12s}
+.fp-item:hover{background:#F1F5F9}
+.fp-item input{width:15px;height:15px;accent-color:#2D56D2;margin:0;cursor:pointer;flex-shrink:0}
+.fp-item .nm{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fp-item .key{font-size:10.5px;color:rgba(30,41,59,.4);font-family:'JetBrains Mono',monospace}
+.fp-item.locked{color:rgba(30,41,59,.9);background:rgba(45,86,210,.05);cursor:not-allowed}
+.fp-item.locked .key{color:rgba(45,86,210,.6)}
+.fp-lock{display:inline-flex;align-items:center;gap:4px;font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#2D56D2;background:rgba(45,86,210,.10);border:1px solid rgba(45,86,210,.2);border-radius:99px;padding:1px 7px;flex-shrink:0}
+.fp-empty{padding:18px;text-align:center;font-size:12px;color:rgba(30,41,59,.45)}
+.fp-count{display:flex;align-items:center;gap:7px;margin-top:8px;padding:7px 10px;border-radius:8px;background:rgba(45,86,210,.05);border:1px solid rgba(45,86,210,.14);font-size:11.5px;color:rgba(30,41,59,.7)}
+.fp-count b{color:#2D56D2;font-variant-numeric:tabular-nums}
+.fp-dl{display:flex;gap:8px;margin-top:10px}
+.fp-dl-btn{flex:1;height:36px;border-radius:9px;border:1px solid transparent;font-size:12.5px;font-weight:600;font-family:inherit;display:inline-flex;align-items:center;justify-content:center;gap:7px;cursor:pointer;transition:all .15s}
+.fp-dl-btn.xlsx{background:rgba(5,150,105,.10);color:#047857;border-color:rgba(5,150,105,.28)}
+.fp-dl-btn.xlsx:hover:not(:disabled){background:rgba(5,150,105,.18);border-color:#059669}
+.fp-dl-btn:disabled{opacity:.42;cursor:not-allowed}
+.fp-warn{display:none;align-items:center;gap:6px;margin-top:7px;font-size:11px;color:#B45309}
+.fp-warn.show{display:flex}
 /* Template rows */
 .template-row{display:flex;align-items:center;gap:10px;padding:12px 14px;border:1px solid #E2E8F0;border-radius:12px;background:#FCFDFE;transition:all .15s}
 .template-row:hover{border-color:#2D56D2;background:#fff;box-shadow:0 2px 8px rgba(45,86,210,0.06)}
@@ -193,6 +225,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#4790FF;box-sh
 .chip-pill.chip-green{background:rgba(16,185,129,0.10);color:#059669;border:1px solid rgba(16,185,129,0.20)}
 .chip-pill.chip-red{background:rgba(220,38,38,0.10);color:#DC2626;border:1px solid rgba(220,38,38,0.20)}
 .chip-pill.chip-blue{background:rgba(45,86,210,0.10);color:#2D56D2;border:1px solid rgba(45,86,210,0.20)}
+.chip-pill.chip-violet{background:rgba(124,58,237,0.10);color:#7C3AED;border:1px solid rgba(124,58,237,0.22)}
 .chip-pill.chip-amber{background:rgba(245,158,11,0.12);color:#B45309;border:1px solid rgba(245,158,11,0.20)}
 
 /* ============================================================
@@ -325,6 +358,17 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#4790FF;box-sh
 .uploaded-file .xbtn:hover{background:#FEE2E2;color:#DC2626}
 
 /* Tip line */
+.io-info-btn{width:30px;height:30px;border-radius:8px;border:1px solid #E2E8F0;background:#fff;color:#2D56D2;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:all .15s}
+.io-info-btn:hover{background:rgba(45,86,210,.08);border-color:#4790FF}
+.help-modal{max-width:470px}
+.help-head{display:flex;align-items:center;gap:11px;padding:18px 20px;border-bottom:1px solid #E2E8F0}
+.help-head .icn{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,rgba(124,58,237,.14),rgba(168,85,247,.10));color:#7C3AED;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+.help-head .ttl{font-size:15px;font-weight:600;color:#0B1430;line-height:1.25}
+.help-head .sub{font-size:11.5px;color:rgba(30,41,59,.55);margin-top:1px}
+.help-x{width:30px;height:30px;border-radius:8px;border:0;background:transparent;color:rgba(30,41,59,.5);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;margin-left:auto;transition:.15s}
+.help-x:hover{background:#F1F5F9;color:#0B1430}
+.help-body{padding:14px 20px 18px}
+.help-foot{padding:0 20px 18px;display:flex;justify-content:flex-end}
 .tip-line{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:rgba(11,20,48,0.65);line-height:1.55;padding:5px 0}
 .tip-line svg{flex-shrink:0;color:#2D56D2;margin-top:2px}
 
@@ -565,7 +609,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#4790FF;box-sh
         <svg class="w-3 h-3 opacity-30 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
         <a href="import-portal.html" class="hover:text-pb-700 transition truncate">Import Portal</a>
         <svg class="w-3 h-3 opacity-30 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
-        <span class="font-medium truncate" style="color:#0B1430">Import New</span>
+        <span class="font-medium truncate" style="color:#0B1430">Import Update</span>
       </div>
       <div class="flex-1"></div>
     </header>
@@ -581,10 +625,10 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#4790FF;box-sh
           </a>
           <div class="min-w-0">
             <div class="flex items-center gap-2 flex-wrap">
-              <h1 class="text-[20px] sm:text-[22px] font-semibold text-[#0B1430] leading-tight">Import Media (Bulk Upload)</h1>
-              <span class="chip-pill chip-blue hidden sm:inline-flex">นำเข้าหลายรายการพร้อมกัน</span>
+              <h1 class="text-[20px] sm:text-[22px] font-semibold text-[#0B1430] leading-tight">Update Media (Bulk Update)</h1>
+              <span class="chip-pill chip-violet hidden sm:inline-flex">อัปเดตหลายรายการพร้อมกัน</span>
             </div>
-            <p class="text-[12px] sm:text-[12.5px] mt-0.5" style="color:rgba(30,41,59,0.55)">อัปโหลดไฟล์ <span class="font-mono">.xlsx</span> ระบบจะตรวจสอบและนำเข้าข้อมูลให้อัตโนมัติ</p>
+            <p class="text-[12px] sm:text-[12.5px] mt-0.5" style="color:rgba(30,41,59,0.55)">อัปโหลดไฟล์ <span class="font-mono">.xlsx</span> ระบบจะตรวจสอบและอัปเดตข้อมูล Media ที่มีอยู่ให้อัตโนมัติ</p>
           </div>
         </div>
         <div class="flex items-center gap-2 shrink-0">
@@ -633,33 +677,6 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#4790FF;box-sh
           <!-- Left: Instructions + Template -->
           <div class="lg:col-span-1 space-y-5">
 
-            <!-- Instructions -->
-            <div class="io-card">
-              <div class="io-card-head">
-                <span class="io-card-icn" style="background:rgba(124,58,237,0.10);color:#7C3AED">
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/></svg>
-                </span>
-                <div class="flex-1 min-w-0">
-                  <div class="io-card-title">วิธีการใช้งาน</div>
-                  <div class="io-card-sub">โปรดอ่านก่อนเริ่มต้น</div>
-                </div>
-              </div>
-              <div class="io-card-body" style="padding:16px 20px">
-                <div class="tip-line">
-                  <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75"/></svg>
-                  <span>ดาวน์โหลด Template และกรอกข้อมูลตามคอลัมน์ที่กำหนด</span>
-                </div>
-                <div class="tip-line">
-                  <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75"/></svg>
-                  <span>Product Code ต้องไม่เว้นว่าง และไม่ซ้ำกับที่มีอยู่ในระบบ</span>
-                </div>
-                <div class="tip-line">
-                  <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75"/></svg>
-                  <span>ระบบจะตรวจสอบก่อนนำเข้าจริง สามารถดูข้อผิดพลาดได้ในขั้นที่ 2</span>
-                </div>
-              </div>
-            </div>
-
             <!-- Templates -->
             <div class="io-card">
               <div class="io-card-head">
@@ -668,8 +685,11 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#4790FF;box-sh
                 </span>
                 <div class="flex-1 min-w-0">
                   <div class="io-card-title">Download Template</div>
-                  <div class="io-card-sub">เลือก Media Group ที่ต้องการนำเข้า</div>
+                  <div class="io-card-sub">เลือก Media Group และฟิลด์ที่ต้องการอัปเดต</div>
                 </div>
+                <button type="button" class="io-info-btn" onclick="openHelpModal()" title="วิธีการใช้งาน" aria-label="วิธีการใช้งาน">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"/></svg>
+                </button>
               </div>
               <div class="io-card-body" style="padding:16px 20px">
                 <!-- Media Group selector -->
@@ -679,7 +699,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#4790FF;box-sh
                     เลือก Media Group
                   </label>
                   <div class="tpl-select-wrap">
-                    <select id="templateGroup" onchange="updateTemplateInfo()" class="tpl-select">
+                    <select id="templateGroup" onchange="onTemplateGroupChange()" class="tpl-select">
                       <option value="all">ทุก Media Group</option>
                       <option value="static">Static</option>
                       <option value="transit">Transit</option>
@@ -690,24 +710,42 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#4790FF;box-sh
                   </div>
                   <div class="text-[10.5px] mt-1.5 flex items-center gap-1.5" style="color:rgba(30,41,59,0.55)">
                     <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                    <span>Template จะมีเฉพาะคอลัมน์ที่จำเป็นสำหรับ Group นั้นๆ</span>
+                    <span>เลือกเฉพาะฟิลด์ที่ต้องการแก้ไข — Template จะมีเฉพาะคอลัมน์เหล่านั้น</span>
                   </div>
                 </div>
 
-                <div class="space-y-2.5">
-                  <div class="template-row">
-                    <div class="ico xlsx">
-                      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.375 19.5h17.25m-17.25 0a1.125 1.125 0 01-1.125-1.125V14.25m18.375 5.25c.621 0 1.125-.504 1.125-1.125V14.25M3.75 14.25v-2.625c0-.621.504-1.125 1.125-1.125h13.5c.621 0 1.125.504 1.125 1.125V18.375M9 9.75V21m4.5 0V9.75M3.75 14.25h16.5M16.5 4.478V3.75A2.25 2.25 0 0014.25 1.5h-4.5A2.25 2.25 0 007.5 3.75v.728"/></svg>
-                    </div>
-                    <div class="flex-1 min-w-0">
-                      <div class="name" id="tplXlsxName">media_template_all.xlsx</div>
-                      <div class="meta" id="tplXlsxMeta">Excel · 18 KB · มีตัวอย่างข้อมูล</div>
-                    </div>
-                    <button class="dl" onclick="downloadTemplate('xlsx')">
-                      <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12M12 16.5V3"/></svg>
-                      Download
-                    </button>
+
+                <!-- Field picker -->
+                <div class="mb-3">
+                  <div class="fp-head">
+                    <span class="lbl">
+                      <svg class="w-3 h-3 inline-block -mt-0.5 mr-1" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                      เลือกฟิลด์ที่ต้องการอัปเดต
+                    </span>
+                    <span class="acts">
+                      <button type="button" onclick="fpAll(true)">เลือกทั้งหมด</button>
+                      <button type="button" onclick="fpAll(false)">ล้าง</button>
+                    </span>
                   </div>
+                  <div class="fp-search">
+                    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/></svg>
+                    <input id="fpSearch" placeholder="ค้นหาฟิลด์" oninput="fpDraw()" />
+                  </div>
+                  <div class="fp-box" id="fpBox"></div>
+                  <div class="fp-count">
+                    <svg class="w-3.5 h-3.5" style="color:#2D56D2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    <span>เลือกแล้ว <b id="fpCount">1</b> ฟิลด์ — <span class="font-mono">Code Product</span> ถูกบังคับให้มีเสมอเพื่อใช้อ้างอิงรายการที่จะอัปเดต</span>
+                  </div>
+                </div>
+                <div class="fp-dl">
+                  <button type="button" id="dlXlsx" class="fp-dl-btn xlsx" onclick="downloadTemplate('xlsx')" disabled>
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12M12 16.5V3"/></svg>
+                    <span>Download Excel</span>
+                  </button>
+                </div>
+                <div class="fp-warn" id="fpWarn">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z"/></svg>
+                  <span>เลือกอย่างน้อย 1 ฟิลด์ที่ต้องการอัปเดตก่อนดาวน์โหลด Template</span>
                 </div>
               </div>
             </div>
@@ -854,7 +892,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#4790FF;box-sh
             <div class="flex-1"></div>
             <div class="relative">
               <svg class="absolute left-2.5 top-1/2 -translate-y-1/2 w-[13px] h-[13px] opacity-40" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>
-              <input id="rowSearch" oninput="searchRows()" placeholder="ค้นหา Code Product, Description..." class="h-9 pl-8 pr-3 w-full sm:w-[260px] bg-[#F8FAFC] border border-[#E2E8F0] rounded-md text-[12.5px]"/>
+              <input id="rowSearch" oninput="searchRows()" placeholder="ค้นหา Media Code, Description..." class="h-9 pl-8 pr-3 w-full sm:w-[260px] bg-[#F8FAFC] border border-[#E2E8F0] rounded-md text-[12.5px]"/>
             </div>
           </div>
 
@@ -864,7 +902,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#4790FF;box-sh
                 <tr>
                   <th style="width:42px;padding-left:14px">#</th>
                   <th style="width:88px">สถานะ</th>
-                  <th>Code Product</th>
+                  <th>Media Code</th>
                   <th>Owner</th>
                   <th>Description (TH)</th>
                   <th>Media Group</th>
@@ -953,16 +991,16 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#4790FF;box-sh
           <div class="success-ring">
             <svg class="w-12 h-12" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
           </div>
-          <div class="text-[22px] font-semibold" style="color:#0B1430">นำเข้าข้อมูลสำเร็จ</div>
+          <div class="text-[22px] font-semibold" style="color:#0B1430">อัปเดตข้อมูลสำเร็จ</div>
           <p class="text-[13px] mt-2" style="color:rgba(30,41,59,0.65)">
-            ระบบได้บันทึก Media ใหม่ <span class="font-semibold text-[#059669]">112 รายการ</span>
+            ระบบได้อัปเดต Media <span class="font-semibold text-[#059669]">112 รายการ</span>
             เข้าสู่ Inventory เรียบร้อย ใช้เวลาทั้งหมด
             <span class="font-mono font-semibold text-[#0B1430]">00:01:34</span>
           </p>
 
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-6 max-w-[560px] mx-auto">
             <div class="bg-white rounded-xl border border-[#E2E8F0] p-3 text-left">
-              <div class="text-[10.5px] font-semibold uppercase tracking-wider" style="color:rgba(30,41,59,0.55)">นำเข้าสำเร็จ</div>
+              <div class="text-[10.5px] font-semibold uppercase tracking-wider" style="color:rgba(30,41,59,0.55)">อัปเดตสำเร็จ</div>
               <div class="text-[20px] font-bold text-[#059669] tnum mt-1">112</div>
             </div>
             <div class="bg-white rounded-xl border border-[#E2E8F0] p-3 text-left">
@@ -971,14 +1009,14 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#4790FF;box-sh
             </div>
             <div class="bg-white rounded-xl border border-[#E2E8F0] p-3 text-left">
               <div class="text-[10.5px] font-semibold uppercase tracking-wider" style="color:rgba(30,41,59,0.55)">Batch ID</div>
-              <div class="text-[13px] font-mono font-semibold text-[#0B1430] mt-1.5">IMP-2026-0612</div>
+              <div class="text-[13px] font-mono font-semibold text-[#0B1430] mt-1.5">UPD-2026-0612</div>
             </div>
           </div>
 
           <div class="flex items-center justify-center gap-2 mt-7 flex-wrap">
             <button class="btn btn-ghost" onclick="resetWizard()">
               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
-              นำเข้าไฟล์อื่น
+              อัปเดตไฟล์อื่น
             </button>
             <a href="inventory.html" class="btn btn-primary">
               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4"/></svg>
@@ -1017,6 +1055,41 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#4790FF;box-sh
   </div>
 </div>
 
+<!-- HELP MODAL -->
+<div id="helpModal" class="modal-overlay" onclick="if(event.target===this) closeHelpModal()">
+  <div class="modal help-modal" role="dialog" aria-modal="true" aria-label="วิธีการใช้งาน">
+    <div class="help-head">
+      <span class="icn">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25"/></svg>
+      </span>
+      <div class="flex-1 min-w-0">
+        <div class="ttl">วิธีการใช้งาน</div>
+        <div class="sub">โปรดอ่านก่อนเริ่มต้น</div>
+      </div>
+      <button class="help-x" onclick="closeHelpModal()" aria-label="ปิด">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="help-body">
+      <div class="tip-line">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75"/></svg>
+        <span>เลือก Template และเลือกเฉพาะฟิลด์ที่ต้องการแก้ไข</span>
+      </div>
+      <div class="tip-line">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75"/></svg>
+        <span>Product Code ต้องไม่เว้นว่าง และตรงกับที่มีอยู่ในระบบ</span>
+      </div>
+      <div class="tip-line">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75"/></svg>
+        <span>ระบบจะตรวจสอบก่อนนำเข้าจริง สามารถดูข้อผิดพลาดได้ในขั้นที่ 2</span>
+      </div>
+    </div>
+    <div class="help-foot">
+      <button class="btn btn-ghost" onclick="closeHelpModal()">ปิด</button>
+    </div>
+  </div>
+</div>
+
 <!-- Toast -->
 <div id="toast">
   <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" style="color:#5FCBF9"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
@@ -1026,24 +1099,155 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#4790FF;box-sh
 <script>
 /* ============ Template Info per Media Group ============ */
 const TEMPLATE_INFO = {
-  'all':     {label:'ทุก Media Group',  base:'media_template_all',     cols:32, xlsxSize:'18 KB'},
-  'static':  {label:'Static Media',     base:'media_template_static',  cols:28, xlsxSize:'14 KB'},
-  'transit': {label:'Transit Media',    base:'media_template_transit', cols:26, xlsxSize:'13 KB'},
-  'digital': {label:'Digital Media',    base:'media_template_digital', cols:34, xlsxSize:'19 KB'},
-  'retail':  {label:'Retail Media',     base:'media_template_retail',  cols:24, xlsxSize:'12 KB'},
-  'airport': {label:'Airport Media',    base:'media_template_airport', cols:30, xlsxSize:'16 KB'}
+  'all':     {label:'ทุก Media Group',  base:'media_update_template_all'},
+  'static':  {label:'Static Media',     base:'media_update_template_static'},
+  'transit': {label:'Transit Media',    base:'media_update_template_transit'},
+  'digital': {label:'Digital Media',    base:'media_update_template_digital'},
+  'retail':  {label:'Retail Media',     base:'media_update_template_retail'},
+  'airport': {label:'Airport Media',    base:'media_update_template_airport'}
 };
-function updateTemplateInfo(){
-  const key = document.getElementById('templateGroup').value;
-  const t = TEMPLATE_INFO[key] || TEMPLATE_INFO['all'];
-  document.getElementById('tplXlsxName').textContent = t.base + '.xlsx';
-  document.getElementById('tplXlsxMeta').textContent = 'Excel · ' + t.xlsxSize + ' · ' + t.cols + ' columns · มีตัวอย่างข้อมูล';
+
+/* ============ Template Field Picker ============ */
+const REQUIRED_FIELD = 'code_product';
+const FIELD_SECTIONS = [
+  {sec:'ข้อมูลหลัก', fields:[
+    {k:'code_product', n:'Code Product', req:true},
+    {k:'equipment_id', n:'Equipment ID'},
+    {k:'description_th', n:'Description (TH)'},
+    {k:'description_en', n:'Description (EN)'},
+    {k:'product_owner', n:'Product Owner'},
+    {k:'media_status', n:'Media Status'}
+  ]},
+  {sec:'การจัดกลุ่ม', fields:[
+    {k:'media_category', n:'Media Category'},
+    {k:'media_group', n:'Media Group'},
+    {k:'media_type', n:'Media Type'},
+    {k:'media_segment', n:'Media Segment'},
+    {k:'sub_media_segment', n:'Sub Media Segment'},
+    {k:'sale_package', n:'Sale Package'}
+  ]},
+  {sec:'ตำแหน่งที่ตั้ง', fields:[
+    {k:'province', n:'Province'},
+    {k:'district', n:'District'},
+    {k:'subdistrict', n:'Sub-district'},
+    {k:'road', n:'Road', only:['static','digital']},
+    {k:'location', n:'Location'},
+    {k:'latitude', n:'Latitude', only:['static','digital','airport']},
+    {k:'longitude', n:'Longitude', only:['static','digital','airport']},
+    {k:'zone1', n:'Zone 1'},
+    {k:'zone2', n:'Zone 2'},
+    {k:'street_view', n:'Google Street View', only:['static','digital']},
+    {k:'station', n:'Station / Terminal', only:['transit','airport']},
+    {k:'concourse', n:'Concourse / Gate', only:['airport']},
+    {k:'branch', n:'Branch / Store', only:['retail']},
+    {k:'floor', n:'Floor / Zone in Store', only:['retail']}
+  ]},
+  {sec:'ขนาด / สเปก', fields:[
+    {k:'no_of_panel', n:'No. of Panel'},
+    {k:'view_height', n:'View Height'},
+    {k:'view_width', n:'View Width'},
+    {k:'view_sqm', n:'View SQM'},
+    {k:'material_height', n:'Material Height', only:['static','transit','retail','airport']},
+    {k:'material_width', n:'Material Width', only:['static','transit','retail','airport']},
+    {k:'material_sqm', n:'Material SQM', only:['static','transit','retail','airport']},
+    {k:'resolution', n:'Resolution', only:['digital','retail','airport']},
+    {k:'pixel_pitch', n:'Pixel Pitch', only:['digital']},
+    {k:'screen_size', n:'Screen Size (inch)', only:['digital','retail']},
+    {k:'spot_length', n:'Spot Length (sec)', only:['digital','retail','airport']},
+    {k:'loop_time', n:'Loop Time (sec)', only:['digital','retail','airport']}
+  ]},
+  {sec:'การดำเนินงาน', fields:[
+    {k:'operating_time', n:'Operating Time'},
+    {k:'electrical_time', n:'Electrical Service Time', only:['static','digital','retail','airport']},
+    {k:'lighting_unit', n:'Lighting (Unit)', only:['static','transit','retail','airport']},
+    {k:'lighting_type', n:'Lighting Type', only:['static','transit','retail','airport']},
+    {k:'license', n:'License', only:['static','transit','digital']},
+    {k:'bus_line_fixed', n:'Bus Line Fixed', only:['transit']},
+    {k:'bus_line_update', n:'Bus Line Update', only:['transit']},
+    {k:'bus_model', n:'Bus Model', only:['transit']},
+    {k:'route', n:'Route', only:['transit']},
+    {k:'mall_operator', n:'Mall Operator', only:['retail']},
+    {k:'airport_operator', n:'Airport Operator', only:['airport']}
+  ]},
+  {sec:'ต้นทุน', fields:[
+    {k:'capex', n:'Capex'},
+    {k:'capex_detail', n:'Capex Detail'},
+    {k:'opex', n:'Opex'},
+    {k:'opex_detail', n:'Opex Detail'},
+    {k:'rent_cost', n:'Rent Cost'}
+  ]}
+];
+
+let FP_SEL = {};
+FP_SEL[REQUIRED_FIELD] = true;
+
+function fpGroupKey(){ const el=document.getElementById('templateGroup'); return el ? el.value : 'all'; }
+function fpAvailable(){
+  const g = fpGroupKey();
+  return FIELD_SECTIONS.map(function(s){
+    return {sec:s.sec, fields:s.fields.filter(function(f){ return g==='all' || !f.only || f.only.indexOf(g)>-1; })};
+  }).filter(function(s){ return s.fields.length; });
+}
+function fpAvailableKeys(){
+  const out=[];
+  fpAvailable().forEach(function(s){ s.fields.forEach(function(f){ out.push(f.k); }); });
+  return out;
+}
+function fpSelectedKeys(){
+  const avail = fpAvailableKeys();
+  const sel = avail.filter(function(k){ return FP_SEL[k]; });
+  if(sel.indexOf(REQUIRED_FIELD)<0) sel.unshift(REQUIRED_FIELD);
+  return sel;
+}
+function fpDraw(){
+  const box = document.getElementById('fpBox'); if(!box) return;
+  const q = (document.getElementById('fpSearch').value||'').trim().toLowerCase();
+  let html = '';
+  fpAvailable().forEach(function(s){
+    const list = s.fields.filter(function(f){ return !q || f.n.toLowerCase().indexOf(q)>-1 || f.k.indexOf(q)>-1; });
+    if(!list.length) return;
+    html += '<div class="fp-sec">'+s.sec+'</div>';
+    list.forEach(function(f){
+      const on = f.req || !!FP_SEL[f.k];
+      html += '<label class="fp-item'+(f.req?' locked':'')+'">'+
+        '<input type="checkbox" '+(on?'checked':'')+(f.req?' disabled':'')+' onchange="fpSet(\''+f.k+'\',this.checked)"/>'+
+        '<span class="nm">'+f.n+'</span>'+
+        (f.req ? '<span class="fp-lock"><svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75M3.75 21.75h16.5V10.5H3.75v11.25z"/></svg>บังคับ</span>'
+               : '<span class="key">'+f.k+'</span>')+
+      '</label>';
+    });
+  });
+  box.innerHTML = html || '<div class="fp-empty">ไม่พบฟิลด์ที่ตรงกับคำค้นหา</div>';
+  fpSync();
+}
+function fpSet(k, on){ if(k===REQUIRED_FIELD) return; if(on) FP_SEL[k]=true; else delete FP_SEL[k]; fpSync(); }
+function fpAll(on){
+  if(on){ fpAvailableKeys().forEach(function(k){ FP_SEL[k]=true; }); }
+  else { FP_SEL = {}; FP_SEL[REQUIRED_FIELD]=true; }
+  fpDraw();
+}
+function fpOptionalCount(){
+  return fpSelectedKeys().filter(function(k){ return k!==REQUIRED_FIELD; }).length;
+}
+function fpSync(){
+  const n = fpSelectedKeys().length;
+  const c = document.getElementById('fpCount'); if(c) c.textContent = n;
+  const ready = fpOptionalCount() > 0;
+  ['dlXlsx'].forEach(function(id){ const b=document.getElementById(id); if(b) b.disabled = !ready; });
+  const w = document.getElementById('fpWarn'); if(w) w.classList.toggle('show', !ready);
+}
+function onTemplateGroupChange(){
+  const avail = fpAvailableKeys();
+  Object.keys(FP_SEL).forEach(function(k){ if(k!==REQUIRED_FIELD && avail.indexOf(k)<0) delete FP_SEL[k]; });
+  fpDraw();
 }
 function downloadTemplate(ext){
-  const key = document.getElementById('templateGroup').value;
-  const t = TEMPLATE_INFO[key] || TEMPLATE_INFO['all'];
-  showToast('กำลังดาวน์โหลด ' + t.base + '.' + ext + ' ('+ t.label +')');
+  if(fpOptionalCount() === 0){ showToast('กรุณาเลือกอย่างน้อย 1 ฟิลด์ก่อนดาวน์โหลด'); return; }
+  const t = TEMPLATE_INFO[fpGroupKey()] || TEMPLATE_INFO['all'];
+  const n = fpSelectedKeys().length;
+  showToast('กำลังดาวน์โหลด ' + t.base + '.' + ext + ' (' + t.label + ' · ' + n + ' คอลัมน์)');
 }
+document.addEventListener('DOMContentLoaded', fpDraw);
 
 /* ============ Sample Data ============
    op: 'insert' = Code ใหม่ → จะถูก Insert
@@ -1274,13 +1478,23 @@ function startProcessing(){
       track.classList.add('progress-done');
       procPctEl.classList.remove('chip-blue');
       procPctEl.classList.add('chip-green');
-      logTextEl.textContent='นำเข้าข้อมูลเสร็จสมบูรณ์';
+      logTextEl.textContent='อัปเดตข้อมูลเสร็จสมบูรณ์';
       setTimeout(()=>{
         document.getElementById('processingCard').style.display='none';
         document.getElementById('successCard').style.display='block';
       }, 600);
     }
   }, tickMs);
+}
+
+/* ============ Help Modal ============ */
+function openHelpModal(){
+  document.getElementById('helpModal').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeHelpModal(){
+  document.getElementById('helpModal').classList.remove('open');
+  document.body.style.overflow='';
 }
 
 /* ============ Confirm Modal ============ */
@@ -1323,7 +1537,7 @@ function confirmCancel(){
     tone:'danger',
     icon:'<svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>',
     title:'ยืนยันการยกเลิก?',
-    desc:'ข้อมูลที่อัปโหลดมาทั้งหมดจะหายไป — ระบบจะไม่บันทึก Media รายการใดเข้าฐานข้อมูล',
+    desc:'ข้อมูลที่อัปโหลดมาทั้งหมดจะหายไป — ระบบจะไม่อัปเดต Media รายการใดในฐานข้อมูล',
     info:'การยกเลิกจะ <strong>ลบไฟล์ที่อัปโหลด</strong> และพากลับไปยังหน้า Import Portal',
     confirmLabel:'ใช่ — ยกเลิก',
     confirmClass:'btn-danger',
@@ -1336,10 +1550,10 @@ function confirmImport(){
   showConfirmModal({
     tone:'success',
     icon:'<svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>',
-    title:'ยืนยันการนำเข้าข้อมูล?',
-    desc:'ระบบจะบันทึก <strong style="color:#059669">112 รายการ</strong> ที่ผ่านการตรวจสอบลงในฐานข้อมูล Inventory',
-    info:'รายการที่พบ Error (<strong style="color:#DC2626">8 รายการ</strong>) จะถูกข้ามไป — สามารถ Export Error Log เพื่อแก้ไขและนำเข้าใหม่ภายหลัง',
-    confirmLabel:'นำเข้าเลย',
+    title:'ยืนยันการอัปเดตข้อมูล?',
+    desc:'ระบบจะอัปเดต <strong style="color:#059669">112 รายการ</strong> ที่ผ่านการตรวจสอบในฐานข้อมูล Inventory',
+    info:'รายการที่พบ Error (<strong style="color:#DC2626">8 รายการ</strong>) จะถูกข้ามไป — สามารถ Export Error Log เพื่อแก้ไขและอัปเดตใหม่ภายหลัง',
+    confirmLabel:'อัปเดตเลย',
     confirmClass:'btn-success',
     onConfirm: ()=>{ goToStep(3); }
   });
@@ -1349,6 +1563,7 @@ function confirmImport(){
 document.addEventListener('keydown', e=>{
   if(e.key==='Escape'){
     if(document.getElementById('confirmModal').classList.contains('open')) closeConfirmModal();
+    else if(document.getElementById('helpModal').classList.contains('open')) closeHelpModal();
   }
 });
 

@@ -124,6 +124,24 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#4790FF;box-sh
 .action-bar{background:rgba(247,249,252,0.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
 .fld-date-wrap{position:relative}
 .fld-search{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19.5 8.25l-7.5 7.5-7.5-7.5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:32px;cursor:text}
+
+.ms-box{min-height:38px;border:1px solid #E2E8F0;border-radius:8px;background:#FCFDFE;padding:5px 6px;display:flex;flex-wrap:wrap;gap:5px;align-items:center;cursor:text;transition:all .15s}
+.ms-box:hover{background:#fff;border-color:#CBD5E8}
+.ms-box.focus{background:#fff;border-color:#4790FF;box-shadow:0 0 0 3px rgba(71,144,255,.18)}
+.ms-tag{display:inline-flex;align-items:center;gap:5px;padding:3px 5px 3px 9px;border-radius:6px;font-size:11.5px;background:rgba(45,86,210,.10);color:#2D56D2;font-variant-numeric:tabular-nums}
+.ms-tag button{width:15px;height:15px;border-radius:4px;display:flex;align-items:center;justify-content:center;line-height:0;border:0;background:transparent;color:inherit;cursor:pointer}
+.ms-tag button:hover{background:rgba(45,86,210,.18)}
+.ms-input{flex:1;min-width:92px;border:0;outline:0;font-size:13px;padding:3px 2px;background:transparent;font-family:'Kanit',sans-serif}
+.ms-wrap{position:relative;display:block}
+.ms-panel{position:absolute;z-index:70;left:0;right:0;top:calc(100% + 4px);max-height:232px;overflow-y:auto;background:#fff;border:1px solid #E2E8F0;border-radius:10px;box-shadow:0 10px 32px rgba(11,20,48,.14);padding:4px}
+.ms-panel[hidden]{display:none}
+.ms-opt{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:7px;font-size:13px;color:#0B1430;cursor:pointer;line-height:1.35}
+.ms-opt:hover{background:#F1F5F9}
+.ms-opt.on{color:#2D56D2;font-weight:500;background:rgba(71,144,255,.08)}
+.ms-opt .tick{margin-left:auto;opacity:0;color:#2D56D2}
+.ms-opt.on .tick{opacity:1}
+.ms-empty{padding:10px;font-size:12px;color:rgba(30,41,59,.5);text-align:center}
+.ms-add{color:#2D56D2;font-weight:500}
 .cb-wrap{position:relative;display:block}
 .cb-panel{position:absolute;z-index:70;left:0;right:0;top:calc(100% + 4px);max-height:240px;overflow-y:auto;background:#fff;border:1px solid #E2E8F0;border-radius:10px;box-shadow:0 10px 32px rgba(11,20,48,0.14);padding:4px}
 .cb-panel[hidden]{display:none}
@@ -664,7 +682,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#4790FF;box-sh
                 <input class="fld-input" placeholder="เช่น P6, P10" />              </div>
               <div data-fmt="digital">
                 <label class="fld-label">Resolution (px.)</label>
-                <select class="fld-select"><option value="">— เลือก —</option><option>1920x1080</option><option>3840x2160</option><option>1080x1920</option></select>              </div>
+                <div class="ms" data-name="resolution" data-opts="1920x1080,3840x2160,1080x1920,2560x1440,1280x720,1366x768,1920x540,768x1366,2160x3840,1440x2560,1024x768,800x600" data-value="1920x1080, 3840x2160" data-placeholder="— เลือก —"></div>              </div>
               <div data-fmt="digital">
                 <label class="fld-label">Format</label>
                 <select class="fld-select"><option value="">— เลือก —</option><option>พิเศษ</option><option>16-9</option><option>4-3</option><option>43</option><option>179</option><option>11</option><option>AT16-9</option><option>AT4-3</option></select>              </div>
@@ -1525,6 +1543,86 @@ document.addEventListener('DOMContentLoaded', function(){
   }
   function init(){document.querySelectorAll('.tp-input').forEach(setup)}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+})();
+</script>
+
+<script>
+/* Resolution multi-select */
+(function(){
+  var _inside=false;
+  function build(host){
+    var opts=(host.dataset.opts||'').split(',').map(function(s){return s.trim();}).filter(Boolean);
+    var sel=(host.dataset.value||'').split(',').map(function(s){return s.trim();}).filter(Boolean);
+    var wrap=document.createElement('div'); wrap.className='ms-wrap';
+    var box=document.createElement('div'); box.className='ms-box';
+    var inp=document.createElement('input'); inp.className='ms-input'; inp.type='text'; inp.placeholder=host.dataset.placeholder||'— เลือก —';
+    var panel=document.createElement('div'); panel.className='ms-panel'; panel.hidden=true;
+    var hidden=document.createElement('input'); hidden.type='hidden'; hidden.name=host.dataset.name||'';
+    box.appendChild(inp); wrap.appendChild(box); wrap.appendChild(panel); wrap.appendChild(hidden);
+    host.innerHTML=''; host.appendChild(wrap);
+    host.msGet=function(){ return sel.slice(); };
+    host.msSet=function(v){ sel=(v||[]).slice(); drawTags(); };
+
+    function sync(){ hidden.value=sel.join(', '); inp.placeholder = sel.length ? '' : (host.dataset.placeholder||'— เลือก —'); }
+    function drawTags(){
+      Array.prototype.slice.call(box.querySelectorAll('.ms-tag')).forEach(function(t){ t.remove(); });
+      sel.forEach(function(v){
+        var t=document.createElement('span'); t.className='ms-tag';
+        t.innerHTML='<span>'+v+'</span><button type="button" aria-label="ลบ"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" d="M6 18L18 6M6 6l12 12"/></svg></button>';
+        t.querySelector('button').addEventListener('mousedown',function(e){ e.preventDefault(); e.stopPropagation(); remove(v); });
+        box.insertBefore(t,inp);
+      });
+      sync();
+    }
+    function remove(v){ sel=sel.filter(function(x){return x!==v;}); drawTags(); draw(); }
+    function toggle(v){
+      if(sel.indexOf(v)>-1) sel=sel.filter(function(x){return x!==v;});
+      else sel.push(v);
+      drawTags(); inp.value=''; draw(); inp.focus();
+    }
+    function draw(){
+      var q=inp.value.trim().toLowerCase();
+      var list=opts.filter(function(o){ return !q || o.toLowerCase().indexOf(q)>-1; });
+      var html=list.map(function(o){
+        var on=sel.indexOf(o)>-1;
+        return '<div class="ms-opt'+(on?' on':'')+'" data-v="'+o+'">'+o+
+          '<svg class="tick" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg></div>';
+      }).join('');
+      if(q && opts.indexOf(inp.value.trim())<0){
+        html += '<div class="ms-opt ms-add" data-v="'+inp.value.trim()+'" data-new="1">เพิ่ม "'+inp.value.trim()+'"</div>';
+      }
+      panel.innerHTML = html || '<div class="ms-empty">ไม่พบตัวเลือก</div>';
+    }
+    function open(){ draw(); panel.hidden=false; box.classList.add('focus'); }
+    function close(){ panel.hidden=true; box.classList.remove('focus'); }
+
+    box.addEventListener('mousedown',function(){ _inside=true; });
+    panel.addEventListener('mousedown',function(e){
+      _inside=true;
+      var o=e.target.closest('.ms-opt'); if(!o) return;
+      e.preventDefault();
+      var v=o.dataset.v;
+      if(o.dataset.new==='1' && opts.indexOf(v)<0) opts.push(v);
+      toggle(v);
+    });
+    box.addEventListener('click',function(){ inp.focus(); if(panel.hidden) open(); });
+    inp.addEventListener('focus',open);
+    inp.addEventListener('input',draw);
+    inp.addEventListener('keydown',function(e){
+      if(e.key==='Backspace' && !inp.value && sel.length){ remove(sel[sel.length-1]); }
+      else if(e.key==='Escape'){ close(); }
+      else if(e.key==='Enter'){
+        e.preventDefault();
+        var first=panel.querySelector('.ms-opt');
+        if(first){ var v=first.dataset.v; if(first.dataset.new==='1' && opts.indexOf(v)<0) opts.push(v); toggle(v); }
+      }
+    });
+    document.addEventListener('mousedown',function(){ if(!_inside) close(); _inside=false; });
+    document.addEventListener('click',function(){ _inside=false; });
+    drawTags();
+  }
+  function init(){ document.querySelectorAll('.ms[data-opts]').forEach(build); }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init); else init();
 })();
 </script>
 </body>

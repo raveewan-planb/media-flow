@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Import Portal — Plan-B CRM</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config={theme:{extend:{fontFamily:{kanit:['Kanit','sans-serif'],mono:['JetBrains Mono','monospace']},colors:{pb:{900:'#213268',700:'#2D56D2',500:'#4790FF',300:'#5FCBF9',50:'#EBF5FF',100:'#D6ECFF'},ink:{900:'#0B1430',800:'#162040',700:'#1E293B'},surface:{0:'#FFFFFF',50:'#F8FAFC',100:'#F1F5F9',200:'#E2E8F0',300:'#CBD5E1'}}}}}
+</script>
+<style>
+*{font-family:'Kanit',sans-serif;-webkit-font-smoothing:antialiased}
+.font-mono,code,.font-mono *{font-family:'JetBrains Mono',monospace}
+html,body{overflow-x:hidden}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#CBD5E8;border-radius:10px;border:2px solid #F7F9FC}
+::-webkit-scrollbar-thumb:hover{background:#93A4C4}
+.sidebar-scroll::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.06);border:2px solid transparent}
+.sidebar-scroll::-webkit-scrollbar-track{background:transparent}
+.sidebar-nav{color:rgba(30,41,59,0.6);transition:all 0.15s;position:relative;font-size:13px}
+.sidebar-nav:hover{color:#0B1430;background:rgba(71,144,255,0.06)}
+.sidebar-nav.active{color:#2D56D2;font-weight:500;background:linear-gradient(90deg,rgba(71,144,255,0.10),rgba(71,144,255,0))}
+.sidebar-nav.active::before{content:'';position:absolute;left:0;top:8px;bottom:8px;width:3px;border-radius:2px;background:#2D56D2;box-shadow:0 0 8px rgba(45,86,210,0.4)}
+.sidebar-nav-parent{color:rgba(30,41,59,0.4);transition:all 0.15s;font-size:10.5px;text-transform:uppercase;letter-spacing:0.05em;font-weight:600}
+.sidebar-nav-parent:hover{color:rgba(30,41,59,0.7)}
+.sidebar-sub{color:rgba(30,41,59,0.55);transition:all 0.15s;position:relative}
+.sidebar-sub:hover{color:#0B1430;background:rgba(71,144,255,0.06)}
+.sidebar-group-icon{display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:8px;background:transparent;transition:all .15s;flex-shrink:0;color:rgba(30,41,59,0.55)}
+.sgi-ma{color:#7C3AED}.sgi-rpt{color:#0EA5E9}.sgi-stg{color:#EF4444}
+.nav-parent{border-radius:8px;transition:all .15s}
+.nav-parent:hover{background:#F1F5F9}
+#sidebar{background:linear-gradient(180deg,#fff 0%,#fff 60%,#F8FAFC 100%) !important}
+#sidebar-brand{background:linear-gradient(135deg,rgba(45,86,210,0.04),rgba(95,203,249,0.04))}
+input:focus,select:focus{outline:none;border-color:#4790FF;box-shadow:0 0 0 3px rgba(71,144,255,0.15)}
+.topbar-white{background:rgba(255,255,255,0.9);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid #E2E8F0}
+.sidebar-label{transition:opacity 0.15s;white-space:nowrap;overflow:hidden}
+.tnum{font-variant-numeric:tabular-nums}
+
+.btn{height:36px;padding:0 14px;border-radius:9px;font-size:12.5px;font-weight:500;display:inline-flex;align-items:center;gap:7px;cursor:pointer;transition:all .15s;font-family:inherit;border:1px solid transparent;white-space:nowrap;text-decoration:none}
+.btn-primary{background:linear-gradient(135deg,#2D56D2,#4790FF);color:#fff;box-shadow:0 4px 12px rgba(45,86,210,0.28);font-weight:600}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(45,86,210,0.36)}
+.btn-update{background:linear-gradient(135deg,#7C3AED,#A855F7);color:#fff;box-shadow:0 4px 12px rgba(124,58,237,0.26);font-weight:600}
+.btn-update:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(124,58,237,0.34)}
+.btn-ghost{background:#fff;color:#0B1430;border-color:#E2E8F0}
+.btn-ghost:hover{background:#F8FAFC;border-color:#CBD5E1}
+
+.chip-pill{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:99px;font-size:11px;font-weight:600;letter-spacing:.01em;white-space:nowrap}
+.chip-pill.chip-green{background:rgba(16,185,129,0.10);color:#059669;border:1px solid rgba(16,185,129,0.20)}
+.chip-pill.chip-red{background:rgba(220,38,38,0.10);color:#DC2626;border:1px solid rgba(220,38,38,0.20)}
+.chip-pill.chip-blue{background:rgba(45,86,210,0.10);color:#2D56D2;border:1px solid rgba(45,86,210,0.20)}
+.chip-pill.chip-amber{background:rgba(245,158,11,0.12);color:#B45309;border:1px solid rgba(245,158,11,0.20)}
+.chip-pill.chip-violet{background:rgba(124,58,237,0.10);color:#7C3AED;border:1px solid rgba(124,58,237,0.22)}
+
+.seg{display:inline-flex;padding:3px;background:#F1F5F9;border:1px solid #E2E8F0;border-radius:9px;gap:2px}
+.seg button{height:28px;padding:0 12px;border:0;background:transparent;border-radius:7px;font-size:12px;font-weight:500;color:rgba(30,41,59,.6);cursor:pointer;font-family:inherit;transition:all .15s;display:inline-flex;align-items:center;gap:6px}
+.seg button:hover{color:#0B1430}
+.seg button.on{background:#fff;color:#2D56D2;font-weight:600;box-shadow:0 1px 3px rgba(11,20,48,.08)}
+.seg .cnt{font-size:10.5px;opacity:.65;font-variant-numeric:tabular-nums}
+
+.ipt{height:34px;padding:0 12px 0 32px;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;font-size:12.5px;width:230px;transition:all .15s}
+.ipt:hover{background:#fff;border-color:#CBD5E8}
+.sel{height:34px;padding:0 30px 0 11px;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;font-size:12.5px;appearance:none;cursor:pointer;
+background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19.5 8.25l-7.5 7.5-7.5-7.5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center}
+
+#ip-table{width:100%;font-size:13px;border-collapse:collapse}
+#ip-table thead th{padding:11px 10px;font-size:10.5px;letter-spacing:.04em;background:#F8FAFC;color:rgba(30,41,59,0.6);font-weight:600;border-bottom:1px solid #E2E8F0;white-space:nowrap;text-transform:uppercase;text-align:left;height:42px}
+#ip-table thead th:first-child{padding-left:16px}
+#ip-table thead th:last-child{padding-right:16px}
+#ip-table th.text-center,#ip-table td.text-center{text-align:center}
+#ip-table tbody td{padding:10px;border-bottom:1px solid #F1F5F9;vertical-align:middle;white-space:nowrap}
+#ip-table tbody td:first-child{padding-left:16px}
+#ip-table tbody td:last-child{padding-right:16px}
+#ip-table tbody tr:last-child td{border-bottom:0}
+#ip-table tbody tr{transition:background-color .12s}
+#ip-table tbody tr:hover{background:#F4F8FE}
+th.srt{cursor:pointer;user-select:none;position:relative;transition:all .15s}
+th.srt:hover{color:rgba(30,41,59,.9);background:#EEF3FB}
+th.srt .ind{display:inline-block;width:9px;margin-left:4px;opacity:0;transition:opacity .15s}
+th.srt:hover .ind{opacity:.5}
+th.srt.on{color:#2D56D2;background:rgba(45,86,210,.06)}
+th.srt.on .ind{opacity:1}
+.num{font-variant-numeric:tabular-nums;font-weight:600}
+.num.ok{color:#059669}
+.num.err{color:#DC2626}
+.num.muted{color:rgba(30,41,59,.45);font-weight:500}
+
+.hi-dl{width:26px;height:26px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;border:1px solid;background:#fff;transition:all .15s;position:relative;padding:0}
+.hi-dl svg{width:12px;height:12px}
+.hi-dl:hover{transform:translateY(-1px)}
+.hi-dl.dl-total{background:rgba(45,86,210,0.05);border-color:rgba(45,86,210,0.25);color:#2D56D2}
+.hi-dl.dl-total:hover{background:rgba(45,86,210,0.15);border-color:#2D56D2}
+.hi-dl.dl-ok{background:rgba(16,185,129,0.06);border-color:rgba(16,185,129,0.30);color:#059669}
+.hi-dl.dl-ok:hover{background:rgba(16,185,129,0.16);border-color:#10B981}
+.hi-dl.dl-err{background:rgba(220,38,38,0.06);border-color:rgba(220,38,38,0.25);color:#DC2626}
+.hi-dl.dl-err:hover{background:rgba(220,38,38,0.14);border-color:#DC2626}
+.hi-dl:disabled{opacity:.3;cursor:not-allowed;transform:none!important}
+.hi-dl .mk{position:absolute;top:-3px;right:-3px;width:10px;height:10px;border-radius:50%;background:#fff;border:1.5px solid currentColor;display:flex;align-items:center;justify-content:center}
+.hi-dl .mk svg{width:6px;height:6px}
+
+.kpi{background:#fff;border:1px solid #E2E8F0;border-radius:12px;padding:13px 15px;box-shadow:0 1px 3px rgba(11,20,48,0.04)}
+.kpi .lbl{font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:rgba(30,41,59,.5)}
+.kpi .val{font-size:22px;font-weight:600;color:#0B1430;line-height:1.2;margin-top:3px;font-variant-numeric:tabular-nums}
+.kpi .val.g{color:#059669}.kpi .val.a{color:#B45309}.kpi .val.r{color:#DC2626}
+
+.pg-btn{min-width:30px;height:30px;padding:0 8px;display:inline-flex;align-items:center;justify-content:center;border:1px solid #E2E8F0;border-radius:7px;background:#fff;font-size:12.5px;font-weight:500;color:#0B1430;cursor:pointer;transition:all .12s}
+.pg-btn:hover:not(:disabled){background:#F8FAFC;border-color:#CBD5E1}
+.pg-btn.active{background:#2D56D2;border-color:#2D56D2;color:#fff}
+.pg-btn:disabled{opacity:.4;cursor:not-allowed}
+
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#0B1430;color:#fff;padding:11px 20px;border-radius:10px;font-size:13px;z-index:100;box-shadow:0 10px 30px rgba(11,20,48,0.3);display:none;align-items:center;gap:8px}
+#toast.show{display:inline-flex}
+</style>
+<script src="shared/sidebar.js"></script>
+</head>
+<body class="font-kanit" style="background:#F7F9FC;color:#0B1430">
+
+<div class="min-h-screen flex">
+<div id="sidebar-overlay" class="hidden fixed inset-0 bg-black/40 z-20 lg:hidden" onclick="toggleMobile()"></div>
+  <aside id="sidebar" class="w-64 flex flex-col fixed h-full z-30 transition-all duration-200 -translate-x-full lg:translate-x-0 bg-white border-r border-[#E2E8F0]">
+    <div class="px-4 h-16 flex items-center gap-2.5 border-b border-[#E2E8F0]" id="sidebar-brand">
+      <div class="sidebar-label flex items-center gap-2 min-w-0">
+        <img src="logo.jpg" alt="Plan-B Media" class="h-8 w-auto rounded shrink-0" />
+        <span class="text-[11px] font-semibold tracking-wide uppercase border-l border-[#E2E8F0] pl-2 truncate" style="color:rgba(30,41,59,0.55)">Media Flow System</span>
+      </div>
+    </div>
+    <nav class="flex-1 py-3 px-2 overflow-y-auto text-sm sidebar-scroll space-y-0.5">
+      <a href="dashboard.html" class="sidebar-nav w-full flex items-center gap-3 h-10 rounded-md px-3 cursor-pointer">
+        <svg class="w-[18px] h-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25a2.25 2.25 0 01-2.25-2.25v-2.25z"/></svg>
+        <span class="flex-1 text-left truncate sidebar-label">Dashboard</span>
+      </a>
+      <a href="inventory.html" class="sidebar-nav w-full flex items-center gap-3 h-10 rounded-md px-3 cursor-pointer">
+        <svg class="w-[18px] h-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z"/></svg>
+        <span class="flex-1 text-left truncate sidebar-label">Inventory</span>
+      </a>
+      <a href="sale.html" class="sidebar-nav w-full flex items-center gap-3 h-10 rounded-md px-3 cursor-pointer">
+        <svg class="w-[18px] h-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        <span class="flex-1 text-left truncate sidebar-label">Sale</span>
+      </a>
+      <div class="pt-3">
+        <button onclick="toggleMenu('ma')" class="nav-parent sidebar-nav-parent w-full flex items-center gap-3 h-8 px-3 cursor-pointer text-left">
+          <span class="sidebar-group-icon sgi-ma"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg></span><span class="flex-1 text-left">Media Approval</span>
+          <svg id="ma-chevron" class="w-3 h-3 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
+        </button>
+        <div id="ma-sub" class="space-y-0.5 hidden">
+          <a href="ma-dashboard.html" class="sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]"><span class="flex-1 text-left truncate">Dashboard</span></a>
+          <a href="job-list.html" class="sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]"><span class="flex-1 text-left truncate">Media Ticket</span></a>
+          <a href="assign-job.html" class="sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]"><span class="flex-1 text-left truncate">Assign Ticket</span></a>
+          <a href="receive-job.html" class="sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]"><span class="flex-1 text-left truncate">Verify & Production</span></a>
+        </div>
+      </div>
+      <a href="production.html" class="sidebar-nav w-full flex items-center gap-3 h-10 rounded-md px-3 cursor-pointer">
+        <svg class="w-[18px] h-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17l-5.1-5.1a2.25 2.25 0 010-3.182l.71-.71a2.25 2.25 0 013.18 0l2.8 2.8 2.8-2.8a2.25 2.25 0 013.18 0l.71.71a2.25 2.25 0 010 3.182l-5.1 5.1a2.25 2.25 0 01-3.18 0z"/></svg>
+        <span class="flex-1 text-left truncate sidebar-label">Production</span>
+      </a>
+      <a href="claim.html" class="sidebar-nav w-full flex items-center gap-3 h-10 rounded-md px-3 cursor-pointer">
+        <svg class="w-[18px] h-[18px] shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25z"/></svg>
+        <span class="flex-1 text-left truncate sidebar-label">Claim</span>
+      </a>
+      <div class="pt-3">
+        <button onclick="toggleMenu('rpt')" class="nav-parent sidebar-nav-parent w-full flex items-center gap-3 h-8 px-3 cursor-pointer text-left">
+          <span class="sidebar-group-icon sgi-rpt"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg></span><span class="flex-1 text-left">Report</span>
+          <svg id="rpt-chevron" class="w-3 h-3 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
+        </button>
+        <div id="rpt-sub" class="space-y-0.5 hidden">
+          <a href="kpi-dashboard.html" class="sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]"><span class="flex-1 text-left truncate">KPI Dashboard</span></a>
+          <a href="export-airtime.html" class="sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]"><span class="flex-1 text-left truncate">Export Airtime</span></a>
+          <a href="report-monthly.html" class="sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]"><span class="flex-1 text-left truncate">Monthly Report</span></a>
+          <a href="report-audit.html" class="sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]"><span class="flex-1 text-left truncate">Audit Log</span></a>
+        </div>
+      </div>
+      <div class="pt-3">
+        <button onclick="toggleMenu('stg')" class="nav-parent sidebar-nav-parent w-full flex items-center gap-3 h-8 px-3 cursor-pointer text-left">
+          <span class="sidebar-group-icon sgi-stg"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.93.398.164.855.142 1.205-.108l.737-.527a1.125 1.125 0 011.45.12l.773.774c.39.389.44 1.002.12 1.45l-.527.737c-.25.35-.272.806-.107 1.204.165.397.505.71.93.78l.893.15c.543.09.94.56.94 1.109v1.094c0 .55-.397 1.02-.94 1.11l-.893.149c-.425.07-.765.383-.93.78-.165.398-.143.854.107 1.204l.527.738c.32.447.269 1.06-.12 1.45l-.774.773a1.125 1.125 0 01-1.449.12l-.738-.527c-.35-.25-.806-.272-1.203-.107-.398.165-.71.505-.781.929l-.149.894c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.019-.398-1.11-.94l-.148-.894c-.071-.424-.384-.764-.781-.93-.398-.164-.854-.142-1.204.108l-.738.527c-.447.32-1.06.269-1.45-.12l-.773-.774a1.125 1.125 0 01-.12-1.45l.527-.737c.25-.35.273-.806.108-1.204-.165-.397-.505-.71-.93-.78l-.894-.15c-.542-.09-.94-.56-.94-1.109v-1.094c0-.55.398-1.02.94-1.11l.894-.149c.424-.07.765-.383.93-.78.165-.398.143-.854-.107-1.204l-.527-.738a1.125 1.125 0 01.12-1.45l.773-.773a1.125 1.125 0 011.45-.12l.737.527c.35.25.807.272 1.204.107.397-.165.71-.505.78-.929l.15-.894zM15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg></span><span class="flex-1 text-left">Setting</span>
+          <svg id="stg-chevron" class="w-3 h-3 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"/></svg>
+        </button>
+        <div id="stg-sub" class="space-y-0.5 hidden">
+          <a href="settings-user.html" class="sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]"><span class="flex-1 text-left truncate">User Management</span></a>
+          <a href="settings-usergroup.html" class="sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]"><span class="flex-1 text-left truncate">User Group Management</span></a>
+          <a href="settings-email.html" class="sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]"><span class="flex-1 text-left truncate">Email Setup</span></a>
+          <a href="settings-email-template.html" class="sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]"><span class="flex-1 text-left truncate">Email Template</span></a>
+          <a href="settings-master.html" class="sidebar-sub w-full flex items-center gap-2 pl-8 h-9 rounded-md px-3 cursor-pointer text-[13px]"><span class="flex-1 text-left truncate">Master Data</span></a>
+        </div>
+      </div>
+    </nav>
+    <div class="p-3 border-t border-[#E2E8F0]">
+      <div class="flex items-center gap-2.5">
+        <div class="w-8 h-8 rounded-full flex items-center justify-center text-white font-semibold text-[13px] shrink-0" style="background:#4790FF">RK</div>
+        <div class="flex-1 min-w-0 sidebar-label">
+          <div class="text-[13px] font-medium text-[#0B1430] truncate">Raveewan Kaewmanee</div>
+          <div class="text-[11px] truncate" style="color:rgba(30,41,59,0.5)">Admin · Plan-B</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  
+  <!-- MAIN -->
+  <main class="flex-1 lg:ml-64 min-h-screen w-full min-w-0">
+    <header class="topbar-white h-16 shrink-0 sticky top-0 z-20 flex items-center gap-3 sm:gap-4 px-3 sm:px-6">
+      <button onclick="collapseSidebar()" class="w-9 h-9 rounded-md hover:bg-surface-100 flex items-center justify-center text-ink-700">
+        <svg class="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/></svg>
+      </button>
+      <div class="flex items-center gap-1.5 text-[13px] min-w-0" style="color:rgba(30,41,59,0.6)">
+        <span class="hidden sm:inline">Home</span>
+        <svg class="w-3 h-3 opacity-30 hidden sm:inline" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
+        <a href="inventory.html" class="hover:text-pb-700 transition truncate">Inventory</a>
+        <svg class="w-3 h-3 opacity-30 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
+        <span class="font-medium truncate" style="color:#0B1430">Import Portal</span>
+      </div>
+      <div class="flex-1"></div>
+    </header>
+
+    <div class="px-3 sm:px-6 lg:px-8 py-4 sm:py-6 space-y-4">
+
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div class="min-w-0">
+          <h1 class="text-[20px] sm:text-[22px] font-semibold text-[#0B1430] leading-tight">Import Portal</h1>
+          <p class="text-[12.5px] mt-0.5" style="color:rgba(30,41,59,0.55)">เลือกรูปแบบการนำเข้า และดูประวัติการนำเข้าทั้งหมดของระบบ</p>
+        </div>
+        <div class="flex items-center gap-2 shrink-0">
+          <a href="inventory-import.html" class="btn btn-primary">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/></svg>
+            <span>Import New</span>
+          </a>
+          <a href="inventory-update.html" class="btn btn-update">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992V4.356m-.001 0l-3.181 3.183a8.25 8.25 0 00-13.803 3.7M4.031 9.865v4.992m0 0h4.99m-4.99 0l3.181-3.182a8.25 8.25 0 0013.803-3.7"/></svg>
+            <span>Import Update</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        <div class="kpi"><div class="lbl">Total Imports</div><div class="val" id="k-total">0</div></div>
+        <div class="kpi"><div class="lbl">Records Imported</div><div class="val g" id="k-ok">0</div></div>
+        <div class="kpi"><div class="lbl">Errors</div><div class="val r" id="k-err">0</div></div>
+        <div class="kpi"><div class="lbl">Success Rate</div><div class="val" id="k-rate">0%</div></div>
+      </div>
+
+      <div class="bg-white border border-[#E2E8F0] rounded-xl shadow-sm overflow-hidden">
+        <div class="flex flex-wrap items-center gap-2 px-4 py-3 border-b border-[#E2E8F0] bg-[#FCFDFE]">
+          <div class="seg" id="seg-type">
+            <button class="on" data-type="all" onclick="ipSetType('all')">All <span class="cnt" id="c-all">0</span></button>
+            <button data-type="new" onclick="ipSetType('new')">New Media <span class="cnt" id="c-new">0</span></button>
+            <button data-type="update" onclick="ipSetType('update')">Update Media <span class="cnt" id="c-update">0</span></button>
+          </div>
+          <div class="flex-1"></div>
+          <div class="relative">
+            <svg class="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" style="color:rgba(30,41,59,.4)" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/></svg>
+            <input id="ip-q" class="ipt" placeholder="ค้นหา Import ID / ไฟล์ / ผู้นำเข้า" oninput="ipRender()" />
+          </div>
+          <select id="ip-status" class="sel" onchange="ipRender()">
+            <option value="">ทุกสถานะ</option>
+            <option value="success">สำเร็จ</option>
+            <option value="partial">นำเข้าบางส่วน</option>
+            <option value="failed">ล้มเหลว</option>
+          </select>
+        </div>
+
+        <div class="overflow-auto w-full">
+          <table id="ip-table">
+            <thead>
+              <tr id="ip-thead">
+                <th class="srt" data-k="id" onclick="ipSort('id')">Import ID<span class="ind">↕</span></th>
+                <th class="srt" data-k="type" onclick="ipSort('type')">Type<span class="ind">↕</span></th>
+                <th class="srt" data-k="file" onclick="ipSort('file')">File<span class="ind">↕</span></th>
+                <th class="srt" data-k="status" onclick="ipSort('status')">Status<span class="ind">↕</span></th>
+                <th class="srt" data-k="ts" onclick="ipSort('ts')">Date / Time<span class="ind">↕</span></th>
+                <th class="srt" data-k="user" onclick="ipSort('user')">Imported By<span class="ind">↕</span></th>
+                <th class="srt text-center" data-k="total" onclick="ipSort('total')">Total<span class="ind">↕</span></th>
+                <th class="srt text-center" data-k="ok" onclick="ipSort('ok')">Imported<span class="ind">↕</span></th>
+                <th class="srt text-center" data-k="err" onclick="ipSort('err')">Errors<span class="ind">↕</span></th>
+                <th class="text-center">Log</th>
+              </tr>
+            </thead>
+            <tbody id="ip-body"></tbody>
+          </table>
+        </div>
+        <div id="ip-pagination" class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-4 py-3 border-t border-[#E2E8F0] bg-[#F8FAFC]/40"></div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div id="toast"><span id="toastMsg"></span></div>
+
+<script>
+const HISTORY = [
+  {id:'IMP-2026-0611', type:'new',    file:'media_batch_2026_q2_v3.xlsx',  status:'success', date:'26 มิ.ย. 2026', time:'10:18', user:'Raveewan K.', total:80,  ok:80,  err:0,  dur:'00:00:58'},
+  {id:'IMP-2026-0610', type:'update', file:'sukhumvit_addition.csv',       status:'partial', date:'25 มิ.ย. 2026', time:'17:42', user:'Apirak T.',   total:34,  ok:31,  err:3,  dur:'00:00:24'},
+  {id:'IMP-2026-0609', type:'new',    file:'billboard_q2_round2.xlsx',     status:'success', date:'24 มิ.ย. 2026', time:'14:05', user:'Raveewan K.', total:120, ok:120, err:0,  dur:'00:01:48'},
+  {id:'IMP-2026-0608', type:'update', file:'wrong_format.csv',             status:'failed',  date:'23 มิ.ย. 2026', time:'09:30', user:'Niran S.',    total:0,   ok:0,   err:45, dur:'00:00:03'},
+  {id:'IMP-2026-0607', type:'update', file:'transit_update.xlsx',          status:'success', date:'22 มิ.ย. 2026', time:'16:11', user:'Apirak T.',   total:62,  ok:62,  err:0,  dur:'00:00:42'},
+  {id:'IMP-2026-0606', type:'new',    file:'led_screens_north.csv',        status:'partial', date:'20 มิ.ย. 2026', time:'11:24', user:'Raveewan K.', total:18,  ok:15,  err:3,  dur:'00:00:17'},
+  {id:'IMP-2026-0605', type:'new',    file:'airport_concourse_d.xlsx',     status:'success', date:'18 มิ.ย. 2026', time:'15:38', user:'Niran S.',    total:25,  ok:25,  err:0,  dur:'00:00:31'},
+  {id:'IMP-2026-0604', type:'update', file:'price_adjust_jun.xlsx',        status:'success', date:'16 มิ.ย. 2026', time:'09:02', user:'Raveewan K.', total:143, ok:143, err:0,  dur:'00:01:12'},
+  {id:'IMP-2026-0603', type:'update', file:'status_sync_bts.csv',          status:'partial', date:'14 มิ.ย. 2026', time:'13:47', user:'Apirak T.',   total:57,  ok:52,  err:5,  dur:'00:00:36'},
+  {id:'IMP-2026-0602', type:'new',    file:'mall_network_batch1.xlsx',     status:'success', date:'12 มิ.ย. 2026', time:'10:55', user:'Niran S.',    total:96,  ok:96,  err:0,  dur:'00:01:04'},
+  {id:'IMP-2026-0601', type:'update', file:'owner_reassign.csv',           status:'failed',  date:'10 มิ.ย. 2026', time:'08:19', user:'Raveewan K.', total:0,   ok:0,   err:28, dur:'00:00:02'},
+  {id:'IMP-2026-0600', type:'new',    file:'expressway_q2.xlsx',           status:'success', date:'08 มิ.ย. 2026', time:'14:33', user:'Apirak T.',   total:41,  ok:41,  err:0,  dur:'00:00:29'}
+];
+
+const TYPE_LABEL = {new:'New Media', update:'Update Media'};
+const STATUS_META = {
+  success:{cls:'chip-green', label:'สำเร็จ'},
+  partial:{cls:'chip-amber', label:'นำเข้าบางส่วน'},
+  failed :{cls:'chip-red',   label:'ล้มเหลว'}
+};
+const STATUS_RANK = {success:0, partial:1, failed:2};
+
+let _type='all', _sortK='id', _sortDir='desc', _page=1;
+const PAGE_SIZE = 10;
+
+function esc(v){ return String(v==null?'':v).replace(/[&<>"]/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+function showToast(m){ const t=document.getElementById('toast'); document.getElementById('toastMsg').textContent=m; t.classList.add('show'); clearTimeout(t._h); t._h=setTimeout(function(){t.classList.remove('show')},2400); }
+
+function ipFiltered(){
+  const q = (document.getElementById('ip-q').value||'').trim().toLowerCase();
+  const st = document.getElementById('ip-status').value;
+  return HISTORY.filter(function(h){
+    if(_type!=='all' && h.type!==_type) return false;
+    if(st && h.status!==st) return false;
+    if(q && !(h.id+' '+h.file+' '+h.user).toLowerCase().includes(q)) return false;
+    return true;
+  });
+}
+function ipSortRows(rows){
+  const k=_sortK, dir=_sortDir==='asc'?1:-1;
+  return rows.slice().sort(function(a,b){
+    let va, vb;
+    if(k==='status'){ va=STATUS_RANK[a.status]; vb=STATUS_RANK[b.status]; }
+    else if(k==='ts'){ va=a.id; vb=b.id; }
+    else if(k==='type'){ va=TYPE_LABEL[a.type]; vb=TYPE_LABEL[b.type]; }
+    else { va=a[k]; vb=b[k]; }
+    if(typeof va==='number' && typeof vb==='number') return (va-vb)*dir;
+    return String(va).localeCompare(String(vb),'th')*dir;
+  });
+}
+function ipSort(k){
+  if(_sortK===k){ _sortDir = _sortDir==='asc' ? 'desc' : 'asc'; }
+  else { _sortK=k; _sortDir='asc'; }
+  _page=1; ipRender();
+}
+function ipSetType(t){
+  _type=t; _page=1;
+  document.querySelectorAll('#seg-type button').forEach(function(b){ b.classList.toggle('on', b.dataset.type===t); });
+  ipRender();
+}
+function ipGo(p){ _page=p; ipRender(); }
+
+const DL_ICON = '<svg fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12M12 16.5V3"/></svg>';
+const OK_MARK  = '<span class="mk"><svg fill="none" stroke="currentColor" stroke-width="3.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg></span>';
+const ERR_MARK = '<span class="mk"><svg fill="none" stroke="currentColor" stroke-width="3.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></span>';
+
+function downloadHistoryLog(id, kind, count){
+  const labels={total:'รวมทั้งหมด', success:'เฉพาะที่สำเร็จ', error:'เฉพาะที่ผิดพลาด'};
+  const names={total:id+'_full.xlsx', success:id+'_success.xlsx', error:id+'_errors.xlsx'};
+  showToast('กำลังดาวน์โหลด '+names[kind]+' — '+labels[kind]+' ('+count+' รายการ)');
+}
+
+function ipRender(){
+  const all = ipSortRows(ipFiltered());
+  const totalPages = Math.max(1, Math.ceil(all.length/PAGE_SIZE));
+  if(_page>totalPages) _page=totalPages;
+  const rows = all.slice((_page-1)*PAGE_SIZE, _page*PAGE_SIZE);
+
+  document.querySelectorAll('#ip-thead th.srt').forEach(function(th){
+    const on = th.dataset.k===_sortK;
+    th.classList.toggle('on', on);
+    th.querySelector('.ind').textContent = on ? (_sortDir==='asc'?'↑':'↓') : '↕';
+  });
+
+  const tb = document.getElementById('ip-body');
+  if(!rows.length){
+    tb.innerHTML = '<tr><td colspan="10" class="px-4 py-12 text-center text-[13px]" style="color:rgba(30,41,59,0.5)">ไม่พบประวัติการนำเข้าที่ตรงกับเงื่อนไข</td></tr>';
+  } else {
+    tb.innerHTML = rows.map(function(h){
+      const sm = STATUS_META[h.status];
+      const tChip = h.type==='new'
+        ? '<span class="chip-pill chip-blue">New Media</span>'
+        : '<span class="chip-pill chip-violet">Update Media</span>';
+      return '<tr>'+
+        '<td><span class="font-mono text-[11.5px] font-semibold" style="color:#2D56D2">'+esc(h.id)+'</span></td>'+
+        '<td>'+tChip+'</td>'+
+        '<td><span class="text-[12.5px] font-medium" title="'+esc(h.file)+'">'+esc(h.file)+'</span></td>'+
+        '<td><span class="chip-pill '+sm.cls+'">'+sm.label+'</span></td>'+
+        '<td><span class="text-[12px]" style="color:rgba(30,41,59,.7)">'+esc(h.date)+'</span> <span class="text-[11.5px] font-mono" style="color:rgba(30,41,59,.45)">'+esc(h.time)+'</span></td>'+
+        '<td><span class="text-[12px]" style="color:rgba(30,41,59,.78)">'+esc(h.user)+'</span></td>'+
+        '<td class="text-center"><span class="num">'+h.total+'</span></td>'+
+        '<td class="text-center"><span class="num '+(h.ok?'ok':'muted')+'">'+h.ok+'</span></td>'+
+        '<td class="text-center"><span class="num '+(h.err?'err':'muted')+'">'+h.err+'</span></td>'+
+        '<td class="text-center"><div class="flex items-center justify-center gap-1.5">'+
+          '<button class="hi-dl dl-total" '+(h.total===0?'disabled':'')+' title="Log ทั้งหมด ('+h.total+')" onclick="downloadHistoryLog(\''+h.id+'\',\'total\','+h.total+')">'+DL_ICON+'</button>'+
+          '<button class="hi-dl dl-ok" '+(h.ok===0?'disabled':'')+' title="Log ที่สำเร็จ ('+h.ok+')" onclick="downloadHistoryLog(\''+h.id+'\',\'success\','+h.ok+')">'+DL_ICON+OK_MARK+'</button>'+
+          '<button class="hi-dl dl-err" '+(h.err===0?'disabled':'')+' title="Log ที่ผิดพลาด ('+h.err+')" onclick="downloadHistoryLog(\''+h.id+'\',\'error\','+h.err+')">'+DL_ICON+ERR_MARK+'</button>'+
+        '</div></td>'+
+      '</tr>';
+    }).join('');
+  }
+
+  const from = all.length ? (_page-1)*PAGE_SIZE+1 : 0;
+  const to = Math.min(_page*PAGE_SIZE, all.length);
+  let pg = '<div class="text-[12.5px]" style="color:rgba(30,41,59,0.6)">แสดง <b class="tnum">'+from+'-'+to+'</b> จาก <b class="tnum">'+all.length+'</b> รายการ</div><div class="flex items-center gap-1.5">';
+  pg += '<button class="pg-btn" '+(_page===1?'disabled':'')+' onclick="ipGo('+(_page-1)+')">‹</button>';
+  for(let i=1;i<=totalPages;i++){ pg += '<button class="pg-btn '+(i===_page?'active':'')+'" onclick="ipGo('+i+')">'+i+'</button>'; }
+  pg += '<button class="pg-btn" '+(_page===totalPages?'disabled':'')+' onclick="ipGo('+(_page+1)+')">›</button></div>';
+  document.getElementById('ip-pagination').innerHTML = pg;
+
+  ipStats();
+}
+
+function ipStats(){
+  const scope = HISTORY.filter(function(h){ return _type==='all' || h.type===_type; });
+  const ok = scope.reduce(function(s,h){ return s+h.ok; },0);
+  const err = scope.reduce(function(s,h){ return s+h.err; },0);
+  document.getElementById('k-total').textContent = scope.length;
+  document.getElementById('k-ok').textContent = ok.toLocaleString('en-US');
+  document.getElementById('k-err').textContent = err.toLocaleString('en-US');
+  document.getElementById('k-rate').textContent = (ok+err) ? Math.round(ok/(ok+err)*100)+'%' : '—';
+  document.getElementById('c-all').textContent = HISTORY.length;
+  document.getElementById('c-new').textContent = HISTORY.filter(function(h){return h.type==='new';}).length;
+  document.getElementById('c-update').textContent = HISTORY.filter(function(h){return h.type==='update';}).length;
+}
+
+document.addEventListener('DOMContentLoaded', function(){ ipRender(); });
+</script>
+</body>
+</html>

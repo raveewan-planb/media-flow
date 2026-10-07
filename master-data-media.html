@@ -337,7 +337,7 @@ function Pane({ title, count, subtitle, onAdd, search, onSearch, children, empty
 }
 
 function MediaDrawer({ open, mode, level, initial, context, onClose, onSave }) {
-  const blank = { id:'', nameTh:'', nameEn:'', color:'#2D56D2', status:'active', hasPackage:false, packageIds:[], panelCount:'' };
+  const blank = { id:'', nameTh:'', nameEn:'', color:'#2D56D2', status:'active', hasPackage:false, packageIds:[] };
   const [form, setForm] = useState(blank);
   const [pkgOpen, setPkgOpen] = useState(false);
   const [pkgSearch, setPkgSearch] = useState('');
@@ -425,25 +425,6 @@ function MediaDrawer({ open, mode, level, initial, context, onClose, onSave }) {
               placeholder={namePh[level]}
               className="w-full h-9 px-3 bg-surface-50 border border-surface-200 rounded-lg text-[13px] placeholder:opacity-40" />
           </Field>
-          {level === 'type' && (
-            <Field label="จำนวน Panel" hint="ระบุเป็นตัวเลขเท่านั้น">
-              <input
-                type="number"
-                min="0"
-                step="1"
-                inputMode="numeric"
-                value={form.panelCount ?? ''}
-                onChange={e => {
-                  const v = e.target.value.replace(/[^0-9]/g, '');
-                  update('panelCount', v);
-                }}
-                onKeyDown={e => {
-                  if (['e','E','+','-','.'].includes(e.key)) e.preventDefault();
-                }}
-                placeholder="เช่น 120"
-                className="w-full h-9 px-3 bg-surface-50 border border-surface-200 rounded-lg text-[13px] font-mono placeholder:opacity-40" />
-            </Field>
-          )}
           {(level === 'group' || level === 'category') && (
             <Field label="สี (สำหรับ tag)">
               <div className="flex gap-2 flex-wrap">
@@ -880,13 +861,12 @@ function MasterDataMediaScreen() {
       }
       if (level === 'type') {
         const parentG = next.find(g => g.id === drawerState.context.groupId);
-        const pCount = data.panelCount === '' || data.panelCount == null ? null : Number(data.panelCount);
         if (mode === 'create') {
           if (parentG.types.find(t => t.id === data.id)) { alert(`รหัส ${data.id} มีอยู่แล้ว`); return prev; }
-          parentG.types.push({ id: data.id, nameTh: data.nameTh, nameEn: data.nameEn || '', status:'active', panelCount: pCount, hasPackage: !!data.hasPackage, packageIds: data.packageIds || [], segments: [] });
+          parentG.types.push({ id: data.id, nameTh: data.nameTh, nameEn: data.nameEn || '', status:'active', hasPackage: !!data.hasPackage, packageIds: data.packageIds || [], segments: [] });
         } else {
           const t = parentG.types.find(t => t.id === initial.id);
-          if (t) Object.assign(t, { nameTh: data.nameTh, nameEn: data.nameEn, panelCount: pCount, hasPackage: !!data.hasPackage, packageIds: data.packageIds || [] });
+          if (t) Object.assign(t, { nameTh: data.nameTh, nameEn: data.nameEn, hasPackage: !!data.hasPackage, packageIds: data.packageIds || [] });
         }
       }
       if (level === 'segment') {
@@ -1022,7 +1002,7 @@ function MasterDataMediaScreen() {
                 empty={selectedGroup ? 'ยังไม่มี Type ในกลุ่มนี้ — กด "เพิ่ม"' : 'เลือก Group ก่อน'}>
                 {filteredTypes.map(t => (
                   <PaneRow key={t.id} item={t}
-                    meta={t.panelCount != null ? `${t.panelCount} panels` : (t.segments?.length + ' seg')}
+                    meta={(t.segments?.length || 0) + ' seg'}
                     secondary={`${t.id} · ${t.nameEn}`}
                     active={selectedType?.id === t.id}
                     onSelect={() => { setSelectedTypeId(t.id); setSelectedSegmentId(null); }}
