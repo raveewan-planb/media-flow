@@ -100,6 +100,49 @@ th.srt.on .ind{opacity:1}
 .hi-dl .mk{position:absolute;top:-3px;right:-3px;width:10px;height:10px;border-radius:50%;background:#fff;border:1.5px solid currentColor;display:flex;align-items:center;justify-content:center}
 .hi-dl .mk svg{width:6px;height:6px}
 
+.hi-dl.dl-hist{background:rgba(124,58,237,.07);border-color:rgba(124,58,237,.26);color:#7C3AED}
+.hi-dl.dl-hist:hover{background:rgba(124,58,237,.16);border-color:#7C3AED}
+.cl-overlay{position:fixed;inset:0;background:rgba(11,20,48,.55);backdrop-filter:blur(4px);z-index:80;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;visibility:hidden;transition:opacity .2s,visibility .2s}
+.cl-overlay.open{opacity:1;visibility:visible}
+.cl-modal{background:#fff;border-radius:16px;width:100%;max-width:880px;max-height:86vh;display:flex;flex-direction:column;box-shadow:0 25px 60px rgba(11,20,48,.3);transform:scale(.95) translateY(8px);transition:transform .25s cubic-bezier(.22,1,.36,1);overflow:hidden}
+.cl-overlay.open .cl-modal{transform:scale(1) translateY(0)}
+.cl-head{display:flex;align-items:center;gap:11px;padding:16px 20px;border-bottom:1px solid #E2E8F0}
+.cl-head .icn{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,rgba(124,58,237,.14),rgba(168,85,247,.10));color:#7C3AED;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+.cl-head .ttl{font-size:15px;font-weight:600;color:#0B1430;line-height:1.25}
+.cl-head .sub{font-size:11.5px;color:rgba(30,41,59,.55);margin-top:2px}
+.cl-x{width:30px;height:30px;border-radius:8px;border:0;background:transparent;color:rgba(30,41,59,.5);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;margin-left:auto;transition:.15s}
+.cl-x:hover{background:#F1F5F9;color:#0B1430}
+.cl-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:11px 20px;background:#FCFDFE;border-bottom:1px solid #F1F5F9}
+.cl-stat{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;color:rgba(30,41,59,.65)}
+.cl-stat b{font-size:13px;color:#0B1430;font-variant-numeric:tabular-nums}
+.cl-search{position:relative;margin-left:auto}
+.cl-search input{height:32px;padding:0 11px 0 30px;background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;font-size:12.5px;width:230px;font-family:'Kanit',sans-serif;transition:.15s}
+.cl-search input:hover{background:#fff;border-color:#CBD5E8}
+.cl-search svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);width:13px;height:13px;color:rgba(30,41,59,.4);pointer-events:none}
+.cl-body{overflow:auto;padding:0}
+.cl-table{width:100%;border-collapse:collapse;font-size:12.5px}
+.cl-table thead th{position:sticky;top:0;background:#F8FAFC;padding:9px 14px;text-align:left;font-size:9.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:rgba(30,41,59,.55);border-bottom:1px solid #E2E8F0;white-space:nowrap;z-index:1}
+.cl-table tbody td{padding:9px 14px;border-bottom:1px solid #F4F7FB;vertical-align:top}
+.cl-table tbody tr:hover{background:#F8FAFC}
+.cl-code{font-family:'JetBrains Mono',monospace;font-size:11.5px;font-weight:600;color:#2D56D2;white-space:nowrap}
+.cl-field{font-weight:500;color:#0B1430;white-space:nowrap}
+.cl-old{color:rgba(30,41,59,.55);background:#F4F6FA;border:1px solid #E6EAF2;border-radius:6px;padding:2px 8px;display:inline-block;white-space:nowrap}
+.cl-new{color:#047857;background:rgba(16,185,129,.10);border:1px solid rgba(16,185,129,.22);border-radius:6px;padding:2px 8px;display:inline-block;font-weight:500;white-space:nowrap}
+.cl-arrow{color:rgba(30,41,59,.3);padding:0 2px}
+.cl-table thead th.cl-grp{text-align:center;border-left:1px solid #E2E8F0;background:#F1F5F9;color:rgba(30,41,59,.7);font-size:10px;padding:8px 14px}
+.cl-table thead th.cl-sub{font-size:9px;font-weight:600;color:rgba(30,41,59,.45);padding:6px 14px;background:#F8FAFC}
+.cl-table thead th.cl-sub:nth-child(odd){border-left:1px solid #E2E8F0}
+.cl-table th.cl-sticky,.cl-table td.cl-sticky{position:sticky;left:0;background:#fff;z-index:2}
+.cl-table thead th.cl-sticky{background:#F8FAFC;vertical-align:middle;border-right:1px solid #E2E8F0}
+.cl-table tbody td.cl-sticky{border-right:1px solid #E2E8F0}
+.cl-table tbody tr:hover td.cl-sticky{background:#F8FAFC}
+.cl-table td.cl-sep{padding-left:4px}
+.cl-table thead th.cl-sub.cl-sep{border-left:0}
+.cl-chips{display:flex;gap:5px;flex-wrap:wrap}
+.cl-chip{display:inline-flex;align-items:center;height:20px;padding:0 9px;border-radius:99px;font-size:10.5px;font-weight:600;background:rgba(124,58,237,.09);color:#7C3AED;border:1px solid rgba(124,58,237,.18)}
+.cl-empty{padding:34px;text-align:center;font-size:12.5px;color:rgba(30,41,59,.5)}
+.cl-foot{padding:12px 20px;border-top:1px solid #E2E8F0;display:flex;justify-content:flex-end;background:#FCFDFE}
+@media(max-width:640px){.cl-search input{width:150px}}
 .kpi{background:#fff;border:1px solid #E2E8F0;border-radius:12px;padding:13px 15px;box-shadow:0 1px 3px rgba(11,20,48,0.04)}
 .kpi .lbl{font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:rgba(30,41,59,.5)}
 .kpi .val{font-size:22px;font-weight:600;color:#0B1430;line-height:1.2;margin-top:3px;font-variant-numeric:tabular-nums}
@@ -272,7 +315,7 @@ th.srt.on .ind{opacity:1}
                 <th class="srt text-center" data-k="total" onclick="ipSort('total')">Total<span class="ind">↕</span></th>
                 <th class="srt text-center" data-k="ok" onclick="ipSort('ok')">Imported<span class="ind">↕</span></th>
                 <th class="srt text-center" data-k="err" onclick="ipSort('err')">Errors<span class="ind">↕</span></th>
-                <th class="text-center">Log</th>
+                <th>Log</th>
               </tr>
             </thead>
             <tbody id="ip-body"></tbody>
@@ -282,6 +325,39 @@ th.srt.on .ind{opacity:1}
       </div>
     </div>
   </main>
+</div>
+
+<div id="clOverlay" class="cl-overlay" onclick="if(event.target===this) closeChangeLog()">
+  <div class="cl-modal" role="dialog" aria-modal="true" aria-label="Update History">
+    <div class="cl-head">
+      <span class="icn">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5M12 3a9 9 0 11-8.955 9.9M3 3v5.25h5.25"/></svg>
+      </span>
+      <div class="flex-1 min-w-0">
+        <div class="ttl" id="clTitle">Update History</div>
+        <div class="sub" id="clSub"></div>
+      </div>
+      <button class="cl-x" onclick="closeChangeLog()" aria-label="ปิด">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="cl-bar">
+      <span class="cl-stat">Records <b id="clRecords">0</b></span>
+      <span class="cl-stat">ฟิลด์ที่เปลี่ยน <b id="clFields">0</b></span>
+      <span id="clChips" class="cl-chips"></span>
+      <div class="cl-search">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/></svg>
+        <input id="clSearch" placeholder="ค้นหา Code Product / ฟิลด์" oninput="clDraw()" />
+      </div>
+    </div>
+    <div class="cl-body">
+      <table class="cl-table">
+        <thead id="clHead"></thead>
+        <tbody id="clBody"></tbody>
+      </table>
+    </div>
+    <div class="cl-foot"><button type="button" class="btn btn-ghost" onclick="closeChangeLog()">ปิด</button></div>
+  </div>
 </div>
 
 <div id="toast"><span id="toastMsg"></span></div>
@@ -352,6 +428,7 @@ function ipGo(p){ _page=p; ipRender(); }
 
 const DL_ICON = '<svg fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12M12 16.5V3"/></svg>';
 const OK_MARK  = '<span class="mk"><svg fill="none" stroke="currentColor" stroke-width="3.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg></span>';
+const HIST_ICON = '<svg fill="none" stroke="currentColor" stroke-width="2.1" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5M12 3a9 9 0 11-8.955 9.9M3 3v5.25h5.25"/></svg>';
 const ERR_MARK = '<span class="mk"><svg fill="none" stroke="currentColor" stroke-width="3.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></span>';
 
 function downloadHistoryLog(id, kind, count){
@@ -359,6 +436,98 @@ function downloadHistoryLog(id, kind, count){
   const names={total:id+'_full.xlsx', success:id+'_success.xlsx', error:id+'_errors.xlsx'};
   showToast('กำลังดาวน์โหลด '+names[kind]+' — '+labels[kind]+' ('+count+' รายการ)');
 }
+
+
+/* ===== Update change log ===== */
+const CL_FIELDS = [
+  {f:'Sale Package',     old:['Package A','Standard Pack','Premium Pack','Flex Pack'],      nw:['Package B','Premium Pack','Flex Pack','Standard Pack']},
+  {f:'Media Status',     old:['Available','Maintenance','Reserved'],                        nw:['Occupied','Available','Maintenance']},
+  {f:'Product Owner',    old:['Plan-B','Master Ad','Plan-B Digital'],                       nw:['Master Ad','Plan-B','VGI']},
+  {f:'Rent Cost',        old:['85,000','120,000','60,000','45,000'],                        nw:['92,000','135,000','66,000','48,000']},
+  {f:'Operating Time',   old:['06:00 - 22:00','05:30 - 23:00'],                             nw:['06:00 - 24:00','06:00 - 23:30']},
+  {f:'Province',         old:['กรุงเทพมหานคร','นนทบุรี','ชลบุรี'],                          nw:['สมุทรปราการ','กรุงเทพมหานคร','ระยอง']},
+  {f:'Lighting (Unit)',  old:['12','8','20'],                                               nw:['16','10','24']}
+];
+const CL_PREFIX = ['BB-SKV','LED-RCD','TRN-BTS','RTL-CTW','APT-BKK','BB-PHY'];
+const CL_CACHE = {};
+
+function clData(h){
+  if(CL_CACHE[h.id]) return CL_CACHE[h.id];
+  var seed = 0; for(var i=0;i<h.id.length;i++) seed += h.id.charCodeAt(i)*(i+3);
+  var rnd = function(){ seed = (seed*9301 + 49297) % 233280; return seed/233280; };
+  var pool = CL_FIELDS.slice();
+  var nF = 2 + Math.floor(rnd()*2);
+  var fields = [];
+  for(var k=0;k<nF && pool.length;k++) fields.push(pool.splice(Math.floor(rnd()*pool.length),1)[0]);
+  var recs = Math.max(1, Math.min(h.ok || 1, 8));
+  var rows = [];
+  for(var r=0;r<recs;r++){
+    var code = CL_PREFIX[Math.floor(rnd()*CL_PREFIX.length)] + '-' + String(1000 + Math.floor(rnd()*8999));
+    var vals = {};
+    fields.forEach(function(f){
+      var o = f.old[Math.floor(rnd()*f.old.length)];
+      var n = f.nw[Math.floor(rnd()*f.nw.length)];
+      if(n === o) n = f.nw[(f.nw.indexOf(o)+1) % f.nw.length];
+      vals[f.f] = {o:o, n:n};
+    });
+    rows.push({code:code, vals:vals});
+  }
+  CL_CACHE[h.id] = {fields:fields.map(function(f){return f.f;}), rows:rows};
+  return CL_CACHE[h.id];
+}
+
+var _clCurrent = null;
+function openChangeLog(id){
+  var h = HISTORY.filter(function(x){ return x.id===id; })[0];
+  if(!h) return;
+  _clCurrent = h;
+  document.getElementById('clSearch').value = '';
+  document.getElementById('clTitle').textContent = 'Update History — ' + h.id;
+  document.getElementById('clSub').textContent = h.file + ' · ' + h.date + ' ' + h.time + ' · ' + h.user;
+  clDraw();
+  document.getElementById('clOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeChangeLog(){
+  document.getElementById('clOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+  _clCurrent = null;
+}
+function clDraw(){
+  if(!_clCurrent) return;
+  var d = clData(_clCurrent);
+  var q = (document.getElementById('clSearch').value||'').trim().toLowerCase();
+  var rows = d.rows.filter(function(r){
+    if(!q) return true;
+    var hay = r.code + ' ' + d.fields.map(function(f){ return r.vals[f].o+' '+r.vals[f].n; }).join(' ');
+    return hay.toLowerCase().indexOf(q) > -1;
+  });
+
+  var head = '<tr><th rowspan="2" class="cl-sticky">Code Product</th>' +
+    d.fields.map(function(f){ return '<th colspan="2" class="cl-grp">'+esc(f)+'</th>'; }).join('') + '</tr>' +
+    '<tr>' + d.fields.map(function(){ return '<th class="cl-sub">ข้อมูลเดิม</th><th class="cl-sub cl-sep">ข้อมูลใหม่</th>'; }).join('') + '</tr>';
+  document.getElementById('clHead').innerHTML = head;
+
+  var tb = document.getElementById('clBody');
+  if(!rows.length){
+    tb.innerHTML = '<tr><td colspan="'+(1+d.fields.length*2)+'" class="cl-empty">ไม่พบรายการที่ตรงกับคำค้นหา</td></tr>';
+  } else {
+    tb.innerHTML = rows.map(function(r){
+      return '<tr><td class="cl-sticky"><span class="cl-code">'+esc(r.code)+'</span></td>'+
+        d.fields.map(function(f){
+          var v = r.vals[f];
+          return '<td><span class="cl-old">'+esc(v.o)+'</span></td><td class="cl-sep"><span class="cl-new">'+esc(v.n)+'</span></td>';
+        }).join('') + '</tr>';
+    }).join('');
+  }
+
+  document.getElementById('clRecords').textContent = d.rows.length;
+  document.getElementById('clFields').textContent = d.fields.length;
+  document.getElementById('clChips').innerHTML = d.fields.map(function(f){ return '<span class="cl-chip">'+esc(f)+'</span>'; }).join('');
+}
+document.addEventListener('keydown', function(e){
+  if(e.key==='Escape' && document.getElementById('clOverlay').classList.contains('open')) closeChangeLog();
+});
 
 function ipRender(){
   const all = ipSortRows(ipFiltered());
@@ -391,10 +560,11 @@ function ipRender(){
         '<td class="text-center"><span class="num">'+h.total+'</span></td>'+
         '<td class="text-center"><span class="num '+(h.ok?'ok':'muted')+'">'+h.ok+'</span></td>'+
         '<td class="text-center"><span class="num '+(h.err?'err':'muted')+'">'+h.err+'</span></td>'+
-        '<td class="text-center"><div class="flex items-center justify-center gap-1.5">'+
+        '<td><div class="flex items-center justify-start gap-1.5">'+
           '<button class="hi-dl dl-total" '+(h.total===0?'disabled':'')+' title="Log ทั้งหมด ('+h.total+')" onclick="downloadHistoryLog(\''+h.id+'\',\'total\','+h.total+')">'+DL_ICON+'</button>'+
           '<button class="hi-dl dl-ok" '+(h.ok===0?'disabled':'')+' title="Log ที่สำเร็จ ('+h.ok+')" onclick="downloadHistoryLog(\''+h.id+'\',\'success\','+h.ok+')">'+DL_ICON+OK_MARK+'</button>'+
           '<button class="hi-dl dl-err" '+(h.err===0?'disabled':'')+' title="Log ที่ผิดพลาด ('+h.err+')" onclick="downloadHistoryLog(\''+h.id+'\',\'error\','+h.err+')">'+DL_ICON+ERR_MARK+'</button>'+
+          (h.type==='update' ? '<button class="hi-dl dl-hist" title="ดูรายละเอียดการอัปเดต" onclick="openChangeLog(\''+h.id+'\')">'+HIST_ICON+'</button>' : '')+
         '</div></td>'+
       '</tr>';
     }).join('');

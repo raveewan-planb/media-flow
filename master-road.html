@@ -53,16 +53,6 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#4790FF;box-sh
 .chip-indigo{background:rgba(79,70,229,0.12);color:#4338CA}
 .fade-in{animation:fi .25s ease}
 @keyframes fi{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
-.ms-box{min-height:44px;border:1px solid #CBD5E1;border-radius:8px;background:#fff;padding:6px;display:flex;flex-wrap:wrap;gap:5px;align-items:center;cursor:text}
-.ms-box.focus{border-color:#4790FF;box-shadow:0 0 0 3px rgba(71,144,255,0.15)}
-.ms-tag{display:inline-flex;align-items:center;gap:5px;padding:3px 6px 3px 9px;border-radius:6px;font-size:12px;background:rgba(79,70,229,0.10);color:#4338CA}
-.ms-tag button{width:15px;height:15px;border-radius:4px;display:flex;align-items:center;justify-content:center;line-height:0}
-.ms-tag button:hover{background:rgba(79,70,229,0.18)}
-.ms-input{flex:1;min-width:90px;border:0;outline:0;font-size:13px;padding:4px 2px;background:transparent}
-.ms-menu{position:absolute;z-index:60;left:0;right:0;top:calc(100% + 4px);max-height:220px;overflow-y:auto;background:#fff;border:1px solid #E2E8F0;border-radius:10px;box-shadow:0 8px 30px rgba(11,20,48,0.12);padding:4px}
-.ms-opt{display:flex;align-items:center;gap:8px;padding:7px 9px;border-radius:7px;font-size:13px;cursor:pointer}
-.ms-opt:hover,.ms-opt.hl{background:#F1F5F9}
-.ms-opt.sel{color:#4338CA;font-weight:500}
 </style>
 </head>
 <body class="font-kanit" style="background:#F7F9FC;color:#0B1430">
@@ -127,7 +117,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#4790FF;box-sh
           <div class="min-w-0">
             <div class="text-[10.5px] font-semibold tracking-wide uppercase mb-0.5" style="color:rgba(30,41,59,0.5)">Master Data</div>
             <h1 class="text-[20px] sm:text-[24px] font-semibold leading-tight">Road Management</h1>
-            <p class="text-[12px] sm:text-[13px] mt-0.5" style="color:rgba(30,41,59,0.6)">จัดการรายการถนนในระบบ — ใช้อ้างอิงตำแหน่งติดตั้งสื่อ และเชื่อมกับจังหวัดที่ถนนพาดผ่าน</p>
+            <p class="text-[12px] sm:text-[13px] mt-0.5" style="color:rgba(30,41,59,0.6)">จัดการรายการถนนในระบบ — ใช้อ้างอิงตำแหน่งติดตั้งสื่อ</p>
           </div>
         </div>
         <button onclick="openAdd()" class="h-10 px-4 rounded-lg acc-bg text-white text-[13px] font-medium flex items-center justify-center gap-2 hover:opacity-90 shadow-card shrink-0 w-full sm:w-auto">
@@ -142,9 +132,8 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#4790FF;box-sh
           <div class="flex items-center gap-2 shrink-0">
             <div class="relative flex-1 lg:flex-initial">
               <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style="color:rgba(30,41,59,0.35)" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/></svg>
-              <input id="search" oninput="render()" placeholder="ค้นหาถนน / รหัส / จังหวัด..." class="w-full lg:w-[260px] h-9 pl-9 pr-3 bg-surface-50 border border-surface-200 rounded-lg text-[13px]"/>
+              <input id="search" oninput="render()" placeholder="ค้นหาถนน / รหัส..." class="w-full lg:w-[260px] h-9 pl-9 pr-3 bg-surface-50 border border-surface-200 rounded-lg text-[13px]"/>
             </div>
-            <select id="filter-province" onchange="render()" class="h-9 px-2 sm:px-3 bg-white border border-surface-200 rounded-lg text-[12px] sm:text-[13px] shrink-0"><option value="">ทุกจังหวัด</option></select>
             <select id="filter-status" onchange="render()" class="h-9 px-2 sm:px-3 bg-white border border-surface-200 rounded-lg text-[12px] sm:text-[13px] shrink-0">
               <option value="">ทั้งหมด</option><option value="active">Active</option><option value="inactive">Inactive</option>
             </select>
@@ -152,14 +141,13 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#4790FF;box-sh
         </div>
 
         <div class="overflow-x-auto">
-          <table class="w-full text-[13px]" style="min-width:860px">
+          <table class="w-full text-[13px]" style="min-width:700px">
             <thead style="background:#F8FAFC">
               <tr class="text-left" style="color:rgba(30,41,59,0.65)">
                 <th class="px-4 py-3 font-semibold text-[11.5px] uppercase tracking-wider w-16">#</th>
                 <th class="px-4 py-3 font-semibold text-[11.5px] uppercase tracking-wider">Road (TH)</th>
                 <th class="px-4 py-3 font-semibold text-[11.5px] uppercase tracking-wider w-56">Road (EN)</th>
                 <th class="px-4 py-3 font-semibold text-[11.5px] uppercase tracking-wider w-32">Road Code</th>
-                <th class="px-4 py-3 font-semibold text-[11.5px] uppercase tracking-wider">Province</th>
                 <th class="px-4 py-3 font-semibold text-[11.5px] uppercase tracking-wider text-center w-32">สถานะ</th>
                 <th class="px-4 py-3 font-semibold text-[11.5px] uppercase tracking-wider text-right w-32">การดำเนินการ</th>
               </tr>
@@ -172,7 +160,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#4790FF;box-sh
 
       <div class="text-[11px] px-1" style="color:rgba(30,41,59,0.45)">
         <svg class="inline-block -mt-0.5 mr-1 w-3 h-3 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-        แสดง <b style="color:rgba(30,41,59,0.7)" id="count">0</b> รายการ — ชื่อถนน (TH) ต้องไม่ซ้ำ · ถนนหนึ่งเส้นเลือกได้หลายจังหวัด
+        แสดง <b style="color:rgba(30,41,59,0.7)" id="count">0</b> รายการ — ชื่อถนน (TH) ต้องไม่ซ้ำ · Road Code ต้องไม่ซ้ำ
       </div>
 
     </div>
@@ -205,19 +193,6 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#4790FF;box-sh
       <label class="text-[12px] font-medium block mb-1.5">Road Code</label>
       <input id="f-code" placeholder="เช่น RD-SKV" class="w-full h-11 px-3 border border-surface-300 rounded-lg text-[14px] uppercase"/>
     </div>
-    <div>
-      <label class="text-[12px] font-medium block mb-1.5">Province <span class="text-rose-500">*</span> <span class="text-[11px] font-normal" style="color:rgba(30,41,59,0.5)">(เลือกได้หลายจังหวัด · พิมพ์เพื่อค้นหา)</span></label>
-      <div class="relative" id="ms-root">
-        <div id="ms-box" class="ms-box" onclick="msFocus(event)">
-          <input id="ms-input" class="ms-input" placeholder="พิมพ์ชื่อจังหวัด..." autocomplete="off"/>
-        </div>
-        <div id="ms-menu" class="ms-menu hidden"></div>
-      </div>
-      <div class="flex items-center justify-between mt-1.5">
-        <div class="text-[11px]" style="color:rgba(30,41,59,0.5)">เลือกแล้ว <b id="ms-count" class="tnum">0</b> จังหวัด</div>
-        <button type="button" onclick="msClear()" class="text-[11px] hover:underline" style="color:#4F46E5">ล้างทั้งหมด</button>
-      </div>
-    </div>
     <div class="flex items-center justify-between pt-3 border-t border-surface-100">
       <div>
         <label class="text-[13px] font-medium block">สถานะ</label>
@@ -235,55 +210,37 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#4790FF;box-sh
 <div id="toast" class="fixed bottom-6 right-6 z-[80] hidden bg-ink-900 text-white text-[13px] px-4 py-2.5 rounded-lg shadow-pop fade-in"></div>
 
 <script>
-const PROVINCES = ['กรุงเทพมหานคร','กระบี่','กาญจนบุรี','กาฬสินธุ์','กำแพงเพชร','ขอนแก่น','จันทบุรี','ฉะเชิงเทรา','ชลบุรี','ชัยนาท','ชัยภูมิ','ชุมพร','เชียงราย','เชียงใหม่','ตรัง','ตราด','ตาก','นครนายก','นครปฐม','นครพนม','นครราชสีมา','นครศรีธรรมราช','นครสวรรค์','นนทบุรี','นราธิวาส','น่าน','บึงกาฬ','บุรีรัมย์','ปทุมธานี','ประจวบคีรีขันธ์','ปราจีนบุรี','ปัตตานี','พระนครศรีอยุธยา','พะเยา','พังงา','พัทลุง','พิจิตร','พิษณุโลก','เพชรบุรี','เพชรบูรณ์','แพร่','ภูเก็ต','มหาสารคาม','มุกดาหาร','แม่ฮ่องสอน','ยโสธร','ยะลา','ร้อยเอ็ด','ระนอง','ระยอง','ราชบุรี','ลพบุรี','ลำปาง','ลำพูน','เลย','ศรีสะเกษ','สกลนคร','สงขลา','สตูล','สมุทรปราการ','สมุทรสงคราม','สมุทรสาคร','สระแก้ว','สระบุรี','สิงห์บุรี','สุโขทัย','สุพรรณบุรี','สุราษฎร์ธานี','สุรินทร์','หนองคาย','หนองบัวลำภู','อ่างทอง','อำนาจเจริญ','อุดรธานี','อุตรดิตถ์','อุทัยธานี','อุบลราชธานี'];
 
 let ROADS = [
-  {id:1, th:'ถนนสุขุมวิท',      en:'Sukhumvit Road',      code:'RD-SKV', provinces:['กรุงเทพมหานคร','สมุทรปราการ','ชลบุรี','ระยอง'], active:true},
-  {id:2, th:'ถนนพระราม 4',      en:'Rama IV Road',        code:'RD-R4',  provinces:['กรุงเทพมหานคร'], active:true},
-  {id:3, th:'ถนนวิภาวดีรังสิต',  en:'Vibhavadi Rangsit Rd',code:'RD-VBD', provinces:['กรุงเทพมหานคร','ปทุมธานี'], active:true},
-  {id:4, th:'ถนนพหลโยธิน',      en:'Phahonyothin Road',   code:'RD-PHY', provinces:['กรุงเทพมหานคร','ปทุมธานี','พระนครศรีอยุธยา','สระบุรี'], active:true},
-  {id:5, th:'ถนนบางนา-ตราด',    en:'Bangna-Trat Road',    code:'RD-BNT', provinces:['กรุงเทพมหานคร','สมุทรปราการ','ฉะเชิงเทรา','ชลบุรี'], active:true},
-  {id:6, th:'ถนนรัชดาภิเษก',    en:'Ratchadaphisek Road', code:'RD-RCD', provinces:['กรุงเทพมหานคร'], active:true},
-  {id:7, th:'ถนนเพชรเกษม',      en:'Phetkasem Road',      code:'RD-PKS', provinces:['กรุงเทพมหานคร','นครปฐม','ราชบุรี','เพชรบุรี'], active:true},
-  {id:8, th:'ถนนมิตรภาพ',       en:'Mittraphap Road',     code:'RD-MTP', provinces:['สระบุรี','นครราชสีมา','ขอนแก่น','อุดรธานี','หนองคาย'], active:true},
-  {id:9, th:'ถนนศรีนครินทร์',   en:'Srinagarindra Road',  code:'RD-SRN', provinces:['กรุงเทพมหานคร','สมุทรปราการ'], active:true},
-  {id:10,th:'ถนนช้างคลาน',      en:'Chang Khlan Road',    code:'RD-CKL', provinces:['เชียงใหม่'], active:false}
+  {id:1, th:'ถนนสุขุมวิท',      en:'Sukhumvit Road',      code:'RD-SKV', active:true},
+  {id:2, th:'ถนนพระราม 4',      en:'Rama IV Road',        code:'RD-R4',  active:true},
+  {id:3, th:'ถนนวิภาวดีรังสิต',  en:'Vibhavadi Rangsit Rd',code:'RD-VBD', active:true},
+  {id:4, th:'ถนนพหลโยธิน',      en:'Phahonyothin Road',   code:'RD-PHY', active:true},
+  {id:5, th:'ถนนบางนา-ตราด',    en:'Bangna-Trat Road',    code:'RD-BNT', active:true},
+  {id:6, th:'ถนนรัชดาภิเษก',    en:'Ratchadaphisek Road', code:'RD-RCD', active:true},
+  {id:7, th:'ถนนเพชรเกษม',      en:'Phetkasem Road',      code:'RD-PKS', active:true},
+  {id:8, th:'ถนนมิตรภาพ',       en:'Mittraphap Road',     code:'RD-MTP', active:true},
+  {id:9, th:'ถนนศรีนครินทร์',   en:'Srinagarindra Road',  code:'RD-SRN', active:true},
+  {id:10,th:'ถนนช้างคลาน',      en:'Chang Khlan Road',    code:'RD-CKL', active:false}
 ];
 
 let editingId = null;
-let msSelected = [];
-let msQuery = '';
-let msHl = 0;
 const $ = id => document.getElementById(id);
 const toast = m => { const t=$('toast'); t.textContent=m; t.classList.remove('hidden'); setTimeout(()=>t.classList.add('hidden'),2200); };
 function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
 
-function initProvinceFilter(){
-  const used = Array.from(new Set(ROADS.flatMap(r=>r.provinces))).sort((a,b)=>a.localeCompare(b,'th'));
-  $('filter-province').innerHTML = '<option value="">ทุกจังหวัด</option>' + used.map(p=>`<option value="${escapeHtml(p)}">${escapeHtml(p)}</option>`).join('');
-}
-
 function filtered(){
   const q = ($('search').value||'').trim().toLowerCase();
-  const p = $('filter-province').value;
   const s = $('filter-status').value;
   return ROADS.filter(o=>{
-    if(p && !o.provinces.includes(p)) return false;
     if(s==='active' && !o.active) return false;
     if(s==='inactive' && o.active) return false;
     if(q){
-      const hay = (o.th+' '+o.en+' '+o.code+' '+o.provinces.join(' ')).toLowerCase();
+      const hay = (o.th+' '+o.en+' '+o.code).toLowerCase();
       if(!hay.includes(q)) return false;
     }
     return true;
   });
-}
-
-function provinceCells(list){
-  const max = 3;
-  let h = list.slice(0,max).map(p=>`<span class="chip chip-indigo">${escapeHtml(p)}</span>`).join(' ');
-  if(list.length>max) h += ` <span class="chip chip-slate" title="${escapeHtml(list.slice(max).join(', '))}">+${list.length-max}</span>`;
-  return h || '<span style="color:rgba(30,41,59,0.4)">—</span>';
 }
 
 function render(){
@@ -300,7 +257,6 @@ function render(){
       <td class="px-4 py-3"><div class="font-medium">${escapeHtml(o.th)}</div></td>
       <td class="px-4 py-3" style="color:rgba(30,41,59,0.7)">${escapeHtml(o.en)||'<span style="color:rgba(30,41,59,0.4)">—</span>'}</td>
       <td class="px-4 py-3 text-[12px] tnum" style="color:rgba(30,41,59,0.7)">${escapeHtml(o.code)||'<span style="color:rgba(30,41,59,0.4)">—</span>'}</td>
-      <td class="px-4 py-3"><div class="flex flex-wrap gap-1">${provinceCells(o.provinces)}</div></td>
       <td class="px-4 py-3 text-center">
         <label class="inline-flex items-center gap-2 cursor-pointer">
           <span class="toggle"><input type="checkbox" ${o.active?'checked':''} onchange="toggleActive(${o.id})"><span class="slider"></span></span>
@@ -315,70 +271,11 @@ function render(){
   });
 }
 
-function msRenderTags(){
-  const box = $('ms-box');
-  Array.from(box.querySelectorAll('.ms-tag')).forEach(n=>n.remove());
-  const inp = $('ms-input');
-  msSelected.forEach(p=>{
-    const s = document.createElement('span');
-    s.className = 'ms-tag';
-    s.innerHTML = `${escapeHtml(p)}<button type="button" onclick="msRemove('${p.replace(/'/g,"\\'")}',event)"><svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button>`;
-    box.insertBefore(s, inp);
-  });
-  $('ms-count').textContent = msSelected.length;
-  inp.placeholder = msSelected.length ? '' : 'พิมพ์ชื่อจังหวัด...';
-}
-
-function msOptions(){
-  const q = msQuery.trim().toLowerCase();
-  return PROVINCES.filter(p => !q || p.toLowerCase().includes(q));
-}
-
-function msRenderMenu(){
-  const menu = $('ms-menu');
-  const opts = msOptions();
-  if(!opts.length){ menu.innerHTML = '<div class="px-3 py-3 text-[12px]" style="color:rgba(30,41,59,0.5)">ไม่พบจังหวัด</div>'; return; }
-  if(msHl >= opts.length) msHl = 0;
-  menu.innerHTML = opts.map((p,i)=>{
-    const on = msSelected.includes(p);
-    return `<div class="ms-opt ${on?'sel':''} ${i===msHl?'hl':''}" onmousedown="msToggle('${p.replace(/'/g,"\\'")}',event)">
-      <span class="w-4 h-4 rounded border flex items-center justify-center shrink-0" style="border-color:${on?'#4F46E5':'#CBD5E1'};background:${on?'#4F46E5':'#fff'}">
-        ${on?'<svg class="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>':''}
-      </span>${escapeHtml(p)}</div>`;
-  }).join('');
-}
-
-function msOpen(){ $('ms-menu').classList.remove('hidden'); $('ms-box').classList.add('focus'); msRenderMenu(); }
-function msClose(){ $('ms-menu').classList.add('hidden'); $('ms-box').classList.remove('focus'); }
-function msFocus(e){ if(e && e.target.closest('.ms-tag')) return; $('ms-input').focus(); msOpen(); }
-function msToggle(p, e){
-  if(e) e.preventDefault();
-  const i = msSelected.indexOf(p);
-  if(i>-1) msSelected.splice(i,1); else msSelected.push(p);
-  msQuery=''; $('ms-input').value='';
-  msRenderTags(); msRenderMenu(); $('ms-input').focus();
-}
-function msRemove(p, e){ if(e){ e.stopPropagation(); e.preventDefault(); } msSelected = msSelected.filter(x=>x!==p); msRenderTags(); msRenderMenu(); }
-function msClear(){ msSelected = []; msRenderTags(); msRenderMenu(); }
-function msSet(list){ msSelected = (list||[]).slice(); msQuery=''; $('ms-input').value=''; msRenderTags(); }
-
-$('ms-input').addEventListener('input', function(){ msQuery = this.value; msHl = 0; msOpen(); });
-$('ms-input').addEventListener('focus', msOpen);
-$('ms-input').addEventListener('keydown', function(e){
-  const opts = msOptions();
-  if(e.key==='ArrowDown'){ e.preventDefault(); msHl = Math.min(msHl+1, opts.length-1); msRenderMenu(); }
-  else if(e.key==='ArrowUp'){ e.preventDefault(); msHl = Math.max(msHl-1, 0); msRenderMenu(); }
-  else if(e.key==='Enter'){ e.preventDefault(); if(opts[msHl]) msToggle(opts[msHl]); }
-  else if(e.key==='Backspace' && !this.value && msSelected.length){ msSelected.pop(); msRenderTags(); msRenderMenu(); }
-  else if(e.key==='Escape'){ msClose(); }
-});
-document.addEventListener('mousedown', function(e){ if(!e.target.closest('#ms-root')) msClose(); });
-
 function openAdd(){
   editingId = null;
   $('rd-modal-title').textContent = 'Add Road';
   $('f-th').value=''; $('f-en').value=''; $('f-code').value='';
-  msSet([]); $('f-active').checked = true;
+  $('f-active').checked = true;
   $('rd-overlay').classList.remove('hidden'); $('rd-drawer').classList.add('open');
   setTimeout(()=>$('f-th').focus(),50);
 }
@@ -388,7 +285,7 @@ function openEdit(id){
   editingId = id;
   $('rd-modal-title').textContent = 'แก้ไข Road';
   $('f-th').value=o.th; $('f-en').value=o.en; $('f-code').value=o.code;
-  msSet(o.provinces); $('f-active').checked = o.active;
+  $('f-active').checked = o.active;
   $('rd-overlay').classList.remove('hidden'); $('rd-drawer').classList.add('open');
 }
 
@@ -398,18 +295,16 @@ function save(){
   const code = $('f-code').value.trim().toUpperCase();
   const active = $('f-active').checked;
   if(!th){ toast('กรุณากรอก Road (TH)'); return; }
-  if(!msSelected.length){ toast('กรุณาเลือก Province อย่างน้อย 1 จังหวัด'); return; }
   if(ROADS.some(x=>x.th.toLowerCase()===th.toLowerCase() && x.id!==editingId)){ toast('ชื่อถนน "'+th+'" ซ้ำในระบบ'); return; }
   if(code && ROADS.some(x=>x.code.toUpperCase()===code && x.id!==editingId)){ toast('Road Code "'+code+'" ซ้ำในระบบ'); return; }
-  const provinces = msSelected.slice().sort((a,b)=>a.localeCompare(b,'th'));
   if(editingId){
-    Object.assign(ROADS.find(x=>x.id===editingId), {th,en,code,provinces,active});
+    Object.assign(ROADS.find(x=>x.id===editingId), {th,en,code,active});
     toast('บันทึกการแก้ไขเรียบร้อย');
   } else {
-    ROADS.unshift({id:ROADS.reduce((m,x)=>Math.max(m,x.id),0)+1, th,en,code,provinces,active});
+    ROADS.unshift({id:ROADS.reduce((m,x)=>Math.max(m,x.id),0)+1, th,en,code,active});
     toast('เพิ่มถนนใหม่เรียบร้อย');
   }
-  closeModal(); initProvinceFilter(); render();
+  closeModal(); render();
 }
 
 function toggleActive(id){
@@ -422,10 +317,10 @@ function remove_(id){
   const o = ROADS.find(x=>x.id===id); if(!o) return;
   if(!confirm(`ลบถนน "${o.th}"?`)) return;
   ROADS = ROADS.filter(x=>x.id!==id);
-  initProvinceFilter(); render(); toast('ลบเรียบร้อย');
+  render(); toast('ลบเรียบร้อย');
 }
 
-function closeModal(){ msClose(); $('rd-overlay').classList.add('hidden'); $('rd-drawer').classList.remove('open'); }
+function closeModal(){ $('rd-overlay').classList.add('hidden'); $('rd-drawer').classList.remove('open'); }
 
 function toggleMenu(id){
   const sub=document.getElementById(id+'-sub');
@@ -438,7 +333,6 @@ function toggleMobile(){
   document.getElementById('sidebar-overlay').classList.toggle('hidden');
 }
 
-initProvinceFilter();
 render();
 </script>
 </body>

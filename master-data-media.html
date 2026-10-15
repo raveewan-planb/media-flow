@@ -221,7 +221,7 @@ const MEDIA_GROUPS_SEED = [
   },
 ];
 
-// Media Categories — หมวดใหญ่สุด parent ของ Media Group
+// Media Group — หมวดใหญ่สุด parent ของ Media Category
 const MEDIA_CATEGORIES_SEED = [
   { id:'OOH',    nameTh:'สื่อกลางแจ้ง',        nameEn:'Outdoor OOH',       color:'#2D56D2', groupIds:['DIG','CLS'] },
   { id:'TRANS',  nameTh:'สื่อขนส่ง / สนามบิน',  nameEn:'Transit & Airport', color:'#7C3AED', groupIds:['TRN','AIR'] },
@@ -369,8 +369,8 @@ function MediaDrawer({ open, mode, level, initial, context, onClose, onSave }) {
   });
   const submit = (e) => { e.preventDefault(); if (!form.id || !form.nameTh) return; onSave(form); };
   const titles = {
-    category:   mode === 'create' ? 'เพิ่ม Media Category ใหม่'    : 'แก้ไข Media Category',
-    group:      mode === 'create' ? 'เพิ่ม Media Group ใหม่'       : 'แก้ไข Media Group',
+    category:   mode === 'create' ? 'เพิ่ม Media Group ใหม่'   : 'แก้ไข Media Group',
+    group:      mode === 'create' ? 'เพิ่ม Media Category ใหม่'    : 'แก้ไข Media Category',
     type:       mode === 'create' ? 'เพิ่ม Media Type ใหม่'        : 'แก้ไข Media Type',
     segment:    mode === 'create' ? 'เพิ่ม Media Segment ใหม่'     : 'แก้ไข Media Segment',
     subsegment: mode === 'create' ? 'เพิ่ม Sub Media Segment ใหม่' : 'แก้ไข Sub Media Segment',
@@ -389,7 +389,7 @@ function MediaDrawer({ open, mode, level, initial, context, onClose, onSave }) {
     category:'เช่น สื่อกลางแจ้ง', group:'เช่น ดิจิทัล', type:'เช่น Plan B TV', segment:'เช่น โซน A', subsegment:'เช่น โซน A · จุด 1',
   };
   const levelLabel = {
-    category:'Category', group:'Group', type:'Type', segment:'Segment', subsegment:'Sub-Segment',
+    category:'Group', group:'Category', type:'Type', segment:'Segment', subsegment:'Sub-Segment',
   };
   const COLORS = ['#2D56D2','#F59E0B','#10B981','#7C3AED','#06B6D4','#EF4444','#0EA5E9'];
   return (
@@ -598,9 +598,9 @@ function ConfirmDeleteMedia({ open, target, onClose, onConfirm }) {
 }
 
 const MEDIA_TEMPLATE_COLS = [
-  { key:'group_code',    required:true,  note:'รหัส Media Group — เช่น DGT, AIR, RTL' },
-  { key:'group_name_th', required:true,  note:'ชื่อ Group (ไทย)' },
-  { key:'group_name_en', required:false, note:'Group name (English)' },
+  { key:'group_code',    required:true,  note:'รหัส Media Category — เช่น DGT, AIR, RTL' },
+  { key:'group_name_th', required:true,  note:'ชื่อ Category (ไทย)' },
+  { key:'group_name_en', required:false, note:'Category name (English)' },
   { key:'type_code',     required:true,  note:'รหัส Type — เช่น PBTV, BTS-SKY' },
   { key:'type_name_th',  required:true,  note:'ชื่อประเภทสื่อ (ไทย)' },
   { key:'type_name_en',  required:false, note:'Type name (English)' },
@@ -629,7 +629,7 @@ function MediaImportModal({ open, onClose }) {
             </div>
             <div className="flex-1">
               <h3 className="text-[16px] font-semibold text-ink-900">นำเข้าประเภทสื่อจาก CSV</h3>
-              <p className="text-[12px] text-ink-700/55 mt-0.5">แต่ละแถวคือ Media Type หนึ่งรายการ พร้อมระบุ Group ที่ผูก</p>
+              <p className="text-[12px] text-ink-700/55 mt-0.5">แต่ละแถวคือ Media Type หนึ่งรายการ พร้อมระบุ Category ที่ผูก</p>
             </div>
             <button onClick={onClose} className="w-9 h-9 rounded-md hover:bg-surface-100 flex items-center justify-center text-ink-700/40">
               <Icon name="x" size={18} />
@@ -644,7 +644,7 @@ function MediaImportModal({ open, onClose }) {
               <div className="flex-1 min-w-0">
                 <div className="text-[13px] font-semibold text-ink-900">เทมเพลตตัวอย่าง CSV</div>
                 <p className="text-[12px] text-ink-700/60 mt-0.5 leading-relaxed">
-                  ดาวน์โหลดไฟล์ตัวอย่าง ครอบคลุมโครงสร้าง 2 ระดับ (Group → Type)
+                  ดาวน์โหลดไฟล์ตัวอย่าง ครอบคลุมโครงสร้าง 2 ระดับ (Category → Type)
                 </p>
                 <div className="flex items-center gap-2 mt-3">
                   <a href="templates/master-data-media-template.csv" download="master-data-media-template.csv"
@@ -685,7 +685,7 @@ function MediaImportModal({ open, onClose }) {
               </div>
               <p className="text-[11px] text-ink-700/50 mt-2 leading-relaxed">
                 <Icon name="check-circle" size={11} className="inline-block -mt-0.5 mr-1 text-emerald-500" />
-                แถวที่มี <code className="text-pb-700">group_code</code> เดียวกันจะถูกรวมเป็น Group เดียว — ไม่สร้างซ้ำ
+                แถวที่มี <code className="text-pb-700">group_code</code> เดียวกันจะถูกรวมเป็น Category เดียว — ไม่สร้างซ้ำ
               </p>
             </div>
 
@@ -941,18 +941,18 @@ function MasterDataMediaScreen() {
               <div>
                 <h2 className="text-[22px] font-semibold text-ink-900 tracking-tight">ประเภทสื่อ · Master Data</h2>
                 <p className="text-[12px] text-ink-700/55 mt-0.5">
-                  จัดการประเภทสื่อตามโครงสร้าง 5 ระดับ: <b>Media Category → Media Group → Media Type → Media Segment → Sub Media Segment</b>
+                  จัดการประเภทสื่อตามโครงสร้าง 5 ระดับ: <b>Media Group → Media Category → Media Type → Media Segment → Sub Media Segment</b>
                 </p>
               </div>
               <div className="flex gap-2">
                 <Button variant="ghost" icon="upload">ส่งออก</Button>
-                <Button variant="primary" icon="plus" onClick={() => openCreate('group', null)}>เพิ่ม Group</Button>
+                <Button variant="primary" icon="plus" onClick={() => openCreate('group', null)}>เพิ่ม Category</Button>
               </div>
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-              <MStatTile icon="squares-2x2" label="Media Categories"    value={stats.categories}  tone="#2D56D2" />
-              <MStatTile icon="squares-2x2" label="Media Groups"        value={stats.groups}      tone="#7C3AED" />
+              <MStatTile icon="squares-2x2" label="Media Groups"    value={stats.categories}  tone="#2D56D2" />
+              <MStatTile icon="squares-2x2" label="Media Categories"    value={stats.groups}      tone="#7C3AED" />
               <MStatTile icon="archive-box" label="Media Types"         value={stats.types}       tone="#0EA5E9" />
               <MStatTile icon="archive-box" label="Media Segments"      value={stats.segments}    tone="#F59E0B" />
               <MStatTile icon="archive-box" label="Sub Media Segments"  value={stats.subSegments} tone="#10B981" />
@@ -963,43 +963,43 @@ function MasterDataMediaScreen() {
               <div className="relative">
                 <Icon name="search" size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-700/35" />
                 <input value={globalSearch} onChange={e => setGlobalSearch(e.target.value)}
-                  placeholder="ค้นหาทุกระดับ — Group / Type / รหัส..."
+                  placeholder="ค้นหาทุกระดับ — Category / Type / รหัส..."
                   className="w-full h-9 pl-9 pr-3 bg-surface-50 border border-surface-200 rounded-lg text-[13px]" />
               </div>
             </div>
 
             <div className="grid gap-3 flex-1" style={{ gridTemplateColumns: 'repeat(5, minmax(220px, 1fr))', minHeight: 480 }}>
-              <Pane title="Media Category" count={filteredCategories.length} subtitle="หมวดใหญ่สุด"
-                onAdd={() => openCreate('category', null)} search={cSearch} onSearch={setCSearch} empty="ไม่พบ Category">
+              <Pane title="Media Group" count={filteredCategories.length} subtitle="หมวดใหญ่สุด"
+                onAdd={() => openCreate('category', null)} search={cSearch} onSearch={setCSearch} empty="ไม่พบ Group">
                 {filteredCategories.map(c => (
                   <PaneRow key={c.id} item={c} dot={c.color} meta={c.groupIds.length} secondary={`${c.id} · ${c.nameEn}`}
                     active={selectedCategory?.id === c.id}
                     onSelect={() => { setSelectedCategoryId(c.id); setSelectedTypeId(null); setSelectedSegmentId(null); }}
                     onEdit={() => openEdit('category', c, null)}
-                    onDelete={() => setDeleteTarget({ level:'category', id:c.id, label: `Category ${c.nameTh} (${c.id})` })} />
+                    onDelete={() => setDeleteTarget({ level:'category', id:c.id, label: `Group ${c.nameTh} (${c.id})` })} />
                 ))}
               </Pane>
 
-              <Pane title="Media Group" count={filteredGroups.length}
-                subtitle={selectedCategory ? `ใน ${selectedCategory.nameTh}` : 'เลือก Category ก่อน'}
+              <Pane title="Media Category" count={filteredGroups.length}
+                subtitle={selectedCategory ? `ใน ${selectedCategory.nameTh}` : 'เลือก Group ก่อน'}
                 onAdd={() => selectedCategory && openCreate('group', { categoryId: selectedCategory.id, categoryLabel: selectedCategory.nameTh })}
                 search={gSearch} onSearch={setGSearch}
-                empty={selectedCategory ? 'ไม่พบ Group ใน Category นี้' : 'เลือก Category ก่อน'}>
+                empty={selectedCategory ? 'ไม่พบ Category ใน Group นี้' : 'เลือก Group ก่อน'}>
                 {filteredGroups.map(g => (
                   <PaneRow key={g.id} item={g} dot={g.color} meta={g.types.length} secondary={`${g.id} · ${g.nameEn}`}
                     active={selectedGroup?.id === g.id}
                     onSelect={() => { setSelectedGroupId(g.id); setSelectedTypeId(null); setSelectedSegmentId(null); }}
                     onEdit={() => openEdit('group', g, null)}
-                    onDelete={() => setDeleteTarget({ level:'group', id:g.id, label: `Group ${g.nameTh} (${g.id})`,
-                      warning: g.types.length > 0 ? `จะลบ ${g.types.length} Types ใน Group นี้ด้วย` : null })} />
+                    onDelete={() => setDeleteTarget({ level:'group', id:g.id, label: `Category ${g.nameTh} (${g.id})`,
+                      warning: g.types.length > 0 ? `จะลบ ${g.types.length} Types ใน Category นี้ด้วย` : null })} />
                 ))}
               </Pane>
 
               <Pane title="Media Type" count={filteredTypes.length}
-                subtitle={selectedGroup ? `ใน ${selectedGroup.nameTh}` : 'เลือก Group ก่อน'}
+                subtitle={selectedGroup ? `ใน ${selectedGroup.nameTh}` : 'เลือก Category ก่อน'}
                 onAdd={() => selectedGroup && openCreate('type', { groupId: selectedGroup.id, groupLabel: selectedGroup.nameTh })}
                 search={tSearch} onSearch={setTSearch}
-                empty={selectedGroup ? 'ยังไม่มี Type ในกลุ่มนี้ — กด "เพิ่ม"' : 'เลือก Group ก่อน'}>
+                empty={selectedGroup ? 'ยังไม่มี Type ในกลุ่มนี้ — กด "เพิ่ม"' : 'เลือก Category ก่อน'}>
                 {filteredTypes.map(t => (
                   <PaneRow key={t.id} item={t}
                     meta={(t.segments?.length || 0) + ' seg'}
