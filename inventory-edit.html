@@ -664,12 +664,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#4790FF;box-sh
                   <option value="">— เลือก Media Type —</option>
                 </select>
               </div>
-              <div>
-                <label class="fld-label">Media Branding <span class="req">*</span></label>
-                <select class="fld-select" id="branding-select">
-                  <option value="">— เลือก Media Branding —</option>
-                </select>
-              </div>
+              
               <div>
                 <label class="fld-label">Media Status <span class="req">*</span></label>
                 <select class="fld-select">
@@ -2267,7 +2262,6 @@ function onDistrictChange(){
 /* Media Group conditional rendering */
 function onMediaGroupChange(){
   const $g = document.getElementById('media-group-select');
-  const $br = document.getElementById('branding-select');
   const $mt = document.getElementById('media-type-select');
   const g = $g.value;
   // Toggle conditional blocks
@@ -2283,14 +2277,12 @@ function onMediaGroupChange(){
   } else {
     if(empty) empty.classList.remove('hidden');
   }
-  // Repopulate Media Branding, Media Type, Package
+  // Repopulate Media Type, Package
   const data = MEDIA_GROUPS_DATA[g];
-  $br.innerHTML = '<option value="">— เลือก Media Branding —</option>';
   $mt.innerHTML = '<option value="">— เลือก Media Type —</option>';
   // Package is a single-select dropdown — repopulate options
   populatePackageOptions(data ? data.packages : []);
   if(data){
-    data.sections.forEach(s => $br.insertAdjacentHTML('beforeend', `<option>${s}</option>`));
     data.types.forEach(t => $mt.insertAdjacentHTML('beforeend', `<option>${t}</option>`));
   }
   updateProgress();
@@ -2399,7 +2391,7 @@ function buildRatePreview(override){
   }
   const price   = _num(priceStr);
   const unitTh  = unit === 'Day' ? 'วัน' : unit === 'Month' ? 'เดือน' : unit === 'Package' ? 'แพ็คเกจ' : '';
-  // Media group / region for branding
+  // Media group / region
   const mgEl = document.getElementById('media-group-select');
   const mg   = mgEl ? mgEl.value : '';
   const brandMap = {
@@ -2857,10 +2849,9 @@ function prefillMockup(){
     $mg.dispatchEvent(new Event('change', { bubbles:true }));
     if(typeof onMediaGroupChange === 'function') onMediaGroupChange();
   }
-  // Wait a tick so Media Type / Branding repopulate before setting them
+  // Wait a tick so Media Type repopulates before setting them
   setTimeout(() => {
     _setByLabel('sec-media', 'Media Type',         'Plan B TV');
-    _setByLabel('sec-media', 'Media Branding',     'The Network');
     _setByLabel('sec-media', 'Media Status',       'Active');
     _setByLabel('sec-media', 'Product Group',      'OOH Digital');
     _setByLabel('sec-media', 'Product Group Name', 'Digital Network');

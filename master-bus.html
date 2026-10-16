@@ -73,14 +73,34 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#4790FF;box-sh
 .model-item input:checked::after{content:'';position:absolute;left:4px;top:1px;width:4px;height:8px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg)}
 .model-item.selected{background:rgba(245,158,11,0.08)}
 .model-item .inactive-flag{margin-left:auto;font-size:10.5px;color:rgba(30,41,59,0.45);font-weight:500}
+/* Size sets */
+.ss-head{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.ss-badge{display:inline-flex;align-items:center;gap:5px;height:21px;padding:0 9px;border-radius:99px;font-size:10.5px;font-weight:600;background:rgba(245,158,11,.12);color:#B45309;border:1px solid rgba(245,158,11,.22)}
+.ss-add{margin-left:auto;height:28px;padding:0 10px;border-radius:7px;border:1px solid rgba(245,158,11,.35);background:rgba(245,158,11,.08);color:#B45309;font-size:11.5px;font-weight:600;display:inline-flex;align-items:center;gap:5px;cursor:pointer;font-family:'Kanit',sans-serif;transition:.15s}
+.ss-add:hover{background:rgba(245,158,11,.18);border-color:#F59E0B}
+.ss-box{border:1px solid #E2E8F0;border-radius:10px;background:#FCFDFE;overflow:hidden}
+.ss-grid{display:grid;grid-template-columns:1.25fr .85fr .85fr .8fr 26px;gap:6px;align-items:center}
+.ss-hdr{padding:6px 8px 5px;background:#F8FAFC;border-bottom:1px solid #EEF2F7;font-size:9px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:rgba(30,41,59,.45)}
+.ss-row{padding:5px 8px}
+.ss-row + .ss-row{border-top:1px solid #F1F5F9}
+.ss-row:hover{background:#F8FAFC}
+.ss-row input,.ss-row select{height:30px;width:100%;padding:0 7px;border:1px solid #E2E8F0;border-radius:6px;font-size:12px;background:#fff;font-family:'Kanit',sans-serif;color:#0B1430;min-width:0}
+.ss-row select{appearance:none;padding-right:18px;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2.5'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19.5 8.25l-7.5 7.5-7.5-7.5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 5px center}
+.ss-row input:focus,.ss-row select:focus{outline:none;border-color:#F59E0B;box-shadow:0 0 0 2px rgba(245,158,11,.18)}
+.ss-del{width:24px;height:24px;border-radius:5px;border:0;background:rgba(225,29,72,.09);color:#BE123C;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:.15s}
+.ss-del:hover{background:rgba(225,29,72,.2)}
+.ss-empty{padding:16px;text-align:center;font-size:11.5px;color:rgba(30,41,59,.45)}
+.size-chip{display:inline-flex;align-items:center;gap:5px;padding:2px 8px;border-radius:6px;font-size:11px;background:rgba(245,158,11,.10);color:#B45309;font-variant-numeric:tabular-nums;white-space:nowrap}
+.size-chip b{font-weight:600}
 /* Info banner */
 .info-banner{display:flex;align-items:flex-start;gap:8px;padding:10px 12px;background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.28);border-radius:10px;font-size:12px;color:#78350F;line-height:1.5}
 .info-banner svg{flex-shrink:0;margin-top:1px;color:#F59E0B}
 /* Chip cluster inside table cell */
 .chip-cluster{display:inline-flex;flex-wrap:wrap;gap:4px;max-width:100%}
 </style>
+<script src="shared/sidebar.js"></script>
 </head>
-<body class="font-kanit" style="background:#F7F9FC;color:#0B1430">
+<body class="font-kanit overflow-x-hidden" style="background:#F7F9FC;color:#0B1430">
 
 <div class="min-h-screen flex">
   <div id="sidebar-overlay" class="hidden fixed inset-0 bg-black/40 z-20 lg:hidden" onclick="toggleMobile()"></div>
@@ -213,7 +233,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#4790FF;box-sh
     </div>
   </aside>
 
-  <main class="flex-1 lg:ml-64 min-h-screen">
+  <main class="flex-1 lg:ml-64 min-h-screen min-w-0">
     <header class="topbar-white h-16 shrink-0 sticky top-0 z-20 flex items-center gap-4 px-4 sm:px-6">
       <button onclick="toggleMobile()" class="w-9 h-9 rounded-md hover:bg-surface-100 flex items-center justify-center text-ink-700"><svg class="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/></svg></button>
       <div class="flex items-center gap-1.5 text-[13px]" style="color:rgba(30,41,59,0.6)">
@@ -327,6 +347,22 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#4790FF;box-sh
       <input id="f-name" placeholder="กรอกชื่อ" class="w-full h-11 px-3 border border-surface-300 rounded-lg text-[14px]"/>
     </div>
 
+    <div id="f-model-spec" class="hidden">
+      <div class="ss-head">
+        <label class="text-[12px] font-medium">ขนาดผลิต / ตำแหน่งติดตั้ง</label>
+        <span class="ss-badge"><span id="ss-count">0</span> ชุด</span>
+        <button type="button" class="ss-add" onclick="ssAdd()">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path stroke-linecap="round" d="M12 5v14M5 12h14"/></svg>เพิ่มชุด
+        </button>
+      </div>
+      <div class="ss-box">
+        <div class="ss-grid ss-hdr"><div>ตำแหน่งที่ตั้ง</div><div>กว้าง</div><div>สูง</div><div>หน่วย</div><div></div></div>
+        <div id="ss-list"></div>
+        <div id="ss-empty" class="ss-empty">ยังไม่มีชุดขนาด — กด <b>เพิ่มชุด</b> เพื่อเริ่มกรอก</div>
+      </div>
+      <div class="text-[11px] mt-1.5" style="color:rgba(30,41,59,0.5)">1 Bus Model เพิ่มได้หลายชุด · ตัวเลขและทศนิยมเท่านั้น ห้ามติดลบ</div>
+    </div>
+
     <div id="f-models-wrap" class="hidden">
       <div class="flex items-center justify-between mb-1.5">
         <label class="text-[12px] font-medium">Bus Model ที่รองรับ <span class="text-rose-500">*</span></label>
@@ -404,7 +440,20 @@ const SEED_LINES = [
 let _nextId = 1;
 let ITEMS = [];
 // Load models first
-SEED_MODELS.forEach(name => ITEMS.push({id:_nextId++, name, type:'model', active:true}));
+const SEED_MODEL_SIZES = {
+  'Benz':     [{position:'ด้านซ้าย', width:'3.20', height:'1.10', unit:'M'},
+               {position:'ด้านขวา',  width:'3.20', height:'1.10', unit:'M'},
+               {position:'ด้านหลัง', width:'1.80', height:'1.20', unit:'M'}],
+  'BLK':      [{position:'ด้านขวา',  width:'3.00', height:'1.05', unit:'M'}],
+  'Hino44':   [{position:'ด้านซ้าย', width:'320',  height:'110',  unit:'CM'},
+               {position:'ด้านขวา',  width:'320',  height:'110',  unit:'CM'}],
+  'Hino45':   [{position:'ด้านหลัง', width:'180',  height:'120',  unit:'CM'}],
+  'Isuzu55A': [{position:'ด้านซ้าย', width:'3.10', height:'1.08', unit:'M'},
+               {position:'ด้านหลัง', width:'1.75', height:'1.15', unit:'M'}],
+  'TSB01':    [{position:'ด้านซ้าย', width:'1920', height:'640',  unit:'Pixel'},
+               {position:'ด้านขวา',  width:'1920', height:'640',  unit:'Pixel'}]
+};
+SEED_MODELS.forEach(name => ITEMS.push({id:_nextId++, name, type:'model', active:true, sizes:(SEED_MODEL_SIZES[name]||[]).map(x=>Object.assign({},x))}));
 // Then lines with modelIds resolved from names
 SEED_LINES.forEach(([name, modelNames]) => {
   const modelIds = modelNames.map(mn => {
@@ -421,6 +470,63 @@ let selectedModelIds = new Set();
 const $ = id => document.getElementById(id);
 const toast = m => { const t=$('toast'); t.textContent=m; t.classList.remove('hidden'); setTimeout(()=>t.classList.add('hidden'),2200); };
 function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+
+function numOnly(el){
+  let v = String(el.value).replace(/[^0-9.]/g,'');
+  const i = v.indexOf('.');
+  if(i > -1) v = v.slice(0, i+1) + v.slice(i+1).replace(/\./g,'');
+  el.value = v;
+}
+function numBlur(el){
+  let v = String(el.value).replace(/[^0-9.]/g,'');
+  if(v === '' || v === '.'){ el.value=''; return; }
+  const n = Math.abs(parseFloat(v));
+  el.value = isFinite(n) ? String(n) : '';
+}
+const POSITIONS = ['ด้านซ้าย','ด้านขวา','ด้านหลัง'];
+const UNITS = ['M','CM','Pixel'];
+function sizeLabel(z){
+  const w = z.width || '—', h = z.height || '—';
+  return w + ' × ' + h + ' ' + (z.unit || '');
+}
+function ssRowHtml(z){
+  z = z || {};
+  return '<div class="ss-grid ss-row">'+
+    '<select class="ss-pos">'+
+      '<option value="">— เลือก —</option>'+
+      POSITIONS.map(p=>'<option'+(z.position===p?' selected':'')+'>'+p+'</option>').join('')+
+    '</select>'+
+    '<input class="ss-w tnum" inputmode="decimal" placeholder="0.00" value="'+(z.width||'')+'" oninput="numOnly(this)" onblur="numBlur(this)"/>'+
+    '<input class="ss-h tnum" inputmode="decimal" placeholder="0.00" value="'+(z.height||'')+'" oninput="numOnly(this)" onblur="numBlur(this)"/>'+
+    '<select class="ss-u">'+UNITS.map(u=>'<option'+((z.unit||'M')===u?' selected':'')+'>'+u+'</option>').join('')+'</select>'+
+    '<button type="button" class="ss-del" title="ลบชุดนี้" onclick="ssRemove(this)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" d="M6 18L18 6M6 6l12 12"/></svg></button>'+
+  '</div>';
+}
+function ssAdd(z){
+  const list = $('ss-list');
+  const prev = list.lastElementChild;
+  if(!z && prev){
+    z = {position:'', width:prev.querySelector('.ss-w').value, height:prev.querySelector('.ss-h').value, unit:prev.querySelector('.ss-u').value};
+  }
+  list.insertAdjacentHTML('beforeend', ssRowHtml(z));
+  ssSync();
+  const added = list.lastElementChild;
+  if(added) added.querySelector('.ss-pos').focus();
+}
+function ssRemove(btn){ const r = btn.closest('.ss-row'); if(r) r.remove(); ssSync(); }
+function ssClear(){ $('ss-list').innerHTML=''; ssSync(); }
+function ssSet(sizes){ ssClear(); (sizes||[]).forEach(z => $('ss-list').insertAdjacentHTML('beforeend', ssRowHtml(z))); ssSync(); }
+function ssSync(){
+  const n = $('ss-list').children.length;
+  $('ss-count').textContent = n;
+  $('ss-empty').style.display = n ? 'none' : '';
+}
+function ssCollect(){
+  return Array.prototype.map.call($('ss-list').children, function(r){
+    return {position:r.querySelector('.ss-pos').value, width:r.querySelector('.ss-w').value.trim(),
+            height:r.querySelector('.ss-h').value.trim(), unit:r.querySelector('.ss-u').value};
+  });
+}
 
 function activeModelCount(){ return ITEMS.filter(x => x.type==='model').length; }
 
@@ -507,7 +613,10 @@ function render(){
 
     tr.innerHTML = `
       <td class="px-4 py-3 text-[12px] tnum" style="color:rgba(30,41,59,0.5)">${idx+1}</td>
-      <td class="px-4 py-3"><div class="font-medium">${escapeHtml(o.name)}</div></td>
+      <td class="px-4 py-3"><div class="font-medium">${escapeHtml(o.name)}</div>${
+        o.type==='model' && Array.isArray(o.sizes) && o.sizes.length
+          ? `<div class="flex flex-wrap gap-1 mt-1">${o.sizes.slice(0,3).map(z=>`<span class="size-chip"><b>${escapeHtml(z.position||'—')}</b> ${escapeHtml(sizeLabel(z))}</span>`).join('')}${o.sizes.length>3?`<span class="chip chip-slate">+${o.sizes.length-3}</span>`:''}</div>`
+          : ''}</td>
       ${typeCell}
       ${relCell}
       <td class="px-4 py-3 text-center">
@@ -578,6 +687,8 @@ function onTypeChange(){
   const nameLabel = $('f-name-label');
   const nameInput = $('f-name');
   const saveBtn = $('save-btn');
+  const spec = $('f-model-spec');
+  if(spec) spec.classList.toggle('hidden', t !== 'model');
   if(t === 'line'){
     if(activeModelCount() === 0){
       banner.classList.remove('hidden');
@@ -612,6 +723,7 @@ function openAdd(){
   $('bd-modal-title').textContent = 'เพิ่มรายการ';
   $('f-name').value = '';
   $('f-models-search').value = '';
+  ssSet([]);
   // Default: current tab's type — but "all" defaults to model
   const defaultType = activeTab === 'line' ? 'line' : 'model';
   setSelectedType(defaultType);
@@ -629,6 +741,7 @@ function openEdit(id){
   $('bd-modal-title').textContent = 'แก้ไข ' + TYPE_LABEL[o.type];
   $('f-name').value = o.name;
   $('f-models-search').value = '';
+  ssSet(o.type==='model' ? (o.sizes||[]) : []);
   setSelectedType(o.type);
   onTypeChange();
   $('f-active').checked = o.active;
@@ -645,17 +758,36 @@ function save(){
     if(activeModelCount() === 0){ toast('กรุณาสร้าง Bus Model อย่างน้อย 1 รายการก่อน'); return; }
     if(selectedModelIds.size === 0){ toast('กรุณาเลือก Bus Model อย่างน้อย 1 รายการ'); return; }
   }
+  let sizes = [];
+  if(type === 'model'){
+    Array.prototype.forEach.call($('ss-list').children, function(r){
+      numBlur(r.querySelector('.ss-w')); numBlur(r.querySelector('.ss-h'));
+    });
+    sizes = ssCollect();
+    for(let i=0;i<sizes.length;i++){
+      const z = sizes[i], no = 'ชุดที่ ' + (i+1);
+      if(!z.position && !z.width && !z.height){ toast(no + ' ยังไม่ได้กรอกข้อมูล'); return; }
+      if(!z.position){ toast(no + ' — กรุณาเลือกตำแหน่งที่ตั้ง'); return; }
+      if(z.width !== '' && !(parseFloat(z.width) > 0)){ toast(no + ' — ความกว้างต้องมากกว่า 0'); return; }
+      if(z.height !== '' && !(parseFloat(z.height) > 0)){ toast(no + ' — ความสูงต้องมากกว่า 0'); return; }
+    }
+    const seen = {};
+    for(const z of sizes){
+      if(seen[z.position]){ toast('ตำแหน่ง "' + z.position + '" ซ้ำกันมากกว่า 1 ชุด'); return; }
+      seen[z.position] = true;
+    }
+  }
   const dup = ITEMS.some(x => x.type===type && x.name.toLowerCase()===name.toLowerCase() && x.id!==editingId);
   if(dup){ toast('ชื่อ "'+name+'" ซ้ำใน '+TYPE_LABEL[type]); return; }
   if(editingId){
     const o = ITEMS.find(x=>x.id===editingId);
     Object.assign(o, {name, type, active});
-    if(type === 'line') o.modelIds = Array.from(selectedModelIds);
-    else delete o.modelIds;
+    if(type === 'line'){ o.modelIds = Array.from(selectedModelIds); delete o.sizes; }
+    else { delete o.modelIds; o.sizes = sizes; }
     toast('บันทึกการแก้ไขเรียบร้อย');
   } else {
     const newId = (ITEMS.reduce((m,x)=>Math.max(m,x.id),0))+1;
-    const obj = {id:newId, name, type, active};
+    const obj = Object.assign({id:newId, name, type, active}, type === 'model' ? {sizes:sizes} : {});
     if(type === 'line') obj.modelIds = Array.from(selectedModelIds);
     ITEMS.unshift(obj);
     toast('เพิ่ม '+TYPE_LABEL[type]+' ใหม่');

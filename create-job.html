@@ -322,20 +322,20 @@ table th{position:sticky;top:0;z-index:1}
 <div id="m-contract-period" class="w-full h-9 px-3 bg-[#F8FAFC] border border-[#E2E8F0] rounded-lg text-[13px] flex items-center" style="color:rgba(30,41,59,0.5)">—</div>
 </div>
 <div>
-<label class="block text-[11px] font-medium text-[#0B1430] mb-1">Media Category <span class="text-[10px] font-normal" style="color:rgba(30,41,59,0.5)">(เลือกได้หลายรายการ)</span></label>
+<label class="block text-[11px] font-medium text-[#0B1430] mb-1">Media Group <span class="text-[10px] font-normal" style="color:rgba(30,41,59,0.5)">(เลือกได้หลายรายการ)</span></label>
 <div class="relative" id="mc-wrap">
 <button type="button" onclick="toggleMC(event)" class="w-full min-h-9 px-3 py-1.5 bg-white border border-[#E2E8F0] rounded-lg text-[13px] text-left flex items-center gap-2 hover:border-[#CBD5E1] focus:outline-none focus:border-[#4790FF] transition-colors">
-<div id="mc-pills" class="flex-1 flex flex-wrap gap-1 items-center"><span class="text-[12px]" style="color:rgba(30,41,59,0.4)">Select media category(s)...</span></div>
+<div id="mc-pills" class="flex-1 flex flex-wrap gap-1 items-center"><span class="text-[12px]" style="color:rgba(30,41,59,0.4)">Select media group(s)...</span></div>
 <svg id="mc-chev" class="w-3.5 h-3.5 shrink-0 transition-transform" style="color:rgba(30,41,59,0.4)" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
 </button>
 <div id="mc-dropdown" class="hidden absolute z-20 top-full left-0 right-0 mt-1 bg-white border border-[#E2E8F0] rounded-lg p-1.5 max-h-[240px] overflow-y-auto" style="box-shadow:0 8px 30px rgba(11,20,48,0.12)"></div>
 </div>
 </div>
 <div>
-<label class="block text-[11px] font-medium text-[#0B1430] mb-1">Media Group <span class="text-[10px] font-normal" style="color:rgba(30,41,59,0.5)">(เลือกได้หลายรายการ · ขึ้นกับ Category)</span></label>
+<label class="block text-[11px] font-medium text-[#0B1430] mb-1">Media Category <span class="text-[10px] font-normal" style="color:rgba(30,41,59,0.5)">(เลือกได้หลายรายการ · ขึ้นกับ Group)</span></label>
 <div class="relative" id="mg-wrap">
 <button type="button" onclick="toggleMG(event)" class="w-full min-h-9 px-3 py-1.5 bg-white border border-[#E2E8F0] rounded-lg text-[13px] text-left flex items-center gap-2 hover:border-[#CBD5E1] focus:outline-none focus:border-[#4790FF] transition-colors">
-<div id="mg-pills" class="flex-1 flex flex-wrap gap-1 items-center"><span class="text-[12px]" style="color:rgba(30,41,59,0.4)">Select media group(s)...</span></div>
+<div id="mg-pills" class="flex-1 flex flex-wrap gap-1 items-center"><span class="text-[12px]" style="color:rgba(30,41,59,0.4)">Select media category(s)...</span></div>
 <svg id="mg-chev" class="w-3.5 h-3.5 shrink-0 transition-transform" style="color:rgba(30,41,59,0.4)" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
 </button>
 <div id="mg-dropdown" class="hidden absolute z-20 top-full left-0 right-0 mt-1 bg-white border border-[#E2E8F0] rounded-lg p-1.5 max-h-[240px] overflow-y-auto" style="box-shadow:0 8px 30px rgba(11,20,48,0.12)"></div>
@@ -731,7 +731,7 @@ function fmtManualDate(el) {
   } else { el.type = 'text'; }
 }
 
-/* ===== Media Category multi-select (parent tier, cascade to Group) ===== */
+/* ===== Media Group multi-select (parent tier, cascade to Category) ===== */
 var MEDIA_CATEGORIES = [
   { id:'OOH',    label:'Outdoor OOH',        color:'#2D56D2', groups:['Digital','Classic'] },
   { id:'TRANS',  label:'Transit & Airport',  color:'#7C3AED', groups:['Transit','Airport'] },
@@ -791,7 +791,7 @@ function renderMCPills() {
   var el = document.getElementById('mc-pills');
   if (!el) return;
   if (!_selectedMC.length) {
-    el.innerHTML = '<span class="text-[12px]" style="color:rgba(30,41,59,0.4)">Select media category(s)...</span>';
+    el.innerHTML = '<span class="text-[12px]" style="color:rgba(30,41,59,0.4)">Select media group(s)...</span>';
     return;
   }
   el.innerHTML = _selectedMC.map(function(id) {
@@ -812,7 +812,7 @@ function _allowedGroups() {
   return Object.keys(set);
 }
 
-/* ===== Media Group multi-select (manual entry) ===== */
+/* ===== Media Category multi-select (manual entry) ===== */
 var _selectedMG = [];
 function toggleMG(e) {
   if (e) e.stopPropagation();
@@ -827,7 +827,7 @@ function renderMGOptions() {
   var dd = document.getElementById('mg-dropdown');
   var allowed = _allowedGroups();
   if (!allowed.length) {
-    dd.innerHTML = '<div class="px-3 py-4 text-center text-[12px]" style="color:rgba(30,41,59,0.45)">กรุณาเลือก Media Category ก่อน</div>';
+    dd.innerHTML = '<div class="px-3 py-4 text-center text-[12px]" style="color:rgba(30,41,59,0.45)">กรุณาเลือก Media Group ก่อน</div>';
     return;
   }
   var html = '';
@@ -862,7 +862,7 @@ function removeMG(g, e) {
 function renderMGPills() {
   var el = document.getElementById('mg-pills');
   if (!_selectedMG.length) {
-    el.innerHTML = '<span class="text-[12px]" style="color:rgba(30,41,59,0.4)">Select media group(s)...</span>';
+    el.innerHTML = '<span class="text-[12px]" style="color:rgba(30,41,59,0.4)">Select media category(s)...</span>';
     return;
   }
   el.innerHTML = _selectedMG.map(function(g) {
