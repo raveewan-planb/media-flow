@@ -132,14 +132,69 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#4790FF;box-sh
 .ms-tag button{width:15px;height:15px;border-radius:4px;display:flex;align-items:center;justify-content:center;line-height:0;border:0;background:transparent;color:inherit;cursor:pointer}
 .ms-tag button:hover{background:rgba(45,86,210,.18)}
 .ms-input{flex:1;min-width:92px;border:0;outline:0;font-size:13px;padding:3px 2px;background:transparent;font-family:'Kanit',sans-serif}
+
+/* Product Group sets */
+.pg-wrap{border:1px solid #E2E8F0;border-radius:10px;background:#FCFDFE;overflow:hidden}
+.pg-head{display:flex;align-items:center;gap:8px;padding:8px 10px;background:#F8FAFC;border-bottom:1px solid #EEF2F7}
+.pg-head .t{font-size:11.5px;font-weight:600;color:rgba(30,41,59,.72)}
+.pg-badge{display:inline-flex;align-items:center;height:20px;padding:0 8px;border-radius:99px;font-size:10.5px;font-weight:600;background:rgba(45,86,210,.10);color:#2D56D2;border:1px solid rgba(45,86,210,.18);font-variant-numeric:tabular-nums}
+.pg-add{margin-left:auto;height:26px;padding:0 10px;border-radius:7px;border:1px solid rgba(45,86,210,.3);background:rgba(45,86,210,.07);color:#2D56D2;font-size:11.5px;font-weight:600;display:inline-flex;align-items:center;gap:5px;cursor:pointer;font-family:'Kanit',sans-serif;transition:.15s}
+.pg-add:hover:not(:disabled){background:rgba(45,86,210,.16);border-color:#4790FF}
+.pg-add:disabled{opacity:.4;cursor:not-allowed}
+.pg-grid{display:grid;grid-template-columns:28px 1fr 1.3fr 26px;gap:7px;align-items:center}
+.pg-hdr{padding:6px 10px 5px;font-size:9px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:rgba(30,41,59,.45);border-bottom:1px solid #F1F5F9}
+.pg-row{padding:6px 10px}
+.pg-row + .pg-row{border-top:1px solid #F1F5F9}
+.pg-row:hover{background:#F8FAFC}
+.pg-no{width:24px;height:24px;border-radius:6px;background:#EEF2F8;color:rgba(30,41,59,.6);font-size:11px;font-weight:600;display:inline-flex;align-items:center;justify-content:center}
+.pg-row input:not([type=radio]){height:32px;width:100%;padding:0 9px;border:1px solid #E2E8F0;border-radius:7px;font-size:12.5px;background:#fff;font-family:'Kanit',sans-serif;color:#0B1430;min-width:0}
+.pg-row input:not([type=radio]):focus{outline:none;border-color:#4790FF;box-shadow:0 0 0 2px rgba(71,144,255,.18)}
+.pg-del{width:24px;height:24px;border-radius:6px;border:0;background:rgba(225,29,72,.09);color:#BE123C;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:.15s}
+.pg-del:hover{background:rgba(225,29,72,.2)}
+.pg-row:only-child .pg-del{opacity:.35;pointer-events:none}
+
+.sg-grid{display:grid;grid-template-columns:26px minmax(0,auto) minmax(0,1fr) 26px;gap:10px;align-items:center}
+.sg-grid > .pg-no{grid-column:1}
+.sg-grid > .sg-group{grid-column:2}
+.sg-grid > .sg-detail{grid-column:3}
+.sg-grid > .pg-del{grid-column:4}
+.sg-grid.pg-row{padding:8px 10px}
+/* Select buttons — colour-coded per option */
+.sg-group{display:flex;flex-wrap:wrap;gap:6px;min-width:0;padding:0;background:transparent;border:0}
+.sg-group .radio-pill-sm{height:28px;padding:0 11px;border:1px solid var(--c-bd);border-radius:999px;background:var(--c-bg);font-size:11.5px;font-weight:500;color:var(--c-fg);display:inline-flex;align-items:center;gap:6px;cursor:pointer;transition:all .14s;white-space:nowrap}
+.sg-group .radio-pill-sm::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--c);flex:0 0 auto;transition:all .14s}
+.sg-group .radio-pill-sm input{position:absolute;opacity:0;width:0;height:0;margin:0;pointer-events:none}
+.sg-group .radio-pill-sm:hover{border-color:var(--c);box-shadow:0 1px 4px rgba(11,20,48,.08)}
+.sg-group .radio-pill-sm:has(input:checked){background:var(--c);border-color:var(--c);color:#fff;font-weight:600;box-shadow:0 2px 8px var(--c-sh)}
+.sg-group .radio-pill-sm:has(input:checked)::before{background:#fff;box-shadow:0 0 0 2px rgba(255,255,255,.45)}
+.sg-group .radio-pill-sm:nth-child(1){--c:#D97706;--c-bg:rgba(217,119,6,.08);--c-bd:rgba(217,119,6,.28);--c-fg:#B45309;--c-sh:rgba(217,119,6,.28)}
+.sg-group .radio-pill-sm:nth-child(2){--c:#7C3AED;--c-bg:rgba(124,58,237,.08);--c-bd:rgba(124,58,237,.28);--c-fg:#6D28D9;--c-sh:rgba(124,58,237,.28)}
+.sg-group .radio-pill-sm:nth-child(3){--c:#E11D48;--c-bg:rgba(225,29,72,.07);--c-bd:rgba(225,29,72,.26);--c-fg:#BE123C;--c-sh:rgba(225,29,72,.26)}
+.sg-group .radio-pill-sm:nth-child(4){--c:#0891B2;--c-bg:rgba(8,145,178,.08);--c-bd:rgba(8,145,178,.28);--c-fg:#0E7490;--c-sh:rgba(8,145,178,.26)}
+.sg-group .rp-t{white-space:nowrap}
+@media(max-width:1180px){.sg-grid{grid-template-columns:26px minmax(0,1fr) 26px}
+  .sg-grid > .sg-detail{grid-column:2;grid-row:2}
+  .sg-grid > .pg-del{grid-column:3;grid-row:1}
+  .sg-group{width:100%}
+  .sg-group .radio-pill-sm{flex:1 1 auto}}
+@media(max-width:560px){.sg-group .radio-pill-sm{flex:1 1 45%;padding:0 8px;font-size:11px}}
+.fs-grid{display:grid;grid-template-columns:28px minmax(0,1.2fr) minmax(0,.9fr) minmax(0,1.1fr) 26px;gap:7px;align-items:center}
+.pg-row select{height:32px;width:100%;padding:0 22px 0 9px;border:1px solid #E2E8F0;border-radius:7px;font-size:12.5px;background:#fff;font-family:'Kanit',sans-serif;color:#0B1430;min-width:0;appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2.5'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19.5 8.25l-7.5 7.5-7.5-7.5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 6px center}
+.pg-row select:focus{outline:none;border-color:#4790FF;box-shadow:0 0 0 2px rgba(71,144,255,.18)}
 .ms-wrap{position:relative;display:block}
 .ms-panel{position:absolute;z-index:70;left:0;right:0;top:calc(100% + 4px);max-height:232px;overflow-y:auto;background:#fff;border:1px solid #E2E8F0;border-radius:10px;box-shadow:0 10px 32px rgba(11,20,48,.14);padding:4px}
 .ms-panel[hidden]{display:none}
-.ms-opt{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:7px;font-size:13px;color:#0B1430;cursor:pointer;line-height:1.35}
+.ms-opt{display:flex;align-items:center;gap:9px;padding:7px 10px;border-radius:7px;font-size:13px;color:#0B1430;cursor:pointer;line-height:1.35}
 .ms-opt:hover{background:#F1F5F9}
 .ms-opt.on{color:#2D56D2;font-weight:500;background:rgba(71,144,255,.08)}
-.ms-opt .tick{margin-left:auto;opacity:0;color:#2D56D2}
-.ms-opt.on .tick{opacity:1}
+.ms-opt .ms-lb{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ms-cb{width:16px;height:16px;border-radius:4px;border:1.5px solid #CBD5E1;background:#fff;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .12s}
+.ms-cb svg{width:10px;height:10px;color:#fff;opacity:0;transition:opacity .12s}
+.ms-opt:hover .ms-cb{border-color:#4790FF}
+.ms-opt.on .ms-cb{background:#2D56D2;border-color:#2D56D2}
+.ms-opt.on .ms-cb svg{opacity:1}
+.ms-cb.ms-cb-add{border-style:dashed;border-color:#4790FF}
+.ms-cb.ms-cb-add svg{opacity:1;color:#2D56D2}
 .ms-empty{padding:10px;font-size:12px;color:rgba(30,41,59,.5);text-align:center}
 .ms-add{color:#2D56D2;font-weight:500}
 .cb-wrap{position:relative;display:block}
@@ -353,13 +408,27 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#4790FF;box-sh
               <div><label class="fld-label">Media Group <span class="req">*</span></label><select id="media-category-select" class="fld-select" onchange="onMediaCategoryChange()"><option value="">— เลือก —</option><option>Classic</option><option>Digital</option><option>Transit</option><option>Airport</option><option>Retail</option><option>Digital VGI</option><option>Transit VGI</option></select></div>
               <div><label class="fld-label">Media Category <span class="req">*</span></label><select class="fld-select"><option value="">— เลือก —</option><option>Billboard</option><option>Static Media</option><option>BTS Cityline Static</option><option>Chongnonsi Skywalk</option><option>Digital</option><option>1-BTS</option><option>BTS Cityline</option><option>Transit</option><option>Airport Static</option><option>Airport Digital</option><option>Retail</option></select></div>
               <div><label class="fld-label">Media Type <span class="req">*</span></label><input list="media-type-list" id="fld-media-type" class="fld-input fld-search" placeholder="ค้นหา / เลือก Media Type" autocomplete="off" /><datalist id="media-type-list"><option value="Air Traveller Gateway"></option><option value="Airport Static Media"></option><option value="Airport Traveller Series"></option><option value="Billboard"></option><option value="At Narong Interchange"></option><option value="Bangkok Jam Watch"></option><option value="Bangkok Jams"></option><option value="Bangkok Jams 2"></option><option value="BMN - MRT PID"></option><option value="Bravo BKK"></option></datalist></div>
+              <div><label class="fld-label">Media Type (Epicor/Salesforce)</label><input list="media-type-sf-list" id="fld-media-type-sf" class="fld-input fld-search" placeholder="เลือก Media Type ก่อน" autocomplete="off" disabled /><datalist id="media-type-sf-list"></datalist></div>
               <div><label class="fld-label">Media Segment</label><input list="media-segment-list" id="fld-media-segment" class="fld-input fld-search" placeholder="ค้นหา / เลือก Media Segment" autocomplete="off" /><datalist id="media-segment-list"><option value="Balustrade"></option><option value="BTS -Concourse-3D Beam"></option><option value="BTS E-Poster"></option><option value="BTS Exit LED"></option><option value="BTS On Station"></option><option value="MBK LED"></option><option value="Muvads - Lightbox"></option><option value="NCA Bus Wrap"></option><option value="Office Building"></option><option value="AQ Billboard"></option><option value="Billboard Nationwide"></option><option value="Billboard TPS"></option><option value="Building Wrap"></option><option value="MTS Billboard"></option><option value="Splash Billboard"></option><option value="The Skyline"></option><option value="Unipole Billboard"></option><option value="Unipole NTW Billboard"></option></datalist></div>
               <div><label class="fld-label">Sub Media Segment</label><input list="sub-media-segment-list" id="fld-sub-media-segment" class="fld-input fld-search" placeholder="ค้นหา / เลือก Sub Media Segment" autocomplete="off" /><datalist id="sub-media-segment-list"><option value="29ST-Escalator Graphics"></option><option value="29ST-Escalator Wrap"></option><option value="7ST-Balustrade Staircase"></option><option value="7ST-Walkway Balustrade"></option><option value="Balustrade Light Box"></option><option value="Balustrade Staircase"></option><option value="Cladding (Cen)"></option><option value="Escalator Wrap"></option><option value="Exit LED"></option><option value="Front gate floor"></option><option value="Gate Balustrade"></option><option value="Immerse"></option><option value="Lift LED"></option><option value="Phone Pole"></option><option value="Pier Head"></option><option value="Platform Truss"></option><option value="PSD Billboard"></option><option value="Rabbit Coin Beam"></option><option value="Samsung 55in LED"></option><option value="Siam Side Wall"></option><option value="Side Beam"></option><option value="Staircase Poster"></option><option value="Stairway Stand LED"></option><option value="Station Beam"></option><option value="Station Signage"></option><option value="VP Board LED"></option><option value="Walkway Balustrade"></option><option value="Welcome Light Box"></option></datalist></div>
-              <div><label class="fld-label">Product Group</label><input class="fld-input" placeholder="เช่น PG-01" /></div>
-              <div><label class="fld-label">Product Group Name</label><input class="fld-input" placeholder="ชื่อกลุ่มสินค้า" /></div>
+              <div class="lg:col-span-2">
+                <label class="fld-label">Product Group</label>
+                <div class="pg-wrap">
+                  <div class="pg-head">
+                    <span class="t">กลุ่มสินค้า</span>
+                    <span class="pg-badge" id="pg-count">0/3</span>
+                    <button type="button" id="pg-add-btn" class="pg-add" onclick="pgAdd()">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path stroke-linecap="round" d="M12 5v14M5 12h14"/></svg>เพิ่มกลุ่ม
+                    </button>
+                  </div>
+                  <div class="pg-grid pg-hdr"><div></div><div>Product Group</div><div>Product Group Name</div><div></div></div>
+                  <div id="pg-list"><div class="pg-grid pg-row"><span class="pg-no"></span><input class="pg-code" placeholder="เช่น PG-01" value="PG-BB-01"/><input class="pg-name" placeholder="ชื่อกลุ่มสินค้า" value="Billboard Nationwide"/><button type="button" class="pg-del" title="ลบกลุ่มนี้" onclick="pgRemove(this)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" d="M6 18L18 6M6 6l12 12"/></svg></button></div><div class="pg-grid pg-row"><span class="pg-no"></span><input class="pg-code" placeholder="เช่น PG-01" value="PG-BB-02"/><input class="pg-name" placeholder="ชื่อกลุ่มสินค้า" value="Expressway Series"/><button type="button" class="pg-del" title="ลบกลุ่มนี้" onclick="pgRemove(this)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" d="M6 18L18 6M6 6l12 12"/></svg></button></div></div>
+                </div>
+                <div class="text-[11px] mt-1.5" style="color:rgba(30,41,59,0.5)">เพิ่มได้สูงสุด 3 กลุ่ม</div>
+              </div>
               <div><label class="fld-label">Code Product <span class="req">*</span></label><input class="fld-input font-mono" placeholder="เช่น PB-SCR-001" /></div>
               <div><label class="fld-label">Code Structure</label><input class="fld-input font-mono" placeholder="เช่น STR-001" /></div>
-              <div><label class="fld-label">Sale Package</label><input list="sale-package-list" id="fld-sale-package" class="fld-input fld-search" placeholder="ค้นหา / เลือก Sale Package" autocomplete="off" /><datalist id="sale-package-list"><option value="Single"></option><option value="Network"></option><option value="Bundle"></option></datalist></div>
+              <div><label class="fld-label">Sale Package</label><div class="ms" id="fld-sale-package" data-name="sale-package" data-opts="Single,Network,Bundle" data-value="Single" data-placeholder="ค้นหา / เลือก Sale Package"></div></div>
               <div><label class="fld-label">No. of Panel <span class="req">*</span></label><input type="number" id="no-of-panel" class="fld-input tnum" placeholder="0" oninput="updatePanelBadge()" /></div>
               <div><label class="fld-label">No. of Package</label><input type="number" class="fld-input tnum" placeholder="0" /></div>
               <div><label class="fld-label">No. of Structure</label><input type="number" class="fld-input tnum" placeholder="0" /></div>
@@ -524,7 +593,7 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#4790FF;box-sh
                 <input type="number" class="fld-input tnum" placeholder="0" />              </div>
               <div data-fmt="digital">
                 <label class="fld-label">Duration (sec)</label>
-                <select class="fld-select"><option value="">— เลือก —</option><option>7.5</option><option>15</option><option>30</option><option>45</option><option>60</option></select>
+                <div class="ms" id="fld-duration" data-name="duration" data-opts="7.5,15,30,45,60" data-value="15,30" data-placeholder="ค้นหา / เลือก Duration"></div>
               </div>
               <div class="lg:col-span-2">
                 <label class="fld-label">Advertising Service Time <span class="text-[11px] font-normal" style="color:rgba(30,41,59,0.5)">(24 ชั่วโมง · ข้ามวันได้)</span></label>
@@ -571,16 +640,21 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#4790FF;box-sh
           <div>
             <div class="group-subtitle">Sale / เงื่อนไขการขาย</div>
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-4">
-              <div>
+              <div class="lg:col-span-2">
                 <label class="fld-label">Surrounding Group</label>
-                <div class="radio-grp">
-                  <label class="radio-pill"><input type="radio" name="surround-grp" />Department Store</label>
-                  <label class="radio-pill"><input type="radio" name="surround-grp" />School / University</label>
-                  <label class="radio-pill"><input type="radio" name="surround-grp" />Hospital</label>
-                  <label class="radio-pill"><input type="radio" name="surround-grp" />Public Transportation Connection Point</label>
+                <div class="pg-wrap">
+                  <div class="pg-head">
+                    <span class="t">สภาพแวดล้อมโดยรอบ</span>
+                    <span class="pg-badge" id="sg-count">0</span>
+                    <button type="button" id="sg-add-btn" class="pg-add" onclick="sgAdd()">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path stroke-linecap="round" d="M12 5v14M5 12h14"/></svg>เพิ่มชุด
+                    </button>
+                  </div>
+                  <div class="sg-grid pg-hdr"><div></div><div>Surrounding Group</div><div>Surrounding Detail</div><div></div></div>
+                  <div id="sg-list"><div class="sg-grid pg-row"><span class="pg-no"></span><div class="radio-grp sg-group" data-name="sg-seed-1"><label class="radio-pill radio-pill-sm"><input type="radio" name="sg-seed-1" value="Department Store" checked/><span class="rp-t">Department Store</span></label><label class="radio-pill radio-pill-sm"><input type="radio" name="sg-seed-1" value="School / University"/><span class="rp-t">School / University</span></label><label class="radio-pill radio-pill-sm"><input type="radio" name="sg-seed-1" value="Hospital"/><span class="rp-t">Hospital</span></label><label class="radio-pill radio-pill-sm"><input type="radio" name="sg-seed-1" value="Public Transportation Connection Point"/><span class="rp-t">Public Transportation Connection Point</span></label></div><input class="sg-detail" placeholder="รายละเอียดสภาพแวดล้อม" value="ติดห้างเซ็นทรัลพระราม 9 ฝั่งขาเข้า"/><button type="button" class="pg-del" title="ลบแถวนี้" onclick="sgRemove(this)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" d="M6 18L18 6M6 6l12 12"/></svg></button></div><div class="sg-grid pg-row"><span class="pg-no"></span><div class="radio-grp sg-group" data-name="sg-seed-2"><label class="radio-pill radio-pill-sm"><input type="radio" name="sg-seed-2" value="Department Store"/><span class="rp-t">Department Store</span></label><label class="radio-pill radio-pill-sm"><input type="radio" name="sg-seed-2" value="School / University"/><span class="rp-t">School / University</span></label><label class="radio-pill radio-pill-sm"><input type="radio" name="sg-seed-2" value="Hospital"/><span class="rp-t">Hospital</span></label><label class="radio-pill radio-pill-sm"><input type="radio" name="sg-seed-2" value="Public Transportation Connection Point" checked/><span class="rp-t">Public Transportation Connection Point</span></label></div><input class="sg-detail" placeholder="รายละเอียดสภาพแวดล้อม" value="ใกล้สถานี MRT พระราม 9 ทางออก 3"/><button type="button" class="pg-del" title="ลบแถวนี้" onclick="sgRemove(this)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" d="M6 18L18 6M6 6l12 12"/></svg></button></div></div>
                 </div>
+                <div class="text-[11px] mt-1.5" style="color:rgba(30,41,59,0.5)">เพิ่มได้ไม่จำกัด</div>
               </div>
-              <div><label class="fld-label">Surrounding Detail</label><input class="fld-input" placeholder="รายละเอียดสภาพแวดล้อม" /></div>
               <div><label class="fld-label">Sale Condition</label><input class="fld-input" placeholder="เงื่อนไขการขาย" /></div>
               <div>
                 <label class="fld-label">Media Start Date</label>
@@ -680,15 +754,22 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#4790FF;box-sh
               <div data-fmt="digital">
                 <label class="fld-label">Pixel Pitch</label>
                 <input class="fld-input" placeholder="เช่น P6, P10" />              </div>
-              <div data-fmt="digital">
-                <label class="fld-label">Resolution (px.)</label>
-                <div class="ms" data-name="resolution" data-opts="1920x1080,3840x2160,1080x1920,2560x1440,1280x720,1366x768,1920x540,768x1366,2160x3840,1440x2560,1024x768,800x600" data-value="1920x1080, 3840x2160" data-placeholder="— เลือก —"></div>              </div>
-              <div data-fmt="digital">
-                <label class="fld-label">Format</label>
-                <select class="fld-select"><option value="">— เลือก —</option><option>พิเศษ</option><option>16-9</option><option>4-3</option><option>43</option><option>179</option><option>11</option><option>AT16-9</option><option>AT4-3</option></select>              </div>
-              <div data-fmt="digital">
-                <label class="fld-label">Format Name</label>
-                <select class="fld-select"><option value="">— เลือก —</option><option>11</option><option>16-9</option><option>179</option><option>43</option><option>4-3</option><option>ANYA</option><option>AT16-9</option><option>AT4-3</option><option>BN</option><option>BNEX</option><option>BNOA</option><option>BNOB</option><option>BNOP</option><option>BNOPB</option><option>BNOS</option><option>BTS</option><option>CHL</option><option>CLF</option></select>              </div>
+              <div data-fmt="digital" class="lg:col-span-2">
+                
+                <label class="fld-label">Resolution (px.) / Format</label>
+                <div class="pg-wrap">
+                  <div class="pg-head">
+                    <span class="t">ชุดความละเอียด / ฟอร์แมต</span>
+                    <span class="pg-badge" id="fs-count">0</span>
+                    <button type="button" id="fs-add-btn" class="pg-add" onclick="fsAdd()">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path stroke-linecap="round" d="M12 5v14M5 12h14"/></svg>เพิ่มชุด
+                    </button>
+                  </div>
+                  <div class="fs-grid pg-hdr"><div></div><div>Resolution (px.)</div><div>Format</div><div>Format Name</div><div></div></div>
+                  <div id="fs-list"><div class="fs-grid pg-row"><span class="pg-no"></span><select class="fs-res"><option value="">— เลือก —</option><option selected>1920x1080</option><option>3840x2160</option><option>1080x1920</option><option>2560x1440</option><option>1280x720</option><option>1366x768</option><option>1920x540</option><option>768x1366</option><option>2160x3840</option><option>1440x2560</option><option>1024x768</option><option>800x600</option></select><select class="fs-fmt"><option value="">— เลือก —</option><option>พิเศษ</option><option selected>16-9</option><option>4-3</option><option>43</option><option>179</option><option>11</option><option>AT16-9</option><option>AT4-3</option></select><select class="fs-fmtn"><option value="">— เลือก —</option><option>11</option><option>16-9</option><option>179</option><option>43</option><option>4-3</option><option>ANYA</option><option>AT16-9</option><option>AT4-3</option><option selected>BN</option><option>BNEX</option><option>BNOA</option><option>BNOB</option><option>BNOP</option><option>BNOPB</option><option>BNOS</option><option>BTS</option><option>CHL</option><option>CLF</option></select><button type="button" class="pg-del" title="ลบแถวนี้" onclick="fsRemove(this)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" d="M6 18L18 6M6 6l12 12"/></svg></button></div><div class="fs-grid pg-row"><span class="pg-no"></span><select class="fs-res"><option value="">— เลือก —</option><option>1920x1080</option><option selected>3840x2160</option><option>1080x1920</option><option>2560x1440</option><option>1280x720</option><option>1366x768</option><option>1920x540</option><option>768x1366</option><option>2160x3840</option><option>1440x2560</option><option>1024x768</option><option>800x600</option></select><select class="fs-fmt"><option value="">— เลือก —</option><option>พิเศษ</option><option selected>16-9</option><option>4-3</option><option>43</option><option>179</option><option>11</option><option>AT16-9</option><option>AT4-3</option></select><select class="fs-fmtn"><option value="">— เลือก —</option><option>11</option><option>16-9</option><option>179</option><option>43</option><option>4-3</option><option>ANYA</option><option>AT16-9</option><option>AT4-3</option><option>BN</option><option selected>BNEX</option><option>BNOA</option><option>BNOB</option><option>BNOP</option><option>BNOPB</option><option>BNOS</option><option>BTS</option><option>CHL</option><option>CLF</option></select><button type="button" class="pg-del" title="ลบแถวนี้" onclick="fsRemove(this)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" d="M6 18L18 6M6 6l12 12"/></svg></button></div></div>
+                </div>
+                <div class="text-[11px] mt-1.5" style="color:rgba(30,41,59,0.5)">เพิ่มได้ไม่จำกัด</div>
+              </div>
             </div>
           </div>
 
@@ -1291,14 +1372,12 @@ document.addEventListener('DOMContentLoaded', () => {
 var MEDIA_RECORD = {
   'Media Group':'Classic',
   'Media Category':'Billboard',
+  'Media Type (Epicor/Salesforce)':'BILLBOARD_UNIPOLE',
   'Media Type':'Billboard',
   'Media Segment':'Unipole Billboard',
   'Sub Media Segment':'',
-  'Product Group':'PG-BB-01',
-  'Product Group Name':'Billboard Nationwide',
   'Code Product':'CP-BB-UNI-0142',
   'Code Structure':'ST-BB-0142',
-  'Sale Package':'Single',
   'No. of Panel':'2',
   'No. of Package':'1',
   'No. of Structure':'1',
@@ -1330,7 +1409,6 @@ var MEDIA_RECORD = {
   'Dwell Time (sec.)':'12',
   'Maximum visibility distance (m)':'180',
   'Minimum readable distance (m)':'45',
-  'Surrounding Detail':'ใกล้ห้างเทอร์มินอล 21 · ทางเชื่อม BTS อโศก / MRT สุขุมวิท',
   'Sale Condition':'ขายขั้นต่ำ 3 เดือน · ราคาไม่รวมค่าผลิตและติดตั้ง',
   'Media Start Date':'01/04/2024',
   'Code Operation':'OP-BB-0142',
@@ -1585,11 +1663,14 @@ document.addEventListener('DOMContentLoaded', function(){
       var list=opts.filter(function(o){ return !q || o.toLowerCase().indexOf(q)>-1; });
       var html=list.map(function(o){
         var on=sel.indexOf(o)>-1;
-        return '<div class="ms-opt'+(on?' on':'')+'" data-v="'+o+'">'+o+
-          '<svg class="tick" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg></div>';
+        return '<div class="ms-opt'+(on?' on':'')+'" data-v="'+o+'" role="option" aria-selected="'+(on?'true':'false')+'">'+
+          '<span class="ms-cb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg></span>'+
+          '<span class="ms-lb">'+o+'</span></div>';
       }).join('');
       if(q && opts.indexOf(inp.value.trim())<0){
-        html += '<div class="ms-opt ms-add" data-v="'+inp.value.trim()+'" data-new="1">เพิ่ม "'+inp.value.trim()+'"</div>';
+        html += '<div class="ms-opt ms-add" data-v="'+inp.value.trim()+'" data-new="1">'+
+          '<span class="ms-cb ms-cb-add"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2"><path stroke-linecap="round" d="M12 5v14M5 12h14"/></svg></span>'+
+          '<span class="ms-lb">เพิ่ม "'+inp.value.trim()+'"</span></div>';
       }
       panel.innerHTML = html || '<div class="ms-empty">ไม่พบตัวเลือก</div>';
     }
@@ -1624,6 +1705,202 @@ document.addEventListener('DOMContentLoaded', function(){
   function init(){ document.querySelectorAll('.ms[data-opts]').forEach(build); }
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init); else init();
 })();
+</script>
+
+<script>
+/* ===== Media Type (Epicor/Salesforce) — cascade from Media Type ===== */
+var MEDIA_TYPE_SF = {
+  'Billboard':                ['BILLBOARD_STD','BILLBOARD_UNIPOLE','BB_NATIONWIDE','BILLBOARD_LEGACY'],
+  'Airport Static Media':     ['AIRPORT_STATIC','AIRPORT_LIGHTBOX'],
+  'Air Traveller Gateway':    ['AIRPORT_DIGITAL','AIRPORT_GATEWAY_LED'],
+  'Airport Traveller Series': ['AIRPORT_SERIES_01','AIRPORT_SERIES_02'],
+  'At Narong Interchange':    ['LED_FULLCOLOR','LED_P6'],
+  'Bangkok Jam Watch':        ['LED_P10','BKK_JAMWATCH'],
+  'Bangkok Jams':             ['BKK_JAMS_LED'],
+  'Bangkok Jams 2':           ['BKK_JAMS2_LED'],
+  'BMN - MRT PID':            ['MRT_PID_SCREEN','MRT_PID_NETWORK'],
+  'Bravo BKK':                ['LED_FULLCOLOR','BRAVO_BKK_LED']
+};
+var SF_FALLBACK = ['GENERIC_STATIC','GENERIC_DIGITAL'];
+
+function _sfOptions(mt){
+  if(!mt) return [];
+  var list = MEDIA_TYPE_SF[mt];
+  if(list) return list;
+  var key = String(mt).toUpperCase().replace(/[^A-Z0-9]+/g,'_').replace(/^_|_$/g,'');
+  return [key + '_01', key + '_02'].concat(SF_FALLBACK);
+}
+function onMediaTypeSfRefresh(){
+  var mtInp = document.getElementById('fld-media-type');
+  var sfInp = document.getElementById('fld-media-type-sf');
+  var dl    = document.getElementById('media-type-sf-list');
+  if(!mtInp || !sfInp || !dl) return;
+  var mt = (mtInp.value || '').trim();
+  var opts = _sfOptions(mt);
+  dl.innerHTML = opts.map(function(o){ return '<option value="'+o+'"></option>'; }).join('');
+  if(!mt){
+    sfInp.value = '';
+    sfInp.disabled = true;
+    sfInp.placeholder = 'เลือก Media Type ก่อน';
+  } else {
+    sfInp.disabled = false;
+    sfInp.placeholder = 'ค้นหา / เลือก Media Type (Epicor/SF)';
+    if(sfInp.value && opts.indexOf(sfInp.value) < 0) sfInp.value = '';
+  }
+  sfInp.dispatchEvent(new CustomEvent('cb-sync'));
+}
+(function(){
+  function init(){
+    var mt = document.getElementById('fld-media-type');
+    if(!mt) return;
+    ['input','change','cb-sync'].forEach(function(ev){
+      mt.addEventListener(ev, function(){ onMediaTypeSfRefresh(); });
+    });
+    onMediaTypeSfRefresh();
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+})();
+</script>
+
+<script>
+/* ===== Product Group sets (max 3) ===== */
+var PG_MAX = 3;
+function pgRowHtml(v){
+  v = v || {};
+  return '<div class="pg-grid pg-row">'+
+    '<span class="pg-no"></span>'+
+    '<input class="pg-code" placeholder="เช่น PG-01" value="'+(v.code||'').replace(/"/g,'&quot;')+'"/>'+
+    '<input class="pg-name" placeholder="ชื่อกลุ่มสินค้า" value="'+(v.name||'').replace(/"/g,'&quot;')+'"/>'+
+    '<button type="button" class="pg-del" title="ลบกลุ่มนี้" onclick="pgRemove(this)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" d="M6 18L18 6M6 6l12 12"/></svg></button>'+
+  '</div>';
+}
+function pgSync(){
+  var list = document.getElementById('pg-list'); if(!list) return;
+  var rows = list.children;
+  for(var i=0;i<rows.length;i++){ rows[i].querySelector('.pg-no').textContent = i+1; }
+  var badge = document.getElementById('pg-count'); if(badge) badge.textContent = rows.length + '/' + PG_MAX;
+  var btn = document.getElementById('pg-add-btn'); if(btn) btn.disabled = rows.length >= PG_MAX;
+}
+function pgAdd(v){
+  var list = document.getElementById('pg-list'); if(!list) return;
+  if(list.children.length >= PG_MAX) return;
+  list.insertAdjacentHTML('beforeend', pgRowHtml(v));
+  pgSync();
+  if(!v){ var last = list.lastElementChild; if(last) last.querySelector('.pg-code').focus(); }
+}
+function pgRemove(btn){
+  var list = document.getElementById('pg-list');
+  if(list && list.children.length <= 1) return;
+  var r = btn.closest('.pg-row'); if(r) r.remove();
+  pgSync();
+}
+function pgSet(items){
+  var list = document.getElementById('pg-list'); if(!list) return;
+  list.innerHTML = '';
+  (items && items.length ? items : [{}]).slice(0, PG_MAX).forEach(function(v){ list.insertAdjacentHTML('beforeend', pgRowHtml(v)); });
+  pgSync();
+}
+function pgCollect(){
+  var list = document.getElementById('pg-list'); if(!list) return [];
+  return Array.prototype.map.call(list.children, function(r){
+    return {code:r.querySelector('.pg-code').value.trim(), name:r.querySelector('.pg-name').value.trim()};
+  }).filter(function(x){ return x.code || x.name; });
+}
+(function(){
+  function init(){ var l=document.getElementById('pg-list'); if(!l) return; if(!l.children.length){ pgAdd(); } else { pgSync(); } }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', init); else init();
+})();
+</script>
+
+<script>
+/* ===== Generic repeatable field sets ===== */
+var _setSeq = 0;
+function _setEsc(v){ return String(v==null?'':v).replace(/"/g,'&quot;'); }
+function makeSetGroup(cfg){
+  var listId = cfg.id + '-list', badgeId = cfg.id + '-count', btnId = cfg.id + '-add-btn';
+  function rowHtml(v){
+    v = v || {};
+    var cells = cfg.cols.map(function(c){
+      if(c.type === 'radio'){
+        var nm = cfg.id + '-' + c.key + '-' + (++_setSeq);
+        return '<div class="radio-grp '+c.cls+'" data-name="'+nm+'">'+
+          c.opts.map(function(o){
+            return '<label class="radio-pill radio-pill-sm"><input type="radio" name="'+nm+'" value="'+_setEsc(o)+'"'+(v[c.key]===o?' checked':'')+'/><span class="rp-t">'+o+'</span></label>';
+          }).join('')+'</div>';
+      }
+      if(c.type === 'select'){
+        return '<select class="'+c.cls+'">'+
+          '<option value="">— เลือก —</option>'+
+          c.opts.map(function(o){ return '<option'+(v[c.key]===o?' selected':'')+'>'+o+'</option>'; }).join('')+
+        '</select>';
+      }
+      return '<input class="'+c.cls+'" placeholder="'+_setEsc(c.ph||'')+'" value="'+_setEsc(v[c.key])+'"/>';
+    }).join('');
+    return '<div class="'+cfg.grid+' pg-row"><span class="pg-no"></span>'+cells+
+      '<button type="button" class="pg-del" title="ลบแถวนี้" onclick="'+cfg.id+'Remove(this)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" d="M6 18L18 6M6 6l12 12"/></svg></button></div>';
+  }
+  function sync(){
+    var list = document.getElementById(listId); if(!list) return;
+    for(var i=0;i<list.children.length;i++) list.children[i].querySelector('.pg-no').textContent = i+1;
+    var badge = document.getElementById(badgeId);
+    if(badge) badge.textContent = cfg.max ? (list.children.length + '/' + cfg.max) : String(list.children.length);
+    var btn = document.getElementById(btnId);
+    if(btn) btn.disabled = !!cfg.max && list.children.length >= cfg.max;
+  }
+  function add(v){
+    var list = document.getElementById(listId); if(!list) return;
+    if(cfg.max && list.children.length >= cfg.max) return;
+    list.insertAdjacentHTML('beforeend', rowHtml(v)); sync();
+    if(!v){ var last = list.lastElementChild; if(last){ var f = last.querySelector('select,input'); if(f) f.focus(); } }
+  }
+  function remove(btn){
+    var list = document.getElementById(listId);
+    if(list && list.children.length <= 1) return;
+    var r = btn.closest('.pg-row'); if(r) r.remove(); sync();
+  }
+  function set(items){
+    var list = document.getElementById(listId); if(!list) return;
+    list.innerHTML = '';
+    (items && items.length ? items : [{}]).slice(0, cfg.max || 99).forEach(function(v){ list.insertAdjacentHTML('beforeend', rowHtml(v)); });
+    sync();
+  }
+  function collect(){
+    var list = document.getElementById(listId); if(!list) return [];
+    return Array.prototype.map.call(list.children, function(r){
+      var o = {};
+      cfg.cols.forEach(function(c){
+        var el = r.querySelector('.'+c.cls);
+        if(!el){ o[c.key] = ''; return; }
+        if(c.type === 'radio'){ var ck = el.querySelector('input:checked'); o[c.key] = ck ? ck.value : ''; }
+        else { o[c.key] = el.value.trim(); }
+      });
+      return o;
+    }).filter(function(o){ return cfg.cols.some(function(c){ return o[c.key]; }); });
+  }
+  window[cfg.id + 'Add'] = add;
+  window[cfg.id + 'Remove'] = remove;
+  window[cfg.id + 'Set'] = set;
+  window[cfg.id + 'Collect'] = collect;
+  window[cfg.id + 'Sync'] = sync;
+  function init(){ var l = document.getElementById(listId); if(!l) return; if(!l.children.length) add(); else sync(); }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', init); else init();
+}
+
+var SURROUND_OPTS = ['Department Store','School / University','Hospital','Public Transportation Connection Point'];
+var RESOLUTION_OPTS = ['1920x1080','3840x2160','1080x1920','2560x1440','1280x720','1366x768','1920x540','768x1366','2160x3840','1440x2560','1024x768','800x600'];
+var FORMAT_OPTS = ['พิเศษ','16-9','4-3','43','179','11','AT16-9','AT4-3'];
+var FORMAT_NAME_OPTS = ['11','16-9','179','43','4-3','ANYA','AT16-9','AT4-3','BN','BNEX','BNOA','BNOB','BNOP','BNOPB','BNOS','BTS','CHL','CLF'];
+
+makeSetGroup({id:'sg', grid:'sg-grid', max:0, cols:[
+  {key:'group',  cls:'sg-group',  type:'radio', opts:SURROUND_OPTS},
+  {key:'detail', cls:'sg-detail', type:'input',  ph:'รายละเอียดสภาพแวดล้อม'}
+]});
+makeSetGroup({id:'fs', grid:'fs-grid', max:0, cols:[
+  {key:'resolution', cls:'fs-res',  type:'select', opts:RESOLUTION_OPTS},
+  {key:'format',     cls:'fs-fmt',  type:'select', opts:FORMAT_OPTS},
+  {key:'formatName', cls:'fs-fmtn', type:'select', opts:FORMAT_NAME_OPTS}
+]});
 </script>
 </body>
 </html>
