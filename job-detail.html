@@ -673,9 +673,11 @@ function buildRenderRows(){
       '<tr id="render-row-' + i + '" class="border-t border-[#E2E8F0] hover:bg-[#F8FAFC]">' +
         '<td class="px-3 py-1.5"><span class="text-[11.5px] font-mono font-semibold px-2 py-0.5 rounded bg-indigo-50 text-indigo-700 border border-indigo-100">' + fmt + '</span></td>' +
         '<td class="px-3 py-1.5"><span id="render-name-' + i + '" class="font-mono text-[12px] text-[#0B1430]" style="color:rgba(30,41,59,0.4)">— กรอก File Name แล้วกด Render File —</span></td>' +
+        '<td class="px-3 py-1.5"><input id="render-loc-' + i + '" type="text" value="' + _esc(_renderLocations[i] || '') + '" oninput="onRenderLocInput()" placeholder="เช่น /render/2026/chang" class="w-full h-7 px-2 bg-white border border-[#CBD5E1] rounded-md text-[11.5px] font-mono focus:outline-none focus:border-indigo-500 placeholder:opacity-40 disabled:bg-slate-50 disabled:text-slate-500"/></td>' +
       '</tr>';
   });
   tbody.innerHTML = html;
+  _reapplyRenderLocations();
   _updateApprovedCount();
   buildFeedbackBox();
   renderFeedbackPanel();
@@ -793,6 +795,16 @@ function _selectedFmts(){
   return RENDER_FORMATS.filter(function(fmt){
     return _renderFeedbackOpen[fmt] && !(_renderApproved[fmt] && _renderApproved[fmt].approved);
   });
+}
+function _reapplyRenderLocations(){
+  _approvedFormats().forEach(function(fmt, i){
+    var el = document.getElementById('render-loc-' + i);
+    if (el){
+      el.value = _renderLocations[i] || '';
+      el.disabled = !!_renderConfirmed;
+    }
+  });
+  updateRenderConfirmGate();
 }
 function _reapplyRenderedNames(){
   var input = document.getElementById('render-filename-input');
@@ -963,6 +975,41 @@ function _updateApprovedCount(){
   if (el) el.textContent = 'Approved ' + n + ' / ' + RENDER_FORMATS.length;
 }
 
+var _renderLocations = [];
+function _collectRenderLocations(){
+  _approvedFormats().forEach(function(fmt, i){
+    var el = document.getElementById('render-loc-' + i);
+    if (el) _renderLocations[i] = el.value;
+  });
+}
+function _missingLocationCount(){
+  var n = 0;
+  _approvedFormats().forEach(function(fmt, i){
+    var el = document.getElementById('render-loc-' + i);
+    if (!el || !(el.value || '').trim()) n++;
+  });
+  return n;
+}
+function onRenderLocInput(){
+  _collectRenderLocations();
+  updateRenderConfirmGate();
+}
+function updateRenderConfirmGate(){
+  var btn = document.getElementById('render-confirm-btn');
+  var hint = document.getElementById('render-loc-hint');
+  var left = document.getElementById('render-loc-left');
+  var miss = _missingLocationCount();
+  if (btn) btn.disabled = miss > 0;
+  if (hint) hint.classList.toggle('hidden', miss === 0);
+  if (left) left.textContent = '(' + miss + ' / ' + _approvedFormats().length + ')';
+}
+function _setRenderLocDisabled(on){
+  _approvedFormats().forEach(function(fmt, i){
+    var el = document.getElementById('render-loc-' + i);
+    if (el) el.disabled = !!on;
+  });
+}
+
 var _renderConfirmed = false;
 function runRender() {
   if (!(_approvalState.client && _approvalState.owner)) {
@@ -985,7 +1032,9 @@ function runRender() {
   });
   /* Switch to preview state — show Confirm bar, hide other bars */
   _renderConfirmed = false;
+  _setRenderLocDisabled(false);
   _toggleRenderBar('preview');
+  updateRenderConfirmGate();
   var pill = document.getElementById('render-status-pill');
   if (pill){
     pill.textContent = 'Preview';
@@ -994,7 +1043,19 @@ function runRender() {
 }
 
 function confirmRender(){
+  _collectRenderLocations();
+  if (_missingLocationCount() > 0){
+    updateRenderConfirmGate();
+    alert('กรุณาระบุ File Location ให้ครบทุกรายการก่อนยืนยัน');
+    var i = 0, list = _approvedFormats();
+    for (; i < list.length; i++){
+      var el = document.getElementById('render-loc-' + i);
+      if (el && !(el.value || '').trim()){ el.focus(); break; }
+    }
+    return;
+  }
   _renderConfirmed = true;
+  _setRenderLocDisabled(true);
   var d = new Date();
   var dd = String(d.getDate()).padStart(2,'0'), mm = String(d.getMonth()+1).padStart(2,'0');
   var stamp = dd + '/' + mm + '/' + d.getFullYear() + ' ' + d.toTimeString().slice(0,5);
@@ -1010,6 +1071,8 @@ function confirmRender(){
 
 function resetRenderForReRun(){
   _renderConfirmed = false;
+  _collectRenderLocations();
+  _setRenderLocDisabled(false);
   /* Clear file names back to placeholder so user knows to re-render */
   _approvedFormats().forEach(function(fmt, i){
     var el = document.getElementById('render-name-' + i);
@@ -1731,6 +1794,7 @@ function renderStatusView() {
             '<thead class="bg-[#F8FAFC]"><tr>' +
               '<th class="text-left px-3 py-2 font-semibold text-[10.5px] uppercase tracking-wider w-32 border-b border-[#E2E8F0]" style="color:rgba(30,41,59,0.55)">Format Name</th>' +
               '<th class="text-left px-3 py-2 font-semibold text-[10.5px] uppercase tracking-wider border-b border-[#E2E8F0]" style="color:rgba(30,41,59,0.55)">File Name Render</th>' +
+              '<th class="text-left px-3 py-2 font-semibold text-[10.5px] uppercase tracking-wider w-64 border-b border-[#E2E8F0]" style="color:rgba(30,41,59,0.55)">File Location <span class="text-rose-500">*</span></th>' +
             '</tr></thead>' +
             '<tbody id="render-output-tbody"></tbody>' +
           '</table>' +
@@ -1738,8 +1802,8 @@ function renderStatusView() {
         /* Preview confirm bar — shown after Render File, hidden after Confirm */
         '<div id="render-confirm-bar" class="hidden px-3 py-2.5 bg-amber-50 border-x border-b border-amber-200 rounded-b-lg flex items-center gap-2">' +
           '<svg class="w-4 h-4 text-amber-600 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>' +
-          '<div class="flex-1 text-[11.5px] text-amber-900"><b>Preview</b> — ตรวจสอบ File Name Render ด้านบน แล้วกด <b>ยืนยัน</b> เพื่อบันทึก</div>' +
-          '<button onclick="confirmRender()" class="h-8 px-3 bg-emerald-600 text-white rounded-md text-[11.5px] font-semibold hover:bg-emerald-700 inline-flex items-center gap-1.5 shadow-sm">' +
+          '<div class="flex-1 text-[11.5px] text-amber-900"><b>Preview</b> — ตรวจสอบ File Name Render และระบุ <b>File Location</b> ให้ครบทุกรายการ แล้วกด <b>ยืนยัน</b><div id="render-loc-hint" class="text-[10.5px] text-rose-600 mt-0.5 hidden">ยังระบุ File Location ไม่ครบ <span id="render-loc-left" class="font-mono"></span></div></div>' +
+          '<button id="render-confirm-btn" onclick="confirmRender()" disabled class="h-8 px-3 bg-emerald-600 text-white rounded-md text-[11.5px] font-semibold hover:bg-emerald-700 inline-flex items-center gap-1.5 shadow-sm disabled:bg-slate-300 disabled:cursor-not-allowed disabled:shadow-none disabled:hover:bg-slate-300">' +
             '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>' +
             'Confirm File Name Render' +
           '</button>' +

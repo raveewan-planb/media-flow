@@ -283,8 +283,8 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#4790FF;box-sh
   <div class="relative w-full max-w-2xl mx-auto mt-16 bg-white rounded-2xl shadow-pop fade-in flex flex-col" style="max-height:calc(100vh - 8rem)">
     <div class="px-6 pt-5 pb-3 border-b border-surface-100 flex items-start justify-between gap-3">
       <div class="min-w-0 flex-1">
-        <div class="text-[10.5px] font-semibold tracking-wide uppercase acc">Media Type</div>
-        <h3 class="text-[18px] font-semibold">เพิ่ม Media Type เข้า Package</h3>
+        <div id="mtm-kicker" class="text-[10.5px] font-semibold tracking-wide uppercase acc">Media Type</div>
+        <h3 id="mtm-title" class="text-[18px] font-semibold">เพิ่ม Media Type เข้า Package</h3>
         <p class="text-[12px] mt-0.5" style="color:rgba(30,41,59,0.55)">เลือกจากรายการ Media Type ทั้งหมดในระบบ — เลือกได้หลายรายการพร้อมกัน</p>
       </div>
       <button onclick="closeModal('mt-modal')" class="w-8 h-8 rounded-md hover:bg-surface-100 flex items-center justify-center shrink-0"><svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button>
@@ -298,7 +298,6 @@ input:focus,select:focus,textarea:focus{outline:none;border-color:#4790FF;box-sh
       </div>
       <select id="mt-modal-group" onchange="renderMTPicker()" class="h-9 px-3 bg-white border border-surface-200 rounded-lg text-[13px]">
         <option value="">Group ทั้งหมด</option>
-        <option>Digital</option><option>Airport</option><option>Retail</option><option>Transit</option><option>Classic</option>
       </select>
       <label class="text-[12px] inline-flex items-center gap-1.5" style="color:rgba(30,41,59,0.65)">
         <input type="checkbox" id="mt-modal-hideadded" onchange="renderMTPicker()" checked class="w-3.5 h-3.5 accent-amber-500"/>
@@ -399,8 +398,31 @@ const ALL_MEDIA_TYPES = [
   {code:'MT-CLA-001', name:'Cookie & Cream', section:'The Canvas Collection', group:'Classic'},
 ];
 
+const ALL_DIGITAL_TYPES = [
+  {code:'MTD-DIG-001', name:'Digital Billboard', section:'Digital Network', group:'Digital'},
+  {code:'MTD-DIG-002', name:'Digital Signage Indoor', section:'Digital Network', group:'Digital'},
+  {code:'MTD-DIG-003', name:'LED Fullsync', section:'Digital Network', group:'Digital'},
+  {code:'MTD-DIG-004', name:'Digital Kiosk', section:'Digital Network', group:'Digital'},
+  {code:'MTD-DIG-005', name:'Digital Frame', section:'Digital Network', group:'Digital'},
+  {code:'MTD-TRN-001', name:'Digital BTS Platform', section:'BTS', group:'Transit'},
+  {code:'MTD-TRN-002', name:'Digital MRT Concourse', section:'MRT', group:'Transit'},
+  {code:'MTD-TRN-003', name:'Digital Bus Panel', section:'Bus', group:'Transit'},
+  {code:'MTD-APT-001', name:'Digital Airport Gate', section:'Airport', group:'Airport'},
+  {code:'MTD-APT-002', name:'Digital Baggage Claim', section:'Airport', group:'Airport'},
+  {code:'MTD-RTL-001', name:'Digital Mall Atrium', section:'Mall', group:'Retail'},
+  {code:'MTD-RTL-002', name:'Digital Convenience Store', section:'Convenience Store', group:'Retail'},
+  {code:'MTD-CLA-001', name:'Digital Canvas Wall', section:'The Canvas Collection', group:'Classic'},
+];
+
 const GROUP_COLOR = {Digital:'chip-violet', Airport:'chip-amber', Retail:'chip-emerald', Transit:'chip-sky', Classic:'chip-rose'};
 let _mtSelectedCodes = new Set();
+let activeDrawerKind = 'std';
+const DRAWER_CFG = {
+  std:    {label:'Media Type',           source:()=>ALL_MEDIA_TYPES,  key:'mediaTypes'},
+  digital:{label:'Media Type (Digital)', source:()=>ALL_DIGITAL_TYPES, key:'digitalTypes'}
+};
+const drCfg = () => DRAWER_CFG[activeDrawerKind] || DRAWER_CFG.std;
+function curItems(p){ const k = drCfg().key; if(!p[k]) p[k] = []; return p[k]; }
 
 // ---- Data ----
 let PACKAGES = [
@@ -409,16 +431,21 @@ let PACKAGES = [
     {id:'M2', code:'MT-DIG-002', name:'Digital BTS', section:'Digital'},
     {id:'M3', code:'MT-DIG-003', name:'Digital Airport', section:'Digital'},
     {id:'M4', code:'MT-DIG-004', name:'Digital Mall', section:'Digital'},
+  ], digitalTypes:[
+    {id:'D1', code:'MTD-DIG-001', name:'Digital Billboard', section:'Digital Network', group:'Digital'},
+    {id:'D2', code:'MTD-TRN-001', name:'Digital BTS Platform', section:'BTS', group:'Transit'},
   ]},
   {id:'P4', code:'PKG-MIX-01', name:'Mixed Premium', types:{full:true,customize:false}, active:true, mediaTypes:[
     {id:'M10', code:'MT-DIG-005', name:'Digital Office Tower', section:'Digital'},
     {id:'M11', code:'MT-STA-003', name:'Mega Billboard Bangna', section:'Static'},
     {id:'M12', code:'MT-OOH-001', name:'Wallscape Sukhumvit', section:'OOH'},
+  ], digitalTypes:[
+    {id:'D3', code:'MTD-RTL-001', name:'Digital Mall Atrium', section:'Mall', group:'Retail'},
   ]},
   {id:'P6', code:'PKG-CUST-01', name:'Client Tailored Bundle', types:{full:false,half:false,panel:false,customize:true}, active:true, mediaTypes:[
     {id:'M14', code:'MT-DIG-003', name:'Plan B TV Nationwide', section:'Digital'},
     {id:'M15', code:'MT-TRA-014', name:'BTS Skytrain', section:'Transit'},
-  ]},
+  ], digitalTypes:[]},
 ];
 
 let editingPkgId = null;
@@ -471,9 +498,13 @@ function renderTable(){
       <td class="px-4 py-3 text-right">
         <div class="inline-flex items-center gap-1.5">
           <!-- Manage Package — primary action: labelled pill with clear "queue-list/manage" icon -->
-          <button onclick="openDrawer('${p.id}')" title="จัดการรายการ Media Type ใน Package นี้" class="h-8 px-3 rounded-md acc-bg-soft acc text-[12px] font-medium hover:opacity-80 transition inline-flex items-center gap-1.5">
+          <button onclick="openDrawer('${p.id}','std')" title="จัดการรายการ Media Type ใน Package นี้" class="h-8 px-3 rounded-md acc-bg-soft acc text-[12px] font-medium hover:opacity-80 transition inline-flex items-center gap-1.5">
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 12h.007v.008H3.75V12zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zM3.75 6.75h.007v.008H3.75V6.75zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zM3.75 17.25h.007v.008H3.75v-.008zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zM8.25 6.75h12M8.25 12h12m-12 5.25h12"/></svg>
-            Manage Package
+            Manage Media Types
+          </button>
+          <button onclick="openDrawer('${p.id}','digital')" title="จัดการรายการ Media Type (Digital) ใน Package นี้" class="h-8 px-3 rounded-md text-[12px] font-medium transition inline-flex items-center gap-1.5" style="background:#EDE9FE;color:#6D28D9">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25m18 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25m18 0V12a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 12V5.25"/></svg>
+            Manage Media Type (Digital)
           </button>
           <!-- แก้ไข — bordered square with full pencil-square -->
           <button onclick="openEdit('${p.id}')" title="แก้ไขข้อมูล Package" class="w-8 h-8 rounded-md border border-surface-200 hover:bg-blue-50 hover:border-blue-300 flex items-center justify-center" style="color:#2D56D2">
@@ -529,7 +560,7 @@ function savePackage(){
     Object.assign(p,{code,name,types,active});
     toast('บันทึก Package เรียบร้อย');
   } else {
-    PACKAGES.unshift({id:'P'+Date.now(), code, name, types, active, mediaTypes:[]});
+    PACKAGES.unshift({id:'P'+Date.now(), code, name, types, active, mediaTypes:[], digitalTypes:[]});
     toast('Add Package ใหม่เรียบร้อย');
   }
   closePkg(); renderTable();
@@ -553,11 +584,12 @@ function closeModal(id){ $(id).classList.add('hidden'); }
 function closePkg(){ $('pkg-overlay').classList.add('hidden'); $('pkg-drawer').classList.remove('open'); }
 
 // ---- Drawer ----
-function openDrawer(id){
+function openDrawer(id, kind){
   activeDrawerPkgId = id;
+  activeDrawerKind = (kind==='digital') ? 'digital' : 'std';
   const p = PACKAGES.find(x=>x.id===id);
   $('dr-title').textContent = p.name;
-  $('dr-sub').textContent = p.code+' · จัดการ Media Type ที่อยู่ภายใต้ Package นี้';
+  $('dr-sub').textContent = p.code+' · จัดการ '+drCfg().label+' ที่อยู่ภายใต้ Package นี้';
   $('mt-search').value='';
   $('mt-overlay').classList.remove('hidden');
   $('mt-drawer').classList.add('open');
@@ -579,10 +611,10 @@ function chipColorFor(m){
 function renderDrawer(){
   const p = PACKAGES.find(x=>x.id===activeDrawerPkgId); if(!p) return;
   const q = ($('mt-search').value||'').toLowerCase();
-  const list = p.mediaTypes.filter(m=> !q || m.name.toLowerCase().includes(q) || (m.code||'').toLowerCase().includes(q) || (m.section||'').toLowerCase().includes(q));
+  const list = curItems(p).filter(m=> !q || m.name.toLowerCase().includes(q) || (m.code||'').toLowerCase().includes(q) || (m.section||'').toLowerCase().includes(q));
   const wrap = $('mt-list'); wrap.innerHTML='';
   if(!list.length){
-    wrap.innerHTML = '<div class="text-center py-10 text-[13px]" style="color:rgba(30,41,59,0.5)">ยังไม่มี Media Type — กด <b class="acc">เพิ่ม</b> เพื่อเลือกจากระบบ</div>';
+    wrap.innerHTML = '<div class="text-center py-10 text-[13px]" style="color:rgba(30,41,59,0.5)">ยังไม่มี '+drCfg().label+' — กด <b class="acc">Add</b> เพื่อเลือกจากระบบ</div>';
   } else {
     list.forEach(m=>{
       const el = document.createElement('div');
@@ -600,12 +632,19 @@ function renderDrawer(){
       wrap.appendChild(el);
     });
   }
-  $('mt-count').textContent = p.mediaTypes.length;
+  $('mt-count').textContent = curItems(p).length;
 }
 
 // ---- Multi-select MT picker ----
 function openAddMT(){
   _mtSelectedCodes = new Set();
+  const lb = drCfg().label;
+  $('mtm-kicker').textContent = lb;
+  $('mtm-title').textContent = 'เพิ่ม '+lb+' เข้า Package';
+  $('mt-modal-search').placeholder = 'ค้นหา '+lb+', Section, Group...';
+  const sel = $('mt-modal-group');
+  const groups = [...new Set(drCfg().source().map(m=>m.group))];
+  sel.innerHTML = '<option value="">Group ทั้งหมด</option>' + groups.map(g=>`<option>${g}</option>`).join('');
   $('mt-modal-search').value='';
   $('mt-modal-group').value='';
   $('mt-modal-hideadded').checked=true;
@@ -616,7 +655,7 @@ function openAddMT(){
 function existingCodesInPkg(){
   const p = PACKAGES.find(x=>x.id===activeDrawerPkgId);
   if(!p) return new Set();
-  return new Set(p.mediaTypes.map(m=>m.code).filter(Boolean));
+  return new Set(curItems(p).map(m=>m.code).filter(Boolean));
 }
 
 function renderMTPicker(){
@@ -625,7 +664,7 @@ function renderMTPicker(){
   const grp = $('mt-modal-group').value;
   const hide = $('mt-modal-hideadded').checked;
   const existing = existingCodesInPkg();
-  const list = ALL_MEDIA_TYPES.filter(m=>{
+  const list = drCfg().source().filter(m=>{
     if(grp && m.group!==grp) return false;
     if(hide && existing.has(m.code)) return false;
     if(q){
@@ -636,7 +675,7 @@ function renderMTPicker(){
   });
 
   if(!list.length){
-    wrap.innerHTML = '<div class="text-center py-10 text-[13px]" style="color:rgba(30,41,59,0.5)">ไม่พบ Media Type ที่ตรงกับเงื่อนไข</div>';
+    wrap.innerHTML = '<div class="text-center py-10 text-[13px]" style="color:rgba(30,41,59,0.5)">ไม่พบ '+drCfg().label+' ที่ตรงกับเงื่อนไข</div>';
     updateMTChips();
     return;
   }
@@ -701,7 +740,7 @@ function updateMTChips(){
   }
   chipBox.innerHTML = '';
   _mtSelectedCodes.forEach(c=>{
-    const m = ALL_MEDIA_TYPES.find(x=>x.code===c); if(!m) return;
+    const m = drCfg().source().find(x=>x.code===c); if(!m) return;
     const chip = document.createElement('span');
     chip.className = 'inline-flex items-center gap-1 px-2 py-1 rounded-md text-[11px] font-medium border border-amber-200 bg-amber-50 text-amber-800';
     chip.innerHTML = `${m.name}<button onclick="toggleMTSelect('${c}', false)" class="ml-0.5 w-3.5 h-3.5 rounded-full hover:bg-amber-200 flex items-center justify-center"><svg class="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg></button>`;
@@ -716,23 +755,25 @@ function clearMTSelection(){
 
 function saveMT(){
   const p = PACKAGES.find(x=>x.id===activeDrawerPkgId); if(!p) return;
-  if(!_mtSelectedCodes.size){ toast('กรุณาเลือก Media Type อย่างน้อย 1 รายการ'); return; }
+  if(!_mtSelectedCodes.size){ toast('กรุณาเลือก '+drCfg().label+' อย่างน้อย 1 รายการ'); return; }
+  const items = curItems(p);
   let added = 0;
   _mtSelectedCodes.forEach(code=>{
-    if(p.mediaTypes.some(x=>x.code===code)) return;
-    const src = ALL_MEDIA_TYPES.find(x=>x.code===code); if(!src) return;
-    p.mediaTypes.push({id:'M'+Date.now()+'-'+code, code:src.code, name:src.name, section:src.section, group:src.group});
+    if(items.some(x=>x.code===code)) return;
+    const src = drCfg().source().find(x=>x.code===code); if(!src) return;
+    items.push({id:'M'+Date.now()+'-'+code, code:src.code, name:src.name, section:src.section, group:src.group});
     added++;
   });
   closeModal('mt-modal'); renderDrawer(); renderTable();
-  toast(`เพิ่ม ${added} Media Type เข้า Package เรียบร้อย`);
+  toast(`เพิ่ม ${added} ${drCfg().label} เข้า Package เรียบร้อย`);
 }
 
 function removeMT(id){
   const p = PACKAGES.find(x=>x.id===activeDrawerPkgId); if(!p) return;
-  const m = p.mediaTypes.find(x=>x.id===id); if(!m) return;
-  if(!confirm(`ลบ Media Type "${m.name}" ออกจาก Package นี้?`)) return;
-  p.mediaTypes = p.mediaTypes.filter(x=>x.id!==id);
+  const k = drCfg().key;
+  const m = curItems(p).find(x=>x.id===id); if(!m) return;
+  if(!confirm(`ลบ ${drCfg().label} "${m.name}" ออกจาก Package นี้?`)) return;
+  p[k] = curItems(p).filter(x=>x.id!==id);
   renderDrawer(); renderTable(); toast('ลบเรียบร้อย');
 }
 

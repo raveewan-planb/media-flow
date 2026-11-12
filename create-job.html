@@ -332,16 +332,6 @@ table th{position:sticky;top:0;z-index:1}
 </div>
 </div>
 <div>
-<label class="block text-[11px] font-medium text-[#0B1430] mb-1">Media Category <span class="text-[10px] font-normal" style="color:rgba(30,41,59,0.5)">(เลือกได้หลายรายการ · ขึ้นกับ Group)</span></label>
-<div class="relative" id="mg-wrap">
-<button type="button" onclick="toggleMG(event)" class="w-full min-h-9 px-3 py-1.5 bg-white border border-[#E2E8F0] rounded-lg text-[13px] text-left flex items-center gap-2 hover:border-[#CBD5E1] focus:outline-none focus:border-[#4790FF] transition-colors">
-<div id="mg-pills" class="flex-1 flex flex-wrap gap-1 items-center"><span class="text-[12px]" style="color:rgba(30,41,59,0.4)">Select media category(s)...</span></div>
-<svg id="mg-chev" class="w-3.5 h-3.5 shrink-0 transition-transform" style="color:rgba(30,41,59,0.4)" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-</button>
-<div id="mg-dropdown" class="hidden absolute z-20 top-full left-0 right-0 mt-1 bg-white border border-[#E2E8F0] rounded-lg p-1.5 max-h-[240px] overflow-y-auto" style="box-shadow:0 8px 30px rgba(11,20,48,0.12)"></div>
-</div>
-</div>
-<div>
 <label class="block text-[11px] font-medium text-[#0B1430] mb-1">Media Type <span class="text-[10px] font-normal" style="color:rgba(30,41,59,0.5)">(เลือกได้หลายรายการ)</span></label>
 <div class="relative" id="mt-wrap">
 <button type="button" onclick="toggleMT(event)" class="w-full min-h-9 px-3 py-1.5 bg-white border border-[#E2E8F0] rounded-lg text-[13px] text-left flex items-center gap-2 hover:border-[#CBD5E1] focus:outline-none focus:border-[#4790FF] transition-colors">
@@ -765,27 +755,15 @@ function toggleMCItem(id, e) {
   var i = _selectedMC.indexOf(id);
   if (i >= 0) _selectedMC.splice(i, 1);
   else _selectedMC.push(id);
-  // Cascade: remove selected groups that are no longer under any active category
-  var allowed = _allowedGroups();
-  _selectedMG = _selectedMG.filter(function(g){ return allowed.indexOf(g) >= 0; });
   renderMCPills();
   renderMCOptions();
-  renderMGPills();
-  // if MG dropdown is open, refresh its options
-  var mgDD = document.getElementById('mg-dropdown');
-  if (mgDD && !mgDD.classList.contains('hidden')) renderMGOptions();
 }
 function removeMC(id, e) {
   if (e) e.stopPropagation();
   var i = _selectedMC.indexOf(id);
   if (i >= 0) _selectedMC.splice(i, 1);
-  var allowed = _allowedGroups();
-  _selectedMG = _selectedMG.filter(function(g){ return allowed.indexOf(g) >= 0; });
   renderMCPills();
-  renderMGPills();
   if (!document.getElementById('mc-dropdown').classList.contains('hidden')) renderMCOptions();
-  var mgDD = document.getElementById('mg-dropdown');
-  if (mgDD && !mgDD.classList.contains('hidden')) renderMGOptions();
 }
 function renderMCPills() {
   var el = document.getElementById('mc-pills');
@@ -812,70 +790,9 @@ function _allowedGroups() {
   return Object.keys(set);
 }
 
-/* ===== Media Category multi-select (manual entry) ===== */
-var _selectedMG = [];
-function toggleMG(e) {
-  if (e) e.stopPropagation();
-  var dd = document.getElementById('mg-dropdown');
-  var chev = document.getElementById('mg-chev');
-  var willOpen = dd.classList.contains('hidden');
-  dd.classList.toggle('hidden');
-  if (chev) chev.style.transform = willOpen ? 'rotate(180deg)' : '';
-  if (willOpen) renderMGOptions();
-}
-function renderMGOptions() {
-  var dd = document.getElementById('mg-dropdown');
-  var allowed = _allowedGroups();
-  if (!allowed.length) {
-    dd.innerHTML = '<div class="px-3 py-4 text-center text-[12px]" style="color:rgba(30,41,59,0.45)">กรุณาเลือก Media Group ก่อน</div>';
-    return;
-  }
-  var html = '';
-  MEDIA_GROUPS.forEach(function(g) {
-    if (allowed.indexOf(g) < 0) return;
-    var checked = _selectedMG.indexOf(g) >= 0;
-    var c = MEDIA_GROUP_COLOR[g];
-    html += '<label class="flex items-center gap-2 px-2.5 py-1.5 rounded-md cursor-pointer hover:bg-[#F8FAFC] text-[12.5px] transition-colors">' +
-      '<input type="checkbox" ' + (checked?'checked':'') + ' onchange="toggleMGItem(\'' + g + '\', event)" class="w-4 h-4 rounded accent-[#2D56D2]"/>' +
-      '<span class="w-2.5 h-2.5 rounded-full" style="background:' + c + '"></span>' +
-      '<span class="' + (checked?'font-semibold text-[#0B1430]':'') + '" style="' + (checked?'':'color:rgba(30,41,59,.75)') + '">' + g + '</span>' +
-    '</label>';
-  });
-  dd.innerHTML = html;
-}
-function toggleMGItem(g, e) {
-  if (e) e.stopPropagation();
-  var i = _selectedMG.indexOf(g);
-  if (i >= 0) _selectedMG.splice(i, 1);
-  else _selectedMG.push(g);
-  _selectedMG.sort(function(a, b) { return MEDIA_GROUPS.indexOf(a) - MEDIA_GROUPS.indexOf(b); });
-  renderMGPills();
-  renderMGOptions();
-}
-function removeMG(g, e) {
-  if (e) e.stopPropagation();
-  var i = _selectedMG.indexOf(g);
-  if (i >= 0) _selectedMG.splice(i, 1);
-  renderMGPills();
-  if (!document.getElementById('mg-dropdown').classList.contains('hidden')) renderMGOptions();
-}
-function renderMGPills() {
-  var el = document.getElementById('mg-pills');
-  if (!_selectedMG.length) {
-    el.innerHTML = '<span class="text-[12px]" style="color:rgba(30,41,59,0.4)">Select media category(s)...</span>';
-    return;
-  }
-  el.innerHTML = _selectedMG.map(function(g) {
-    var c = MEDIA_GROUP_COLOR[g];
-    return '<span class="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded font-semibold" style="background:' + c + '18;color:' + c + ';border:1px solid ' + c + '33">' +
-      g +
-      '<button type="button" onclick="removeMG(\'' + g + '\',event)" class="ml-0.5 hover:bg-white/60 rounded-full w-3.5 h-3.5 inline-flex items-center justify-center text-[10px] leading-none">×</button>' +
-    '</span>';
-  }).join('');
-}
 /* Close dropdown on outside click — includes dynamic Media Code multi-selects */
 document.addEventListener('click', function(e) {
-  ['mc','mg','mt','cs','pk','sf-cs'].forEach(function(pfx){
+  ['mc','mt','cs','pk','sf-cs'].forEach(function(pfx){
     var wrap = document.getElementById(pfx + '-wrap');
     if (wrap && !wrap.contains(e.target)) {
       var dd = document.getElementById(pfx + '-dropdown');

@@ -44,6 +44,54 @@
 <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" crossorigin="anonymous"></script>
+<script>
+/* CDN fallback — unpkg → jsDelivr → cdnjs */
+(function(){
+  var LIBS = [
+    {g:'React', u:['https://cdn.jsdelivr.net/npm/react@18.3.1/umd/react.production.min.js','https://cdnjs.cloudflare.com/ajax/libs/react/18.3.1/umd/react.production.min.js']},
+    {g:'ReactDOM', u:['https://cdn.jsdelivr.net/npm/react-dom@18.3.1/umd/react-dom.production.min.js','https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.3.1/umd/react-dom.production.min.js']},
+    {g:'Babel', u:['https://cdn.jsdelivr.net/npm/@babel/standalone@7.29.0/babel.min.js','https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.26.4/babel.min.js']}
+  ];
+  function load(url){
+    return new Promise(function(res, rej){
+      var el = document.createElement('script');
+      el.src = url; el.async = false;
+      el.onload = function(){ res(true); };
+      el.onerror = function(){ rej(new Error(url)); };
+      document.head.appendChild(el);
+    });
+  }
+  function ensure(lib){
+    if(window[lib.g]) return Promise.resolve(true);
+    return lib.u.reduce(function(chain, url){
+      return chain.catch(function(){ return window[lib.g] ? true : load(url); });
+    }, Promise.reject()).catch(function(){ return false; });
+  }
+  function banner(msg){
+    var d = document.createElement('div');
+    d.style.cssText = 'position:fixed;left:0;right:0;top:0;z-index:9999;padding:12px 16px;background:#FEF3C7;color:#92400E;font:500 13px Kanit,sans-serif;border-bottom:1px solid #FCD34D;text-align:center';
+    d.textContent = msg;
+    document.body.appendChild(d);
+  }
+  function boot(){
+    if(window.React && window.ReactDOM && window.Babel) return;
+    LIBS.reduce(function(c, lib){ return c.then(function(){ return ensure(lib); }); }, Promise.resolve())
+      .then(function(){
+        if(!(window.React && window.ReactDOM && window.Babel)){
+          banner('ไม่สามารถโหลดไลบรารีของหน้านี้ได้ — กรุณาตรวจสอบการเชื่อมต่ออินเทอร์เน็ต / นโยบายเครือข่าย แล้วรีเฟรชหน้าอีกครั้ง');
+          return;
+        }
+        var tail = Promise.resolve();
+        if(typeof window.Topbar === 'undefined'){
+          tail = load('shared/shared-layout.js').catch(function(){}).then(function(){ return load('shared/sidebar.js').catch(function(){}); });
+        }
+        tail.then(function(){ try { window.Babel.transformScriptTags(); } catch(e){} });
+      });
+  }
+  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+  else boot();
+})();
+</script>
 <script src="shared/shared-layout.js"></script>
 <script src="shared/sidebar.js"></script>
 </head>
@@ -425,7 +473,7 @@ function MediaDrawer({ open, mode, level, initial, context, onClose, onSave }) {
               placeholder={namePh[level]}
               className="w-full h-9 px-3 bg-surface-50 border border-surface-200 rounded-lg text-[13px] placeholder:opacity-40" />
           </Field>
-          {(level === 'group' || level === 'category') && (
+          {level === 'category' && (
             <Field label="สี (สำหรับ tag)">
               <div className="flex gap-2 flex-wrap">
                 {COLORS.map(c => (
@@ -986,7 +1034,7 @@ function MasterDataMediaScreen() {
                 search={gSearch} onSearch={setGSearch}
                 empty={selectedCategory ? 'ไม่พบ Category ใน Group นี้' : 'เลือก Group ก่อน'}>
                 {filteredGroups.map(g => (
-                  <PaneRow key={g.id} item={g} dot={g.color} meta={g.types.length} secondary={`${g.id} · ${g.nameEn}`}
+                  <PaneRow key={g.id} item={g} meta={g.types.length} secondary={`${g.id} · ${g.nameEn}`}
                     active={selectedGroup?.id === g.id}
                     onSelect={() => { setSelectedGroupId(g.id); setSelectedTypeId(null); setSelectedSegmentId(null); }}
                     onEdit={() => openEdit('group', g, null)}
